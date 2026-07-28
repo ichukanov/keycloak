@@ -1,7 +1,7 @@
-== Configuring auditing to track events
+== Настройка аудита для отслеживания событий
 
 [role="_abstract"]
-{project_name} includes a suite of auditing capabilities. You can record every login and administrator action and review those actions in the Admin Console. {project_name} also includes a Listener SPI that listens for events and can trigger actions. Examples of built-in listeners include log files and sending emails if an event occurs.
+{project_name} включает в себя набор возможностей аудита. Вы можете записывать каждый логин и администратор действия и просматривать эти действия в консоли администратора. {project_name} также включает SPI слушателя, который слушает события и может инициировать действия. Примеры встроенных слушателей включают в себя лог файлы и отправку писем при возникновении события.
 
 include::events/login.adoc[]
 
