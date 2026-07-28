@@ -1,12 +1,12 @@
 [role="_abstract"]
-To create a client scope, follow these steps:
+Чтобы создать клиентскую область выполните следующие действия:
 
-. Click *Client Scopes* in the menu.
+. Щелкните *Клиент* в меню.
 +
 image:images/client-scopes-list.png[]
-. Click *Create*.
-. Name your client scope.
-. Click *Save*.
+. Нажмите *Создать*.
+. Назовите область вашего клиента.
+. Нажмите *Сохранить*.
 
-A _client scope_ has similar tabs to regular clients. You can
-define <<_protocol-mappers, protocol mappers>> and <<_role_scope_mappings, role scope mappings>>. These mappings can be inherited by other clients and are configured to inherit from this client scope.
+Область _клиента_ похожа на обычные клиенты. You can
+define <<_protocol-mappers, protocol mappers>> and <<_role_scope_mappings, role scope mappings>>. Эти сопоставления могут быть унаследованы другими клиентами и сконфигурированы для наследования из области действия клиента.
