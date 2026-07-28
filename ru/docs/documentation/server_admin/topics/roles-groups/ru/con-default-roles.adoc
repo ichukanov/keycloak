@@ -1,11 +1,11 @@
 [[_default_roles]]
-==== Default roles
+==== Роли по умолчанию
 
 [role="_abstract"]
-Default roles allow you to automatically assign user role mappings when any user is newly created or imported through
-<<_identity_broker, Identity Brokering>>.
-To specify default roles go to the *Roles* left menu item, and click the *Default Roles* tab.
+Роли по умолчанию позволяют вам автоматически назначать сопоставления ролей пользователей при создании новых или импорте через
+<_identity_broker, Identity Brokering>>.
+Чтобы указать роли по умолчанию, перейдите в левое меню *Roles*, и нажмите на вкладку *Default Roles*.
 
 image:images/default-roles.png[]
 
-This screenshot shows that some _default roles_ already exist.
+Этот скриншот показывает, что некоторые _роли_ по умолчанию уже существует.
