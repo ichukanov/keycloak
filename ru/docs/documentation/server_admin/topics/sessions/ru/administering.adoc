@@ -1,33 +1,33 @@
-=== Administering sessions
+=== Управляющие сессиями
 
-To see a top-level view of the active clients and sessions in {project_name}, click *Sessions* from the menu.
+Чтобы увидеть вид верхнего уровня активных клиентов и сессий в {project_name}, нажмите *Сессии* в меню.
 
-image:images/sessions.png[Sessions tab]
+image:images/sessions.png[вкладка сессий]
 
-==== Signing out all active sessions
+==== Выйти из всех активных сессий
 
-You can sign out all users in the realm. From the *Action* list, select *Sign out all active sessions*. All SSO cookies become invalid. {project_name} notifies clients by using the {project_name} OIDC client adapter of the logout event. Clients requesting authentication within active browser sessions must log in again. Client types such as SAML do not receive a back-channel logout request.
+Вы можете выйти из игры всех пользователей в реалме. Из списка *Действия* выберите *Выйти из всех активных сессий*. Все cookies SSO становятся недействительными. {project_name} уведомляет клиентов с помощью адаптера OIDC клиента {project_name} при выходе из системы. Клиенты, запрашивающие аутентификацию в активных сеансах браузера, должны войти в систему снова. Такие типы клиентов, как SAML не получают запрос на выход из бэк-канала.
 
 [NOTE]
 ====
-Clicking *Sign out all active sessions* does not revoke outstanding access tokens. Outstanding tokens must expire naturally. For clients using the {project_name} OIDC client adapter, you can push a <<_revocation-policy, revocation policy>> to revoke the token, but this does not work for other adapters.
+Нажатие на *Выход из всех активных сессий* не снимает токены невыполненного доступа. Нерешенные токены должны истекать естественно. Для клиентов, использующих адаптер клиента {project_name} OIDC, вы можете сделать push <_revocation-policy, политика отзыва >> отменить токен, но это не работает для других адаптеров.
 ====
 
-==== Viewing client sessions
+==== Просмотр клиентских сессий
 
-.Procedure
-. Click *Clients* in the menu.
-. Click a client to see that client's sessions.
-. Click the *Sessions* tab.
+.Процедура
+. Нажмите *Клиент* в меню.
+. Нажмите на клиента, чтобы увидеть сеансы клиента.
+. Нажмите на вкладку *Сессии*.
 +
-image:images/client-sessions.png[Client sessions]
+image:images/client-sessions.png[сессии клиента]
 
 [#viewing-user-sessions]
-==== Viewing user sessions
+==== Просмотр сеансов пользователя
 
-.Procedure
-. Click *Users* in the menu.
-. Click a user to see that user's sessions.
-. Click the *Sessions* tab.
+.Процедура
+. Нажмите *Пользователи* в меню.
+. Нажмите на пользователя, чтобы увидеть сеансы этого пользователя.
+. Нажмите на вкладку *Сессии*.
 +
-image:images/user-sessions.png[User sessions]
+image:images/user-sessions.png[Пользовательские сессии]
