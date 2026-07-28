@@ -1,55 +1,55 @@
 [[_scim_admin_resource_protection_]]
-= Protection of administrative resources
+= Защита административных ресурсов
 
-{project_name} automatically protects administrative users and groups from being modified through the SCIM API.
-This prevents external identity providers or SCIM clients from accidentally or maliciously altering accounts
-and groups that have administrative privileges in the realm.
+{project_name} автоматически защищает административных пользователей и группы от изменения через SCIM API.
+Это предотвращает случайное или злонамеренное изменение пользовательских аккаунтов
+и групп, имеющих административные привилегии в этой сфере.
 
-== Why this protection exists
+== Почему такая защита существует
 
-The SCIM API is designed for automated user and group synchronization with external identity providers.
+SCIM API предназначен для автоматической синхронизации пользователей и групп с внешними идентификаторами.
 Because SCIM clients typically operate with broad management permissions, a compromised or misconfigured client
 could otherwise:
 
-* Delete or disable administrator accounts, locking out realm management.
-* Modify administrator credentials or attributes.
-* Add unauthorized users to groups that carry administrative roles, escalating their privileges.
-* Remove administrators from their groups, revoking their access.
+* Удаление или отключение учётных записей администратора, блокировка управления реалмами.
+* Изменение учётных данных или атрибутов администратора.
+* Добавляйте неавторизованных пользователей в группы, которые имеют административные роли, увеличивая их привилегии.
+* Удалить администраторов из их групп, отменив их доступ.
 
-To prevent these scenarios, {project_name} ensures that administrative resources can only be managed through the
-Admin Console or the Admin REST API, never through SCIM.
+Для предотвращения этих сценариев, {project_name} гарантирует, что административные ресурсы могут управляться только через консоль администратора
+и не через SCIM.
 
-== Protected admin users
+== Защищенные пользователи
 
-A user is considered an administrative user if they hold any administrative role. This includes roles from the
-`realm-management` client, roles from the master realm administration clients (such as `<realm-name>-realm`),
-and administrative realm roles on the master realm (such as `admin` or `create-realm`). Roles may be assigned
-directly to the user, inherited through group membership, or obtained through composite roles.
+Пользователь считается административным пользователем, если он имеет какую-либо административную роль. Сюда входят роли клиента
+`realm-management`, роли клиентов администрирования основного реалма (например, `<realm-name>-realm`),
+и административные роли в основной области (например, `admin` или `create-realm`). Роли могут быть назначены
+непосредственно пользователю, унаследованному от членства в группах или получены через составные роли.
 
-The following restrictions apply to administrative users accessed through the SCIM API:
+К административным пользователям, доступным через SCIM API, применяются следующие ограничения:
 
-* *Read operations* (`GET`) return a minimal representation containing only the `id`, `schemas`, and `userName`
-attributes. Personal details such as `name` and `emails` are not included.
-* *Write operations* (`PUT`, `PATCH`, `DELETE`) return a `403 Forbidden` response.
-* Administrative users still appear in listing and search results, but always with the minimal representation.
-* Once all administrative roles are revoked from a user, the user becomes fully manageable through SCIM again.
+* *Чтение операций* (`GET`) возвращает минимальное представление, содержащее только атрибуты `id`, `schemas` и `userName`
+. Личные данные, такие как "имя" и "emails", не включены.
+* *Запись операций* (`PUT`, `PATCH`, `DELETE`) возвращает ответ `403 Запрещенный`.
+* Пользователи администрирования по-прежнему отображаются в списках и результатах поиска, но всегда при минимальной представленности.
+* Как только все административные роли отозваны от пользователя, пользователь снова становится полностью управляемым через SCIM.
 
-== Protected admin groups
+== Защищенные группы администраторов
 
-A group is considered an administrative group if it holds any administrative role. This includes roles from the
-`realm-management` client, roles from the master realm administration clients (such as `<realm-name>-realm`),
-and administrative realm roles on the master realm. Roles may be assigned directly to the group or obtained
+Группа считается административной группой, если она выполняет какую-либо административную роль. Сюда входят роли клиента
+`realm-management`, роли клиентов администрирования главной области (такие как `<realm-name>-realm`),
+и административные роли в основной сфере. Roles may be assigned directly to the group or obtained
 through composite roles. Child groups of an administrative group are also protected, because their members
 inherit the parent group's administrative roles.
 
-The following restrictions apply to administrative groups accessed through the SCIM API:
+К административным группам, доступным через API СКИМ, применяются следующие ограничения:
 
-* *Read operations* (`GET`) return a minimal representation containing only the `id`, `schemas`, and `displayName`
-attributes. Members and other attributes are not included.
-* *Write operations* (`PUT`, `PATCH`, `DELETE`) return a `403 Forbidden` response.
-* *Membership changes are blocked from both directions:*
-** Adding or removing members through a `PATCH` on the group resource returns `403 Forbidden`.
-** Adding or removing a user to or from an administrative group through a `PATCH` on the user resource also
-returns `403 Forbidden`.
+* *Чтение операций* (`GET`) возвращает минимальное представление, содержащее только атрибуты `id`, `schemas` и `displayName`
+. Участники и другие атрибуты не включены.
+* *Запись операций* (`PUT`, `PATCH`, `DELETE`) возвращает ответ `403 Запрещенный`.
+* *Изменения членства заблокированы в обоих направлениях:*
+** Добавление или удаление участников через `PATCH` в ресурсе группы возвращает `403 Forbidden`.
+** Добавление или удаление пользователя из административной группы через `PATCH` в пользовательском ресурсе также
+возвращает `403 Forbidden`.
 
-Administrative groups still appear in listing and search results, but always with the minimal representation.
+Административные группы по-прежнему фигурируют в списках и результатах поиска, но всегда при минимальной представленности.
