@@ -5,21 +5,21 @@
 // server_admin/topics/users.adoc
 
 [id="con-required-actions_{context}"]
-= Defining actions required at login
+= Определение действий при входе в систему
 
-You can set the actions that a user must perform at the first login. These actions are required after the user provides credentials. After the first login, these actions are no longer required. You add required actions on the *Details* tab of that user.
+Вы можете установить действия, которые пользователь должен выполнить при первом входе в систему. Эти действия требуются после того, как пользователь предоставит учетные данные. После первого входа эти действия больше не требуются. Вы добавляете необходимые действия на вкладке *Детали* этого пользователя.
 
-Some required actions are automatically triggered for the user during login even if they are not explicitly added to this user by the administrator. For example `Update password` action can be
-triggered if <<_password-policies, Password policies>> are configured in a way that the user password needs to be changed every X days. Or `verify profile`
-action can require the user to update the <<user-profile, User profile>> as long as some user attributes do not match the requirements according to the user profile configuration.
+Некоторые необходимые действия автоматически запускаются для пользователя при входе в систему, даже если они явно не добавлены этому пользователю администратором. For example `Update password` action can be
+triggered if <<_password-policies, Password policies>> are configured in a way that the user password needs to be changed every X days. Или `verify profile`
+может потребовать обновления пользователя <<user-profile, User profile>> до тех пор, пока некоторые атрибуты пользователя не соответствуют требованиям в соответствии с конфигурацией профиля пользователя.
 
-The following are examples of required action types:
+Ниже приведены примеры требуемых типов действий:
 
-Update Password:: The user must change their password.
-Configure OTP:: The user must configure a one-time password generator on their mobile device using either the Free OTP or Google Authenticator application.
-Verify Email:: The user must verify their email account. An email will be sent to the user with a validation link that they must click. Once this workflow is successfully completed, the user will be allowed to log in.
-Update Profile:: The user must update profile information, such as name, address, email, and phone number.
+Обновить пароль:: Пользователь должен изменить свой пароль.
+Настройка OTP:: Пользователь должен настроить одноразовый генератор паролей на своем мобильном устройстве, используя приложение Free OTP или Google Authenticator.
+Подтвердить email:: Пользователь должен подтвердить свою учётную запись электронной почты. Письмо будет отправлено пользователю с ссылкой подтверждения, что он должен кликнуть. Как только этот процесс будет успешно завершен, пользователю будет разрешено войти в систему.
+Обновить профиль:: Пользователь должен обновить данные профиля, такие как имя, адрес, адрес электронной почты и номер телефона.
 
-NOTE: Some actions do not makes sense to be added to the user account directly. For example, the `Update User Locale` is a helper action to handle some localization related parameters. Another
-example is the `Delete Credential` action, which is supposed to be triggered as a <<con-aia-parameterized_{context}, Parameterized AIA>>.  Regarding this one, if the administrator wants to delete the credential of some
-user, that administrator can do it directly in the Admin Console. The `Delete Credential` action is dedicated to be used for example by the <<_account-service,{project_name} Account Console>>.
+NOTE: Некоторые действия не имеют смысла добавлять в учетную запись пользователя. Например, `Update User Locale` является вспомогательным действием для обработки некоторых параметров, связанных с локализацией. Другим примером
+является действие `Delete Credential`, которое должно быть вызвано как <<con-aia-parameterized_{context}, Parameterized AIA>>.  В связи с этим, если администратор хочет удалить учетные данные некоторых
+пользователя, то администратор может сделать это непосредственно в консоли администратора. Действие `Delete Credential` посвящено использованию <_account-service,{project_name} Account Console>>.
