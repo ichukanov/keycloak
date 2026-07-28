@@ -1,22 +1,22 @@
-= Role scope mappings
+= Сопоставления рамок роли
 
-_Role Scope Mappings_ limit the roles declared inside an access token. When a client requests user authentication, the access token it receives contains only the role mappings that are explicitly specified for the client's scope. The result is that the permissions of each individual access token are limited instead of giving the client access to all the user's permissions.
+Ограничить роли в токене доступа. Когда клиент запрашивает аутентификацию пользователя, токен доступа, он получает содержит только сопоставления ролей, которые явно указаны для области действия клиента. Результат заключается в том, что разрешения каждого отдельного токена доступа ограничены вместо того, чтобы предоставлять клиенту доступ ко всем разрешениям пользователя.
 
-By default, each client gets all the role mappings of the user.
-You can view the role mappings for a client.
+По умолчанию каждый клиент получает все сопоставления ролей пользователя.
+Вы можете просмотреть сопоставления ролей для клиента.
 
-.Procedure
-. Click *Clients* in the menu.
-. Click the client to go to the details.
-. Click the *Client scopes* tab.
-. Click the link in the row with _Dedicated scope and mappers for this client_
-. Click the *Scope* tab.
+.Процедура
+. Нажмите *Клиент* в меню.
+. Нажмите на клиенте, чтобы перейти к деталям.
+. Щелкните на вкладке *Область клиентов*.
+. Нажмите на ссылку в строке с _выделенной областью и картографией для этого клиента_
+. Нажмите на вкладку *Scope*.
 
-image:images/full-client-scope.png[Full scope]
+image:images/full-client-scope.png[Полный охват]
 
-By default, the effective roles of scopes are every declared role in the realm. To change this default behavior, toggle *Full Scope Allowed* to *OFF* and declare the specific roles you want in each client.
-You can also use <<_client_scopes, client scopes>> to define the same role scope mappings for a set of clients.
+По умолчанию эффективными функциями в этой области являются все заявленные роли. Чтобы изменить поведение по умолчанию, переключите *Полные рамки* на *ВЫКЛ* и укажите конкретные роли, которые вы хотите в каждом клиенте.
+Вы также можете использовать <<_client_scopes, клиентские рамки>> для определения одинаковых ролей рамок для набора клиентов.
 
-image:images/client-scope.png[Partial scope]
+image:images/client-scope.png[Частичная область применения]
 
-See the <<_oidc_token_role_mappings, Token Role mappings section>> for details about the algorithm that adds the roles to the token.
+Смотрите <_oidc_token_role_mappings, раздел соответствия роли токенов>> , чтобы узнать подробнее о алгоритме, добавляющем роли в токен.
