@@ -1,118 +1,118 @@
 [[_workflow_provider_events_]]
-= Listening to workflow provider events
+= Прослушивание событий поставщика рабочих процессов
 
-During the lifecycle of a workflow execution, {project_name} fires a series of provider events that represent key moments
-such as activation, step execution, failures, and completion. SPI developers can listen to these events by implementing
+В течение жизненного цикла выполнения рабочего процесса, {project_name} запускает серию событий провайдера, представляющих ключевые моменты
+, такие как активация, выполнение шагов, ошибки и завершение. SPI developers can listen to these events by implementing
 the `ProviderEventListener` interface and registering the listener with the `KeycloakSessionFactory`.
 
 [NOTE]
 ====
-{project_name} does not persist workflow execution history. By default, only log messages record what happened during
-a workflow run (see <<_troubleshooting_workflows_>>). Provider events allow you to capture and store workflow lifecycle
+{project_name} не сохраняет историю выполнения рабочего процесса. По умолчанию, только журнал сообщений записывает то, что произошло во время
+запуска рабочего процесса (см. <_troubleshooting_workflows_>). Provider events allow you to capture and store workflow lifecycle
 data externally — for example, in an audit database or monitoring system — providing a complete execution trail beyond
 what the standard log messages offer.
 ====
 
-== Common event fields
+== Общие поля событий
 
-All workflow provider events extend the `WorkflowProviderEvent` interface, which provides the following common fields:
+Все события поставщика рабочих процессов расширяют интерфейс «WorkflowProviderEvent», который предоставляет следующие общие поля:
 
 [cols="2*", options="header"]
 |===
-|Method
-|Description
+|Метод
+|Описание
 
-|`getKeycloakSession()` |The `KeycloakSession` associated with this event.
+|`getKeycloakSession()` |`KeycloakSession` связанный с этим событием.
 
-|`getRealm()` |The realm where the workflow event occurred.
+|`getRealm()` |Область, в которой произошло событие рабочего процесса.
 
-|`getWorkflowId()` |The ID of the workflow.
+|`getWorkflowId()` |Идентификатор рабочего процесса.
 
-|`getWorkflowName()` |The name of the workflow.
+|`getWorkflowName()` |Имя рабочего процесса.
 
-|`getResourceId()` |The ID of the resource (user or client) associated with the workflow.
+|`getResourceId()` |ID ресурса, связанного с рабочим процессом.
 
-|`getResourceType()` |The type of the resource — either `USERS` or `CLIENTS`.
+|`getResourceType()` |Тип ресурса — либо «USERS», либо «CLIENTS».
 
-|`getExecutionId()` |The unique ID for this workflow execution.
+|`getExecutionId()` |Уникальный ID для этого процесса выполнения.
 |===
 
 [[_workflow_provider_event_types_]]
-== Event types
+== Типы событий
 
-The following event types are available:
+Доступны следующие типы событий:
 
 [cols="3*", options="header"]
 |===
-|Event Type
-|Description
-|Additional Fields
+|Тип события
+|Описание
+|Дополнительные поля
 
 |`WorkflowActivatedEvent`
-|Fired when a workflow is activated for a resource — either through a trigger event, a schedule, or a manual API call.
-a|* `getTriggerEventType()`: The event provider ID that triggered activation (e.g., `user-created`, `scheduled`, or `AD_HOC` for manual activation).
+|Уголен, когда рабочий процесс активируется для ресурса — либо через инициирующее событие, расписание, либо через ручный вызов API.
+a|* `getTriggerEventType()`: ID провайдера событий, который вызвал активацию (например, `user-created`, `scheduled`, `AD_HOC` для ручной активации).
 
 |`WorkflowDeactivatedEvent`
-|Fired when a workflow execution is deactivated for a resource — for example, through a manual API call, a cancel-in-progress trigger, or because the resource no longer meets the workflow conditions.
-a|* `getReason()`: The reason for deactivation.
+|Вызывается, когда выполнение рабочего процесса деактивируется для ресурса — например, с помощью ручного вызова API, триггер отмены, или потому, что ресурс больше не соответствует условиям рабочего процесса.
+a|* `getReason()`: Причина деактивации.
 
 |`WorkflowRestartedEvent`
-|Fired when a workflow execution is restarted from the beginning for a resource.
-|None — uses only the common fields.
+|Уголен при перезапуске рабочего процесса с самого начала для ресурса.
+|Нет — использует только общие поля.
 
 |`WorkflowStepScheduledEvent`
-|Fired when a workflow step is scheduled for future execution (i.e., the step has an `after` delay).
-a|* `getStepId()`: The ID of the scheduled step.
-* `getStepProviderId()`: The provider ID of the step (e.g., `disable-user`).
-* `getScheduledTime()`: The time the step is scheduled to execute, in milliseconds since epoch.
-* `getDelay()`: The delay duration string (e.g., `PT5M` for 5 minutes).
+|Ужас, когда запланирован шаг рабочего процесса для будущего выполнения (то есть у шага есть задержка `after`).
+a|* `getStepId()`: ID запланированного шага.
+* `getStepProviderId()`: ID провайдера шага (например, `disable-user`).
+* `getScheduledTime()`: Время выполнения шага в миллисекундах с эпохи.
+* `getDelay()`: Строка длительности (например, `PT5M` на 5 минут).
 
 |`WorkflowStepExecutedEvent`
-|Fired when a workflow step completes successfully.
-a|* `getStepId()`: The ID of the executed step.
-* `getStepProviderId()`: The provider ID of the step.
+|Увеличение, когда рабочий процесс успешно завершается.
+a|* `getStepId()`: ID выполненного шага.
+* `getStepProviderId()`: ID провайдера шага.
 
 |`WorkflowStepFailedEvent`
-|Fired when a workflow step execution fails.
-a|* `getStepId()`: The ID of the failed step.
-* `getStepProviderId()`: The provider ID of the step.
-* `getErrorMessage()`: The error message from the failure.
+|Ужас, когда не удалось выполнить шаг выполнения рабочего процесса.
+a|* `getStepId()`: ID неудачного шага.
+* `getStepProviderId()`: ID провайдера шага.
+* `getErrorMessage()`: Сообщение об ошибке.
 
 |`WorkflowResourceMigratedEvent`
-|Fired when resources are migrated from one workflow (or step) to another using the migration API.
-a|* `getSourceWorkflowId()` / `getSourceWorkflowName()`: The source workflow.
-* `getDestinationWorkflowId()` / `getDestinationWorkflowName()`: The destination workflow.
-* `getSourceStepId()` / `getSourceStepProviderId()`: The source step.
-* `getDestinationStepId()` / `getDestinationStepProviderId()`: The destination step.
-* `getOldExecutionId()` / `getNewExecutionId()`: The execution IDs from the source and destination workflows.
+|Указывается, когда ресурсы мигрируются из одного рабочего процесса (или шага) на другой, используя API миграции.
+a|* `getSourceWorkflowId()` / `getSourceWorkflowName()`: Исходный рабочий процесс.
+* `getDestinationWorkflowId()` / `getDestinationWorkflowName()`: целевой рабочий процесс.
+* `getSourceStepId()` / `getSourceStepProviderId()`: шаг источника.
+* `getDestinationStepId()` / `getDestinationStepProviderId()`: целевой шаг.
+* `getOldExecutionId()` / `getNewExecutionId()`: идентификаторы исполнения из исходного и целевого рабочих потоков.
 
 |`WorkflowCompletedEvent`
-|Fired when all steps of a workflow have been executed successfully and the workflow execution is complete.
-|None — uses only the common fields.
+|Вызывается, когда все шаги рабочего процесса были успешно выполнены и выполнение рабочего процесса завершено.
+|Нет — использует только общие поля.
 |===
 
-== Event lifecycle
+== Жизненный цикл события
 
-During a typical workflow execution, provider events are fired in the following order:
+Во время выполнения типичного рабочего процесса, события провайдера запускаются в следующем порядке:
 
-. `WorkflowActivatedEvent` — the workflow is activated for the resource.
-. For each step in the step chain:
-.. `WorkflowStepScheduledEvent` — if the step has an `after` delay.
-.. `WorkflowStepExecutedEvent` — when the step completes successfully.
-.. `WorkflowStepFailedEvent` — if the step fails (replaces `WorkflowStepExecutedEvent`).
-. `WorkflowCompletedEvent` — all steps completed successfully.
+. `WorkflowActivatedEvent` — рабочий процесс активирован для ресурса.
+. Для каждого шага в цепочке шагов:
+.. `WorkflowStepScheduledEvent` — если у шага задержка `after`.
+.. `WorkflowStepExecutedEvent` — когда шаг успешно завершится.
+.. `WorkflowStepFailedEvent` — если шаг завершится с ошибкой (замените `WorkflowStepExecutedEvent`).
+. `WorkflowCompletedEvent` — все шаги успешно завершены.
 
-A `WorkflowDeactivatedEvent` may replace `WorkflowCompletedEvent` if the workflow is cancelled or the resource no longer
-meets the workflow conditions. A `WorkflowRestartedEvent` may occur at any point if the workflow is restarted from the beginning
-by a restart-in-progress trigger.
+`WorkflowDeactivatedEvent` может заменить `WorkflowCompletedEvent`, если рабочий процесс отменен или ресурс больше не
+соответствует условиям рабочего процесса. `WorkflowRestartedEvent` может произойти в любой точке, если рабочий процесс перезапускается с начала
+при помощи перезапускаемого триггера.
 
-== Implementing a listener
+== Реализация слушателя
 
-To listen to workflow provider events, create a custom `EventListenerProviderFactory` that registers a `ProviderEventListener`
-with the `KeycloakSessionFactory` during initialization. The listener is packaged as a JAR and deployed to the `providers/` folder,
-then enabled in the Admin Console under *Realm Settings* -> *Events* -> *Event listeners*.
+Чтобы прослушать прослушивание событий поставщика рабочих процессов, создайте пользовательский `EventListenerProviderFactory` `ProviderEventListener`
+с `KeycloakSessionFactory` во время инициализации. Слушатель упакован в JAR и развернут в папку `providers/`,
+затем включен в консоли администратора в *Настройках реалма* -> *События* -> *Случаи слушателей событий*.
 
-The following example shows a factory that registers a listener to capture workflow events:
+Следующий пример показывает фабрику, которая регистрирует слушателя для захвата событий рабочего процесса:
 
 [source,java]
 ----
@@ -163,14 +163,14 @@ public class WorkflowAuditListenerFactory implements EventListenerProviderFactor
 }
 ----
 
-The factory must be registered as a service provider in `META-INF/services/org.keycloak.events.EventListenerProviderFactory`
-so that {project_name} discovers it when the JAR is deployed.
+Завод должен быть зарегистрирован как поставщик услуг в `META-INF/services/org.keycloak.events.EventListenerProviderFactory`
+чтобы {project_name} обнаружил его при развертывании JAR.
 
-== Use cases
+== Варианты использования
 
-Since {project_name} does not persist workflow execution history, provider events are the primary mechanism for building
-a complete audit trail of workflow activity. Common use cases include:
+Поскольку {project_name} не сохраняет историю выполнения рабочего процесса, события провайдера являются основным механизмом для построения
+полного аудита активности рабочего процесса. Общие варианты использования включают:
 
-* **Auditing and compliance**: Store workflow events in an external database to maintain a full record of workflow executions, step results, and failures.
-* **External notifications**: Send alerts (e.g., via email or messaging systems) when specific events occur, such as step failures or workflow completion.
-* **Monitoring and metrics**: Feed workflow event data into monitoring systems to track execution rates, failure rates, and step durations.
+* **Аудитория и соответствие**: Хранить события рабочего процесса во внешней базе данных, чтобы вести полную запись о выполнении рабочего процесса, промежуточных результатах и сбоях.
+* **Внешние уведомления**: Отправлять оповещения (например, через электронную почту или систему обмена сообщениями), когда возникают конкретные события, такие как пошаговые сбои или завершение рабочего процесса.
+* **Мониторинг и метрика**: данные событий рабочего процесса в системе мониторинга для отслеживания скорости выполнения и продолжительности шагов.
