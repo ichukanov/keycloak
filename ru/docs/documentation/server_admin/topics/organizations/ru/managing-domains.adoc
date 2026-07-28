@@ -1,58 +1,58 @@
-= Managing organization domains
+= Домены организации
 
-The domain associated with an organization plays an important role in how
-organization members authenticate to a realm and how their profiles are validated.
+Домен, связанный с организацией играет важную роль в том, как
+члены организации аутентифицируются в области и как проверяются их профили.
 
-One of the key roles of a domain is to help to identify the organizations where a user is a member. By looking at their
+Одна из ключевых ролей домена заключается в том, чтобы помочь выявить организации, в которых участвует пользователь. By looking at their
 email address, {project_name} will match a corresponding organization using the same domain and eventually change the
 authentication flow based on the organization requirements.
 
-The domain also allows organizations to enforce that users are not allowed to use a domain in their emails
-other than those associated with an organization. This restriction is especially useful when users, and their identities,
+Домен также позволяет организациям убедиться в том, что пользователям не разрешено использовать домен в своих письмах
+отличных от тех, которые связаны с организацией. This restriction is especially useful when users, and their identities,
 are federated from identity providers associated with an organization and you want to force a specific email domain for their email addresses.
 
-== Assigning domains
+== Присвоение доменов
 
-Domains are assigned through the *Domains* setting when creating or editing an organization. An organization can have
+Домены назначаются через параметр *Домены* при создании или редактировании организации. An organization can have
 zero, one, or multiple domains.
 
 When no domain is assigned, members are not validated against domain restrictions and email-based redirection to
 identity providers is unavailable.
 
-== Domain types
+== Типы доменов
 
-Exact:: Matches only the specified value. `example.com` matches `user@example.com` but not `user@sub.example.com`.
-Wildcard:: Prefix the base domain with `*.` to match the base domain and all its subdomains at any depth.
-`*.example.com` matches `user@example.com`, `user@sub.example.com`, and `user@deep.sub.example.com`.
+Точно:: Соответствует только указанному значению. `example.com` соответствует `user@example.com`, но не `user@sub.example.com`.
+Подстановочный знак:: Префикс базового домена с именем `*.`, чтобы он соответствовал базовому домену и всем его субдоменам.
+`*.example.com` соответствует `user@example.com`, `user@sub.example.com`, и `user@deep.sub.example.com`.
 
-== Mapping email addresses to organizations
+== Сопоставление адресов электронной почты организациям
 
 {project_name} extracts the domain from the email address, normalizes it to lowercase, and selects the best-matching
 organization using the following rules:
 
-. Matching is case-insensitive.
-. The most specific match wins, measured by the number of domain parts. For example, when resolving `user@deep.sub.example.com`:
-* `deep.sub.example.com` (4 parts, exact) wins over `*.sub.example.com` (4 parts, wildcard) and `*.example.com` (3 parts, wildcard).
-* `*.sub.example.com` (4 parts) wins over `*.example.com` (3 parts).
-. When two domains have the same number of parts, an exact match wins over a wildcard.
+. Сопоставление не чувствительно к регистру.
+. Лучше всего побеждает матч, измеряемый количеством доменных частей. Например, при разрешении `user@deep.sub.example.com`:
+* `deep.sub.example.com` (4 parts, exact) победы над `*.sub.example.com` (4 части, wildcard) и `*.example.com` (3 части, wildcard).
+* `*.sub.example.com` (4 части) выигрывает над `*.example.com` (3 части).
+. Когда два домена имеют одинаковое количество частей, точное совпадение побеждает над звездочкой.
 
 The same rules determine which domain is reported in token claims such as the `domain` claim from the
 organization membership mapper.
 
-== Validation rules
+== Правила проверки
 
-* A domain cannot be shared across organizations in the same realm.
-* Domains are stored and compared in lowercase.
-* A domain must have at least 2 parts (e.g. `example.com`). Single-part domains such as `com`, `org`, or `*.com` are rejected.
-* A domain cannot have more than 10 parts.
-* The `*.` wildcard prefix may appear only once and only at the start of the value (e.g. `sub.*.example.com` is rejected).
+* Домен не может быть передан организациям в одной и той же сфере.
+* Домены хранятся и сравниваются в нижнем регистре.
+* Домен должен иметь по крайней мере 2 части (например, `example.com`). Домены с несколькими частями, такие как `com`, `org`, или `*.com` отвергаются.
+* Домен не может иметь более 10 частей.
+* Префикс шаблона `*.` может появиться только один раз и только в начале значения (например, `sub.*.example.com` отвергнут).
 
-== Considerations
+== Соображения
 
-Prefer the most specific value:: Use an exact domain for a single, well-known address. Use a wildcard when new subdomains may appear over time and should
+Предпочитать наиболее конкретное значение:: Используйте точный домен для одного известного адреса. Use a wildcard when new subdomains may appear over time and should
 all map to the same organization.
-Overlapping domains across organizations are allowed but resolved deterministically:: An organization may own `*.example.com` while another owns `sub.example.com`. Only one organization is returned per lookup,
+Разрешены перекрывающиеся области между организациями, но детерминировано:: Организация может владеть `*.example.com`, а другая владеет `sub.example.com`. Only one organization is returned per lookup,
 always the most specific match, with exact winning over wildcard at equal specificity. Verify the intended mapping
 before relying on overlapping configurations.
-Use exact domains to model exceptions:: An organization can hold both `*.example.com` and `vip.example.com`. Addresses under `vip.example.com` resolve to the
+Использовать точные домены для моделирования исключений:: Организация может удерживать и `*.example.com` и `vip.example.com`. Addresses under `vip.example.com` resolve to the
 exact entry; all other subdomains fall back to the wildcard.
