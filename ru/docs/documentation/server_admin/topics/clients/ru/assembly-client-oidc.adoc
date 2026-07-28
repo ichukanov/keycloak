@@ -1,5 +1,5 @@
 [[_oidc_clients]]
-= Managing OpenID Connect clients
+= Управление клиентами OpenID Connect
 
 include::oidc/proc-creating-oidc-client.adoc[leveloffset=+1]
 
