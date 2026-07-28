@@ -1,45 +1,45 @@
 [[_workflow_conditions_]]
-= Defining conditions
+= Определение условий
 
 The optional `if` setting allows you to define the conditions, as expressions, that the target resource must meet in
-order for the workflow to be triggered. See <<_workflow_expression_language_>> for more details.
+order for the workflow to be triggered. Подробнее см. <<_workflow_expression_language_>>.
 
-Conditions provide fine-grained control over whether a workflow execution should be created.
-They allow you to inspect the context of the event and the state of the resource.
-For example, you can create conditions to check:
-* If a user has a specific attribute.
-* If a specific role is granted to a user or if the user is joining a specific group.
+Условия обеспечивают четкий контроль над тем, следует ли создавать выполнение рабочего процесса.
+Они позволяют вам проверить контекст события и состояние ресурса.
+Например, вы можете создать условия для проверки:
+* Если пользователь имеет определенный атрибут.
+* Если определенная роль предоставлена пользователю или если пользователь присоединяется к конкретной группе.
 
-If the condition evaluates to `true`, the workflow execution is created. If it evaluates to `false`, no workflow execution is created, even though
-the expression from the `on` setting evaluates to `true`.
+Если условие вычисляет «true», то создается выполнение рабочего процесса. Если он вычисляет в `false`, то выполнение рабочего процесса не создается, даже несмотря на то, что
+выражение из параметра `on` вычисляется в `true`.
 
-Just like the `on` setting, the condition is written using an expression that supports a variety of checks on the realm resource associated with the event.
-For instance, considering a `user_created` event, you can define a condition to trigger the workflow only if the user has a specific attribute:
+Аналогично настройке `on`, условие пишется с помощью выражения, поддерживающего различные проверки ресурсов Realm, связанных с событием.
+Например, учитывая событие `user_created`, вы можете определить условие для запуска рабочего процесса, только если пользователь имеет определенный атрибут:
 
 ```yaml
 on: user-created
 if: has-user-attribute(plan=gold)
 ```
 
-In this example, the workflow will only be triggered when a new user is created and that user has an attribute `plan` with the value `gold`.
+В этом примере рабочий процесс будет срабатывать только при создании нового пользователя и у пользователя атрибут `plan` со значением `gold`.
 
-{project_name} provides a set of built-in conditions that you can use in your workflows.
-The conditions are also based on the realm resource associated with the event.
+{project_name} предоставляет набор встроенных условий, которые можно использовать в ваших рабочих процессах.
+Условия также основываются на базе ресурсов, связанных с этим событием.
 
 [[_workflow_user_functions_]]
-== User functions
+== Функции пользователя
 
 [cols="3*", options="header"]
 |===
-|Condition
-|Description
-|Parameters
+|Состояние
+|Описание
+|Параметры
 
-|`has-user-attribute` |If the user has an attribute set. |The attribute name and optionally the attribute value using a properties format. If multiple values, they should be separated by comma. If the value is omitted, only the presence of the attribute is checked.
+|`has-user-attribute` |Если у пользователя установлен атрибут. |Название атрибута и по желанию значение атрибута с форматом свойств. Если несколько значений разделяются запятыми. Если значение отсутствует, проверяется только наличие атрибута.
 
-|`has-role` |If the user is granted with a specific role |The name of the role.
+|`has -role` |Если пользователю предоставлена определенная роль |Название роли.
 
-|`has-identity-provider-link` |If the user is linked to an identity provider. |The alias of the identity provider.
+|`has-identity-provider-link` |Если пользователь связан с провайдером идентификации. |Алиас удостоверения личности.
 
-|`is-member-of` |If the user is member of a specific group. |The name or path of the group.
+|`is-member-of` |Если пользователь является членом определенной группы. |Имя или путь к группе.
 |===
