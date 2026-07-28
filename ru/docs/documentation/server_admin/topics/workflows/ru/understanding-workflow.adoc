@@ -1,33 +1,33 @@
 [[_understanding_workflows_]]
-= Understanding workflows
+= Понимание рабочих процессов
 
-A workflow is an activity or process within {project_name} that executes a series of predefined steps on a
-specific realm resource in response to specific events and based on the defined conditions.
+Рабочий процесс - это действие или процесс внутри {project_name} , выполняющий серию предопределенных шагов в
+конкретного ресурса области в ответ на конкретные события и исходя из определенных условий.
 
-In {project_name}, there are two main types of events:
+В {project_name}есть два основных типа событий:
 
-* **User Events**: These events are initiated by users, such as login in or registering a new account.
-* **Admin Events**: These events are initiated by administrators through the Admin Console and API, such as creating or updating a user or any other realm resource.
+* **Пользовательские события**: Эти события инициируются пользователями, такими как логин или регистрация новой учетной записи.
+* **События администратора**: Эти события инициируются администраторами через консоль администратора и API, например создание или обновление пользователя или любого другого ресурса реалма.
 
 Workflows are designed to respond to these events by automating tasks and processes that need to be performed and executed on the
 realm resources associated with these events.
 
-Once an event is fired, the workflow engine evaluates all defined workflows in the realm to determine if any should be
-triggered based on the event type and the specified conditions. If the event matches the conditions defined in a workflow,
-a workflow execution is created and assigned with an identifier. The workflow execution
+После того, как событие запущено, движок рабочего процесса вычисляет все определенные рабочие процессы в области, чтобы определить, должно ли быть
+быть вызвано на основе типа события и указанных условий. Если событие соответствует условиям, определенным в рабочем процессе,
+выполнение рабочего процесса создается и назначается идентификатором. The workflow execution
 is bound to the realm resource associated with the event, and only a single instance of a workflow can be active for that
 realm resource at any given time.
 
-A realm resource can be any entity within the realm, such as a user, client, group, or a role.
-At the moment, workflows can be defined for the following realm resources:
+Ресурсом области может быть любая сущность в мире, такая как пользователь, клиент, группа или роль.
+На данный момент рабочие процессы могут быть определены для следующих ресурсов:
 
-* Users
+* Пользователи
 
-Once a workflow is active for a realm resource, its step chain is processed. The steps run sequentially, and they will
+Как только рабочий процесс активен для ресурса Realm, его цепочка шагов обрабатывается. The steps run sequentially, and they will
 run immediately or be scheduled to execute later in time, depending on each step configuration.
 Once all the steps are executed, the workflow execution is completed and the realm resource
 is no longer bound to that workflow.
 
-That is the main gist of {project_name} Workflows. There are more details and settings that can be
-configured to customize the behavior and the lifecycle of a workflow, how their instances are created, managed,
-and bound to realm resources, as well as how their steps are executed.
+Это главный герой рабочих процессов {project_name}. Есть больше деталей и настроек, которые могут быть
+настроены для настройки поведения и жизненного цикла рабочего процесса, как их экземпляры создаются, управляются,
+и привязаны к ресурсам Realm, а также к тому, как выполняются их шаги.
