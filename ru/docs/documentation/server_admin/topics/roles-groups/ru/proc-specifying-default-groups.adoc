@@ -1,9 +1,9 @@
-= Using default groups
+= Использование групп по умолчанию
 
-. Click *Realm settings* in the menu.
-. Click the *User registration* tab.
-. Click the *Default Groups* tab.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Пользовательская регистрация*.
+. Нажмите на вкладку *Default Groups*.
 +
-image:images/default-groups.png[Default groups]
+image:images/default-groups.png[Группы по умолчанию]
 
-This screenshot shows that some _default groups_ already exist.
+Этот скриншот показывает, что некоторые _группы по умолчанию_ уже существует.
