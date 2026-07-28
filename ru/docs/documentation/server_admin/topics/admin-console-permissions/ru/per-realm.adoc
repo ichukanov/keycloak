@@ -1,33 +1,33 @@
 [[_per_realm_admin_permissions]]
-=== Dedicated realm admin consoles
+=== Администрированные консоли Realm
 
-Each realm has a dedicated Admin Console that can be accessed by going to the url `{kc_admins_path}/{realm-name}/console`.
-Users within that realm can be granted realm management permissions by assigning specific user role mappings.
+У каждого реалма есть специальная консоль администратора, к которой можно получить доступ, зайдя в url `{kc_admins_path}/{realm-name}/console`.
+Пользователям этого реалма могут быть предоставлены права управления реалмами, назначая соответствующие роли пользователя.
 
-Each realm has a built-in client called `realm-management`.  You can view this client by going to the
-`Clients` left menu item of your realm.  This client defines client-level roles that specify permissions that can be granted to manage the realm.
+Каждая область имеет встроенный клиент под названием «realm-management».  You can view this client by going to the
+`Clients` left menu item of your realm.  Этот клиент определяет роли клиентского уровня, которые определяют разрешения, которые могут быть предоставлены для управления реалмом.
 
-* create-client
-* impersonation
-* manage-authorization
-* manage-clients
-* manage-events
-* manage-identity-providers
-* manage-organizations
-* manage-realm
-* manage-users
-* query-clients
-* query-groups
-* query-organizations
-* query-realms
-* query-users
-* realm-admin
-* view-authorization
-* view-clients
-* view-events
-* view-identity-providers
-* view-organizations
-* view-realm
-* view-users
+* создать-клиент
+* олицетворение
+* авторизация менеджера
+* управленческие клиенты
+* управленческие события
+* Идентификационные провайдеры
+* управляющие организации
+* управленческая область
+* управляющие пользователи
+* запросы-клиенты
+* группы запросов
+* организации-запросы
+* миры запросов
+* запросов-пользователей
+* Админ реалма
+* просмотр авторизации
+* витрина клиентов
+* просмотр событий
+* провайдеры просмотра
+* виз-организации
+* область просмотра
+* пользователи
 
-Assign the roles you want to your users and they will only be able to use that specific part of the administration console.
+Назначить роли, которые вы хотите для ваших пользователей, и они смогут использовать только эту часть консоли администрирования.
