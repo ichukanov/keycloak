@@ -1,4 +1,4 @@
-:toc: left
+:toc: слева
 :toclevels: 3
 :sectanchors:
 :linkattrs:
