@@ -1,65 +1,65 @@
-=== One Time Password (OTP) policies
+=== Политика одноразового пароля (OTP)
 
-{project_name} has several policies for setting up a FreeOTP or Google Authenticator One-Time Password generator.
+{project_name} имеет несколько политик для настройки FreeOTP или Google Authenticator One-Time Password generator.
 
-.Procedure
-. Click *Authentication* in the menu.
-. Click the *Policy* tab.
-. Click the *OTP Policy* tab.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Нажмите на вкладку *Политика*.
+. Нажмите на вкладку *OTP Policy*.
 
-image:images/otp-policy.png[OTP Policy]
+image:images/otp-policy.png[Политика OT]
 
-{project_name} generates a QR code on the OTP set-up page, based on information configured in the *OTP Policy* tab. FreeOTP and Google Authenticator scan the QR code when configuring OTP.
+{project_name} генерирует QR-код на странице настройки OTP на основе информации, настроенной на вкладке *Политика OTP*. FreeOTP и Google Authenticator сканируют QR-код при настройке OTP.
 
-==== Time-based or counter-based one time passwords
+==== Одноразовые пароли, основанные на времени или встречные
 
-The algorithms available in {project_name} for your OTP generators are time-based and counter-based.
+Алгоритмы {project_name} для ваших генераторов OTP основываются на времени и контрбазируются.
 
-With Time-Based One Time Passwords (TOTP), the token generator will hash the current time and a shared secret.  The server validates the OTP by comparing the hashes within a window of time to the submitted value.  TOTPs are valid for a short window of time.
+С помощью одноразового пароля, основанного на времени (TOTP), генератор токенов хэширует текущее время и общий секрет.  Сервер проверяет OTP, сравнивая хэши в пределах окна времени с представленным значением.  Точки действительны в течение короткого окна времени.
 
-With Counter-Based One Time Passwords (HOTP), {project_name} uses a shared counter rather than the current time. The {project_name} server increments the counter with each successful OTP login. Valid OTPs change after a successful login.
+С помощью одноразовых паролей (HOTP), {project_name} использует общий счетчик, а не текущее время. Сервер {project_name} увеличивает счетчик с каждым успешным OTP входом. Действующие OTP изменения после успешного входа.
 
-TOTP is more secure than HOTP because the matchable OTP is valid for a short window of time, while the OTP for HOTP is valid for an indeterminate amount of time. HOTP is more user-friendly than TOTP because no time limit exists to enter the OTP.
+TOTP является более безопасным, чем HOTP, так как соответствующий OTP действителен на короткое окно времени, в то время как OTP для HOTP действителен на неопределенное количество времени. Удобство HOTP больше, чем TOTP, потому что не существует временного лимита для входа в OTP.
 
-HOTP requires a database update every time the server increments the counter. This update is a performance drain on the authentication server during heavy load. To increase efficiency,  TOTP does not remember passwords used, so there is no need to perform database updates. The drawback is that it is possible to reuse TOTPs in the valid time interval.
+Для HOTP требуется обновление базы данных каждый раз, когда сервер увеличивает счетчик. Это обновление - потеря производительности сервера аутентификации при большой нагрузке. Для повышения эффективности TOTP не запоминает используемые пароли, поэтому нет необходимости в обновлении базы данных. Недостаток заключается в том, что можно повторно использовать TOTP в действительном интервале времени.
 
-==== TOTP configuration options
+==== Параметры конфигурации TOTP
 
-===== OTP hash algorithm
+===== Алгоритм хэша OTP
 
-The default algorithm is SHA1. The other, more secure options are SHA256 and SHA512.
+Алгоритм по умолчанию - SHA1. Другими вариантами защиты являются SHA256 и SHA512.
 
-===== Number of digits
+===== Количество цифр
 
-The length of the OTP.  Short OTPs are user-friendly, easier to type, and easier to remember. Longer OTPs are more secure than shorter OTPs.
+Длина ОТП.  Короткие OTP удобны, проще печатать и запоминать. Более длинные OTP более безопасны, чем более короткие OTP.
 
-===== Look around window
+===== Осмотреть окно
 
-The number of intervals the server attempts to match the hash. This option is present in {project_name} if the clock of the TOTP generator or authentication server becomes out-of-sync. The default value of 1 is adequate. For example, if the time interval for a token is 30 seconds, the default value of 1 means it will accept valid tokens in the 90-second window (time interval 30 seconds + look ahead 30 seconds + look behind 30 seconds). Every increment of this value increases the valid window by 60 seconds (look ahead 30 seconds + look behind 30 seconds).
+Количество интервалов, которое сервер пытается сопоставить с хэшами. Эта опция присутствует в {project_name} , если часы генератора TOTP или сервера аутентификации устарели. Значение 1 по умолчанию является адекватным. Например, если временной интервал для токена составляет 30 секунд, значение 1 означает, что он примет правильные токены в 90-секундном окне (интервал времени 30 секунд + взгляд впереди 30 секунд + взгляд за 30 секунд). Каждое увеличение этого значения увеличивает допустимое окно на 60 секунд (перед 30 секунд + смотрится 30 секунд).
 
-===== OTP token period
+===== Период токена OTP
 
-The time interval in seconds the server matches a hash. Each time the interval passes, the token generator generates a TOTP.
+Временной интервал в секундах, когда сервер совпадает с хэшем. Каждый раз, когда интервал передается, генератор токена генерирует TOTP.
 
-===== Reusable code
+===== Повторное использование кода
 
-Determine whether OTP tokens can be reused in the authentication process or user needs to wait for the next token.
-Users cannot reuse those tokens by default, and the administrator needs to explicitly specify that those tokens can be reused.
+Определяет, могут ли OTP токены повторно использоваться в процессе аутентификации или пользователь должен ждать следующего токена.
+Пользователи не могут повторно использовать эти токены по умолчанию, и администратору необходимо явно указать, что эти токены могут быть повторно использованы.
 
-==== HOTP configuration options
+==== Параметры конфигурации HOTP
 
-===== OTP hash algorithm
+===== Алгоритм хэша OTP
 
-The default algorithm is SHA1. The other, more secure options are SHA256 and SHA512.
+Алгоритм по умолчанию - SHA1. Другими вариантами защиты являются SHA256 и SHA512.
 
-===== Number of digits
+===== Количество цифр
 
-The length of the OTP.  Short OTPs are user-friendly, easier to type, and easier to remember. Longer OTPs are more secure than shorter OTPs.
+Длина ОТП.  Короткие OTP удобны, проще печатать и запоминать. Более длинные OTP более безопасны, чем более короткие OTP.
 
-===== Look around window
+===== Осмотреть окно
 
-The number of previous and following intervals the server attempts to match the hash. This option is present in {project_name} if the clock of the TOTP generator or authentication server become out-of-sync. The default value of 1 is adequate. This option is present in {project_name} to cover when the user's counter gets ahead of the server.
+Количество предыдущих и последующие интервалы, которые сервер пытается сопоставить с хэшами. Эта опция присутствует в {project_name} , если часы генератора TOTP или сервера аутентификации устарели. Значение 1 по умолчанию является адекватным. Эта опция присутствует в {project_name} , чтобы посмотреть, когда счетчик пользователей становится опережающим сервером.
 
-===== Initial counter
+===== Начальный счетчик
 
-The value of the initial counter.
+Значение начального счетчика.
