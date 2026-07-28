@@ -1,67 +1,67 @@
 [#conditions-in-conditional-flows]
-=== Conditions in conditional flows
+=== Условия в условных потоках
 
-As was mentioned in <<_execution-requirements, Execution requirements>>, _Condition_ executions can be only contained in _Conditional_ subflow.
-If all _Condition_ executions evaluate as true, then the _Conditional_ sub-flow acts as _Required_.
-You can process the next execution in the _Conditional_ sub-flow.
-If some executions included in the _Conditional_ sub-flow evaluate as false, then the whole sub-flow is considered as _Disabled_.
+Как упоминалось в <<_execution-requirements, Execution requirements>, _Condition_ executions can be only contained in _Conditional_ subflow.
+Если все _Условия_ выполняются вычисляются как true, то подпоток _Conditional_ действует как _Required_.
+Вы можете обработать следующее выполнение в _Conditional_ подпотоке.
+Если некоторые выполнения, включенные в _Conditional_ подпоток, вычисляются как false, то весь подпоток считается _Disabled_.
 
-==== Available conditions
+==== Доступные условия
 
-`Condition - User Role`:: This execution has the ability to determine if the user has a role defined by _User role_ field.
-If the user has the required role, the execution is considered as true and other executions are evaluated.
-The administrator has to define the following fields:
-Alias::: Describes a name of the execution, which will be shown in the authentication flow.
-User role::: Role the user should have to execute this flow.
-To specify an application role the syntax is `appname.approle` (for example `myapp.myrole`).
-`Condition - User Configured`:: This checks if the other executions in the flow are configured for the user.
-The Execution requirements section includes an example of the OTP form.
-`Condition - User Attribute`:: This checks if the user has set up the required attribute: optionally, the check can also evaluate the group attributes.
-There is a possibility to negate output, which means the user should not have the attribute.
-The <<user-profile,User Attributes>> section shows how to add a custom attribute.
-You can provide these fields:
-Alias::: Describes a name of the execution, which will be shown in the authentication flow.
-Attribute name::: Name of the attribute to check.
-Expected attribute value::: Expected value in the attribute.
-Include group attributes::: If On, the condition checks if any of the joined group has one attribute matching the configured name and value: this option can affect performance
-Negate output::: You can negate the output.
-In other words, the attribute should not be present.
-`Condition - sub-flow executed`:: The condition checks if a previous sub-flow was successfully executed (or not executed) in the authentication process. Therefore, the flow can trigger other steps based on a previous sub-flow termination. These configuration fields exist:
-Flow name::: The sub-flow name to check if it was executed or not executed. Required.
-Check result::: When the condition evaluates to true. If `executed` returns true when the configured sub-flow was executed with output success, false otherwise. If `not-executed` returns false when the sub-flow was executed with output success, true otherwise (the negation of the previous option).
-`Condition - client scope`:: The condition to evaluate if a configured client scope is present as a client scope of the client requesting authentication. These configuration fields exist:
-Client scope name::: The name of the client scope, which should be present as a client scope of the client, which is requesting authentication. If requested client scope is default client scope of the client requesting login, the condition will be evaluated to true. If requested client scope is optional client scope of the client requesting login, condition will be evaluated to true if client scope is sent by the client in the login request (for example, by the `scope` parameter in case of OIDC/OAuth2 client login). Required.
-Negate output::: Apply a NOT to the check result. When this is true, then the condition will evaluate to true just if configured client scope is not present.
-`Condition - credential`:: This condition evaluates if a specific credential type has been used (or not used) by the user during the authentication process. Configuration options:
-Credentials::: The list of credentials to be considered by the condition.
-Included::: If *included* is true, the condition will be evaluated to `true` when any of the credentials specified in the *credentials* option has been used in the authentication process, false otherwise. If *included* is false, the condition is evaluated in the opposite way, it will be `true` if none of the *credentials* configured have been used, and `false` if one or more of them have been used.
+`Состояние - роль пользователя`:: Это выполнение имеет возможность определить, имеет ли пользователь роль, определенную полем _User role_.
+Если у пользователя есть необходимая роль, то выполнение считается верным, и оцениваются другие выполнения.
+Администратор должен определить следующие поля:
+Alias::: Описывает имя выполнения, которое будет показано в потоке аутентификации.
+Роль пользователя::: Роль, которую пользователь должен выполнить для этого потока.
+Для указания роли приложения синтаксис `appname.approle` (например, `myapp.myrole`).
+`Состояние - Конфигурация пользователя`:: Это проверяет, настроены ли другие выполненные в процессе работы для пользователя.
+Раздел «Требования к исполнению» содержит пример формы OTP.
+«Условие - атрибут пользователя»:: Это проверяет, создал ли пользователь необходимый атрибут: опционально проверка может также оценивать атрибуты группы.
+Существует возможность отрицать выход, что означает, что пользователь не должен иметь атрибут.
+Раздел <<user-profile,User Attributes>> показывает, как добавить пользовательский атрибут.
+Вы можете задать эти поля:
+Alias::: Описывает имя выполнения, которое будет показано в потоке аутентификации.
+Название атрибута::: Имя атрибута для проверки.
+Ожидаемое значение атрибута::: Ожидаемое значение атрибута.
+Включить атрибуты группы::: Если включено, условие проверяет, имеет ли один атрибут объединенной группы, соответствующий настроенному имени и значению: эта опция может повлиять на производительность
+Отрицать вывод::: Вы можете отказаться от вывода.
+Другими словами, атрибут не должен присутствовать.
+`Состояние - выполняется подпоток`:: Условие проверяет, был ли предыдущий подпоток успешно исполнен (или не выполнен) в процессе аутентификации. Таким образом, поток может инициировать другие шаги, основанные на предыдущем подпотоке. Эти поля конфигурации существуют:
+Имя потока::: Имя подпроцесса для проверки, было ли выполнено или не выполнено. Обязательно.
+Результат проверки::: Когда условие вычисляется до истины. Если `executed` возвращает true, когда настроенный подпоток был выполнен с успехом вывода, false в противном случае. Если `not-executed` возвращает false, когда подпоток был выполнен с успехом вывода, true (отрицание предыдущей опции).
+`Состояние - область клиента`:: Условие для определения того, присутствует ли сконфигурированная область деятельности клиента как клиентская область клиента, запрашивающего аутентификацию. Эти поля конфигурации существуют:
+Название области действия клиента::: Имя области клиента, которая должна присутствовать как область клиента, запрашивающего аутентификацию. Если запрашиваемая область клиента является рамкой клиента клиента по умолчанию, то условие будет вычислено до истины. Если запрашиваемая область клиента является необязательной для клиента область для клиента, запрашивающего вход, условие будет выверено в true, если область действия клиента посылается клиентом в запросе на вход (например, по параметру `scope` в случае входа клиента OIDC/OAuth2). Обязательно.
+Отрицать вывод::: Применить НЕ к результатам проверки. Если это правда, то условие будет определяться только в том случае, если настроенная область действия клиента не присутствует.
+`Состояние - учетные данные`:: Это условие проверяет, был ли использован (или не используется) пользователем в процессе аутентификации. Параметры конфигурации:
+Полномочия::: Список полномочий, подлежащих рассмотрению в соответствии с условием.
+Включено::: Если *включено* истинно, условие будет вычисляться в `true`, если в процессе аутентификации используется любая из учётных данных, указанных в опции *credentials*, ложь в противном случае. Если *включено* является ложным, условие считается противоположным, это будет `true`, если никто из *учётных данных* не был использован и `false`, если один или несколько из них были использованы.
 
-==== Explicitly deny/allow access in conditional flows
+==== Ясно запретить или разрешить доступ в условиях потоков
 
-You can allow or deny access to resources in a conditional flow.
-The two authenticators `Deny Access` and `Allow Access` control access to the resources by conditions.
+Вы можете разрешить или запретить доступ к ресурсам при условном потоке.
+Два аутентификатора «Запретить доступ» и «Разрешить доступ» доступ к ресурсам по условиям.
 
-`Allow Access`:: Authenticator will always successfully authenticate.
-This authenticator is not configurable.
-`Deny Access`:: Access will always be denied.
-You can define an error message, which will be shown to the user.
-You can provide these fields:
-Alias::: Describes a name of the execution, which will be shown in the authentication flow.
-Error message::: Error message which will be shown to the user.
-The error message could be provided as a particular message or as a property in order to use it with localization.
-(i.e. "_You do not have the role 'admin'._", _my-property-deny_ in messages properties)
-Leave blank for the default message defined as property `access-denied`.
+`Разрешить доступ`:: Аутентификатор всегда будет успешно аутентифицирован.
+Этот аутентификатор не настраивается.
+«Запретить доступ»:: Доступ всегда будет запрещен.
+Вы можете определить сообщение об ошибке, которое будет показано пользователю.
+Вы можете задать эти поля:
+Alias::: Описывает имя выполнения, которое будет показано в потоке аутентификации.
+Сообщение об ошибке::: Сообщение об ошибке, которое будет показано пользователю.
+Сообщение об ошибке может быть предоставлено как сообщение или как свойство для использования с локализацией.
+(то есть "_Вы не имеете роли 'admin'._", _my-property-deny_ в свойствах сообщений)
+Оставьте пустым для сообщения по умолчанию, определяемого как свойство `access-denied`.
 
-Here is an example how to deny access to all users who do not have the role `role1` and show an error message defined by a property `deny-role1`.
-This example includes `Condition - User Role` and `Deny Access` executions.
+Вот пример, как запретить доступ всем пользователям, которые не имеют роли `role1` и показать сообщение об ошибке, определенное свойством `deny-role1`.
+Этот пример включает в себя `Condition - User Role` и `Deny Access`.
 
-image:images/deny-access-flow.png[Deny access flow]
+image:images/deny-access-flow.png[Запретить потоку доступа]
 
-image:images/deny-access-role-condition.png[Deny access role settings]
+image:images/deny-access-role-condition.png[Запретить настройки роли доступа]
 
-image:images/deny-access-execution-cond.png[Deny access execution settings]
+image:images/deny-access-execution-cond.png[Запретить выполнение настроек]
 
-The last thing is defining the property with an error message in the login theme `messages_en.properties` (for English):
+Последнее - это определение свойства с сообщением об ошибке в теме `messages_ru.properties` (на английском языке):
 
 [source]
 ----
@@ -69,37 +69,37 @@ deny-role1 = You do not have required role!
 ----
 
 [#twofa-conditional-workflow-examples]
-==== 2FA conditional workflow examples
+==== Примеры условного рабочего процесса 2FA
 
-The section presents some examples of conditional workflows that integrates 2nd Factor Authentication (2FA) in different ways. The examples copy the default `browser` flow and modify the configuration inside the `forms` sub-flow.
+В разделе приведены примеры условных рабочих процессов, которые интегрируют второй фактор аутентификации (2FA) различными способами. Примеры копируют стандартный поток `browser` и изменяют конфигурацию внутри подпотока `forms`.
 
-===== Conditional 2FA sub-flow
+===== Условный подпоток 2FA
 
-The default `browser` flow uses a `Conditional 2FA` sub-flow that already gives 2nd factor Authentication (2FA) with OTP Form (One Time Password). It also provides WebAuthn and Recovery Codes but they are disabled by default. Consistent with this approach, different 2FA methods can be integrated with the `Condition - User Configured`.
+По умолчанию поток `browser` использует подпоток `Conditional 2FA`, который уже дает второй фактор аутентификации (2FA) с помощью формы OTP (One Time Password). Он также предоставляет коды WebAuthn и Recovery, но по умолчанию они отключены. В соответствии с этим подходом различные 2FA методы могут быть интегрированы в «Условие - Пользовательские настройки».
 
-image:images/2fa-example1.png[2FA all alternative]
+image:images/2fa-example1.png[2FA любая альтернатива]
 
-The `forms` sub-flow contains another `2FA` conditional sub-flow with `Condition - user configured`. Three 2FA steps (OTP, Webauthn and Recovery Codes) are allowed as alternative steps. The user will be able to choose one of the three options, if they are configured for the user. As the sub-flow is conditional, the authentication process will complete successfully if no 2FA credential is configured.
+Подпоток `forms` содержит другой условный подпоток `2FA` с `Condition - user configured`. В качестве альтернативных шагов допускаются три шага между двумя компонентами (OTP, Webauthn и Recovery Codes). Пользователь сможет выбрать один из трех вариантов, если они настроены для пользователя. Поскольку подпоток является условным, процесс аутентификации успешно завершится, если учетные данные не настроены.
 
-This configuration provides the same behavior as when you configure with the default *browser* flow with both _Disabled_ steps are configured to _Alternative_.
+Эта конфигурация обеспечивает то же поведение, что и при настройке с потоком *браузер* по умолчанию с обоими шагами _Disabled_ настроены на _Alternative_.
 
-===== Conditional 2FA sub-flow and deny access
+===== Условный 2FA подпоток и отказ в доступе
 
-The second example continues the previous one. After the `2FA` sub-flow, another flow `Deny access if no 2FA` is used to check if the previous `2FA` was not executed. In that case (the user has no 2FA credential configured) the access is denied.
+Второй пример остается прежним. После подпотока `2FA` другой поток `Запретить доступ, если нет 2FA` используется для проверки не выполнялся ли предыдущий файл `2FA`. В этом случае (пользователь не имеет настроенных учетных данных 2FA) доступ запрещен.
 
-image:images/2fa-example2.png[2FA all alternative and deny access]
+image:images/2fa-example2.png[2FA все альтернативные и запретить доступ]
 
-The `Condition - sub-flow executed` is configured to detect if the `2FA` sub-flow was not executed previously.
+`Condition - sub-flow executed` настроен на определение не выполнялся ли подпоток `2FA` ранее.
 
-image:images/2fa-example2-config.png[Configuration for the sub-flow executed]
+image:images/2fa-example2-config.png[Конфигурация для выполненного подпотока]
 
-The step `Deny access` denies the authentication if not executed.
+Шаг «Запретить доступ» отрицает аутентификацию, если не выполняется.
 
 [[_conditional-2fa-otp-default]]
-===== Conditional 2FA sub-flow with OTP default
+===== Условный 2FA подпоток с OTP по умолчанию
 
-The last example is very similar to the previous one. Instead of denying the access, step `OTP Form` is configured as required.
+Последний пример очень похож на предыдущий. Вместо отказа в доступе, шаг «OTP формат» сконфигурирован по необходимости.
 
-image:images/2fa-example3.png[2FA all alternative with OTP default]
+image:images/2fa-example3.png[2FA все альтернативы по умолчанию OTP]
 
-With this flow, if the user has none of the 2FA methods configured, the OTP setup will be enforced to continue the login.
+С этим потоком, если у пользователя нет настроенных методов 2FA, настройки OTP будут принудительными, чтобы продолжить вход.
