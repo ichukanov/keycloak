@@ -1,57 +1,57 @@
 [id="proc-managing-groups_{context}"]
-= Groups
+= Группы
 
-To manage groups, click *Groups* in the menu.
+Чтобы управлять группами, нажмите *Группы* в меню.
 
 image:images/groups.png[]
 
-Groups are hierarchical. A group can have multiple subgroups but a group can have only one parent. Subgroups inherit the attributes and role mappings from their parent. Users inherit the attributes and role mappings from their parent as well.
+Группы являются иерархическими. Группа может иметь несколько подгрупп, но группа может иметь только один родитель. Подгруппы наследуют атрибуты и сопоставления ролей их родителей. Пользователи также наследуют атрибуты и сопоставления ролей от их родителей.
 
-If you have a parent group and a child group, and a user that belongs only to the child group, the user in the child group inherits the attributes and role mappings of both the parent group and the child group.
+Если у вас есть родительская группа и дочерняя группа и пользователь, который принадлежит только дочерней группе, пользователь в дочерней группе наследует атрибуты и сопоставления ролей как родительской группы, так и дочерней группы.
 
-The hierarchy of a group is sometimes represented using the group path. The path is the complete list of names that represents the hierarchy of a specific group, from top to bottom and separated by slashes `/` (similar to files in a File System). For example a path can be `/top/level1/level2` which means that `top` is a top level group and is parent of `level1`, which in turn is parent of `level2`. This path represents unambiguously the hierarchy for the group `level2`.
+Иногда иерархия группы указывается по пути к группе. Путь - полный список имен, представляющих иерархию конкретной группы, сверху внизу и разделенные косой чертой `/` (схоже с файлами в файловой системе). Например, путь может быть `/top/level1/level2` означает, что `top` является группой верхнего уровня и является родительской частью `level1`, которая в свою очередь является родителем `level2`. Этот путь однозначно обозначает иерархию группы «level2».
 
-Because of historical reasons {project_name}, does not escape slashes in the group name itself. Therefore a group named `level1/group` under `top` uses the path `/top/level1/group`, which is misleading. {project_name} can be started with the option `+--spi-group--jpa--escape-slashes-in-group-path+` to `true` and then the slashes in the name are escaped with the character `~`. The escape char marks that the slash is part of the name and has no hierarchical meaning. The previous path example would be `/top/level1~/group` when escaped.
+По историческим причинам {project_name}не избегает слешей в самом названии группы. Поэтому группа названа `level1/group` под `top` использует путь `/top/level1/group`, который вводит в заблуждение. {project_name} может быть запущен с опцией `+--spi-group--jpa--escape-slashes-in-group-path+` к `true`, а затем слэш в имени слэш с символом `~`. Управляющие чары отмечают, что косой черт является частью названия и не имеет иерархического значения. Предыдущим примером пути будет `/top/level1~/group` при экране.
 
 [source,bash]
 ----
 bin/kc.[sh|bat] start --spi-group--jpa--escape-slashes-in-group-path=true
 ----
 
-The following example includes a top-level *Sales* group and a child *North America* subgroup.
+Ниже приведен пример группы «Продажи» верхнего уровня и подгруппы «Северная Америка».
 
-To add a group:
+Чтобы добавить группу:
 
-. Click the group.
-. Click *Create group*.
-. Enter a group name.
-. Click *Create*.
-. Click the group name.
+. Нажмите на группу.
+. Нажмите *Создать группу*.
+. Введите название группы.
+. Нажмите *Создать*.
+. Нажмите на название группы.
 +
-The group management page is displayed.
+Отображается страница управления группами.
 +
 image:images/group.png[]
 
-Attributes and role mappings you define are inherited by the groups and users that are members of the group.
+Атрибуты и сопоставления ролей унаследованы группами и пользователями, входящими в группу.
 
-To add a user to a group:
+Чтобы добавить пользователя в группу:
 
-. Click *Users* in the menu.
-. Click the user that you want to perform a role mapping on. If the user is not displayed, click *View all users*.
-. Click *Groups*.
-. Click *Join Group*.
-. Select a group from the dialog.
-. Select a group from the *Available Groups* tree.
-. Click *Join*.
+. Нажмите *Пользователи* в меню.
+. Нажмите на пользователя, на который вы хотите сопоставить роли. Если пользователь не отображается, нажмите *Просмотреть всех пользователей*.
+. Нажмите *Группы*.
+. Нажмите *Присоединиться к группе*.
+. Выберите группу из диалогового окна.
+. Выберите группу из *Доступных групп*.
+. Нажмите *Присоединиться*.
 +
 image:images/user-groups.png[]
 
-To remove a group from a user:
+Чтобы удалить группу из пользователя:
 
-. Click *Users* in the menu.
-. Click the user to be removed from the group.
-. Click *Leave* on the group table row.
+. Нажмите *Пользователи* в меню.
+. Нажмите на пользователя для удаления из группы.
+. Нажмите *Выйти* на строке таблицы группы.
 
-In this example, the user _jimlincoln_ is in the _North America_ group.  You can see _jimlincoln_ displayed under the *Members* tab for the group.
+В этом примере пользователь _jimlincoln_ находится в группе _Северной Америки_.  Вы можете увидеть _jimlincoln_ во вкладке *Участники* для группы.
 
 image:images/group-membership.png[]
