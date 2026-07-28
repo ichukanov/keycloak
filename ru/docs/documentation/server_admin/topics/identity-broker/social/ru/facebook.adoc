@@ -1,35 +1,35 @@
 [[_facebook]]
 ==== Facebook
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *Facebook*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Facebook*.
 +
-image:images/facebook-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, open the https://developers.facebook.com/[Meta for Developers].
-.. Click *My Apps*.
-.. Select *Create App*.
+image:images/facebook-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера откройте https://developers.facebook.com/[Meta for Developers].
+.. Нажмите *Мои приложения*.
+.. Выберите *Создать приложение*.
 +
-image:images/meta-add-use-case.png[Add a use case]
-.. Select *Other*.
+image:images/meta-add-use-case.png[Добавить вариант использования]
+.. Выберите *Другое*.
 +
-image:images/meta-select-app-type.png[Select an app type]
-.. Select *Consumer*.
+image:images/meta-select-app-type.png[Выберите тип приложения]
+.. Выберите *потребитель*.
 +
-image:images/meta-create-app.png[Create an app]
-.. Fill in all required fields.
-.. Click *Create app*. Meta then brings you to the dashboard.
+image:images/meta-create-app.png[Создать приложение]
+.. Заполните все обязательные поля.
+.. Нажмите *Создать приложение*. Мета затем перенесет вас на панель управления.
 +
-image:images/meta-add-product.png[Add Product]
-.. Click *Set Up* in the *Facebook Login* box.
-.. Select *Web*.
-.. Enter the *Redirect URI's* value into the *Site URL* field and click *Save*.
-.. In the navigation panel, select *App settings* - *Basic*.
-.. Click *Show* in the *App Secret* field.
-.. Note the *App ID* and the *App Secret*.
-. Enter the https://developers.facebook.com/documentation/facebook-login/guides/access-tokens[`App ID` and `App Secret`] values from your Facebook app into the *Client ID* and *Client Secret* fields in {project_name}.
-. Click *Add*
-. Enter the required scopes into the *Default Scopes* field. By default, {project_name} uses the *email* scope. See https://developers.facebook.com/docs/graph-api[Graph API] for more information about Facebook scopes.
+image:images/meta-add-product.png[Добавить продукт]
+.. Нажмите *Установить вверх* в окне *Вход в Facebook.
+.. Выберите *Web*.
+.. Введите значение *Redirect URI * в поле *URL сайта* и нажмите *Сохранить*.
+.. На панели навигации выберите *Настройки Приложения* - *Основное*.
+.. Нажмите *Показать* в поле *App Secret*.
+.. Обратите внимание на *App ID* и *App Secret*.
+. Введите значения https://developers.facebook.com/documentation/facebook-login/guides/access-tokens[`App ID` и `App Secret`] из вашего Facebook приложения в поля *Client ID* и *Client Secret* в {project_name}.
+. Нажмите *Добавить*
+. Введите требуемые области в поле *По умолчанию*. По умолчанию {project_name} использует область *email*. Смотрите https://developers.facebook.com/docs/graph-api[Graph API] для получения дополнительной информации о рамках Facebook.
 
-{project_name} sends profile requests to `graph.facebook.com/me?fields=id,name,email,first_name,last_name` by default. The response contains the id, name, email, first_name, and last_name fields only. To fetch additional fields from the Facebook profile, add a corresponding scope and add the field name in the `Additional user's profile fields` configuration option field.
+{project_name} отправляет запросы профиля на `graph.facebook.com/me?fields=id,name,email,first_name,last_name` по умолчанию. Ответ содержит только идентификатор, имя, email, имя, имя, и фамилию. Чтобы получить дополнительные поля из Facebook профиля, добавьте соответствующие области и добавьте имя поля в поле конфигурации `Дополнительный пользовательский профиль`.
