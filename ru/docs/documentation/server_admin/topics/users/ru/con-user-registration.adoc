@@ -5,37 +5,37 @@
 // server_admin/topics/users.adoc
 
 [id="con-user-registration_{context}"]
-= Allowing users to self-register
+= Разрешить пользователям саморегистрацию
 
 [role="_abstract"]
-You can use {project_name} as a third-party authorization server to manage application users, including users who self-register. If you enable self-registration, the login page displays a registration link so that user can create an account.
+Вы можете использовать {project_name} в качестве стороннего сервера авторизации для управления пользователями приложений, включая пользователей, которые самостоятельно зарегистрировались. Если вы включите саморегистрацию, на странице входа отображается ссылка регистрации, чтобы пользователь мог создать учетную запись.
 
 image:images/registration-link.png[]
 
-A user must add profile information to the registration form to complete registration. The registration form can be customized by removing or adding the fields that must be completed by a user.
+Пользователь должен добавить данные профиля в регистрационную форму для завершения регистрации. Форма регистрации может быть настроена путем удаления или добавления полей, которые должны быть заполнены пользователем.
 
-Even when self-registrations is disabled, new users can be still added to {project_name} by either:
+Даже если саморегистрации отключены, новые пользователи могут быть добавлены в {project_name} либо:
 
-* Administrator can add new users with the usage of admin console (or admin REST API)
-* When identity brokering is enabled, new users authenticated by identity provider may be automatically added/registered in {project_name} storage.
-See the <<_identity_broker_first_login, First login flow section in the Identity Brokering chapter>> for more information.
+* Администратор может добавлять новых пользователей с использованием консоли администратора (или администратора REST API)
+* При включении идентифицирующей брокерской услуги новые пользователи, авторизованные провайдером идентификации могут быть автоматически добавлены/зарегистрированы в хранилище {project_name}.
+Смотрите <<_identity_broker_first_login, раздел Первого потока входа в систему в главе Identity Brokering >> .
 
-Also users coming from the <<_user-storage-federation, 3rd-party user storage>> (for example LDAP) are automatically available in {project_name} when the particular user storage is enabled
+Также пользователи, пришедшие из <_user-storage-federation, сторонние хранилища>> (например, LDAP) автоматически доступны в {project_name} , если включено определенное пользовательское хранилище
 
-When self-registrations is enabled together with *Verify email* realm switch, then password will not be set by default
-on the registration form. User will need first to verify his email and he will be able to setup his password on the subsequent screen. This is recommended
-for security reason, so that self-registered user can set his password or other credentials after verifying email. Note it is also recommended
-to enable <<enabling-forgot-password, Forget password>>, so that if user fails to verify his email during self-registration, he can do it later by following
-*Forget password* flow without being stuck.
+При включенной саморегистрации вместе с переключателем области *Проверьте почту* по электронной почте, пароль не будет установлен по умолчанию
+в регистрационной форме. Пользователю сначала нужно будет подтвердить свой адрес электронной почты, и он сможет установить свой пароль на следующем экране. Рекомендуется
+по соображениям безопасности, чтобы зарегистрированный пользователь после проверки электронной почты мог установить свой пароль или другие учетные данные. Обратите внимание, что также рекомендуется
+включить <<enabling-forgot-password, Forget password>>, так что если пользователь не сможет проверить свой адрес электронной почты при саморегистрации, он может сделать это позже, подписавшись на
+*Забыли пароль* поток, не будучи застрявшим.
 
 If you still prefer to keep password on the initial registration form and make email verification to be done once user self-registers with his password, you can
-setup the configuration option on the <<_authentication-flows,Registration authentication flow>>. It can be done in the admin console by following tab *Authentication* ->
-flow *registration* (or other flow, which you bind as registration flow) -> Settings of *Password validation* -> Enable *Always set password on register form*.
+setup the configuration option on the <<_authentication-flows,Registration authentication flow>>. Это можно сделать в консоли администратора, следуя закладке *Authentication* ->
+поток *регистрации* (или другой поток, , который вы привязываете как регистрационный процесс) -> Настройки *проверки паролей* -> Включить *Всегда устанавливать пароль при регистрации.
 
-Note that this option is deprecated and exists mostly for the backwards compatibility. It may be removed in the future.
+Заметьте, что эта опция устарела и существует в основном для обратной совместимости. Она может быть удалена в будущем.
 
 image:images/registration-always-set-password-on-register-form-config.png[]
 
 [role="_additional-resources"]
-.Additional resources
-* For more information on customizing user registration, see the link:{developerguide_link}[{developerguide_name}].
+.Дополнительные ресурсы
+* Дополнительную информацию о настройке регистрации пользователей см. по ссылке:{developerguide_link}[{developerguide_name}].
