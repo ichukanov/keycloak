@@ -1,7 +1,7 @@
-=== Host
+=== Хост
 
-{project_name} uses the public hostname in several ways, such as within token issuer fields and URLs in password reset emails.
+{project_name} использует публичное имя хоста несколькими способами, например, в полях создателя токена и URL-адреса в письмах для сброса пароля.
 
-By default, the hostname derives from request headers. No validation exists to ensure a hostname is valid. If you are not using a load balancer, or proxy, with {project_name} to prevent invalid host headers, configure the acceptable hostnames.
+По умолчанию имя хоста происходит от заголовков запроса. Проверка не существует, чтобы убедиться, что имя хоста является допустимым. Если вы не используете балансировщик нагрузки или прокси, с {project_name} для предотвращения некорректных заголовков хостов, настройте допустимые имена хостов.
 
-The hostname's Service Provider Interface (SPI) provides a way to configure the hostname for requests. You can use this built-in provider to set a fixed URL for frontend requests while allowing backend requests based on the request URI. If the built-in provider does not have the required capability, you can develop a customized provider.
+Интерфейс провайдера (SPI) узла предоставляет возможность конфигурировать имя хоста для запросов. Вы можете использовать этот встроенный провайдер для установки фиксированного URL-адреса для запросов фронтенда при разрешении backend запросов на основе URI запроса. Если встроенный провайдер не имеет необходимых возможностей, вы можете разработать индивидуальный провайдер.
