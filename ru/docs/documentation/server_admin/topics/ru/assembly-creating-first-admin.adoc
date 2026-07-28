@@ -1,23 +1,23 @@
 [id="creating-first-admin_{context}"]
-== Creating the first administrator
+== Создание первого администратора
 
-After installing {project_name}, you need an administrator account that can act as a _super_ admin with full permissions to manage {project_name}. With this account, you can log in to the {project_name} Admin Console where you create realms and users and register applications that are secured by {project_name}.
+После установки {project_name}вам нужна учетная запись администратора, которая может действовать как администратор _super_ с полными разрешениями на управление {project_name}. С этим счетом вы можете войти в консоль {project_name} администратора, где вы создаете области и пользователи и регистрируете приложения, защищенные {project_name}.
 
-=== Creating the account on the local host
+=== Создание учетной записи на локальном хосте
 
-If your server is accessible from `localhost`, perform these steps.
+Если ваш сервер доступен с 'localhost', выполните эти шаги.
 
-.Procedure
-. In a web browser, go to the http://localhost:8080{kc_base_path} URL.
-. Supply a username and password that you can recall.
+.Процедура
+. В веб-браузере перейдите на http://localhost:8080{kc_base_path} URL.
+. Введите имя пользователя и пароль, которые вы можете отозвать.
 +
-image:images/initial-welcome-page.png[Welcome page]
+image:images/initial-welcome-page.png[Страница приветствия]
 
-=== Creating the account remotely
+=== Создание учетной записи удаленно
 
-If you cannot access the server from a `localhost` address or just want to start {project_name} from the command line, use the `KC_BOOTSTRAP_ADMIN_USERNAME` and `KC_BOOTSTRAP_ADMIN_PASSWORD` environment variables to create an initial admin account.
+Если вы не можете получить доступ к серверу с адреса `localhost` или просто хотите запустить {project_name} из командной строки используйте переменные окружения `KC_BOOTSTRAP_ADMIN_USERNAME` и `KC_BOOTSTRAP_ADMIN_PASSWORD` для создания первоначальной учетной записи администратора.
 
-For example:
+Например:
 
 [source,bash]
 ----
