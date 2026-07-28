@@ -1,155 +1,155 @@
-=== Auditing user events
+=== Проверка событий пользователя
 
-You can record and view every event that affects users. {project_name} triggers login events for actions such as successful user login, a user entering an incorrect password, or a user account updating. By default, {project_name} does not store or display events in the Admin Console. Only the error events are logged to the Admin Console and the server’s log file.
+Вы можете записывать и просматривать все события, затрагивающие пользователей. {project_name} вызывает события входа в систему для таких действий, как успешный вход пользователя, неверный пароль или обновление учетной записи пользователя. По умолчанию {project_name} не сохраняет и не отображает события в консоли администратора. Только события ошибок регистрируются в консоли администратора и в журнале сервера.
 
-Use this procedure to start auditing user events.
+Используйте эту процедуру для начала аудита событий пользователя.
 
-. Click *Realm settings* in the menu.
-. Click the *Events* tab.
-. Click the *User events settings* tab.
-. Toggle *Save events* to *ON*.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *События*.
+. Нажмите на вкладку *Настройки событий* пользователя.
+. Включите *Сохранить события* в *ВКЛЮЧЕНИЕ*.
 +
-image:images/user-events-settings.png[User events settings]
-. Specify the length of time to store events in the *Expiration* field.
-. Click *Add saved types* to see other events you can save.
+image:images/user-events-settings.png[Настройки событий]
+. Укажите длину времени хранения событий в поле *Истечение*.
+. Нажмите *Добавить сохраненные типы*, чтобы увидеть другие события, которые вы можете сохранить.
 +
-image:images/add-event-types.png[Add types]
-. Click *Add*.
+image:images/add-event-types.png[Добавить типы]
+. Нажмите *Добавить*.
 
-Click *Clear user events* when you want to delete all saved events.
+Нажмите *Очистить пользовательские события*, когда хотите удалить все сохраненные события.
 
-You can now view events.
+Теперь вы можете просматривать события.
 
-. Click the *Events* tab in the menu.
+. Нажмите на вкладку *События* в меню.
 +
 image:images/user-events.png[Login Events]
-. To filter events, click *Search user event*.
+. Чтобы отфильтровать события, нажмите *Поиск события пользователя*.
 +
-image:images/search-user-event.png[Search user event]
+image:images/search-user-event.png[Поиск события пользователя]
 
-==== Event types
+==== Типы событий
 
-*Login events:*
-
-[cols="2", options="header"]
-|===
-|Event
-|Description
-
-|Login
-|A user logs in.
-
-|Register
-|A user registers.
-
-|Logout
-|A user logs out.
-
-|Code to Token
-|An application, or client, exchanges a code for a token.
-
-|Refresh Token
-|An application, or client, refreshes a token.
-|===
-
-*Brute force protection:*
+*События входа:*
 
 [cols="2", options="header"]
 |===
-|Event
-|Description
+|Событие
+|Описание
 
-|User disabled by permanent lockout
-|Brute force protection disabled the user account permanently due to too many login failures.
+|Логин
+|Логин пользователя.
 
-|User disabled by temporary lockout
-|Brute force protection disabled the user account temporarily due to too many login failures.
+|Регистрация
+|Регистрация пользователя.
+
+|Выйти
+|Пользователь выходит из системы.
+
+|Код для токена
+|Приложение или клиент обменивается кодом для токена.
+
+|Обновить токен
+|Приложение или клиент, обновляет токен.
 |===
 
-*Identity Brokering:*
+*Грубая сила:*
 
 [cols="2", options="header"]
 |===
-|Event
-|Description
+|Событие
+|Описание
 
-|Federated identity link override
-|An existing Federated identity link was overridden
+|Пользователь отключен от постоянной блокировки
+|Защита грубой силы отключила учетную запись пользователя навсегда из-за слишком большого числа неудачных попыток входа.
 
-|Federated identity link override error
-|Error occurred when trying to override an existing Federated identity link
+|Пользователь отключен по временной блокировке
+|Защита грубой силы отключила учетную запись пользователя временно из-за слишком большого числа неудачных попыток входа.
 |===
 
-*OAuth:*
+*Идентификационный брокер:*
 
 [cols="2", options="header"]
 |===
-|Event
-|Description
+|Событие
+|Описание
 
-|OAuth2 extension grant
-|OAuth2 grant was executed
+|Переопределение идентификационной ссылки
+|Существующая идентификационная связь была переопределена
 
-|OAuth2 extension grant error
-|Error occurred during OAuth2 grant execution
+|Ошибка переопределения идентификационной ссылки
+|Произошла ошибка при попытке переопределить существующую идентификационную ссылку
 |===
 
-*Account events:*
+*OAuth: *
 
 [cols="2", options="header"]
 |===
-|Event
-|Description
+|Событие
+|Описание
 
-|Social Link
-|A user account links to a social media provider.
+|Предоставление расширения OAuth2
+|Выполнено OAuth2 грант
 
-|Remove Social Link
-|The link from a social media account to a user account severs.
-
-|Update Email
-|An email address for an account changes.
-
-|Update Profile
-|A profile for an account changes.
-
-|Send Password Reset
-|{project_name} sends a password reset email.
-
-|Update Password (deprecated)
-|The password for an account changes.
-
-|Update Credential
-|The password or (time-based) one-time Password (OTP/TOTP) settings for an account changes.
-
-|Update TOTP (deprecated)
-|The Time-based One-time Password (TOTP) settings for an account changes.
-
-|Remove TOTP (deprecated)
-|{project_name} removes TOTP from an account.
-
-|Remove Credential
-|{project_name} removes a credential from an account.
-
-|Send Verify Email
-|{project_name} sends an email verification email.
-
-|Verify Email
-|{project_name} verifies the email address for an account.
+|Ошибка предоставления расширения OAuth2
+|Произошла ошибка во время исполнения OAuth2
 |===
 
-Each event has a corresponding error event.
+*События аккаунта:*
+
+[cols="2", options="header"]
+|===
+|Событие
+|Описание
+
+|Социальная ссылка
+|Учетная запись пользователя связана с провайдером социальных сетей.
+
+|Удалить социальную ссылку
+|Ссылка от учетной записи социальных сетей к нескольким пользователям.
+
+|Обновить Email
+|Адрес электронной почты для изменения учетной записи.
+
+|Обновить профиль
+|Профиль для изменения учетной записи.
+
+|Отправить сброс пароля
+|{project_name} отправляет письмо для сброса пароля.
+
+|Обновить пароль (устаревший)
+|Пароль для изменения учетной записи.
+
+|Обновить учетные данные
+|Пароль или настройки одноразового пароля (OTP/TOTP) для изменения учетной записи.
+
+|Обновить TOTP (устаревший)
+|Настройки одноразового пароля на основе времени (TOTP) для изменений учетной записи.
+
+|Удалить TOTP (устаревший)
+|{project_name} удаляет TOTP из учетной записи.
+
+|Удалить учетные данные
+|{project_name} удаляет учетные данные с учетной записи.
+
+|Отправить подтверждение по электронной почте
+|{project_name} отправляет письмо для подтверждения электронной почты.
+
+|Подтвердить email
+|{project_name} проверяет адрес электронной почты для учетной записи.
+|===
+
+Каждое событие имеет соответствующее событие ошибки.
 
 [[event-listener]]
-==== Event listener
+==== Слушатель событий
 
-Event listeners listen for events and perform actions based on that event. {project_name} includes two built-in listeners, the Logging Event Listener and Email Event Listener.
+Слушатели событий прослушивают события и выполняют действия, основанные на этом событии. {project_name} включает в себя два встроенных слушателя, слушателя журнала событий и список событий по электронной почте.
 
-===== The logging event listener
+===== Прослушиватель событий журнала
 
-When the Logging Event Listener is enabled, this listener writes to a log file when an error event occurs.
+Когда слушатель регистрации событий включен, слушатель записывает в файл журнала при возникновении ошибки.
 
-An example log message from a Logging Event Listener:
+Пример сообщения журнала из списка событий журнала:
 
 ----
 11:36:09,965 WARN  [org.keycloak.events] (default task-51) type=LOGIN_ERROR, realmId=master,
@@ -160,71 +160,71 @@ An example log message from a Logging Event Listener:
                     code_id=b669da14-cdbb-41d0-b055-0810a0334607, username=admin
 ----
 
-You can use the Logging Event Listener to protect against hacker bot attacks:
+Вы можете использовать обработчик событий логов для защиты от атак хакеров:
 
-. Parse the log file for the `LOGIN_ERROR` event.
-. Extract the IP Address of the failed login event.
-. Send the IP address to an intrusion prevention software framework tool.
+. Обрабатывайте файл журнала для события `LOGIN_ERROR`.
+. Извлечь IP адрес события неудачного входа.
+. Отправлять IP адрес в программный инструмент предотвращения вторжений.
 
-The Logging Event Listener logs events to the `org.keycloak.events` log category. {project_name} does not include debug log events in server logs, by default.
+Прослушиватель событий логов логов журнала `org.keycloak.events`. {project_name} не включает в журнал отладки в журналах сервера, по умолчанию.
 
-To include debug log events in server logs:
+Для включения событий журнала отладки в логи сервера:
 
-. Change the log level for the `org.keycloak.events` category
-. Change the log level used by the Logging Event listener.
+. Измените уровень журнала для категории `org.keycloak.events`
+. Изменить уровень журнала, используемый слушателем журнала событий.
 
-To change the log level used by the Logging Event listener, add the following:
+Чтобы изменить уровень журнала, используемый слушателем журнала событий, добавьте следующее:
 
 [source,bash]
 ----
 bin/kc.[sh|bat] start --spi-events-listener--jboss-logging--success-level=info --spi-events-listener--jboss-logging--error-level=error
 ----
 
-The valid values for log levels are `debug`, `info`, `warn`, `error`, and `fatal`.
+Допустимыми значениями уровней логов являются `debug`, `info`, `warn`, `error` и `fatal`.
 
-===== The Email Event Listener
+===== Прослушиватель событий
 
-The Email Event Listener sends a message to the user's email address when an event occurs and supports the following events:
+Обработчик событий Email отправляет сообщение на электронный адрес пользователя, когда произойдет событие и поддерживает следующие события:
 
-* Login Error.
-* Update Password.
-* Update Time-based One-time Password (TOTP).
-* Remove One-time Password (OTP).
-* Update Credential.
-* Remove Credential.
+* Ошибка входа.
+* Обновить пароль.
+* Обновление одноразового пароля на основе времени (TOTP).
+* Удалить одноразовый пароль (OTP).
+* Обновить учетные данные.
+* Удалить учётную запись.
 
-Below are the optional events you can configure:
+Необязательные события, которые вы можете настроить:
 
-* User disabled by permanent lockout.
-* User disabled by temporary lockout.
+* Пользователь отключен по постоянной блокировке.
+* Пользователь отключен по временной блокировке.
 
-The following conditions need to be met for an email to be sent:
+Для отправки письма необходимо выполнить следующие условия:
 
-* User has an email address.
-* User's email address is marked as verified.
+* У пользователя есть адрес электронной почты.
+* Адрес электронной почты пользователя помечен как проверенный.
 
 //-
 
-.Prerequisites
-* Realm's email settings configured.
+.Предпосылки
+* Настройки электронной почты Realm настроены.
 
-To enable the Email Listener:
+Чтобы включить список рассылки:
 
-. Click *Realm settings* in the menu.
-. Click the *Events* tab.
-. Click the *Event listeners* field.
-. Select `email`.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *События*.
+. Нажмите на поле *Слушатели событий*.
+. Выберите `email`.
 +
-image:images/event-listeners.png[Event listeners]
+image:images/event-listeners.png[listeners]
 
-You can exclude events by using the `+--spi-events-listener--email--exclude-events+` argument. For example:
+Вы можете исключить события с помощью аргумента `+--spi-events-listener--email--exclude-events+`. Например:
 
 [source,bash]
 ----
 kc.[sh|bat] --spi-events-listener--email--exclude-events=UPDATE_CREDENTIAL,REMOVE_CREDENTIAL
 ----
 
-To enable optional events, use the following command:
+Чтобы включить дополнительные события, используйте следующую команду:
 
 [source,bash]
 ----
