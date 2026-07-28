@@ -5,23 +5,23 @@
 // con-user-registration.adoc
 
 [id="proc-requiring-tac-agreement-at-registration_{context}"]
-= Requiring user to agree to terms and conditions during registration
+= Требование согласия пользователя с правилами и условиями при регистрации
 
 [role="_abstract"]
-For a user to register, you can require agreement to your terms and conditions.
+Для регистрации пользователь может потребовать согласие с вашими условиями и условиями.
 
 image:images/registration-form-with-required-tac.png[]
 
-.Prerequisite
-* User registration is enabled.
-* Terms and conditions required action is enabled.
+.Необходимые предпосылки
+* Регистрация пользователей включена.
+* Правила и условия обязательного действия включены.
 
 //-
 
-.Procedure
-. Click *Authentication* in the menu.
-Click the *Flows* tab.
-. Click the *registration* flow.
-. Select *Required* on the *Terms and Conditions* row.
+.Процедура
+. Нажмите *Authentication* в меню.
+Нажмите на вкладку *Блокировки*.
+. Нажмите на *поток регистрации*.
+. Выберите *Обязательные* в строке *Условия и Положения*.
 +
 image:images/require-tac-agreement-at-registration.png[]
