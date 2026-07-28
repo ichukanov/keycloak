@@ -1,28 +1,28 @@
 [[_workflow_expression_language_]]
-= Understanding the workflow expression language
+= Понимание языка выражения рабочего процесса
 
-Some settings from the workflow definition can be defined using a boolean expression language, the Workflow Expression Language.
-Expressions are defined using functions, operands, and logical operators. The functions available in an expression will
+Некоторые параметры из определения рабочего процесса могут быть определены с помощью языка логического выражения, языка рабочего процесса.
+Выражения определяются функциями, операторами и логическими операторами. The functions available in an expression will
 depend on the setting where it is being defined.
 
-The functions can have zero or more arguments, and they can be combined with the following logical operators and symbols to define
-complex expressions:
+Функции могут иметь нулевой или более аргументов, и они могут быть объединены со следующими логическими операторами и символами для определения сложных выражений
+:
 
 [cols="2*", options="header"]
 |===
-|Operator
-|Description
+|Оператор
+|Описание
 
-|`and` |Logical `AND`
+|`и` |Логический `AND`
 
-|`or` |Logical `OR`
+|`или` |Логический `ИЛИ`
 
-|`not` |Logical `NOT`
+|`не` |Логический `NOT`
 
-|`()` |Grouping and delimiting conditional logic
+|`()` |Группировка и разделение условной логики
 |===
 
-These examples are all valid expressions:
+Эти примеры являются допустимыми выражениями:
 
 ```yaml
 f1
@@ -31,4 +31,4 @@ not (f1 and f2)
 (f1 and f2) or f3
 ```
 
-The settings that supports expressions provide its own set of functions as you will see in the following sections.
+Настройки поддерживающие выражения предоставляют свой собственный набор функций, как вы увидите в следующих разделах.
