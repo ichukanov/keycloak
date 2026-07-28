@@ -1,10 +1,10 @@
 [[_default_roles]]
-= Using default roles
+= Использование ролей по умолчанию
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click the *User registration* tab.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Пользовательская регистрация*.
 +
-image:images/default-roles.png[Default roles]
+image:images/default-roles.png[Роли по умолчанию]
 
-This screenshot shows that some _default roles_ already exist.
+Этот скриншот показывает, что некоторые _роли_ по умолчанию уже существует.
