@@ -1,30 +1,30 @@
-== Using external storage
+== Использование внешнего накопителя
 
 [role="_abstract"]
-Organizations can have databases containing information, passwords, and other credentials. Typically, you cannot migrate existing data storage to a {project_name} deployment so {project_name} can federate existing external user databases. {project_name} supports LDAP and Active Directory, but you can also code extensions for any custom user database by using the {project_name} User Storage SPI.
+Организации могут иметь базы данных, пароли и другие учетные данные. Обычно вы не можете перенести хранилище существующих данных на развертывание {project_name} , так что {project_name} может объединить существующие внешние базы данных. {project_name} поддерживает LDAP и Active Directory, но вы можете кодировать расширения для любой пользовательской базы данных, используя SPI хранения пользователей {project_name}.
 
-When a user attempts to log in, {project_name} examines that user's storage to find that user. If {project_name} does not find the user, {project_name} iterates over each User Storage provider for the realm until it finds a match. Data from the external data storage then maps into a standard user model the {project_name} runtime consumes. This user model then maps to OIDC token claims and SAML assertion attributes.
+Когда пользователь пытается войти в систему, {project_name} проверяет хранилище этого пользователя, чтобы найти этого пользователя. Если {project_name} не находит пользователя, {project_name} итерацирует через каждого провайдера пользовательского хранилища в реалме до тех пор, пока не найдет совпадение. Данные из внешнего хранилища данных, затем сопоставляются в стандартную пользовательскую модель, потребляющую время выполнения {project_name}. После этого эта модель пользователя сопоставляет претензии токенов OIDC и атрибуты утверждения SAML.
 
-External user databases rarely have the data necessary to support all the features of {project_name}, so the User Storage Provider can opt to store items locally in {project_name} user data storage. Providers can import users locally and sync periodically with external data storage. This approach depends on the capabilities of the provider and the configuration of the provider.  For example, your external user data storage may not support OTP. The OTP can be handled and stored by {project_name}, depending on the provider.
+Внешние базы данных пользователей редко имеют данные, необходимые для поддержки всех функций {project_name}, , чтобы поставщик пользовательского хранилища мог выбрать для хранения элементов локально в хранилище пользовательских данных {project_name}. Провайдеры могут периодически импортировать пользователей локально и синхронизировать с внешним хранилищем данных. Этот подход зависит от возможностей провайдера и конфигурации провайдера.  Например, ваше внешнее хранилище данных может не поддерживать OTP. OTP может обрабатываться и храниться {project_name}, в зависимости от провайдера.
 
-=== Adding a provider
+=== Добавление провайдера
 
-To add a storage provider, perform the following procedure:
+Чтобы добавить провайдер хранения, выполните следующую процедуру:
 
-.Procedure
-. Click *User Federation* in the menu.
+.Процедура
+. Нажмите *User Federation* в меню.
 +
-image:images/user-federation.png[User federation]
-. Choose to add a *Kerberos* or *LDAP* provider
+image:images/user-federation.png[Пользовательская федерация]
+. Выберите для добавления *Kerberos* или *LDAP* провайдера
 +
-{project_name} brings you to that provider's configuration page.
+{project_name} приведёт вас к странице конфигурации этого провайдера.
 
-=== Dealing with provider failures
+=== Сбой в работе с провайдером
 
-If a User Storage Provider fails, you may not be able to log in and view users in the Admin Console. {project_name} does not detect failures when using a Storage Provider to look up a user, so it cancels the invocation. If you have a Storage Provider with a high priority that fails during user lookup, the login or user query fails with an exception and will not fail over to the next configured provider.
+Если поставщик хранилища пользователей не сможет войти в систему и просмотреть пользователей в консоли администратора. {project_name} не обнаруживает сбои при использовании провайдера хранения данных для поиска пользователя, поэтому он отменяет вызов. Если у вас есть поставщик хранилища с высоким приоритетом, который не удается во время поиска пользователя, ошибка логина или запроса пользователя с исключением и не будет прервана до следующего сконфигурированного провайдера.
 
-{project_name} searches the local {project_name} user database first to resolve users before any LDAP or custom User Storage Provider. Consider creating an administrator account stored in the local {project_name} user database in case of problems connecting to your LDAP and back ends.
+{project_name} ищет локальную базу данных пользователя {project_name} для разрешения пользователей перед любым провайдером LDAP или пользовательского хранилища. Рассмотрим вопрос о создании учетной записи администратора, хранящейся в локальной базе данных пользователя {project_name} в случае проблем с подключением к вашему LDAP и назад заканчивается.
 
-Each LDAP and custom User Storage Provider has an `enable` toggle on its Admin Console page. Disabling the User Storage Provider skips the provider when performing queries, so you can view and log in with user accounts in a different provider with lower priority. If your provider uses an `import` strategy and is disabled, imported users are still available for lookup in read-only mode.
+Каждый LDAP и пользовательский поставщик хранилища пользователей имеет переключатель `enable` на странице консоли администратора. Отключение User Storage Provider пропускает провайдера при выполнении запросов, так что вы можете просматривать и входить в систему с учётными записями пользователя другого провайдера с более низким приоритетом. Если ваш провайдер использует стратегию импорта и отключен, импортированные пользователи по-прежнему доступны для поиска в режиме только чтения.
 
-When a Storage Provider lookup fails, {project_name} does not fail over because user databases often have duplicate usernames or duplicate emails between them. Duplicate usernames and emails can cause problems because the user loads from one external data store when the admin expects them to load from another data store.
+Когда сбой поиска провайдера хранения данных, {project_name} не сваливается из-за того, что базы данных пользователей часто имеют одинаковые имена пользователей или дублируют друг друга по электронной почте. Дублирование имен пользователей и электронных писем может вызвать проблемы, потому что пользователь загружается из одного внешнего хранилища данных, когда администратор ожидает, что он загрузит их из другого хранилища.
