@@ -1,12 +1,12 @@
 [id="assembly-managing-clients_{context}"]
-== Managing OpenID Connect and SAML Clients
+== Управление OpenID Connect и SAML клиентами
 
 [role="_abstract"]
-Clients are entities that can request authentication of a user.  Clients come in two forms.
+Клиенты - это объекты, которые могут запрашивать аутентификацию пользователя.  Клиенты приходят в двух формах.
 The first type of client is an application that wants
-to participate in single sign-on.  These clients just want {project_name} to provide security for them.  The other type
-of client is one that is requesting an access token so that it can invoke other services on behalf of the authenticated user.
-This section discusses various aspects around configuring clients and various ways to do it.
+to participate in single sign-on.  Эти клиенты просто хотят, чтобы {project_name} обеспечил их безопасность.  Другой тип
+клиента, который запрашивает токен доступа, чтобы он мог вызвать другие сервисы от имени аутентифицированного пользователя.
+В этом разделе обсуждаются различные аспекты, связанные с настройкой клиентов и различными способами.
 
 include::clients/assembly-client-oidc.adoc[leveloffset=+2]
 
