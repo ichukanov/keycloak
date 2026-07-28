@@ -1,106 +1,106 @@
 [[_timeouts]]
-=== Session and token timeouts
+=== Таймаут сессии и токенов
 
-{project_name} includes control of the session, cookie, and token timeouts through the *Sessions* and *Tokens* tabs in the *Realm settings* menu.
+{project_name} включает в себя управление сессией, cookie, и токенов через вкладки *Sessions* и *Tokens* в меню *Настройки реалма*.
 
-image:images/sessions-tab.png[Sessions Tab]
+image:images/sessions-tab.png[Сессионная вкладка]
 
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
-|SSO Session Idle
-|This setting is for OIDC clients only. If a user is inactive for longer than this timeout, the user session is invalidated. This timeout value resets when clients request authentication or send a refresh token request. {project_name} adds a window of time to the idle timeout before the session invalidation takes effect. See the <<_idle_timeouts_note, note>> later in this section.
+|Закрыть SSO сеанс
+|Эта настройка предназначена только для клиентов OIDC. Если пользователь не активен длиннее этого таймаута, сеанс пользователя аннулируется. Значение таймаута сбрасывается, когда клиенты запрашивают аутентификацию или посылают запрос на обновление токена. {project_name} добавляет окно времени на время простоя до того, как действие вступает в силу. См. <<_idle_timeouts_note, note>> позже в этом разделе.
 
-|SSO Session Max
-|The maximum time before a user session expires.
+|SSO сеанс Макс
+|Максимальное время до окончания сеанса пользователя.
 
-|SSO Session Idle Remember Me
-|This setting is only available when *Remember me* is enabled and is similar to the standard SSO Session Idle configuration. Users can specify longer session idle timeouts when they click *Remember Me* when logging in. This setting is an optional configuration and, if its value is not greater than zero, it uses the same idle timeout as the SSO Session Idle configuration.
+|SSO сеанс бездействие запомнить меня
+|Этот параметр доступен только тогда, когда включен *Запомнить* и похож на стандартную конфигурацию SSO сеанса. Пользователи могут указывать более длинные таймауты простоя, когда они нажимают *Запомнить меня* при входе. Этот параметр является опциональной конфигурацией и если его значение не больше нуля, использует тот же тайм-аут бездействия, что и конфигурация SSO Сессии.
 
-|SSO Session Max Remember Me
-|This setting is only available when *Remember me* is enabled and is similar to the standard SSO Session Max. Users can specify longer sessions when they click *Remember Me* when logging in. This setting is an optional configuration and, if its value is not greater than zero, it uses the same session lifespan as the SSO Session Max configuration.
+|Максимум запомнить меня SSO
+|Этот параметр доступен только тогда, когда включен *Запомнить* и похож на стандартный SSO сеанс Макс. Пользователи могут указывать длинные сеансы, когда они нажимают *Запомнить меня* при входе в систему. Этот параметр является опциональной конфигурацией и если его значение не больше нуля, использует тот же период времени, что и конфигурация SSO Session Max .
 
-|Client Session Idle
-|Idle timeout for the client session. If the user is inactive for longer than this timeout, the client session is invalidated and the refresh token requests bump the idle timeout. This setting never affects the general SSO user session, which is unique. Note the SSO user session is the parent of zero or more client sessions, one client session is created for every different client app the user logs in. This value should specify a shorter idle timeout than the *SSO Session Idle*. Users can override it for individual clients in the *Advanced Settings* client tab. This setting is an optional configuration and, when set to zero, uses the same idle timeout in the SSO Session Idle configuration.
+|Идёт сеанс Клиента
+|Таймаут простоя для сессии клиента. Если пользователь неактивен дольше, чем этот таймаут, то сеанс клиента аннулируется и запросы токена обновления беспокоить тайм-аут простоя. Этот параметр никогда не влияет на общую сессию пользователя SSO, которая является уникальной. Обратите внимание, что сеанс пользователя SSO является родителем 0 или более клиентских сессий, сеанс одного клиента создается для каждого приложения клиента, в котором он авторизован. Это значение должно указать короткий тайм-аут простоя, чем *SSO Session Idle*. Пользователи могут переопределить его для отдельных клиентов на вкладке "Расширенные настройки"*. Эта настройка является опциональной конфигурацией, и, когда установлено значение 0, используется тот же тайм-аут бездействия в конфигурации бездействия SSO сессии.
 
-|Client Session Max
-|The maximum time for a client session and before a refresh token expires and invalidates. As in the previous option, this setting never affects the SSO user session and should specify a shorter value than the *SSO Session Max*. Users can override it for individual clients in the *Advanced Settings* client tab. This setting is an optional configuration and, when set to zero, uses the same max timeout in the SSO Session Max configuration.
+|Максимальный сеанс клиента
+|Максимальное время сессии клиента и до истечения и недействительного ключа обновления. Как и в предыдущем варианте, этот параметр никогда не влияет на сеанс пользователя SSO и должен указывать меньшее значение, чем *SSO Session Max*. Пользователи могут переопределить его для отдельных клиентов на вкладке "Расширенные настройки"*. Эта настройка является необязательной конфигурацией, и когда установлено значение нуля, используется тот же самый максимальный тайм-аут в конфигурации SSO Session Max .
 
 [[_offline-session-idle]]
 
-|Offline Session Idle
-|This setting is for <<_offline-access, offline access>>. The amount of time the session remains idle before {project_name} revokes its offline token. {project_name} adds a window of time to the idle timeout before the session invalidation takes effect. See the <<_idle_timeouts_note, note>> later in this section.
+|Простой автономный сеанс
+|Эта настройка для <<_offline-access, offline access>. Время, в течение которого сеанс простаивает до того, как {project_name} отменит его токен в автономном режиме. {project_name} добавляет окно времени на время простоя до того, как действие вступает в силу. См. <<_idle_timeouts_note, note>> позже в этом разделе.
 
 [[_offline-session-max-limited]]
 
-|Offline Session Max Limited
-|This setting is for <<_offline-access, offline access>>. If this flag is *Enabled*, Offline Session Max can control the maximum time the offline token remains active, regardless of user activity. If the flag is *Disabled*, offline sessions never expire by lifespan, only by idle. Once this option is activated, the <<_offline-session-max, Offline Session Max>> and <<_client_offline-session-max, Client Offline Session Max>> (global option at realm level) can be configured.
+|Макс. лимит автономных сессий
+|Эта настройка для <<_offline-access, offline access>. Если флаг *Включен*, Offline Session Max может контролировать максимальное время сохранения токена в автономном режиме, независимо от активности пользователя. Если флаг *Выключенный*, автономные сессии никогда не истекают по времени жизни, только на простой. После активации этой опции, можно настроить <_offline-session-max, Offline Session Max>> и <<_client_offline-session-max, Client Offline Session Max>> (глобальная опция на уровне реалма).
 
 [[_offline-session-max]]
 
-|Offline Session Max
-|This setting is for <<_offline-access, offline access>>, and it is the maximum time before {project_name} revokes the corresponding offline token. This option controls the maximum amount of time the offline token remains active, regardless of user activity.
+|Максимальный автономный сеанс
+|Этот параметр используется для <<_offline-access, offline access>, и это максимальное время, прежде чем {project_name} отменит соответствующий токен в автономном режиме. Эта опция контролирует максимальное количество времени, которое токен оффлайн остается активным, независимо от активности пользователя.
 
 [[_client_offline-session-max]]
 
-|Client Offline Session Max
-|This setting is for <<_offline-access, offline access>>, and it is the maximum time before {project_name} revokes the corresponding offline token for the client. This option controls the maximum amount of time the offline token remains active, regardless of user activity.
-Users can override it for individual clients in the *Advanced Settings* client tab.
+|Максимальный оффлайн сеанс клиента
+|Этот параметр используется для <<_offline-access, offline access>, и это максимальное время до того, как {project_name} отменяет соответствующий токен оффлайн для клиента. Эта опция контролирует максимальное количество времени, которое токен оффлайн остается активным, независимо от активности пользователя.
+Пользователи могут переопределить его для отдельных клиентов на вкладке "Расширенные настройки"*.
 
-|Login timeout
-|The total time a logging in must take. If authentication takes longer than this time, the user must start the authentication process again.
+|Таймаут входа
+|Общее время входа в систему. Если аутентификация займет больше времени, пользователь должен начать процесс аутентификации еще раз.
 
-|Login action timeout
-|The Maximum time users can spend on any one page during the authentication process.
+|Таймаут авторизации
+|Максимальное количество времени, которое пользователи могут тратить на любую страницу во время процесса аутентификации.
 |===
 
 image:images/tokens-tab.png[Tokens Tab]
 
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
-|Default Signature Algorithm
-|The default algorithm used to assign tokens for the realm.
+|Алгоритм подписи по умолчанию
+|Алгоритм по умолчанию используется для присвоения фишек для реалма.
 
 [[_revoke-refresh-token]]
 
-|Revoke Refresh Token
-|When *Enabled*, {project_name} revokes refresh tokens and issues another token that the client must use. This action applies to OIDC clients performing the refresh token flow.
+|Отозвать токен обновления
+|При *Включено*, {project_name} отменяет обновление токенов и выдает другой токен, который клиент должен использовать. Это действие применяется к OIDC клиентам, выполняющим поток токенов обновления.
 
-|Access Token Lifespan
-|When {project_name} creates an OIDC access token, this value controls the lifetime of the token.
+|Маркер доступа
+|Когда {project_name} создает токен OIDC доступа, это значение контролирует время жизни токена.
 
-|Access Token Lifespan For Implicit Flow
-|With the Implicit Flow, {project_name} does not provide a refresh token. A separate timeout exists for access tokens created by the Implicit Flow.
+|Токен доступа для связанного потока
+|С неявным Flow, {project_name} не предоставляет токен обновления. Тайм-аут существует для токенов доступа, созданного непрозрачным Flow.
 
-|Client login timeout
-|The maximum time before clients must finish the Authorization Code Flow in OIDC.
+|Таймаут входа клиента
+|Максимальное время, прежде чем клиенты должны закончить код авторизации в OIDC.
 
-|User-Initiated Action Lifespan
-|The maximum time before a user's action permission expires. Keep this value short because users generally react to self-created actions quickly.
+|Пользовательские действия Lifespan
+|Максимальное время до истечения права доступа пользователя. Держите это значение коротким, потому что пользователи обычно реагируют на самостоятельные действия быстро.
 
-|Default Admin-Initiated Action Lifespan
-|The maximum time before an action permission sent to a user by an administrator expires. Keep this value long to allow administrators to send e-mails to offline users. An administrator can override the default timeout before issuing the token.
+|Действия по умолчанию для администраторов
+|Максимальное время до истечения разрешения на действие, отправленного пользователю администратором. Держите это значение длинным, чтобы администраторы могли отправлять сообщения электронной почты в оффлайн. Администратор может переопределить тайм-аут по умолчанию перед выдачей токена.
 
-|Email Verification
-|Specifies independent timeout for email verification.
+|Проверка электронной почты
+|Задает независимый тайм-аут проверки электронной почты.
 
-|IdP account email verification
-|Specifies independent timeout for IdP account email verification.
+|Проверка электронной почты учетной записи IdP
+|Определяет независимый тайм-аут для проверки электронной почты учетной записи IdP.
 
-|Forgot password
-|Specifies independent timeout for forgot password.
+|Забыли пароль
+|Задает независимый тайм-аут для восстановления пароля.
 
-|Execute actions
-|Specifies independent timeout for execute actions.
+|Выполнить действия
+|Определяет независимый тайм-аут для выполнения действий.
 |===
 
 [[_idle_timeouts_note]]
 [NOTE]
 ====
-The following logic is only applied if persistent user sessions are not active:
+Следующая логика применяется только в том случае, если постоянные сессии пользователя не активны:
 
-For idle timeouts, a two-minute window of time exists that the session is active. For example, when you have the timeout set to 30 minutes, it will be 32 minutes before the session expires.
+Для простоя существует двухминутное окно времени, которое активно. Например, если у вас установлен тайм-аут 30 минут, то это будет 32 минуты до окончания сеанса.
 
-This action is necessary for some scenarios in cluster and cross-data center environments where the token refreshes on one cluster node a short time before the expiration and the other cluster nodes incorrectly consider the session as expired because they have not yet received the message about a successful refresh from the refreshing node.
+Это действие необходимо для некоторых сценариев в кластерной и кросс-дата-средах, где токен обновляется на один узел кластера за короткое время до истечения срока и другие кластерные узлы неправильно считают сеанс истекшим, потому что они еще не получили сообщение об успешном обновлении с узла обновления.
 ====
