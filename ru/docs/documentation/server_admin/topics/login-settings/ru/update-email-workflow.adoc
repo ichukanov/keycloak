@@ -1,79 +1,79 @@
-== Update Email Workflow (UpdateEmail)
+== Обновить рабочий процесс электронной почты (UpdateEmail)
 
-With this workflow, users will have to use an `UPDATE_EMAIL` action to change their own email address.
+С помощью этого рабочего процесса пользователям нужно будет использовать действие `UPDATE_EMAIL` для изменения собственного адреса электронной почты.
 
-This action provides a more secure and consistent flow to update user emails by requiring re-authentication and optionally requiring email verification before any update to their account.
+Это действие обеспечивает более безопасный и последовательный поток для обновления электронной почты пользователей, требуя повторной проверки электронной почты перед обновлением своей учетной записи.
 
-Applications are able to send their users to the email update form by leveraging UPDATE_EMAIL as an <<con-aia_{context},AIA (Application Initiated Action)>>.
+Приложения могут отправлять своих пользователей на форму обновления электронной почты, используя UPDATE_EMAIL как <<con-aia_{context},AIA (Application Initiated Action)>>.
 
-To enable Update Email capability for a realm, go to the `Authentication` menu in the administration console and click on `Required actions` tab.
-Switch the toggle for `UPDATE_EMAIL` required action to `enabled`.
+Чтобы включить Update Email для реалма, перейдите в меню `Authentication` в административной консоли и нажмите на вкладку `Required actions`.
+Переключить переключатель для `UPDATE_EMAIL` на `enabled`.
 
-=== Forcing users to re-authenticate before updating email
+=== Принуждение пользователей повторно авторизоваться перед обновлением электронной почты
 
-When the `UPDATE_EMAIL` required action is enabled, users may be required to re-authenticate before being able to update their email if their last authentication is older than the configured duration.
-This is a security measure to prevent account takeover in case the user credentials are not known by the attacker but the user session is hijacked.
+Когда включено действие `UPDATE_EMAIL`, пользователям может потребоваться повторная аутентификация, прежде чем они смогут обновить свою электронную почту, если их последняя аутентификация старше установленной продолжительности.
+Это мера безопасности для предотвращения захвата учетной записи в том случае, если учетные данные пользователя неизвестны нападающим, но сеанс взломается.
 
-By default, the user will be asked to re-authenticate if the last authentication is older than 5 minutes (300 seconds). You
+По умолчанию, пользователю будет предложено повторно авторизоваться, если последняя аутентификация старше 5 минут (300 секунд). You
 can change this value by setting the `Maximum Age of Authentication` setting in the `UPDATE_EMAIL` required action configuration.
-By setting this value to `0`, the user will always be asked to re-authenticate before updating the email.
+Установив это значение в `0`, пользователю всегда будет предложено повторно авторизоваться перед обновлением электронной почты.
 
-=== Verifying Emails
+=== Проверка писем
 
-If the realm has email verification disabled, this action will allow to update the email without verification.
+Если в реалме отключена проверка электронной почты, это действие позволит обновить электронную почту без проверки.
 
-If the realm has email verification enabled, the action will send an email with a link to the new email address without changing the account email.
-Only after following the link and confirming the email, the email will be updated.
+Если в реалме включена проверка электронной почты, действие будет отправлено по электронной почте со ссылкой на новый адрес электронной почты, не изменяя адрес электронной почты.
+Только после перехода по ссылке и подтверждения электронной почты, письмо будет обновлено.
 
-Under certain circumstances, you do not want to enable email verification at the realm level but only when users are updating their emails.
-For that, you can set the `Force Email Verification` setting on the `UPDATE_EMAIL` required action to force users to verify their emails
-even though email verification is eventually disabled at the realm level. By default, email verification is not enabled.
+При определенных обстоятельствах вы не хотите включать проверку электронной почты на уровне реалмов, но только тогда, когда пользователи обновляют свои письма.
+Для этого вы можете установить параметр `Force Email Verification` на `UPDATE_EMAIL` для проверки их электронной почты
+хотя проверка электронной почты в конечном итоге отключена на уровне реалмов. По умолчанию проверка электронной почты не включена.
 
 In case the user is updating the email during the authentication flow (e.g.: when running the `UPDATE_PROFILE` required action),
 the user will be forced to verify the email if any of the `Verify Email` or the `Force Email Verification` settings are enabled.
-In case the `Verify Email` is enabled at the realm level, the `VERIFY_EMAIL` required action will be automatically added to the user account.
+В случае, если `Verify Email` включен на уровне реалма, требуемое действие `VERIFY_EMAIL` будет автоматически добавлено в учетную запись пользователя.
 Otherwise, if only the `Force Email Verification` is enabled the `UPDATE_EMAIL` required
 action will be added instead.
 
 If a user has `Email Verified` set, and both `Verify Email` and `Force Email Verification` are disabled, `Email Verified`
 resets after the user updates email.
 
-=== Updating the user email
+=== Обновление электронной почты пользователя
 
-When the `UPDATE_EMAIL` required action is enabled, the user can update their emails by:
+Когда включено действие `UPDATE_EMAIL`, пользователь может обновить свои электронные письма:
 
-* Self-registering to a realm if this capability is enabled to realm
-* Accessing the account console and clicking the `Update email` link when at the `Personal info` section
-* Updating the profile during the authentication flow (e.g.: when running the `UPDATE_PROFILE` required action) if the email is not yet set.
-If an existing user does have an email set when updating the profile during the authentication flow, the email attribute will not be available.
-* Administrators when updating the user account through the administration console
+* Авторегистрация в реалме, если эта возможность разрешена в Realm
+* Доступ к консоли аккаунта и щелчок по ссылке «Обновить электронную почту» в разделе «Личная информация»
+* Обновление профиля во время процесса аутентификации (например, при запуске `UPDATE_PROFILE` требуется действие), если email еще не установлен.
+Если существующий пользователь имеет набор электронной почты при обновлении профиля во время процесса аутентификации, атрибут электронной почты будет недоступен.
+* Администраторы при обновлении учетной записи пользователя через консоль администрирования
 
-=== Pending Email Verification
+=== Ожидание подтверждения электронной почты
 
-When a user initiates an email update that requires verification, the new email address is stored in a pending state until the user clicks the verification link. If the user tries to log in again before clicking the verification link, they will see a message informing them that a verification email was sent to the new address, with options to resend the email or enter a different email address.
+Когда пользователь инициирует обновление электронной почты, которое требует подтверждения, новый адрес электронной почты хранится в ожидании до тех пор, пока пользователь не нажмёт на ссылку верификации. Если пользователь попытается войти в систему еще раз перед нажатием на ссылку подтверждения, они увидят сообщение с сообщением о том, что письмо с подтверждением было отправлено на новый адрес, с параметрами для повторной отправки электронной почты или введите другой адрес электронной почты.
 
-Administrators can manage these pending verifications through the admin console. In the user details page, when a user has a pending email verification, a warning alert is displayed indicating the pending verification status. The alert shows which email address is awaiting confirmation and provides a link to cancel the verification process.
+Администраторы могут управлять этими проверками в ожидании через консоль администратора. На странице сведений о пользователе, когда у пользователя есть подтверждение по электронной почте, отображается предупреждение с указанием состояния проверки. Уведомление покажет, какой адрес электронной почты ожидает подтверждения, и предоставляет ссылку для отмены процесса проверки.
 
-Clicking this link opens a confirmation dialog that allows administrators to remove the pending verification or cancel the action.
+Нажатие на эту ссылку открывает диалоговое окно подтверждения, которое позволяет администраторам удалить проверку, находящуюся в ожидании, или отменить действие.
 
-When confirmed, this action will:
+После подтверждения, это действие будет:
 
-* Remove the pending email verification attribute
-* Invalidate the existing verification link
-* Remove the `UPDATE_EMAIL` required action from the user
+* Удалить атрибут проверки электронной почты
+* Подтвердить существующую ссылку для проверки
+* Удалите действие `UPDATE_EMAIL` с пользователя
 
-=== Update Email and User Profile
+=== Обновить Email и профиль пользователя
 
 If the email attribute is set as required in the user profile configuration, the requirement is kept in the Update Email workflow,
-meaning a user won't be able to clear his/her email in update email page. The opposite is true, if the email attribute is set as optional
-in the user profile configuration.
+meaning a user won't be able to clear his/her email in update email page. Напротив, если установлен атрибут электронной почты как необязательный
+в конфигурации профиля пользователя.
 
-If the email attribute is set as read-only in the user profile configuration, the following behavior applies:
+Если атрибут электронной почты установлен в конфигурации профиля пользователя только для чтения, то применяется следующее поведение:
 
-* The `Update email` link will not be displayed in the account console
-* The `UPDATE_EMAIL` required action will be automatically skipped and removed from the user account
-* In the update profile page, if the user's email is initially empty, the email field will be hidden
+* Ссылка «Обновить email» не будет отображаться в консоли аккаунта
+* Требуется действие `UPDATE_EMAIL` будет автоматически пропущено и удалено из учетной записи пользователя
+* На странице профиля обновления, если адрес электронной почты пользователя изначально пуст, то поле электронной почты будет скрыто
 
-=== Message Customization
+=== Настройка сообщений
 
-All messages displayed in this workflow, including admin console messages, verification emails, and update email page messages, can be customized using the standard {project_name} message customization system.
+Все сообщения, отображаемые в этом рабочем процессе, включая сообщения консоли администратора, письма с подтверждением, и обновить страничные сообщения электронной почты, можно настроить с помощью стандартной системы настройки сообщений {project_name}.
