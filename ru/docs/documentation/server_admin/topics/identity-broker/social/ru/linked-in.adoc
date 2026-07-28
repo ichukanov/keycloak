@@ -1,16 +1,16 @@
 ==== LinkedIn
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *LinkedIn*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *LinkedIn*.
 +
-image:images/linked-in-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, https://developer.linkedin.com[create an app] in the LinkedIn developer portal.
-.. After you create the app, click the *Auth* tab.
-.. Enter the value of *Redirect URI* into the *Authorized redirect URLs for your app* field.
-.. Note *Your Client ID* and *Your Client Secret*.
-.. Click the *Products* tab and *Request access* for the *Sign In with LinkedIn using OpenID Connect* product.
-. In {project_name}, paste the value of the `Client ID` into the *Client ID* field.
-. In {project_name}, paste the value of the `Client Secret` into the *Client Secret* field.
-. Click *Add*.
+image:images/linked-in-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера https://developer.linkedin.com[создать приложение] на портале разработчика LinkedIn.
+.. После создания приложения нажмите на вкладку *Auth*.
+.. Введите значение *Redirect URI* в *Authorized redirect URL для вашего приложения.
+.. Обратите внимание на *Ваш идентификатор клиента* и *Ваш секрет клиента*.
+.. Нажмите на вкладку *Продукты* и *Запросить доступ* к *Войти с помощью LinkedIn с помощью OpenID Connect* продукта.
+. В {project_name}вставьте значение `Client ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Client Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.
