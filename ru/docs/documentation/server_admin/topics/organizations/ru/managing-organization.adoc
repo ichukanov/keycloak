@@ -1,65 +1,65 @@
 [[_enabling_organization_]]
-= Enabling organizations in {project_name}
+= Включение организаций в {project_name}
 
-To use organizations, you have to enable the feature for the current realm.
+Для использования организаций необходимо включить эту функцию для текущего реалма.
 
-.Procedure
-. Click *Realm Settings* in the menu.
-. Toggle *Organizations* to *On*.
-. Click *Save*
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Переключить *Организации* в *On*.
+. Нажмите *Сохранить*
 
-image:images/organizations-enabling-orgs.png[alt="Enabling Organizations"]
+image:images/organizations-enabling-orgs.png[alt="Включение организаций"]
 
-Once the feature is enabled, you are able to manage organizations through the *Organizations* section available from the menu.
+После того как функция включена, вы сможете управлять организациями через раздел *Организации*, доступный из меню.
 
-= Managing an organization
+= Управление организацией
 
-From the *Organizations* section, you can manage all the organizations in your realm.
+Из раздела *Организации* вы можете управлять всеми организациями в своей сфере.
 
-image:images/organizations-management-screen.png[alt="Managing organizations"]
+image:images/organizations-management-screen.png[alt="Управление организациями"]
 
-== Creating an organization
+== Создание организации
 
-.Procedure
-. Click *Create Organization*.
+.Процедура
+. Нажмите *Создать Организацию*.
 
-image:images/organizations-create-org.png[alt="Creating organization"]
+image:images/organizations-create-org.png[alt="Создание организации"]
 
-An organization has the following settings:
+Организация имеет следующие настройки:
 
-Name:: A user-friendly name for the organization. The name is unique within a realm.
-Alias:: An alias for this organization, used to reference the organization internally. The alias is unique within a realm and must be URL-friendly, so characters not usually allowed in URLs will not be allowed in the alias. If not set, {project_name} will attempt to use the name as the alias. If the name is not URL-friendly, you will get an error and will be asked to specify an alias. Once defined, the alias cannot be changed afterwards.
-Redirect URL:: After completing registration or accepting an invitation to the organization sent via email, the user is automatically redirected to the specified redirect url. If left empty, the user will be redirected to the account console by default.
-Domains:: A set of zero or more domains that belongs to this organization. A domain cannot be shared by different organizations within a realm. When no domain is specified, organization members will not be validated against domain restrictions during authentication and profile validation.
-Description:: A free-text field to describe the organization.
+Наименование:: Удобное имя для организации. Имя уникально в реалме.
+Alias:: Псевдоним для этой организации, используемый для ссылки на организацию внутри. Псевдоним уникален внутри области и должен быть удобным для URL, поэтому символы, которые не разрешены в URL-адресах, не будут разрешены в псевдонимах. Если не установлено, то {project_name} попытается использовать имя как псевдоним. Если имя не является URL-дружественным, вы получите ошибку и попросят указать псевдоним. После определения псевдоним не может быть изменен позже.
+URL перенаправления:: После завершения регистрации или принятия приглашения в организацию, отправленного по электронной почте, пользователь автоматически перенаправляется на указанный адрес перенаправления. Если оставить пустым, по умолчанию пользователь будет перенаправлен в консоль учетной записи.
+Домены:: Набор доменов, принадлежащих этой организации. Домен не может быть использован различными организациями в реалме. Если домен не задан, участники организации не будут проверены на предмет ограничений домена во время аутентификации и проверки профиля.
+Описание:: Поле "Текст" для описания организации.
 
-Once you create an organization, you can manage the additional settings that are described in the following sections:
+После создания организации вы можете управлять дополнительными настройками, описанными в следующих разделах:
 
 * <<_managing_attributes_,Manage attributes>>
 * <<_managing_members_,Manage members>>
 * <<_managing_groups_,Manage groups>>
 * <<_managing_identity_provider_,Manage identity providers>>
 
-== Disabling an organization
+== Отключение организации
 
-To disable an organization, toggle *Enabled* to *Off*.
+Чтобы отключить организацию, переключите *Включено* в *Выкл*.
 
-image:images/organizations-disable-org.png[alt="Disabling organization"]
+image:images/organizations-disable-org.png[alt="Отключение организации"]
 
-When an organization is disabled, you can still manage it through the management interfaces, but the organization members cannot authenticate to the realm, including authenticating through the identity providers associated with the organization as they are also automatically disabled.
+Если организация отключена, вы можете управлять ею через интерфейсы управления, но члены организации не могут аутентифицироваться в реалме, включая аутентификацию через идентификационные параметры, связанные с организацией, так как они также автоматически отключены.
 
-However, the unmanaged members of an organization are still able to authenticate to the realm as they are also realm users, but tokens will not hold metadata about their relationship with an organization that is disabled.
+Однако неуправляемые члены организации все еще могут аутентифицироваться в реалме, так как они также являются пользователями реалмов, но токены не будут содержать метаданных об их связях с организацией, которая отключена.
 
-For more details about managed and unmanaged users, see <<_managed_unmanaged_members_,Managed and unmanaged members>> section.
+Подробнее об управляемых и неуправляемых пользователях смотрите в секции <<_managed_unmanaged_members_,Managed and unmanaged members>> .
 
-== Deleting an organization
+== Удаление организации
 
-To delete an organization, click the *Delete* action for the corresponding organization in the listing page or when editing an organization.
+Чтобы удалить организацию, нажмите на действие *Удалить* для соответствующей организации на странице списка или при редактировании организации.
 
-image:images/organizations-delete-org.png[alt="Deleting organization"]
+image:images/organizations-delete-org.png[alt="Удаление организации"]
 
-When removing an organization, all data associated with it will be deleted, including any managed member.
+При удалении организации будут удалены все связанные с ней данные, включая управляемого участника.
 
-Unmanaged users and identity providers remain in the realm, but they are no longer linked to the organization.
+Неуправляемые пользователи и поставщики удостоверений личности остаются в сфере, однако они более не связаны с организацией.
 
-For more details about managed and unmanaged users, see <<_managed_unmanaged_members_,Managed and unmanaged members>>.
+Подробнее об управляемых и неуправляемых пользователях см. <_managed_unmanaged_members_,Managed and unmanaged members>>.
