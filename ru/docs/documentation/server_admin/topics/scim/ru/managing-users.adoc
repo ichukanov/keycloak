@@ -1,55 +1,55 @@
 [[_scim_managing_users_]]
-= Managing users
+= Управление пользователями
 
-The SCIM `/Users` endpoint allows you to create, read, update, and delete user resources in {project_name}. User resources
+Конечная точка SCIM `/Users` позволяет создавать, читать, обновлять и удалять пользовательские ресурсы в {project_name}. User resources
 conform to the `urn:ietf:params:scim:schemas:core:2.0:User` schema as defined in RFC 7643.
 
-== Core user attributes
+== Основные атрибуты пользователя
 
-The following table shows the core SCIM user attributes and how they map to {project_name} user attributes:
+В следующей таблице показаны основные атрибуты пользователя SCIM, а также то, как они соотносятся с атрибутами {project_name}:
 
 [cols="1,1,2", options="header"]
 |===
-|SCIM Attribute
-|{project_name} Attribute
-|Description
+|Атрибут SCIM
+|Атрибут {project_name}
+|Описание
 
 |`userName`
 |`username`
-|Unique identifier for the user. Required.
+|Уникальный идентификатор пользователя. Обязательно.
 
 |`name.givenName`
-|`firstName`
-|Given name (first name).
+|`имя`
+|Имя (имя).
 
 |`name.familyName`
 |`lastName`
-|Family name (last name).
+|Фамилия (фамилия).
 
 |`emails`
 |`email`
-|User email addresses. Even though the attribute is multi-valued, {project_name} does not support mutiple emails for a
-given user account. When multiple email values are submitted, only the first value is persisted. In SCIM responses, the stored address is returned as a single `work` email entry that is marked as `primary`.
+|Адрес электронной почты пользователя. Even though the attribute is multi-valued, {project_name} does not support mutiple emails for a
+given user account. При использовании нескольких значений электронной почты сохраняется только первое значение. В ответах SCIM сохраненный адрес возвращается как одна запись "рабочий" электронной почты, помеченная как "основная".
 
-|`active`
-|`enabled`
-|Whether the user account is enabled.
+|«активный»
+|`включена`
+|Включена ли учетная запись пользователя.
 
 |`locale`
 |`locale`
-|User locale. Only available when internationalization is enabled on the realm.
+|Локаль пользователя. Доступно только при возможности интернационализации.
 
 |`externalId`
-|(custom attribute)
-|An identifier from an external system. Requires user profile configuration. See <<_scim_mapping_attributes_,Mapping attributes>>.
+|(пользовательский атрибут)
+|Идентификатор внешней системы. Требуется настройка профиля пользователя. См. <<_scim_mapping_attributes_,Mapping attributes>>.
 |===
 
 Additional name sub-attributes (`name.middleName`, `name.honorificPrefix`, `name.honorificSuffix`) can be mapped
-by configuring user profile attributes. See <<_scim_mapping_attributes_,Mapping attributes>> for details.
+by configuring user profile attributes. Смотрите <<_scim_mapping_attributes_,Mapping attributes>> для деталей.
 
-== Creating a user
+== Создание пользователя
 
-To create a user, send a `POST` request to the `/Users` endpoint. At minimum, you must provide a `userName`:
+Чтобы создать пользователя, отправьте запрос `POST` в конечную точку `/Users`. Минимум вы должны указать имя пользователя:
 
 [source,bash]
 ----
@@ -74,7 +74,7 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-A successful response returns the created user with a `201 Created` status:
+Успешный ответ возвращает созданного пользователя со статусом «201 Создано»:
 
 [source,json]
 ----
@@ -104,16 +104,16 @@ A successful response returns the created user with a `201 Created` status:
 }
 ----
 
-NOTE: User profile validation rules are enforced when creating users through the SCIM API. If a required attribute
+NOTE: При создании пользователей через SCIM API действуют правила проверки профиля пользователя. If a required attribute
 is missing or a value does not match the expected format, the API returns a `400 Bad Request` response with a
 description of the validation error.
 
-If a user with the same `userName` already exists, the API returns a `409 Conflict` response with
+Если пользователь с таким же именем `userName` уже существует, API возвращает ответ `409 Conflict` с
 `scimType: "uniqueness"`.
 
-== Retrieving a user
+== Получение пользователя
 
-To retrieve a user by ID:
+Для получения пользователя по ID:
 
 [source,bash]
 ----
@@ -122,9 +122,9 @@ curl http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   -H "Accept: application/scim+json"
 ----
 
-== Listing users
+== Список пользователей
 
-To list all users in the realm:
+Список всех пользователей в мире:
 
 [source,bash]
 ----
@@ -133,7 +133,7 @@ curl http://localhost:8080/realms/myrealm/scim/v2/Users \
   -H "Accept: application/scim+json"
 ----
 
-The response uses the SCIM list format:
+Ответ использует формат списка SCIM:
 
 [source,json]
 ----
@@ -146,9 +146,9 @@ The response uses the SCIM list format:
 }
 ----
 
-For filtering and pagination of results, see <<_scim_filtering_resources,Filtering resources>>.
+Фильтрация и пагинация результатов смотрите <<_scim_filtering_resources,Filtering resources>.
 
-== Selecting attributes
+== Выбор атрибутов
 
 You can control which attributes are included in the response for both single-resource and list requests
 by using the `attributes` query parameter:
@@ -160,7 +160,7 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=userNam
   -H "Accept: application/scim+json"
 ----
 
-Or exclude certain attributes from the response:
+Или исключить некоторые атрибуты из ответа:
 
 [source,bash]
 ----
@@ -169,15 +169,15 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?excludedAttributes
   -H "Accept: application/scim+json"
 ----
 
-When requesting a parent attribute (for example, `name`), all its sub-attributes are returned. When requesting
+При запросе родительского атрибута (например, `name`) возвращаются все его податрибуты. When requesting
 a sub-attribute (for example, `name.familyName`), only that specific sub-attribute is included.
 
-NOTE: Attribute names in query parameters are case-insensitive, as specified by RFC 7644. The `id` and `schemas`
+NOTE: Имена атрибутов в параметрах запроса не зависят от регистра, как указано в RFC 7644. The `id` and `schemas`
 attributes are always included and cannot be excluded.
 
-== Updating a user
+== Обновление пользователя
 
-To fully replace a user resource, send a `PUT` request:
+Чтобы полностью заменить пользовательский ресурс, отправьте запрос «PUT»:
 
 [source,bash]
 ----
@@ -203,18 +203,18 @@ curl -X PUT http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-The `id` in the request body must match the `id` in the URL path, otherwise the API returns a `400 Bad Request` error.
+`id` в теле запроса должен совпадать с `id` в пути URL, иначе API возвращает ошибку `400 Bad Request`.
 
-== Partially updating a user
+== Частичное обновление пользователя
 
-The `PATCH` method allows you to modify specific attributes without replacing the entire resource. A patch request
-contains one or more operations, each specifying an action (`add`, `replace`, or `remove`), an optional path to
-the attribute, and a value.
+Метод `PATCH` позволяет изменять специфические атрибуты без замены всего ресурса. Запрос патчей
+содержит одну или несколько операций, каждая из которых указывает действие (`add`, `replace` или `remove`), необязательный путь к
+атрибуту и значение.
 
-NOTE: A single PATCH request can contain at most 100 operations. Requests exceeding this limit are rejected with
-a `400 Bad Request` response and `scimType: "tooMany"`.
+NOTE: Один запрос PATCH может содержать не более 100 операций. Запросы, превышающие этот лимит, отвергнуты при помощи
+ответ `400 Bad Request` и `scimType: "tooMany"`.
 
-=== Adding or replacing attributes
+=== Добавление или замена атрибутов
 
 [source,bash]
 ----
@@ -247,8 +247,8 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-You can also provide multiple attributes in a single operation without specifying a path. In this case, the paths
-are derived from the JSON structure:
+Вы также можете предоставить несколько атрибутов в одну операцию без указания пути. В этом случае пути
+производятся из структуры JSON:
 
 [source,bash]
 ----
@@ -269,7 +269,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-=== Removing attributes
+=== Удаление атрибутов
 
 [source,bash]
 ----
@@ -287,7 +287,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-For multi-valued attributes, you can use a filter in the path to remove specific values:
+Для многозначных атрибутов вы можете использовать фильтр в пути для удаления конкретных значений:
 
 [source,bash]
 ----
@@ -305,14 +305,14 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-== Managing group membership
+== Управление членством в группе
 
-You can manage a user's group memberships directly through the user resource. Group membership can also be managed
-from the group side using the `/Groups` endpoint. See <<_scim_managing_groups_,Managing groups>> for details.
+Вы можете управлять членством в группах пользователей непосредственно через пользовательский ресурс. Членство в группах также может управляться
+с стороны группы, используя конечную точку `/Groups`. Смотрите <<_scim_managing_groups_,Managing groups>>.
 
-=== Adding a user to groups on creation
+=== Добавление пользователя в группы при создании
 
-When creating a user, you can specify the groups the user should belong to:
+При создании пользователя вы можете указать группы, к которым должен принадлежать:
 
 [source,bash]
 ----
@@ -328,7 +328,7 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-=== Modifying group membership via PATCH
+=== Изменение членства в группе через PATCH
 
 [source,bash]
 ----
@@ -347,7 +347,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-To remove a user from a group:
+Чтобы удалить пользователя из группы:
 
 [source,bash]
 ----
@@ -365,9 +365,9 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-=== Querying group membership
+=== Запрос членства в группе
 
-To retrieve a user's groups, include `groups` in the `attributes` parameter:
+Чтобы получить группы пользователей, включите `groups` в параметр `attributes`:
 
 [source,bash]
 ----
@@ -376,10 +376,10 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=groups"
   -H "Accept: application/scim+json"
 ----
 
-Each group membership includes the group `value` (ID), `display` (name), and `type` (`direct` or `indirect` for
-inherited memberships from parent groups).
+В состав каждой группы входят `value` (ID), `display` (имя) и `type` (`direct` или `indirect` для
+унаследованные членства из родительских групп).
 
-== Deleting a user
+== Удаление пользователя
 
 [source,bash]
 ----
@@ -387,4 +387,4 @@ curl -X DELETE http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ----
 
-A successful deletion returns a `204 No Content` response with no body.
+Успешное удаление возвращает ответ «204 Без содержимого» без тела.
