@@ -1,5 +1,5 @@
 [[_managing_workflows]]
-== Managing workflows
+== Управление рабочими процессами
 
 include::workflows/intro.adoc[leveloffset=+2]
 
