@@ -1,0 +1,3 @@
+files:
+  - source: docs/documentation/server_admin/**/*.adoc
+    translation: '%original_path%/%two_letters_code%/%original_file_name%'
