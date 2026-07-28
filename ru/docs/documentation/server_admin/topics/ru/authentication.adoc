@@ -1,9 +1,9 @@
 [id="configuring-authentication_{context}"]
-== Configuring authentication
+== Настройка аутентификации
 
-This chapter covers several authentication topics. These topics include:
+Эта глава описывает несколько тем аутентификации. Эти темы включают:
 
-* Enforcing strict password and One Time Password (OTP) policies.
-* Managing different credential types.
-* Logging in with Kerberos.
-* Disabling and enabling built-in credential types.
+* Принудительная политика строгого пароля и одноразового пароля (OTP).
+* Управление различными типами учетных данных.
+* Вход через Kerberos.
+* Отключение и включение встроенных типов учетных данных.
