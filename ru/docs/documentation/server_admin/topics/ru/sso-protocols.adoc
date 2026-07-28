@@ -1,7 +1,7 @@
-== SSO protocols
+== Протоколы SSO
 
 [role="_abstract"]
-This section discusses authentication protocols, the {project_name} authentication server and how applications, secured by the {project_name} authentication server, interact with these protocols.
+В этом разделе рассматриваются протоколы аутентификации, сервер аутентификации {project_name} и как приложения, защищенные сервером аутентификации {project_name} , взаимодействуют с этими протоколами.
 
 include::sso-protocols/con-oidc.adoc[]
 
