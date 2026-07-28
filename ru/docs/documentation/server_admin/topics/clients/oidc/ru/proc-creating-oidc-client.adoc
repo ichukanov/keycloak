@@ -1,21 +1,21 @@
 [id="proc-creating-oidc-client_{context}"]
-= Creating an OpenID Connect client
+= Создание клиента OpenID Connect
 
 [role="_abstract"]
-To protect an application that uses the OpenID connect protocol, you create a client.
+Чтобы защитить приложение, использующее протокол подключения OpenID, вы создаете клиента.
 
-.Procedure
-. Click *Clients* in the menu.
-. Click *Create client*.
+.Процедура
+. Нажмите *Клиент* в меню.
+. Нажмите *Создать клиент*.
 +
-image:images/add-client-oidc.png[Create Client]
-. Leave *Client type* set to *OpenID Connect*.
-. Enter a *Client ID.*
+image:images/add-client-oidc.png[Создать клиента]
+. Установлен *Тип клиента* *OpenID Connect*.
+. Введите *ID клиента*
 +
-This ID is an alphanumeric string that is used in OIDC requests and in the {project_name} database to identify the client.
-. Supply a *Name* for the client.
+Этот ID является буквенно-цифровой строкой, которая используется в OIDC запросах и в базе данных {project_name} для идентификации клиента.
+. Придайте *Название* клиенту.
 +
-If you plan to localize this name, set up a replacement string value. For example, a string value such as $\{myapp}.  See the link:{developerguide_link}[{developerguide_name}] for more information.
-. Click *Save*.
+Если вы планируете локализовать это имя, задайте значение переменной строки. Например, строковое значение, такое как $\{myapp}.  См. ссылку:{developerguide_link}[{developerguide_name}] для получения дополнительной информации.
+. Нажмите *Сохранить*.
 
-This action creates the client and bring you to the *Settings* tab, where you can perform xref:con-basic-settings_{context}[Basic configuration].
+Это действие создает клиента и приведёт вас во вкладку *Настройки*, где вы можете выполнить xref:con-basic-settings_{context}[Базовая конфигурация].
