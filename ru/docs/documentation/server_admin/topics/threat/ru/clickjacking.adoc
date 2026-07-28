@@ -1,16 +1,16 @@
-=== Clickjacking
+=== Кликвиный угон
 
-Clickjacking is a technique of tricking users into clicking on a user interface element different from what users perceive. A malicious site loads the target site in a transparent iFrame, overlaid on top of a set of dummy buttons placed directly under important buttons on the target site. When a user clicks a visible button, they are clicking a button on the hidden page. An attacker can steal a user's authentication credentials and access their resources by using this method.
+Щелчок — это техника, позволяющая пользователям нажать на элемент пользовательского интерфейса, отличный от того, что понимает пользователи. Злонамеренный сайт загружает целевый сайт в прозрачный iFrame, накладывается на верхней части набора демпинговых кнопок, расположенных непосредственно под важными кнопками на целевом сайте. Когда пользователь нажимает на видимую кнопку, он нажимает на кнопку на скрытой странице. При помощи этого метода злоумышленник может украсть учетные данные пользователя и получить доступ к его ресурсам.
 
-By default, every response by {project_name} sets some specific HTTP headers that can prevent this from happening.
-Specifically, it sets https://datatracker.ietf.org/doc/html/rfc7034[X-Frame-Options] and https://www.w3.org/TR/CSP/[Content-Security-Policy].
-You should take a look at the definition of both of these headers as there is a lot of fine-grain browser access you can control.
+По умолчанию каждый ответ {project_name} устанавливает некоторые специальные HTTP заголовки, которые могут предотвратить это событие.
+В частности, он устанавливает https://datatracker.ietf.org/doc/html/rfc7034[X-Frame-Options] и https://www.w3.org/TR/CSP/[Content-Security-Policy].
+Вы должны взглянуть на определение обоих заголовков, так как есть много мелкого зерна доступа к браузеру, который вы можете контролировать.
 
-In the Admin Console, you can specify the values of the X-Frame-Options and Content-Security-Policy headers.
+В консоли администратора можно указать значения заголовков X-Frame-Options и Content-Security-Policy.
 
-. Click the *Realm Settings* menu item.
-. Click the *Security Defenses* tab.
+. Нажмите на пункт меню *Настройки реалма*.
+. Нажмите на вкладку *Security Defenses*.
 +
 image:images/security-headers.png[Security Defenses]
 
-By default, {project_name} only sets up a _same-origin_ policy for iframes.
+По умолчанию, {project_name} устанавливает только _одинаковую политику происхождения_ для iframes.
