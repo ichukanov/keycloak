@@ -1,36 +1,36 @@
-== Using the Admin Console
+== Использование консоли администратора
 
-You configure realms and perform most administrative tasks in the {project_name} Admin Console.
+Вы настраиваете миры и выполняете большинство административных задач в консоли администратора {project_name}.
 
-To use the Admin Console, you need an administrator account.
+Чтобы использовать консоль администратора, вам нужна учетная запись администратора.
 
-* If no administrators exist, see xref:creating-first-admin_{context}[Creating the first administrator].
-* If other administrators exist, ask an administrator to provide an account with privileges to manage realms.
+* Если администраторов не существует, см. xref:creating-first-admin_{context}[Создание первого администратора].
+* Если другие администраторы существуют, попросите администратора предоставить доступ к учетной записи для управления реалмами.
 
 //-
 
-.Procedure
-. Go to the URL for the Admin Console.
+.Процедура
+. Перейдите на URL консоли администратора.
 +
-For example, for localhost, use this URL: http://localhost:8080{kc_admins_path}/
-. Enter the username and password you created on the Welcome Page or through environment variables as described in https://www.keycloak.org/server/configuration#_creating_the_initial_admin_user[Creating the initial admin user].
+Например, для localhost, используйте этот URL: http://localhost:8080{kc_admins_path}/
+. Введите имя пользователя и пароль, которые вы создали на странице Welcome или через переменные окружения, как описано в https://www.keycloak.org/server/configuration#_creating_the_initial_admin_user[Создание начального пользователя администратора].
 +
-image:images/login-page.png[Login page]
+image:images/login-page.png[Страница входа]
 +
-This action displays the Admin Console.
+Это действие отображает консоль администратора.
 +
-image:images/admin-console.png[Admin Console]
-. Note the menus and other options that you can use:
-* Click the *Current realm* to see if other realms are available to be managed.
-* Click *Create realm* to create another realm that you can manage.
-* Click the top right list to view your account or log out.
-. Click *Realm settings* in the menu to see the fields and options for this realm.
+image:images/admin-console.png[консоль администратора]
+. Обратите внимание на меню и другие параметры, которые вы можете использовать:
+* Нажмите *Текущий реалм*, чтобы увидеть, доступны ли другие игровые миры.
+* Нажмите *Создать реалм*, чтобы создать другой реалм, которым вы можете управлять.
+* Нажмите на верхний правый список, чтобы просмотреть ваш аккаунт или выйти из аккаунта.
+. Нажмите *Настройки реалма* в меню, чтобы увидеть поля и параметры для этого реалма.
 +
-Click a question mark *?* icon to show the definition of a field such as *Frontend URL*.
+Нажмите на значок вопроса *?*, чтобы показать определение такого поля как *Frontend URL*.
 +
-image:images/realm-settings.png[Realm settings]
+image:images/realm-settings.png[Настройки реалма]
 
 [NOTE]
 ====
-Export files from the Admin Console are not suitable for backups or data transfer between servers. Only boot-time exports are suitable for backups or data transfer between servers.
+Экспорт файлов из консоли администратора не подходит для резервных копий или передачи данных между серверами. Только экспорт загрузок подходит для резервных копий или передачи данных между серверами.
 ====
