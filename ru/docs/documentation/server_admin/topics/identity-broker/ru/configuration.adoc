@@ -1,79 +1,79 @@
-=== General configuration
+=== Основная конфигурация
 
-The foundations of the identity broker configuration are identity providers (IDPs). {project_name} creates identity providers for each realm and enables them for every application by default. Users from a realm can use any of the registered identity providers when signing in to an application.
+Основой индивидуальной конфигурации брокеров являются идентификационные провайдеры (IDP). {project_name} создает идентификационные данные для каждого реалма и разрешает им по умолчанию для каждого приложения. Пользователи из Realm могут использовать любой из зарегистрированных провайдеров идентификации при входе в приложение.
 
-.Procedure
-. Click *Identity Providers* in the menu.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
 +
 image:images/identity-providers.png[Identity Providers]
-. Select an identity provider. {project_name} displays the configuration page for the identity provider you selected.
+. Выберите поставщика идентификации. {project_name} отображает страницу конфигурации для выбранного поставщика идентификации.
 +
-image:images/add-identity-provider.png[Add Facebook Identity Provider]
+image:images/add-identity-provider.png[Добавить Facebook Identity Provider]
 +
-When you configure an identity provider, the identity provider appears on the {project_name} login page as an option. You can place custom icons on the login screen for each identity provider. See  https://www.keycloak.org/ui-customization/themes#custom-identity-providers-icons[custom icons] for more information.
+При настройке поставщика идентификации, поставщик идентификации появляется на странице входа в систему {project_name}. Вы можете размещать пользовательские иконки на экране входа в систему для каждого поставщика удостоверений. См. https://www.keycloak.org/ui-customization/themes#custom-identity-providers-icons[custom icons] для получения дополнительной информации.
 +
 image:images/identity-provider-login-page.png[]
-Social:: Social providers enable social authentication in your realm. With {project_name}, users can log in to your application using a social network account. Supported providers include Twitter, Facebook, Google, LinkedIn, Instagram, Microsoft, PayPal, Openshift v4, GitHub, GitLab, Bitbucket, and Stack Overflow.
-Protocol-based:: Protocol-based providers rely on specific protocols to authenticate and authorize users. Using these providers, you can connect to any identity provider compliant with a specific protocol. {project_name} provides support for SAML v2.0 and OpenID Connect v1.0 protocols. You can configure and broker any identity provider based on these open standards.
+Соцсети:: Социальные провайдеры поддерживают социальную аутентификацию в вашем мире. С {project_name}пользователи могут войти в ваше приложение, используя учетную запись социальной сети. Поддерживаемые провайдеры включают Twitter, Facebook, Google, LinkedIn, Instagram, Microsoft, PayPal, Openshift v4, GitHub, GitLab, Bitbucket, и Stack Overflow.
+Протокол:: Протоколные провайдеры полагаются на конкретные протоколы для аутентификации и авторизации пользователей. Используя этих провайдеров, вы можете подключиться к любому поставщику идентификации, соответствующему определенному протоколу. {project_name} поддерживает протоколы SAML v2.0 и OpenID Connect v1.0. Вы можете настроить и брокер любого поставщика удостоверений личности на основе этих открытых стандартов.
 
-Although each type of identity provider has its configuration options, all share a common configuration. The following configuration options available:
+Хотя каждый тип идентификационного провайдера имеет свои настройки конфигурации, все они имеют общую конфигурацию. Доступны следующие параметры конфигурации:
 
-.Common Configuration
+.Общая конфигурация
 [cols="1,1", options="header"]
 |===
-|Configuration
-|Description
+|Конфигурация
+|Описание
 
 |Alias
-|The alias is a unique identifier for an identity provider and references an internal identity provider. {project_name} uses the alias to build redirect URIs for OpenID Connect protocols that require a redirect URI or callback URL to communicate with an identity provider. All identity providers must have an alias. Alias examples include `facebook`, `google`, and `idp.acme.com`.
+|Псевдоним является уникальным идентификатором поставщика идентификации и ссылается на внутреннего поставщика идентификационных данных. {project_name} использует алиас для построения редиректов URI для протоколов OpenID Connect, которым требуется редиректный URI или обратный URL для связи с провайдером идентификации. Все поставщики удостоверений личности должны иметь псевдоним. Примеры псевдонимов включают `facebook`, `google` и `idp.acme.com`.
 
-|Enabled
-|Toggles the provider ON or OFF.
+|Включено
+|Включает/выключает провайдера.
 
-|Hide on Login Page
-|When *ON*, {project_name} does not display this provider as a login option on the login page. Clients can request this provider by using the 'kc_idp_hint' parameter in the URL to request a login.
+|Скрыть на странице входа
+|При *ВКЛЮЧЕНИи*, {project_name} не отображает этого провайдера в качестве параметра входа на странице входа. Клиенты могут запрашивать этого провайдера с помощью параметра 'kc_idp_hint' в URL для запроса логина.
 
-|Account Linking Only
-|When *ON*, {project_name} links existing accounts with this provider. This provider cannot log users in, and {project_name} does not display this provider as an option on the login page.
+|Только привязка аккаунта
+|Когда *ВКЛЮЧЕНИЕ*, {project_name} привязывает существующие учетные записи к этому провайдеру. Этот провайдер не может войти в систему пользователей, и {project_name} не отображает этого провайдера в качестве опции на странице входа в систему.
 
-|Store Tokens
-|When *ON*, {project_name} stores tokens from the identity provider.
+|Маркеры магазина
+|Когда *ON*, {project_name} хранит токены от поставщика идентификации.
 
-|Stored Tokens Readable
-|When *ON*, users can retrieve the stored identity provider token. This action also applies to the _broker_ client-level role _read token_.
+|Хранимые токены доступны для чтения
+|При *ВКЛЮЧЕНИи* пользователи могут получить идентификационный код поставщика. Это действие также применимо к _брокер_ клиентской роли _read token_.
 
-|Trust Email
-|When *ON*, {project_name} trusts email addresses from the identity provider. If the realm requires email validation, users that log in from this identity provider do not need to perform the email verification process.
-If the target identity provider supports email verification and advertises this information when returning the user profile information, the email of the federated user will be (un)marked as verified.
-For instance, an OpenID Connect Provider returning a `email_verified` claim in their ID Tokens.
-Note that this setting will set the email as verified when the user is federated for the first time and on subsequent logins
-through the broker if the sync mode is set to `FORCE`.
+|Доверять Email
+|Когда *ВКЛЮЧЕНИЕ*, {project_name} доверяет адреса электронной почты от поставщика удостоверений. Если реалм требует проверки электронной почты, то пользователям, которые войдут в систему с этой идентификацией, не нужно выполнять верификацию по электронной почте.
+Если целевой идентификатор провайдера поддерживает верификацию электронной почты и рекламирует эту информацию при возврате информации профиля пользователя, email федеративного пользователя будет снят как проверенный.
+Например, поставщик подключения OpenID возвращает претензию `email_verified` в своих идентификационных токенах.
+Обратите внимание, что эта настройка установит электронную почту проверенной, когда пользователь впервые и при последующих входе в систему
+через брокера, если для режима синхронизации установлен `FORCE`.
 
-|GUI Order
-|The sort order of the available identity providers on the login page.
+|Порядок интерфейса
+|Порядок сортировки доступных идентификаторов поставщиков на странице входа.
 
-|Verify essential claim
-|When *ON*, ID tokens issued by the identity provider must have a specific claim, otherwise, the user can not authenticate through this broker
+|Подтвердить существенные претензии
+|Когда *ВКЛЮЧЕНИЕ*, идентификационные токены, выданные поставщиком идентификации, должны иметь конкретную претензию, в противном случае пользователь не может аутентифицироваться через этого брокера
 
-|Essential claim
-|When *Verify essential claim* is *ON*, the name of the JWT token claim to filter (match is case sensitive)
+|Существенные претензии
+|Если *Подтвердить существенную претензию* *ВКЛЮЧЕНИЕ*, то имя токена JWT для фильтрации (совпадение чувствительно к регистру)
 
-|Essential claim value
-|When *Verify essential claim* is *ON*, the value of the JWT token claim to match (supports regular expression format)
+|Существенная стоимость владения
+|Когда *Проверьте наличие существенной претензии* *ВКЛЮЧЕН*, значение токена JWT для совпадения (поддерживает формат регулярных выражений)
 
-|First Login Flow
-|The authentication flow {project_name} triggers when users use this identity provider to log into {project_name} for the first time.
+|Первый вход в систему
+|Процесс аутентификации {project_name} включает, когда пользователи впервые используют этого поставщика идентификации для входа в {project_name}.
 
-|Post Login Flow
-|The authentication flow {project_name} triggers when a user finishes logging in with the external identity provider.
+|Пост Вход в Поток
+|Процесс аутентификации {project_name} запускается, когда пользователь заканчивает вход с внешним идентификатором провайдера.
 
-|Sync Mode
-|Strategy to update user information from the identity provider through mappers. When choosing *legacy*, {project_name} used the current behavior. *Import* does not update user data and *force* updates user data when possible. See <<_mappers, Identity Provider Mappers>> for more information.
+|Режим синхронизации
+|Стратегия обновления информации пользователя от поставщика данных через картографов. При выборе *legacy*, {project_name} использовал текущее поведение. *Импорт* не обновляет пользовательские данные и *принуди* обновляет пользовательские данные, когда это возможно. Смотрите <<_mappers, Identity Provider Mappers>> для получения дополнительной информации.
 
-|Case-sensitive username
-|If enabled, the original username from the identity provider is kept as is when federating users. Otherwise, the username from the identity provider is lower-cased and might not match the original value if it is case-sensitive. This setting only affects the username associated with the federated identity as usernames in the server are always in lower-case.
+|Имя пользователя с учетом регистра
+|Если включено, то исходное имя пользователя от поставщика идентификации хранится как при федерации пользователей. В противном случае имя пользователя поставщика идентификации имеет нижний регистр и может не совпадать с исходным значением, если оно чувствительно к регистру. Эта настройка влияет только на имя пользователя, связанное с федеративным именем пользователя на сервере, всегда в нижнем регистре.
 
-|Show in Account console
-|Defines how the identity provider will be available from the account console. If set to `Always`, it is always available.
-If set to `When linked`, it will be shown only when the user is linked to it. Otherwise, if set to `Never`, it will not be available even if the user is linked to it.
+|Показать в консоли аккаунта
+|Определяет, как поставщик идентификации будет доступен в консоли аккаунта. Если установлено значение `Всегда`, он всегда доступен.
+Если установлено значение `When linked`, оно будет отображаться только когда пользователь связан с ним. В противном случае, если установлено значение `Никогда`, он не будет доступен, даже если пользователь связан с ним.
 |===
