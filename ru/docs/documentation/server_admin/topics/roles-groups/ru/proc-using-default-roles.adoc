@@ -1,0 +1,10 @@
+[[_default_roles]]
+= Using default roles
+
+.Procedure
+. Click *Realm settings* in the menu.
+. Click the *User registration* tab.
++
+image:images/default-roles.png[Default roles]
+
+This screenshot shows that some _default roles_ already exist.
