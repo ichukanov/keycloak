@@ -1,29 +1,29 @@
-=== Features
+=== Возможности
 
-{project_name} provides the following features:
+{project_name} предоставляет следующие функции:
 
-* Single Sign-On and Single Sign-Out for browser applications.
-* OpenID Connect support.
-* OAuth 2.0 support.
-* SAML support.
-* Identity Brokering - Authenticate with external OpenID Connect or SAML Identity Providers.
-* Social Login - Enable login with Google, GitHub, Facebook, Twitter, and other social networks.
-* User Federation - Sync users from LDAP and Active Directory servers.
-* Kerberos bridge - Automatically authenticate users that are logged-in to a Kerberos server.
-* Admin Console for central management of users, roles, role mappings, clients and configuration.
-* Account Console that allows users to centrally manage their account.
-* Theme support - Customize all user facing pages to integrate with your applications and branding.
-* Flexible Authentication - Authenticate user with various mechanisms including passkey, password or X.509 certificates. Step-up authentication support
-* Two-factor Authentication - Support for passkey, recovery codes and TOTP/HOTP via Google Authenticator or FreeOTP.
-* Login flows - optional user self-registration, recover password, verify email, require password update, etc.
-* Session management - Admins and users themselves can view and manage user sessions.
-* Token mappers - Map user attributes, roles, etc. how you want into tokens and statements.
-* Not-before revocation policies per realm, application and user.
-* CORS support - Client adapters have built-in support for CORS.
+* Single Sign-On и Single Sign-Out для приложений браузера.
+* Поддержка OpenID Connect.
+* Поддержка OAuth 2.0.
+* Поддержка SAML.
+* Идентификатор брокера - аутентификация с внешним OpenID Connect или SAML идентификаторы.
+* Социальный вход - включите вход с Google, GitHub, Facebook, Twitter и других социальных сетей.
+* Федерация пользователей - синхронизация пользователей с серверов LDAP и Active Directory.
+* Мост Kerberos - Автоматически аутентифицировать пользователей, которые вошли в систему на сервере Kerberos.
+* Консоль администратора для централизованного управления пользователями, ролями, ролями, клиентами и конфигурацией.
+* Консоль учетной записи, которая позволяет централизованно управлять своей учетной записью.
+* Поддержка темы - Настройте все пользовательские страницы для интеграции с вашими приложениями и брендингом.
+* Гибкая аутентификация - аутентификация пользователя с различными механизмами, включая пароль, сертификаты X.509. Поддержка аутентификации по шагам
+* Двухфакторная аутентификация - поддержка паролей, кодов восстановления и TOTP/HOTP через Google Authenticator или FreeOTP.
+* Логин процессы - необязательная регистрация пользователя, восстановление пароля, верификация электронной почты, требуют обновления пароля и т.д.
+* Управление сессиями - сами администраторы и пользователи могут просматривать и управлять сессиями.
+* Маркеры - карты атрибутов, ролей и т.д. как вы хотите в токены и операторы.
+* Отзыв политик недоступен для каждого мира, приложения и пользователя.
+* CORS поддержка - клиентские адаптеры имеют встроенную поддержку CORS.
 +
 ifeval::[{project_community}==true]
-* Service Provider Interfaces (SPI) - A number of SPIs to enable customizing various aspects of the server. Authentication flows, user federation providers,
+* Интерфейсы сервис-провайдера (SPI) - ряд SPI, позволяющих настраивать различные аспекты сервера. Authentication flows, user federation providers,
 protocol mappers and many more.
 +
 endif::[]
-* Supports any platform/language that has an OpenID Connect Relying Party library or SAML 2.0 Service Provider library.
+* Поддерживает любую платформу/язык, у которой есть библиотека OpenID Connect Relying Party или библиотека провайдера услуг SAML 2.0.
