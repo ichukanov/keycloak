@@ -5,16 +5,16 @@
 // server_admin/topics/users.adoc
 
 [id="ref-personal-data-collected_{context}"]
-= Personal data collected by {project_name}
+= Личные данные, собранные {project_name}
 
-By default, {project_name} collects the following data:
+По умолчанию {project_name} собирает следующие данные:
 
-* Basic user profile data, such as the user email, first name, and last name.
-* Basic user profile data used for social accounts and references to the social account when using a social login.
-* Device information collected for audit and security purposes, such as the IP address, operating system name, and the browser name.
+* Основные данные профиля, такие как электронная почта пользователя, имя и фамилия.
+* Базовые данные профиля пользователя, используемые для социальных учетных записей и ссылок на социальную учётную запись при использовании социальной учётной записи.
+* Данные устройства, собранные для целей аудита и безопасности, такие как IP-адрес, имя операционной системы и имя браузера.
 
-The information collected in {project_name} is highly customizable. The following guidelines apply when making customizations:
+Информация, собранная в {project_name} , очень легко настраивается. При внесении изменений применяются следующие принципы:
 
-* Registration and account forms can contain custom fields, such as birthday, gender, and nationality.  An administrator can configure {project_name} to retrieve data from a social provider or a user storage provider such as LDAP.
-* {project_name} collects user credentials, such as password, OTP codes, and WebAuthn public keys. This information is encrypted and saved in a database, so it is not visible to {project_name} administrators. Each type of credential can include non-confidential metadata that is visible to administrators such as the algorithm that is used to hash the password and the number of hash iterations used to hash the password.
-* With authorization services and UMA support enabled, {project_name} can hold information about some objects for which a particular user is the owner.
+* В регистрационных и учетных бланках могут содержаться такие стандартные поля, как день рождения, пол, гражданство.  Администратор может настроить {project_name} для получения данных от социального провайдера или поставщика хранения данных, таких как LDAP.
+* {project_name} собирает учетные данные пользователей, такие как пароль, OTP коды и публичные ключи WebAuthn. Эта информация зашифрована и сохранена в базе данных, поэтому она не видна администраторам {project_name}. Каждый тип учетных данных может включать неконфиденциальные метаданные, видимые администраторам, такие как алгоритм, используемый для хеширования пароля и количество итераций, используемых для хеширования пароля.
+* С включенными сервисами авторизации и поддержкой UMA, {project_name} может хранить информацию о некоторых объектах, для которых тот или иной пользователь является владельцем.
