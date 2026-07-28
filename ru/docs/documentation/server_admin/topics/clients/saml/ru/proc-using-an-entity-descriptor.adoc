@@ -1,19 +1,19 @@
-= Using an entity descriptor to create a client
+= Использовать дескриптор сущности для создания клиента
 
-The Client page includes an *Import client* option.
+Страница Клиента включает опцию *Импорт клиента*.
 
-image:images/import-client-saml.png[Import SAML client]
+image:images/import-client-saml.png[Импорт клиента SAML]
 
-.Procedure
-. Click *Browse*.
-. Load the file that contains the XML entity descriptor information.
-. Review the information to ensure everything is set up correctly.
+.Процедура
+. Нажмите *Обзор*.
+. Загрузить файл, содержащий информацию XML-дескриптора сущности.
+. Просмотрите информацию, чтобы убедиться, что все настроено правильно.
 
-Some SAML client adapters, such as _mod-auth-mellon_, need the XML Entity Descriptor for the IDP.  You can find this descriptor by going to this URL:
+Некоторые SAML клиентские адаптеры, такие как _mod-auth-mellon_, нуждаются в XML Entity Descriptor для IDP.  Вы можете найти этого дескриптора, перейдя по ссылке:
 
 [source, subs="attributes"]
 ----
 root{kc_realms_path}/{realm-name}/protocol/saml/descriptor
 ----
 
-where _realm_ is the realm of your client.
+где _realm_ - это область вашего клиента.
