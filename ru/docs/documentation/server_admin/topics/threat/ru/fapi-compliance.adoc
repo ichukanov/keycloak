@@ -1,5 +1,5 @@
-=== FAPI compliance
+=== Соответствие FAPI
 
-To make sure that {project_name} server will validate your client to be more secure and FAPI compliant, you can configure client policies
-for the FAPI support. *FAPI* details are described in the link:{securing_apps_link}[securing apps] section. Among other things, this ensures some security best practices
-described above like SSL required for clients, secure redirect URI used and more of similar best practices.
+Чтобы убедиться, что {project_name} сервер проверит ваш клиент более безопасным и совместимым с FAPI, вы можете настроить клиентские политики
+для поддержки FAPI. *FAPI* подробности описаны в разделе{securing_apps_link}[защита приложений]. Среди прочего, это обеспечивает лучшую безопасность
+описанную выше, как требуется SSL для клиентов, защищённый редирект URI использовал и больше аналогичных передовых практик.
