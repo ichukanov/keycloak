@@ -1,10 +1,10 @@
 [[_mapping_organization_claims_]]
-= Mapping organization claims
+= Сопоставляющие претензии организации
 
-authorization requests to the server. When authenticating in the context of an organization, clients can request the `organization` scope to map information
+запросы авторизации на сервер. When authenticating in the context of an organization, clients can request the `organization` scope to map information
 about the organizations where the user is a member.
 
-As a result, the token will contain a claim as follows:
+В результате этого токен будет содержать следующую претензию:
 
 ```json
 "organization": {
@@ -20,29 +20,29 @@ As a result, the token will contain a claim as follows:
 The organization claim can be used by clients (for example, from ID Tokens) and resource servers (for example, from access tokens)
 to authorize access to protected resources based on the organization where the user is a member.
 
-The `organization` scope is a built-in optional client scope at the realm.  Therefore, this scope is added to any client created in the realm by default. It also defines the `Organization Membership` mapper that controls how the organization membership information is mapped to the tokens.
+Область «организации» представляет собой встроенную необязательную область деятельности клиента.  Таким образом, по умолчанию эта область добавляется любому клиенту, созданному в реалме. Он также определяет карточку «Членство в Организации», которая контролирует сопоставление информации о членстве организации с токенами.
 
-NOTE: By default, the organization id and attributes are not included in the organization claim. To include them, edit the mapper and enable the *Add organization id* and *Add organization attributes* options, respectively.
+NOTE: По умолчанию идентификатор и атрибуты организации не включены в претензию организации. Чтобы включить их, отредактируйте карту и включите параметры *Добавить идентификатор организации* и *Добавить атрибуты организации*, соответственно.
 
-image:images/organizations-add-org-attrs-in-claim.png[alt="Including attributes in the organization claim"]
+image:images/organizations-add-org-attrs-in-claim.png[alt="Включая атрибуты в претензию организации"]
 
-The `organization` scope is requested using different formats:
+Область `organization` запрошена с использованием различных форматов:
 
 [cols="2*", options="header"]
 |===
-|Format
-|Description
+|Формат
+|Описание
 
-|`organization` |Maps to a single organization if the user is a member of a single organization.
-Otherwise, if a member of multiple organizations, the user will be prompted to select an organization when authenticating to the realm.
+|«Организация» |Карты одной организации, если пользователь является членом одной организации.
+В противном случае, если участник нескольких организаций, пользователю будет предложено выбрать организацию при аутентификации в реалме.
 
-|`organization:<alias>` |Maps to a specific organization with the given alias.
-Multiple organizations can be requested by specifying multiple scopes, for example `organization:org-a organization:org-b`.
-If any of the aliases does not match an existing organization or the user is not a member, the request will be rejected.
+|`organization:<alias>` |Привязка к определенной организации с указанным псевдонимом.
+Множественные организации могут быть запрошены путем указания нескольких областей охвата, например `organization:org-a organization:org-b`.
+Если любой из псевдонимов не соответствует существующей организации или пользователь не является участником, запрос будет отклонен.
 
-|`organization:*` |Maps to all organizations the user is a member of.
+|«Организация:*» |Карты для всех организаций, членом которых является пользователь.
 |===
 
-NOTE: Mixing different scope formats (for example, `organization` with `organization:org-a`, or `organization:org-a` with `organization:*`) is not allowed and will result in an error.
+NOTE: Смешивание различных форматов рамок (например, `organization` с `organization:org-a`, или `organization:org-a` с `organization:*`) недопустимо и приведет к ошибке.
 
-For details on including organization groups in tokens, see <<_managing_groups_,Managing groups>>.
+Подробнее о включении в токены групп организаций см. <<_managing_groups_,Managing groups>.
