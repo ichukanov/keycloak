@@ -1,233 +1,233 @@
-=== Lightweight Directory Access Protocol (LDAP) and Active Directory
+=== Легкий протокол доступа к каталогам (LDAP) и Active Directory
 
-{project_name} includes an LDAP/AD provider. You can federate multiple different LDAP servers in one {project_name} realm and map LDAP user attributes into the {project_name} common user model.
+{project_name} включает провайдера LDAP/AD. Вы можете объединить несколько различных LDAP серверов в одном {project_name} и сопоставить пользовательские атрибуты LDAP в модель пользователя {project_name}.
 
-By default, {project_name} maps the username, email, first name, and last name of the user account, but you can also configure additional <<_ldap_mappers,mappings>>. {project_name}'s LDAP/AD provider supports password validation using LDAP/AD protocols and storage, edit, and synchronization modes.
+По умолчанию {project_name} отображает имя пользователя, электронную почту, имя и фамилию учетной записи пользователя, но вы также можете настроить дополнительные <_ldap_mappers,mappings>>. Провайдер LDAP/AD {project_name}поддерживает проверку пароля с использованием протоколов и хранилища LDAP/AD, редактирования и режимов синхронизации.
 
-==== Configuring federated LDAP storage
+==== Настройка федеративного хранилища LDAP
 
-.Procedure
-. Click *User Federation* in the menu.
+.Процедура
+. Нажмите *User Federation* в меню.
 +
-image:images/user-federation.png[User federation]
-. Click *Add LDAP providers*.
+image:images/user-federation.png[Пользовательская федерация]
+. Нажмите *Добавить провайдеров LDAP*.
 +
-{project_name} brings you to the LDAP configuration page.
+{project_name} приведёт вас на страницу конфигурации LDAP.
 +
-image:images/user-fed-ldap.png[User federation]
+image:images/user-fed-ldap.png[Пользовательская федерация]
 
-==== Storage mode
+==== Режим хранения
 
-{project_name} imports users from LDAP into the local {project_name} user database. This copy of the user database synchronizes on-demand or through a periodic background task. An exception exists for synchronizing passwords. {project_name} never imports passwords. Password validation always occurs on the LDAP server.
+{project_name} импортирует пользователей из LDAP в локальную базу данных пользователей {project_name}. Эта копия базы данных пользователя синхронизируется по требованию или через периодическую фоновую задачу. Исключение для синхронизации паролей. {project_name} никогда не импортирует пароли. Проверка пароля всегда происходит на LDAP сервере.
 
-The advantage of synchronization is that all {project_name} features work efficiently because any required extra per-user data is stored locally. The disadvantage is that each time {project_name} queries a specific user for the first time, {project_name} performs a corresponding database insert. Also, when imported users are returned as part of a search operation, a corresponding LDAP search is performed for each one to check if the user still exists in LDAP and do some basic validation.
+Преимущество синхронизации заключается в том, что все функции {project_name} работают эффективно, потому что любые необходимые дополнительные данные для каждого пользователя хранятся локально. Недостаток заключается в том, что {project_name} каждый раз запрашивает конкретного пользователя в первый раз, {project_name} выполняет соответствующую вставку базы данных. Также, когда импортированные пользователи возвращаются в рамках операции поиска, Соответствующий поиск LDAP выполняется для каждого пользователя, чтобы проверить, существует ли пользователь в LDAP и выполнить базовую проверку.
 
-You can synchronize the import with your LDAP server. Import synchronization is unnecessary when LDAP mappers always read particular attributes from the LDAP rather than the database.
+Вы можете синхронизировать импорт с вашим LDAP сервером. Синхронизация импорта не требуется, когда LDAP карты всегда читают конкретные атрибуты из LDAP, а не базы данных.
 
-You can use LDAP with {project_name} without importing users into the {project_name} user database. The LDAP server backs up the common user model that the {project_name} runtime uses. If LDAP does not support data that a {project_name} feature requires, that feature will not work. The advantage of this approach is that you do not have the resource usage of importing and synchronizing copies of LDAP users into the {project_name} user database.
+Вы можете использовать LDAP с {project_name} без импорта пользователей в базу данных пользователя {project_name}. Сервер LDAP резервное копирование общей пользовательской модели, используемой {project_name}. Если LDAP не поддерживает данные, требуемые для {project_name} , эта функция не будет работать. Преимущество этого подхода заключается в том, что вы не используете ресурсы для импорта и синхронизации копий пользователей LDAP в базе данных пользователей {project_name}.
 
-The *Import Users* switch on the LDAP configuration page controls this storage mode. To import users, toggle this switch to *ON*.
+Переключатель *Импорт пользователей* на странице конфигурации LDAP управляет режимом хранения. Чтобы импортировать пользователей, переключите этот параметр на *ВКЛЮЧЕНИЕ*.
 
 [NOTE]
 ====
-If you disable *Import Users*, you cannot save user profile attributes into the {project_name} database. Also, you cannot save metadata except for user profile metadata mapped to the LDAP. This metadata can include role mappings, group mappings, and other metadata based on the LDAP mappers' configuration.
+Если вы отключите *Импорт пользователей*, вы не можете сохранить атрибуты профиля пользователя в базе данных {project_name}. Кроме того, вы не можете сохранять метаданные за исключением метаданных профиля пользователя, сопоставленных с LDAP. Эти метаданные могут включать в себя сопоставления ролей, группировки сопоставлений и другие метаданные, основанные на конфигурации LDAP карточек.
 
-When you attempt to change the non-LDAP mapped user data, the user update is not possible. For example, you cannot disable the LDAP mapped user unless the user's `enabled` flag maps to an LDAP attribute.
+Когда вы пытаетесь изменить пользовательские данные, не относящиеся к LDAP, обновление пользователя невозможно. Например, вы не можете отключить пользователя с сопоставленными LDAP, если он не включил флаг `enabled` в атрибут LDAP.
 ====
 
 [NOTE]
 ====
-When working with imported users, {project_name} performs a LDAP search when the user is queried to validate the user and decorate it so that the configured mappers work properly. This means that extra care must be taken when performing unfiltered user searches that may fetch a big number of users as a LDAP search will be issued for every imported user that is found, possibly affecting the performance in a negative way.
+При работе с импортируемыми пользователями, {project_name} выполняет поиск LDAP при запросе пользователя, чтобы проверить пользователя и декорировать его так, чтобы настроенные карты работали правильно. Это означает, что необходимо проявлять особую осторожность при выполнении не отфильтрованных поисков пользователей, которые могут получить большое число пользователей в качестве поиска LDAP для каждого найденного импортируемого пользователя; возможно отрицательно влияет на производительность.
 
-Operations that fetch a single user (for example during login) are usually cached and should not be impacted by this extra LDAP search that is performed when the user is fetched for the first time.
+Операции, которые получают одного пользователя (например, при входе в систему), обычно кэшируются и не должны затрагиваться дополнительным LDAP поиском, который выполняется при первом получении пользователя.
 ====
 
-==== Edit mode
+==== Изменить режим
 
-Users and admins can modify user metadata, users through the <<_account-service, Account Console>>, and administrators through the Admin Console. The `Edit Mode` configuration on the LDAP configuration page defines the user's LDAP update privileges.
+Пользователи и администраторы могут изменять метаданные пользователя, пользователи через консоль администраторов <<_account-service, Account Console>>. Конфигурация `Edit Mode` на странице конфигурации LDAP определяет привилегии на обновление LDAP.
 
-READ_ONLY:: You cannot change the username, email, first name, last name, and other mapped attributes. {project_name} shows an error anytime a user attempts to update these fields. Password updates are not supported.
-WRITABLE:: You can change the username, email, first name, last name, and other mapped attributes and passwords and synchronize them automatically with the LDAP store.
-UNSYNCED:: {project_name} stores changes to the username, email, first name, last name, and passwords in {project_name} local storage, so the administrator must synchronize this data back to LDAP. In this mode, {project_name} deployments can update user metadata on read-only LDAP servers. This option also applies when importing users from LDAP into the local {project_name} user database.
+ТОЛЬКО ЧТО:: Вы не можете изменить имя пользователя, email, имя, фамилию и другие атрибуты сопоставления. {project_name} показывает ошибку в любое время когда пользователь пытается обновить эти поля. Обновления паролей не поддерживаются.
+ЗАПИСЬ:: Вы можете изменить имя пользователя, email, имя, фамилию и другие атрибуты сопоставления и пароли и автоматически синхронизировать их с LDAP магазином.
+НЕЗНАЧНОЕ:: {project_name} хранит изменения в имени, email, имя, фамилия, и пароли в локальном хранилище {project_name} , поэтому администратор должен синхронизировать эти данные обратно с LDAP. В этом режиме развертывание {project_name} может обновить метаданные пользователя на серверах LDAP только для чтения. Эта опция применима также при импорте пользователей из LDAP в локальную базу данных пользователей {project_name}.
 
 [NOTE]
 ====
-When {project_name} creates the LDAP provider, {project_name} also creates a set of initial <<_ldap_mappers,LDAP mappers>>. {project_name} configures these mappers based on a combination of the *Vendor*, *Edit Mode*, and *Import Users* switches. For example, when edit mode is UNSYNCED, {project_name} configures the mappers to read a particular user attribute from the database and not from the LDAP server. However, if you later change the edit mode, the mapper's configuration does not change because it is impossible to detect if the configuration changes changed in UNSYNCED mode. Decide the *Edit Mode* when creating the LDAP provider. This note applies to *Import Users* switch also.
+При создании {project_name} поставщика LDAP {project_name} также создает набор начальных <_ldap_mappers,LDAP mappers>. {project_name} настраивает эти карты на основе комбинации *Поставщика*, *Изменить режим* и *Импортировать пользователей*. Например, когда режим редактирования - UNSYNCED, {project_name} настраивает карты для чтения конкретного атрибута пользователя из базы данных, а не с сервера LDAP. Однако, если вы позже измените режим редактирования, конфигурация карты не меняется, потому что невозможно определить, изменилась ли конфигурация в режиме UNSYNCED. Решить *Изменить режим* при создании LDAP провайдера. Эта заметка относится и к переключателю *Импорт пользователей*.
 ====
 
-==== Other configuration options
+==== Другие параметры конфигурации
 
-Console Display Name:: The name of the provider to display in the admin console.
-Priority:: The priority of the provider when looking up users or adding a user.
-Sync Registrations:: Toggle this switch to *ON* if you want new users created by {project_name} added to LDAP.
-Allow Kerberos authentication:: Enable Kerberos/SPNEGO authentication in the realm with user data provisioned from LDAP. For more information, see the <<_kerberos,Kerberos section>>.
-Remove invalid users during searches:: Remove users from the local database if they are not available from the user storage when executing searches. If this is true, users no longer available from their corresponding user storage will be deleted from the local database whenever trying to look up users. If false, then users previously imported from the user storage will be kept in the local database, as read-only and disabled, even if that user is no longer available from the user storage. For example, user was deleted directly from LDAP or the `Users DN` is invalid. Note that this behavior will only happen when the user is not yet cached.
-Relative User Creation DN:: Relative DN from the `Users DN` where new users will be created. This allows users to be created in a sub-DN of the parent `Users DN` when using a `subtree` search scope. For example, if the `Users DN` is set to `ou=people,dc=myorg,dc=com` and the `Relative User Creation DN` is set to `ou=engineering`, users will be fetched from the `Users DN` and all sub-DNs, but new users will be stored in `ou=engineering,ou=people,dc=myorg,dc=com`. In other words, {project_name} concatenates the `Relative User Creation DN` with the `Users DN` (a comma is added automatically when concatenating the DNs) and uses this resulting DN to store users
+Отображаемое имя консоли:: Имя провайдера для отображения в консоли администратора.
+Приоритет:: Приоритет провайдера при поиске пользователей или добавлении пользователя.
+Регистрация синхронизации:: Включите этот переключатель в *ВКЛЮЧЕНИЕ*, если вы хотите, чтобы новые пользователи, созданные {project_name} , добавлены в LDAP.
+Разрешить аутентификацию Kerberos:: Включить аутентификацию Kerberos/SPNEGO в области с пользовательскими данными, предоставленными LDAP. Дополнительную информацию см. <_kerberos,Kerberos section>>.
+Удалить недействительных пользователей во время поиска:: Удалять пользователей из локальной базы данных, если они не доступны из пользовательского хранилища при выполнении поиска. Если это правда, пользователи больше не могут быть удалены из соответствующей памяти пользователей из локальной базы данных при попытке поиска пользователей. Если false, то пользователи, ранее импортированные из хранилища пользователя, будут храниться в локальной базе данных, как только чтение и отключено, даже если этот пользователь больше не доступен из пользовательского хранилища. Например, пользователь был удалён непосредственно из LDAP или «Пользователи DN» является недопустимым. Заметьте, что это поведение произойдет только тогда, когда пользователь еще не кэшируется.
+Относительное создание DN:: Относительный DN от `Users DN`, где будут создаваться новые пользователи. Это позволяет создавать пользователей в подDN родительского `Users DN` при использовании области поиска `subtree`. Например, если `Users DN` имеет значение `ou=people,dc=myorg,dc=com` и `Relative User Creation DN` имеет значение `ou=engineering`, будут загружены из `Users DN` и всех подDNs, но новые пользователи будут храниться в `ou=engineering,ou=people,dc=myorg,dc=com`. Другими словами, {project_name} объединяет `Relative User Creation DN` с `Users DN` (запятая автоматически добавляется при объединении DNs) и использует этот DN для хранения пользователей
 
-A similar property is also available in the group and role mappers, allowing groups and roles to be added to a sub-DN of the base DN that is used to search for the groups/roles.
+Аналогичное свойство также доступно в группе и роли картографа, позволяет добавлять группы и роли в подDN базового DN, который используется для поиска групп/ролей.
 
-Other options:: Hover the mouse pointer over the tooltips in the Admin Console to see more details about these options.
+Другие опции:: Наведите курсор мыши на подсказки в консоли администратора, чтобы увидеть более подробную информацию об этих параметрах.
 
-==== Connecting to LDAP over SSL
+==== Подключение к LDAP через SSL
 
-When you configure a secure connection URL to your LDAP store (for example,`ldaps://myhost.com:636`), {project_name} uses SSL to communicate with the LDAP server. Configure a truststore on the {project_name} server side so that {project_name} can trust the SSL connection to LDAP - see https://www.keycloak.org/server/keycloak-truststore[Configuring a Truststore] {section}.
+При настройке URL-адреса безопасного подключения к своему LDAP магазину (например,`ldaps://myhost.com:636`), {project_name} использует SSL для взаимодействия с LDAP сервером. Настройте хранилище с сервера {project_name} так, чтобы {project_name} мог доверять SSL-соединению с LDAP - см. https://www.keycloak.org/server/keycloak-truststore[Configuring a Truststore] {section}.
 
-The `Use Truststore SPI` configuration property is deprecated.  It should normally be left as `Always`.
+Свойство конфигурации `Use Truststore SPI` является устаревшим.  Обычно его следует оставить как "Всегда".
 
-==== Connecting to multiple LDAP servers for failover
+==== Подключение к нескольким серверам LDAP для отказа
 
-You can configure multiple LDAP server URLs for failover by entering them as a *space-separated* list in the *Connection URL* field. For example:
+Вы можете настроить несколько URL-адресов LDAP для отказов, введя их в виде списка *разделённого пробелом* в поле *URL соединения*. Например:
 
 ```
 ldap://server1:389 ldap://server2:389
 ```
 
-or for SSL connections:
+или для SSL-соединений:
 
 ```
 ldaps://server1:636 ldaps://server2:636
 ```
 
-When multiple URLs are configured, the underlying Java JNDI provider tries each URL in order from left to right. If a connection to the first URL fails, it tries the next URL, and so on until a connection succeeds. This is a sequential failover mechanism, not load balancing — the first reachable server is always used.
+При настройке нескольких URL-адресов, базовый Java JNDI провайдер пытается каждый URL слева направо. Если соединение с первым URL-адресом не удалось, он пытается следующий URL, и так далее до тех пор, пока соединение не завершится успешно. Это последовательный механизм отказа от работы, а не балансирование нагрузки — первый доступный сервер всегда используется.
 
-Failover occurs at connection creation time. If a server becomes unreachable after a connection has been established, the current operation may fail, but subsequent operations create new connections and go through the failover list again.
+Исправление происходит при создании соединения. Если сервер становится недоступным после установления соединения, текущая операция может завершиться неудачей, но последующие операции создают новые соединения и снова переходить к списку отказов.
 
 [NOTE]
 ====
-All configured LDAP servers must be *replicas of the same directory* (for example, Active Directory domain controllers in the same domain, or replicated OpenLDAP instances). Each LDAP entry must have the same unique identifier (such as `entryUUID` or `objectGUID`) across all servers. If the servers are independent instances loaded with the same data, each server generates its own unique identifiers, which will cause synchronization and authentication failures when failover switches to a different server.
+Все настроенные серверы LDAP должны быть *репликациями одной и той же директории* (например, контроллеры домена Active Directory в одном домене или реплицированные экземпляры OpenLDAP). Каждая запись LDAP должна иметь один и тот же уникальный идентификатор (например, `entryUID` или `objectGUID`) на всех серверах. Если серверы самостоятельно загружаются с одинаковыми данными, каждый сервер генерирует свои собственные уникальные идентификаторы, что вызовет синхронизацию и ошибки аутентификации при переходе на другой сервер.
 ====
 
 [WARNING]
 ====
-URLs must be separated by *spaces only*. Do not use commas as separators:
+URL-адреса должны быть разделены *пробелами*. Не используйте запятые в качестве разделителей:
 
-* `ldap://server1,ldap://server2` results in a connection error.
-* `ldap://server1, ldap://server2` (comma followed by a space) silently discards the first URL due to the trailing comma, leaving you with no failover and no warning.
+* `ldap://server1,ldap://server2` приводит к ошибке соединения.
+* `ldap://server1, ldap://server2` (запятая после пробела) тихо сброшает первый URL из-за прерывания запятой, оставляя вас без отказов и предупреждения.
 ====
 
-The *Connection Timeout* setting controls how long {project_name} waits for a TCP connection to each URL before trying the next one. The default is 5000 milliseconds (5 seconds). If a server is unreachable (for example, due to a network partition or a firewall silently dropping packets), the full timeout is spent on each unreachable URL before failover proceeds. Adjust this value based on your network environment to balance between fast failover and tolerance for slow connections.
+Настройки *Тайм-аута соединения* определяют, сколько {project_name} ждет TCP-соединение на каждый URL-адрес, прежде чем попробовать следующий. По умолчанию 5000 миллисекунд (5 секунд). Если сервер недоступен (например, из-за сетевого раздела или брандмауэра беззвучно бросают пакет), полный тайм-аут расходуется на каждый недоступный URL перед отказом продолжается. Отрегулируйте это значение в зависимости от вашего сетевого окружения на баланс между быстрым отказом и терпимостью при медленном соединении.
 
-NOTE: If a server is cleanly stopped (the port is closed), the connection is refused immediately and failover to the next URL occurs with no noticeable delay.
+NOTE: Если сервер чисто остановлен (порт закрыт), отказ в соединении немедленно и отказ на следующий URL-адрес происходит без заметной задержки.
 
-==== Synchronizing LDAP users to {project_name}
+==== Синхронизация пользователей LDAP с {project_name}
 
-If you set the *Import Users* option, the LDAP Provider handles importing LDAP users into the {project_name} local database. The first time a user logs in or is returned as part of a user query (e.g. using the search field in the admin console), the LDAP provider imports the LDAP user into the {project_name} database. During authentication, the LDAP password is validated.
+Если вы установите опцию *Импорт пользователей*, LDAP провайдер импортирует пользователей LDAP в локальную базу данных {project_name}. Впервые пользователь регистрируется или возвращается как часть пользовательского запроса (напр. используя поле поиска в консоли администратора), провайдер LDAP импортирует пользователя LDAP в базу данных {project_name}. Во время аутентификации LDAP пароль проверяется.
 
-By default, {project_name} does not support the username and email attributes with case-sensitive values when storing users to the local database. The value for these attributes will be stored in lower-case in the local database.
-However, if the *Import Users* option is disabled, {project_name} will not lower-case the username and email attributes when querying users from LDAP.
-This behavior allows you to use case-sensitive usernames and emails when *Import Users* is disabled. Note that this behavior applies only to username and email attributes. Other attributes remain case-sensitive.
+По умолчанию {project_name} не поддерживает имя пользователя и атрибуты электронной почты с чувствительными к регистру значениями при хранении пользователей в локальной базе данных. Значение для этих атрибутов будет храниться в нижнем регистре в локальной базе данных.
+Однако, если опция *Импорт пользователей* отключена, {project_name} не будет в нижнем регистре вводить имя пользователя и атрибуты электронной почты при запросе пользователей из LDAP.
+Это поведение позволяет использовать учетные регистры имён и адреса электронной почты, когда *Импорт пользователей* отключен. Обратите внимание, что это поведение применяется только к атрибутам имени пользователя и электронной почты. Другие атрибуты остаются чувствительными к регистру.
 
-It is recommended to not use case-sensitive usernames and emails when using LDAP with {project_name}, as some features in {project_name} may not work correctly with case-sensitive usernames and emails.
+При использовании LDAP с {project_name}рекомендуется не использовать учетные имена пользователей и адреса электронной почты с учетом регистра так как некоторые функции в {project_name} могут неправильно работать с учетными регистрами пользователей и электронными письмами.
 
-If you want to sync all LDAP users into the {project_name} database, configure and enable the *Sync Settings* on the LDAP provider configuration page.
+Если вы хотите синхронизировать всех пользователей LDAP с базой данных {project_name} , настройте и включите *Синхронизацию* на странице конфигурации провайдера LDAP.
 
-Two types of synchronization exist:
+Существует два типа синхронизации:
 
-Periodic Full sync:: This type synchronizes all LDAP users into the {project_name} database. The LDAP users already in {project_name}, but different in LDAP, directly update in the {project_name} database.
-Periodic Changed users sync:: When synchronizing, {project_name} creates or updates users created or updated after the last sync only.
+Периодическая полная синхронизация:: Этот тип синхронизирует всех пользователей LDAP с базой данных {project_name}. Пользователи LDAP уже в {project_name}, но разные в LDAP, напрямую обновляются в базе данных {project_name}.
+Периодическая синхронизация измененных пользователей:: При синхронизации, {project_name} создает или обновляет пользователей, созданных или обновляемых только после последней синхронизации.
 
-The best way to synchronize is to click *Synchronize all users* when you first create the LDAP provider, then set up periodic synchronization of changed users.
+Лучший способ синхронизировать это нажать *Синхронизировать всех пользователей* при первом создании LDAP провайдера, затем настроить периодическую синхронизацию измененных пользователей.
 
 [[_ldap_mappers]]
-==== LDAP mappers
+==== LDAP картографы
 
-LDAP mappers are `listeners` triggered by the LDAP Provider. They provide another extension point to LDAP integration. LDAP mappers are triggered when:
+LDAP карты являются «слушателями», инициированными LDAP провайдером. Они представляют собой еще один пункт расширения для интеграции LDAP. Маркеры LDAP срабатывают, когда:
 
-* Users log in by using LDAP.
-* Users initially register.
-* The Admin Console queries a user.
+* Пользователи войдут с помощью LDAP.
+* Сначала зарегистрировались пользователи.
+* Консоль Администратора запрашивает пользователя.
 
-When you create an LDAP Federation provider, {project_name} automatically provides a set of `mappers` for this provider. This set is changeable by users, who can also develop mappers or update/delete existing ones.
+При создании поставщика LDAP федерации {project_name} автоматически предоставляет набор `mappers` для этого поставщика. Этот набор изменяется пользователями, которые также могут разрабатывать карты или обновить/удалять существующие.
 
-User Attribute Mapper:: This mapper specifies which LDAP attribute maps to the attribute of the {project_name} user. For example, you can configure the `mail` LDAP attribute to the `email` attribute in the {project_name} database. For this mapper implementation, a one-to-one mapping always exists.
-FullName Mapper:: This mapper specifies the full name of the user. {project_name} saves the name in an LDAP attribute (usually `cn`) and maps the name to the `firstName` and `lastname` attributes in the {project_name} database. Having `cn` to contain the full name of the user is common for LDAP deployments.
+Карта атрибутов пользователя:: Маппер определяет, какой атрибут LDAP сопоставляет атрибут пользователя {project_name}. Например, вы можете настроить атрибут `mail` LDAP на атрибут `email` в базе данных {project_name}. Для этой реализации карты всегда существует одноразовое сопоставление.
+Полное имя Mapper:: Этот картограф определяет полное имя пользователя. {project_name} сохраняет имя в LDAP атрибуте (обычно `cn`) и сопоставляет его с атрибутами `firstName` и `lastname` в базе данных {project_name}. `cn` должен содержать полное имя пользователя для развертывания LDAP.
 
 [NOTE]
 ====
-When you register new users in {project_name} and `Sync Registrations` is ON for the LDAP provider, the fullName mapper permits falling back to the username. This fallback is  useful when using Microsoft Active Directory (MSAD). The common setup for MSAD is to configure the `cn` LDAP attribute as fullName and, at the same time, use the `cn` LDAP attribute as the `RDN LDAP Attribute` in the LDAP provider configuration. With this setup, {project_name} falls back to the username. For example, if you create {project_name} user "john123" and leave firstName and lastName empty, then the fullname mapper saves "john123" as the value of the `cn` in LDAP. When you enter "John Doe" for firstName and lastName later, the fullname mapper updates LDAP `cn` to the "John Doe" value as falling back to the username is unnecessary.
+Когда вы регистрируете новых пользователей в {project_name} и `Sync Registrations` ВКЛЮЧЕНО для LDAP провайдера, fullName mapper разрешает падать обратно к имени пользователя. Эта резервная копия полезна при использовании Microsoft Active Directory (MSAD). Общая настройка MSAD заключается в настройке атрибута `cn` LDAP как fullName и одновременно, используйте атрибут `cn` LDAP в качестве `RDN LDAP Attribute` в конфигурации провайдера LDAP. С этой настройкой {project_name} возвращается к имени пользователя. Например, если вы создаете {project_name} пользователя "john123" и оставьте первое имя и фамилию пустым, тогда полноимя_mapper сохраняет "john123" в качестве значения `cn` в LDAP. Когда вы вводите "John Doe" для имени и фамилии позже, fullname mapper обновляет LDAP «cn» до значения «John Doe», поскольку возвращается к имени пользователя.
 ====
 
-Hardcoded Attribute Mapper:: This mapper adds a hardcoded attribute value to each {project_name} user linked with LDAP. This mapper can also force values for the `enabled` or `emailVerified` user properties.
-Role Mapper:: This mapper configures role mappings from LDAP into {project_name} role mappings. A single role mapper can map LDAP roles (usually groups from a particular branch of the LDAP tree) into roles corresponding to a specified client's realm roles or client roles. You can configure more Role mappers for the same LDAP provider. For example, you can specify that role mappings from groups under `ou=main,dc=example,dc=org` map to realm role mappings, and role mappings from groups under `ou=finance,dc=example,dc=org` map to client role mappings of client `finance`.
-Hardcoded Role Mapper:: This mapper grants a specified {project_name} role to each {project_name} user from the LDAP provider.
-Group Mapper:: This mapper maps LDAP groups from a branch of an LDAP tree into groups within {project_name}. This mapper also propagates user-group mappings from LDAP into user-group mappings in {project_name}.
+Карта атрибутов с жестким кодом:: Этот картограф добавляет хардкодированное значение атрибута каждому пользователю {project_name} , связанному с LDAP. Этот картограф также может принудительно использовать значения свойств пользователя `enabled` или `emailVerified`.
+Маппер роли:: Этот картограф настраивает сопоставления ролей из LDAP в сопоставления ролей {project_name}. Единый координатор ролей может сопоставлять роли LDAP (обычно группы из конкретной ветки дерева LDAP) на роли, соответствующие ролям определенного клиента или ролям клиента. Вы можете настроить больше карт ролей для одного LDAP провайдера. Например, вы можете указать эти сопоставления ролей групп в рамках `ou=main,dc=example,dc=org` с сопоставлением ролей, и сопоставления ролей групп в разделе `ou=finance,dc=example,dc=org` сопоставляются с соотвествием роли клиента `finance`.
+Карточка с хардкодированной ролью:: Этот картограф предоставляет определенную роль {project_name} каждому пользователю {project_name} от поставщика LDAP.
+Маппер групп:: Карта отображает группы LDAP из ветки дерева LDAP в группы внутри {project_name}. Этот картограф также распространяет сопоставления групп пользователей из LDAP в сопоставления групп пользователей в {project_name}.
 
 [[_msad_mapper]]
-MSAD User Account Mapper:: This mapper is specific to Microsoft Active Directory (MSAD). It can integrate the MSAD user account state into the {project_name} account state, such as enabled account or  expired password. This mapper uses the `userAccountControl`, and `pwdLastSet` LDAP attributes, specific to MSAD and are not the LDAP standard. For example, if the value of `pwdLastSet` is `0`, the {project_name} user must update their password. The result is an UPDATE_PASSWORD required action added to the user. If the value of  `userAccountControl` is `514` (disabled account), the {project_name} user is disabled.
-Certificate Mapper:: This mapper maps X.509 certificates. {project_name} uses it in conjunction with X.509 authentication and `Full certificate in PEM format` as an identity source. This mapper behaves similarly to the `User Attribute Mapper`, but {project_name} can filter for an LDAP attribute storing a PEM or DER format certificate. Enable `Always Read Value From LDAP` with this mapper.
+Карта учетных записей MSAD:: Этот маппер специфичен для Microsoft Active Directory (MSAD). Он может интегрировать состояние учетной записи MSAD в состояние учетной записи {project_name} , например, включенную учетную запись или просроченный пароль. Этот mapper использует `userAccountControl` и `pwdLastSet` LDAP атрибуты, специфичные для MSAD и не являются LDAP стандартом. Например, если значение `pwdLastSet` равно `0`, то пользователь {project_name} должен обновить свой пароль. Результатом является добавленное пользователем действие UPDATE_PASSWORD. Если значение `userAccountControl` равно `514` (отключена учётная запись), пользователь {project_name} отключен.
+Карта сертификатов:: Этот картограф отображает сертификаты X.509. {project_name} использует его совместно с аутентификацией X.509 и `Full certificate in PEM format` в качестве источника идентификации. Этот mapper ведет себя аналогично `User Attribute Mapper`, но {project_name} может фильтровать для атрибута LDAP, хранящего сертификат формата PEM или DER. Включите `Always Read Value From LDAP` с этим картографом.
 
-User Attribute mappers that map basic {project_name} user attributes, such as username, firstname, lastname, and email, to corresponding LDAP attributes. You can extend these and provide your own additional attribute mappings. The Admin Console provides tooltips to help with configuring the corresponding mappers.
+Карта атрибутов пользователя, сопоставляющая основные атрибуты пользователя {project_name} , такие как имя пользователя, имя, фамилия и адрес электронной почты, с соответствующими атрибутами LDAP. Вы можете расширить их и предоставить свои дополнительные сопоставления атрибутов. Консоль администратора предоставляет подсказки для помощи в настройке соответствующих карточек.
 
 [[_ldap_password_hashing]]
-==== Password hashing
+==== Хэширование пароля
 
-When {project_name} updates a password, {project_name} sends the password in plain-text format. This action is different from updating the password in the built-in {project_name} database, where {project_name} hashes and salts the password before sending it to the database. For LDAP, {project_name} relies on the LDAP server to hash and salt the password.
+Когда {project_name} обновляет пароль, {project_name} отправляет пароль в текстовом формате. Это действие отличается от обновления пароля в встроенной базе данных {project_name} , где {project_name} хеширует и соляет пароль перед отправкой его в базу данных. Для LDAP, {project_name} полагается на LDAP сервер хэш и соленый пароль.
 
-By default, LDAP servers such as MSAD, RHDS, or FreeIPA hash and salt passwords. Other LDAP servers such as OpenLDAP store the passwords in plain-text unless you use the _LDAPv3 Password Modify Extended Operation_ as described in https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3[RFC 3062]. Enable the LDAPv3 Password Modify Extended Operation in the LDAP configuration page. See the documentation of your LDAP server for more details. https://directory.apache.org/apacheds/advanced-ug/4.1.1.4-ss-password-hash.html[Configure ApacheDS to hash and salt passwords automatically] by enabling the passwordHashing interceptor.
+По умолчанию, LDAP серверы такие как MSAD, RHDS, или FreeIPA хэш и пароль salt. Другие LDAP сервера, такие как OpenLDAP, хранят пароли в обычном тексте, если вы не используете пароль _LDAPv3, модифицируйте расширенный Operation_ как описано в https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3[RFC 3062]. Включить LDAPv3 Password Modify Extended Operation на странице конфигурации LDAP. Смотрите документацию вашего сервера LDAP для получения более подробной информации. https://directory.apache.org/apacheds/advanced-ug/4.1.1.4-ss-password-hash.html[Настройка хэша и соленых паролей автоматически], включив перехват пароля.
 
-WARNING: Always verify that user passwords are properly hashed and not stored as plaintext by inspecting a changed
-directory entry using `ldapsearch` and base64 decode the `userPassword` attribute value.
+WARNING: Всегда проверяйте, что пользовательские пароли правильно хэшированы и не хранятся в виде простого текста, проверяя измененную запись каталога
+используя атрибут `ldapsearch` и base64 декодируйте значение атрибута `userPassword`.
 
 [[_ldap_password_policy]]
-==== Enabling password change after reset
+==== Включение изменения пароля после сброса
 
-You can force users to change their password after an administrator resets their password. This feature is useful for
-security reasons because it prevents users from using the temporary password set by the administrator for a long time.
+Вы можете заставить пользователей изменить свой пароль после того, как администратор сбрасывает свой пароль. Эта функция полезна для
+соображений безопасности, так как она долгое время не позволяет пользователям использовать временный пароль, установленный администратором.
 
-For that, enable the `Enable LDAP password policy` setting so that a `UPDATE_PASSWORD` required action will be added to
-the user whenever the LDAP server indicates that the user must update their password.
+Для этого включить параметр `Enable LDAP password policy` для того, чтобы требуемое действие `UPDATE_PASSWORD` было добавлено к
+пользователю всякий раз, когда сервер LDAP указывает, что пользователь должен обновить свой пароль.
 
-{project_name} is usually configured to connect to the LDAP server using an administrator account even when users are
-updating their password. In this case, some LDAP servers, if not configured properly, will always force a password change
-after the user changes their password because the LDAP server will see that the password was changed by an administrator
-account and not by the user itself.
+{project_name} обычно настроен на подключение к LDAP серверу с использованием учетной записи администратора, даже когда пользователи
+обновляют свой пароль. В этом случае некоторые LDAP серверы, если не настроены должным образом, будет всегда принудительно сменить пароль
+после изменения пароля пользователем, потому что LDAP сервер увидит, что пароль был изменен администратором
+, а не самим пользователем.
 
 When enabling this feature, make sure your LDAP server is configured to not force users to change their password a
-second time after the user changes their password. Not doing so might cause a password change loop where the user is
-forced to change their password every time they log in.
+second time after the user changes their password. Если это не происходит, то может возникнуть цикл смены пароля, когда пользователь
+вынужден менять свой пароль каждый раз при входе в систему.
 
 [NOTE]
 ====
-This capability is based on https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11[Password Policy for LDAP Directories (IETF draft-behera-ldap-password-policy)].
-For Microsoft Active Directory, use the <<_msad_mapper,MSAD User Account Mapper>> instead.
+Эта возможность основана на https://datatracker.ietf.org/doc/html/draft-behera-ldap-password-policy-11[Политика паролей для LDAP (IETF draft-behera-ldap-password-policy)].
+Для Microsoft Active Directory, используйте <_msad_mapper,MSAD Account Mapper>>.
 ====
 
 [[_ldap_connection_pool]]
-==== Configuring the connection pool
+==== Настройка пула подключений
 
-For more efficiency when managing LDAP connections and to improve performance when handling multiple connections, you can
-enable connection pooling. By doing that, when a connection is closed, it will be returned to the pool for future use therefore
+Для большей эффективности при управлении LDAP соединениями и для улучшения производительности при обработке нескольких соединений, вы можете
+включить объединение соединений. By doing that, when a connection is closed, it will be returned to the pool for future use therefore
 reducing the cost of creating new connections all the time.
 
-The LDAP connection pool configuration is configured using the following system properties:
+Конфигурация пула подключений LDAP настроена с помощью следующих системных свойств:
 
 [cols="2*", options="header"]
 |===
-|Name
-|Description
+|Наименование
+|Описание
 
-|`com.sun.jndi.ldap.connect.pool.authentication` |A list of space-separated authentication types of connections that may be pooled. Valid types are "none", "simple", and "DIGEST-MD5"
+|`com.sun.jndi.ldap.connect.pool.authentication` |Список типов соединений, разделенных пробелами, которые могут быть пущены. Допустимые типы - "none", "simple" и "DIGEST-MD5"
 
-|`com.sun.jndi.ldap.connect.pool.initsize` |The string representation of an integer that represents the number of connections per connection identity to create when initially creating a connection for the identity
+|`com.sun.jndi.ldap.connect.pool.initsize` |Строковое представление целого, которое представляет количество соединений на идентификатор соединения, создаваемое при первоначальном создании соединения для идентификации
 
-|`com.sun.jndi.ldap.connect.pool.maxsize` |The string representation of an integer that represents the maximum number of connections per connection identity that can be maintained concurrently. Note setting this value too low may cause contention in obtaining LDAP connections. See also `com.sun.jndi.ldap.connect.timeout`.
+|`com.sun.jndi.ldap.connect.pool.maxsize` |Строковое представление целого, которое представляет максимальное количество соединений на идентификатор соединения, которое может поддерживаться параллельно. Слишком низкие значения могут привести к разногласиям в получении LDAP соединений. См. также `com.sun.jndi.ldap.connect.timeout`.
 
-|`com.sun.jndi.ldap.connect.pool.prefsize` |The string representation of an integer that represents the preferred number of connections per connection identity that should be maintained concurrently
+|`com.sun.jndi.ldap.connect.pool.prefsize` |Строковое представление целого, которое представляет предпочтительное число соединений на идентификатор соединения, которое должно поддерживаться параллельно
 
-|`com.sun.jndi.ldap.connect.pool.timeout` |The string representation of an integer that represents the number of milliseconds that an idle connection may remain in the pool without being closed and removed from the pool
+|`com.sun.jndi.ldap.connect.pool.timeout` |Строковое представление числа, представляющее количество миллисекунд, которое простаивает в пуле, не закрывая и удаляя из пула
 
-|`com.sun.jndi.ldap.connect.pool.protocol` |A list of space-separated protocol types of connections that may be pooled. Valid types are "plain" and "ssl"
+|`com.sun.jndi.ldap.connect.pool.protocol` |Список типов соединений, разделенных пробелами, которые могут быть пущены. Допустимые типы - "простые" и "ssl"
 
-|`com.sun.jndi.ldap.connect.pool.debug` |A string that indicates the level of debug output to produce. Valid values are "fine" (trace connection creation and removal) and "all" (all debugging information)
+|`com.sun.jndi.ldap.connect.pool.debug` |Строка, которая показывает уровень отладочного вывода для производства. Допустимыми являются "fine" (создание и удаление трассировки соединения) и "all" (вся отладочная информация)
 
-|`com.sun.jndi.ldap.connect.timeout` |The string representation of an integer that represents how long in milliseconds obtaining a connection should take. This is also applicable to wait times due to connection pool contention. Effectively defaults to 5000.
+|`com.sun.jndi.ldap.connect.timeout` |Строковое представление целого числа, которое показывает сколько времени в миллисекундах, получающих соединение. Это также применимо к времени ожидания из-за конверсии пула подключений. Эффективно по умолчанию 5000.
 |===
 
-By default, connection pooling is enabled for both `plain` and `ssl` protocols.
+По умолчанию для протоколов `plain` и `ssl` включено пул подключений.
 
-For more details, see the link:https://docs.oracle.com/javase/jndi/tutorial/ldap/connect/config.html[Java LDAP Connection Pooling Configuration] documentation.
+Для получения более подробной информации см. link:https://docs.oracle.com/javase/jndi/tutorial/ldap/connect/config.html[Документацию о пуле подключения Java LDAP Configuration].
 
-To set any of these properties, you can set the `JAVA_OPTS_APPEND` environment variable:
+Чтобы установить любые из этих свойств, вы можете установить переменную окружения `JAVA_OPTS_APPEND`:
 
 [source,bash]
 ----
@@ -235,42 +235,42 @@ export JAVA_OPTS_APPEND=-Dcom.sun.jndi.ldap.connect.pool.initsize=10 -Dcom.sun.j
 ----
 
 [[_ldap_troubleshooting]]
-==== Troubleshooting
+==== Устранение проблем
 
-It is useful to increase the logging level to TRACE for the category `org.keycloak.storage.ldap`. With this setting, many logging messages are sent
+Полезно повысить уровень записи журнала до TRACE для категории `org.keycloak.storage.ldap`. With this setting, many logging messages are sent
 to the server log in the `TRACE` level, including the logging for all queries to the LDAP server and the parameters, which were
-used to send the queries. When you are creating any LDAP question on user forum or JIRA, consider attaching the server log with
-enabled TRACE logging. If it is too big, the good alternative is to include just the snippet from server log with the messages, which were
+used to send the queries. При создании LDAP вопроса на форуме пользователей или JIRA, попробуйте прикрепить журнал сервера к
+включив TRACE. If it is too big, the good alternative is to include just the snippet from server log with the messages, which were
 added to the log during the operation, which causes the issues to you.
 
-- When you create an LDAP provider, a message appears in the server log in the INFO level starting with:
+- Когда вы создаете LDAP провайдера, в логине сервера появляется сообщение, начинающееся с:
 
 ```
 Creating new LDAP Store for the LDAP storage provider: ...
 ```
 
-It shows the configuration of your LDAP provider. Before you are asking the questions or reporting bugs, it will be nice to include this
-message to show your LDAP configuration. Eventually feel free to replace some config changes, which you do not want to include, with some
-placeholder values. One example is `bindDn=some-placeholder` . For `connectionUrl`, feel free to replace it as well, but it is generally
-useful to include at least the protocol, which was used (`ldap` vs `ldaps`)`. Similarly it can be useful to include the details for
-configuration of your LDAP mappers, which are displayed with the message like this at the DEBUG level:
+Он отображает конфигурацию вашего LDAP провайдера. Прежде чем задавать вопросы или сообщать об ошибках, было бы неплохо включить это сообщение
+для отображения конфигурации LDAP. В конце концов, вы можете заменить некоторые изменения конфигурации, которые вы не хотите включать, с некоторыми значениями плейсхолдеров
+. Одним из примеров является `bindDn=some-placeholder` . For `connectionUrl`, feel free to replace it as well, but it is generally
+useful to include at least the protocol, which was used (`ldap` vs `ldaps`)`. Точно так же может быть полезно включить подробную информацию о конфигурации
+ваших LDAP мэпперов, которые отображаются с таким сообщением на уровне DEBUG:
 
 ```
 Mapper for provider: XXX, Mapper name: YYY, Provider: ZZZ ...
 ```
 
-Note those messages are displayed just with the enabled DEBUG logging.
+Обратите внимание, что эти сообщения отображаются только с включенным протоколом DEBUG.
 
-- For tracking the performance or connection pooling issues, consider setting the value of property `com.sun.jndi.ldap.connect.pool.debug` to `all`. This change adds many additional messages to the server log with the included logging for the LDAP connection
-pooling. As a result, you can track the issues related to connection pooling or performance. For more details, see <<_ldap_connection_pool,Configuring the connection pool>>.
+- Для отслеживания проблем пула производительности или подключения, попробуйте установить значение объекта `com.sun.jndi.ldap.connect.pool.debug` в `all`. Это изменение добавляет много дополнительных сообщений в журнал сервера с включением журнала для LDAP соединения
+пул. В результате вы можете отслеживать проблемы, связанные с пулом соединений или производительностью. Подробнее см. <<_ldap_connection_pool,Настройка пула соединений>.
 
-NOTE: After changing the configuration of connection pooling, you may need to restart the {project_name} server to enforce re-initialization
-of the LDAP provider connection.
+NOTE: После изменения конфигурации пула подключений, возможно, потребуется перезапустить сервер {project_name} для принудительной повторной инициализации
+подключения провайдера LDAP.
 
-If no more messages appear for connection pooling even after server restart, it can indicate that connection pooling does not work
-with your LDAP server.
+Если больше нет сообщений для пула подключений даже после перезапуска сервера, может показать, что пул соединения не работает
+с вашим LDAP сервером.
 
 - For the case of reporting LDAP issue, you may consider to attach some part of your LDAP tree with the target data, which causes issues
-in your environment. For example if login of some user takes lot of time, you can consider attach his LDAP entry showing count of `member` attributes
-of various "group" entries. In this case, it might be useful to add if those group entries are mapped to some Group LDAP mapper (or Role LDAP Mapper)
-in {project_name} and so on.
+in your environment. Например, если логин некоторого пользователя занимает много времени, вы можете прикрепить запись LDAP, показывающую количество атрибутов `member`
+различных "group". В этом случае может быть полезно добавить, если эти групповые записи сопоставляются с некоторыми группами LDAP mapper (или Роли LDAP Mapper)
+в {project_name} и так далее.
