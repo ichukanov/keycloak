@@ -1,29 +1,29 @@
-=== Brokering overview
+=== Обзор брокеров
 
-When using {project_name} as an identity broker, {project_name} does not force users to provide their credentials to authenticate in a specific realm. {project_name} displays a list of identity providers from which they can authenticate.
+При использовании {project_name} в качестве идентификационного брокера {project_name} не заставляет пользователей предоставлять свои учетные данные для аутентификации в определенном реале. {project_name} отображает список идентификационных провайдеров, из которых они могут аутентифицироваться.
 
-If you configure a default identity provider, {project_name} redirects users to the default provider.
+Если вы настраиваете поставщика идентификации по умолчанию, {project_name} перенаправляет пользователей на поставщика по умолчанию.
 
 [NOTE]
 ====
-Different protocols may require different authentication flows. All the identity providers supported by {project_name} use the following flow.
+Различные протоколы могут потребовать различных потоков аутентификации. Все поставщики идентификации поддерживаемые {project_name} используют следующий поток.
 ====
 
-image:images/identity_broker_flow.png[Identity broker flow]
+image:images/identity_broker_flow.png[Идентификационный поток брокера]
 
-. The unauthenticated user requests a protected resource in a client application.
-. The client application redirects the user to {project_name} to authenticate.
-. {project_name} displays the login page with a list of identity providers configured in a realm.
-. The user selects one of the identity providers by clicking its button or link.
-. {project_name} issues an authentication request to the target identity provider requesting authentication and redirects the user to the identity provider's login page. The administrator has already set the connection properties and other configuration options for the Admin Console's identity provider.
-. The user provides credentials or consents to authenticate with the identity provider.
-. Upon successful authentication by the identity provider, the user redirects back to {project_name} with an authentication response. Usually, the response contains a security token used by {project_name} to trust the identity provider's authentication and retrieve user information.
-. {project_name} checks if the response from the identity provider is valid.
-If valid, {project_name} imports and creates a user if the user does not already exist. {project_name} may ask the identity provider for further user information if the token does not contain that information. This behavior is _identity federation_.
-If the user already exists, {project_name} may ask the user to link the identity returned from the identity provider with the existing account. This behavior is _account linking_. With {project_name}, you can configure _Account linking_ and specify it in the <<_identity_broker_first_login,First Login Flow>>. At this step, {project_name} authenticates the user and issues its token to access the requested resource in the service provider.
-. When the user authenticates, {project_name} redirects the user to the service provider by sending the token previously issued during the local authentication.
-. The service provider receives the token from {project_name} and permits access to the protected resource.
+. Неавторизованный пользователь запрашивает защищённый ресурс в клиентском приложении.
+. Приложение клиента перенаправляет пользователя на {project_name} на аутентификацию.
+. {project_name} отображает страницу входа со списком провайдеров идентификации, настроенных в реалме.
+. Пользователь выбирает одного из идентификационных провайдеров, нажав на кнопку или ссылку.
+. {project_name} выдаёт запрос на аутентификацию целевому поставщику идентификации, запрашивающему аутентификацию и перенаправляет пользователя на страницу входа поставщика идентификации. Администратор уже установил параметры подключения и другие параметры конфигурации для поставщика идентификации консоли администратора.
+. Пользователь предоставляет учетные данные или дает согласие на аутентификацию поставщика идентификационных данных.
+. После успешной проверки подлинности провайдером пользователь перенаправляет обратно на {project_name} с ответом аутентификации. Обычно ответ содержит токен безопасности, используемый {project_name} для доверия к аутентификации идентификатора поставщика и получения информации о пользователе.
+. {project_name} проверяет правильность ответа от поставщика идентификации.
+Если это верно, {project_name} импортирует и создает пользователя, если он еще не существует. {project_name} может попросить поставщика идентификации предоставить дополнительную информацию о пользователе, если токен не содержит этой информации. Это поведение является федерацией _идентичности_.
+Если пользователь уже существует, {project_name} может попросить пользователя привязать идентификатор, возвращаемый поставщиком идентификации с существующей учетной записью. Это поведение - привязка _аккаунта_. С {project_name}вы можете настроить _привязку аккаунта_ и указать его в <_identity_broker_first_login,First Login Flow>>. На этом шаге {project_name} аутентифицирует пользователя и выдает его токен для доступа к запрошенному ресурсу в поставщике услуг.
+. При аутентификации пользователя, {project_name} перенаправляет пользователя на провайдера сервиса, отправив токен, ранее выданный во время локальной аутентификации.
+. Провайдер услуг получает токен от {project_name} и разрешает доступ к защищенному ресурсу.
 
-Variations of this flow are possible. For example, the client application can request a specific identity provider rather than displaying a list of them, or you can set {project_name} to force users to provide additional information before federating their identity.
+Возможны вариации этого потока. Например, клиентское приложение может запросить определенного поставщика идентификации вместо отображения списка или вы можете установить {project_name} для принудительного предоставления дополнительной информации перед объединением их личности.
 
-At the end of the authentication process, {project_name} issues its token to client applications. Client applications are separate from the external identity providers, so they cannot see the client application's protocol or how they validate the user's identity. The provider only needs to know about {project_name}.
+В конце процесса аутентификации {project_name} выпускает свой токен клиентским приложениям. Клиентские приложения отличаются от внешних идентификаторов, поэтому они не могут видеть протокол клиентского приложения или проверить личность пользователя. Провайдеру нужно знать только об {project_name}.
