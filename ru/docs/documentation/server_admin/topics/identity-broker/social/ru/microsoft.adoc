@@ -1,16 +1,16 @@
 ==== Microsoft
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *Microsoft*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдеров*, выберите *Microsoft*.
 +
-image:images/microsoft-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, register an app on https://azure.microsoft.com/en-us[Microsoft Azure] under *App registrations*.
-.. In the Redirect URI section, select *Web* as a platform and paste the value of *Redirect URI* into the field.
-.. Find you application under *App registrations* and add a new client secret in the *Certificates & secrets* section.
-.. Note the *Value* of the created secret.
-.. Note the *Application (client) ID* in the *Overview* section.
-. In {project_name}, paste the value of the `Application (client) ID` into the *Client ID* field.
-. In {project_name}, paste the `Value` of the secret into the *Client Secret* field.
-. Click *Add*.
+image:images/microsoft-add-identity-provider.png[Добавить поставщика идентификации]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. На отдельной вкладке браузера зарегистрируйте приложение на https://azure.microsoft.com/en-us[Microsoft Azure] в разделе *App registrations*.
+.. В разделе Redirect URI выберите *Web* в качестве платформы и вставьте значение *Redirect URI* в поле.
+.. Найдите приложение в разделе *Регистрация приложений* и добавьте новый секрет клиента в разделе *Сертификаты и секреты*.
+.. Обратите внимание на *Значение* созданной тайны.
+.. Обратите внимание на *Application (client) ID* в разделе *Overview*.
+. В {project_name}вставьте значение `Application (client) ID` в поле *Client ID*.
+. В {project_name}вставьте `Value` секрета в поле *Client Secret*.
+. Нажмите *Добавить*.
