@@ -1,517 +1,515 @@
 [[_fine_grained_permissions]]
-=== Delegating realm administration using permissions
+=== Делегирование администрирования Realm, используя разрешения
 
-You can delegate realm management to other administrators, the realm administrators, using the fine-grained admin permissions
-feature.
-Different from the Role-Based Access Control (RBAC) Mechanism provided through the
-<<_master_realm_access_control, Global and Realm specific roles>>, this feature provides a more fine-grained control over
-how realm resources can be accessed and managed based on a well-defined set of operations that can be performed on them.
+Вы можете делегировать управление реалмами другим администраторам - администраторам реалмов - используя функцию тонкого закрепления прав администратора
+.
+В отличие от механизма контроля доступа, основанного на роли (RBAC), предоставленного через <<_master_realm_access_control, Global and Realm specific roles>, эта функция позволяет более четко контролировать ресурсы области
+на основе четко определенного набора операций, которые могут быть выполнены с их помощью.
 
-By relying on a Policy-Based Access Control, realm administrators can define permissions to realm resources such as users,
-groups, and clients, using different policy types, or access control methods, so that a realm administrator is limited to
-access a subset of realm resources and their operations.
+Полагаясь на управление доступом на основе политик, администраторы области могут определять разрешения для ресурсов области, таких как пользователи,
+группы и клиенты, используя различные типы политик или методы управления доступом, чтобы ограничить
+доступ администратора области к подмножеству ресурсов области и их операциям.
 
-The feature provides an alternative to the aforementioned RBAC mechanism, but it does
-not replace it. You are still able to grant administrative roles like `view-users` or `manage-clients` to delegate access
-to realm administrators but doing so will skip the mechanisms provided by this feature.
+Эта функция обеспечивает альтернативу вышеупомянутому механизму RBAC, но
+не заменяет его. Вы все еще можете делегировать права доступа
+администраторам в виде `view-users` или `manage-clients`, но это пропустит механизмы, предоставленные этой функцией.
 
-Enforcing access to realm resources only applies when managing resources through the administration console or the Admin API.
+Принудительный доступ к ресурсам Realm применяется только при управлении ресурсами через административную консоль или API администратора.
 
 [[_understanding_different_types_realm_admins_]]
-==== Understanding the different types of realm administrators
+==== Понимание различных типов администраторов области
 
-There are three different types of realm administrators when managing a realm:
+При управлении миром существует три различных типа администраторов:
 
-* **Server administrators**: These are users (or service accounts) that have been granted with the `admin` role in the master realm.
-* **Realm administrators**: These are users (or service accounts) that have been granted with the `realm-admin` role in a specific realm.
-* **Delegated realm administrators**: These are users (or service accounts) other than the types above but granted access to manage
-a realm through the fine-grained admin permissions feature.
+* **Администраторы сервера**: Это пользователи (или сервисные учетные записи), которым была предоставлена роль `admin` в master реалме.
+* **Администраторы реалма**: Это пользователи (или сервисные учетные записи), которым была предоставлена роль `realm-admin` в определенном реалме.
+* **Делегированные администраторы реалмов**: Это отличные от вышеперечисленных пользователи (или аккаунты службы), но предоставленные доступ к управлению
+с помощью более тонкой функции прав администратора.
 
-Both server and realm administrators can manage a realm with full access to all their resources and
-administrative operations. The main difference between them is that server administrators can manage any realm in the server, while realm administrators can only manage
-the realm they have been granted access to.
+Администраторы как сервера, так и области могут управлять областью, имея полный доступ ко всем своим ресурсам и
+административным операциям. Основное различие между ними заключается в том, что администраторы сервера могут управлять любой областью на сервере, в то время как администраторы областей могут управлять только
+той областью, к которой им предоставлен доступ.
 
-Delegated realm administrators, on the other hand, can have limited access to a realm based on the permissions defined through this feature.
-They can only access the resources and operations they have been granted access to.
+С другой стороны, делегированные администраторы реалмов могут иметь ограниченный доступ к реалму, основанному на разрешениях, определенных этой функцией.
+Они могут получить доступ только к ресурсам и операциям, к которым они были предоставлены.
 
-Be aware that both server and realm administrators are not affected by the permissions you define when managing access to realm resources through this feature.
-Always make sure to review the users granted with the `admin` or `realm-admin` roles to avoid any potential privilege escalation.
+Имейте в виду, что как сервер, так и администраторы области не зависят от разрешений, которые вы определяете при управлении доступом к ресурсам Realm.
+Всегда проверяйте пользователей с `admin` или `realm-admin` ролями во избежание возможной эскалации привилегий.
 
 [[_understanding_realm_resource_types]]
-==== Understanding the Realm Resource Types
+==== Познакомьтесь с типами ресурсов реалма
 
-In a realm, you can manage different types of resources such as users, groups, clients, client scopes, roles, and so on.
-As a realm administrator, you are constantly managing these resources when managing identities and how they authenticate
-and are authorized to access a realm and applications.
+В сфере вы можете управлять различными типами ресурсов, такими как пользователи, группы, клиенты, рамки клиентов, роли и так далее.
+Как администратор реалма, вы постоянно управляете этими ресурсами при управлении идентификаторами и аутентификацией
+и имеете право доступа к Realm и приложениям.
 
-This feature provides the necessary mechanisms to enforce access controls when managing realm resources, limited to:
+Эта функция обеспечивает необходимые механизмы для обеспечения контроля доступа при управлении ресурсами Realm, ограниченными:
 
-* Users
-* Groups
-* Clients
-* Roles
-* Organizations
+* Пользователи
+* Группы
+* Клиенты
+* Роли
+* Организации
 
-You can manage permissions for all resources of a given resource type, such as all users in a realm, or
-for a specific realm resource, such as a specific user or set of users in the realm.
+Вы можете управлять разрешениями для всех ресурсов заданного типа, таких как все пользователи в области, или
+для определенного ресурса области, такого как определенный пользователь или группа пользователей в области.
 
-==== Understanding the scopes of access
+==== Понимание сферы охвата доступа
 
-Each realm resource supports a well-defined set of management operations, or scopes, that can be performed on them,
-such as `view`, `manage`, and resource-specific operations such as `view-members`, if you take groups as an example.
+Каждый ресурс realm поддерживает четко определенный набор операций управления, или областей, которые могут быть выполнены с ними,
+таких как "просмотр", "управление", а также операции, относящиеся к конкретным ресурсам, такие как "просмотр участников", если в качестве примера взять группы.
 
-When managing permissions, you are selecting a set of one or more scopes from a resource type to allow realm administrators
-to perform specific operations on a resource type. For instance, granting a `view` scope will give access to realm administrators
-to list, search, and view a realm resource. On the other hand, the `manage` scope will allow administrators to perform updates
-and deletes on them.
+При управлении разрешениями, вы выбираете один или несколько рамок из типа ресурсов, чтобы разрешить администраторам Realm
+выполнять конкретные операции над типом ресурса. Например, предоставление возможности `view` даст доступ администраторам Realm
+к списку, поиску и просмотру ресурса Realm. С другой стороны, область `manage` позволит администраторам выполнять обновления
+и удалять на них.
 
-The scopes are completely independent of each other. If you give access to `manage` a realm resource, that does not mean the
-`view` scope is granted automatically. No transitive dependency exists between scopes. Although this might impact the
-overall user experience when managing permissions because you need to select individual scopes,
-the benefit is that you can more easily identify the permissions that enforce access to a specific scope.
+Области действия абсолютно независимы друг от друга. Если вы даете доступ к `управлению` ресурсу реалма, это не означает, что область
+`view` предоставляется автоматически. Между областями не существует транзитной зависимости. Хотя это может повлиять на
+общий опыт пользователя при управлении разрешениями, поскольку вам необходимо выбирать отдельные области,
+преимущество заключается в том, что вам будет легче определить разрешения, которые обеспечивают доступ к определенной области.
 
-Certain scopes from a resource type have a relationship (not a transitive dependency) to scopes in another resource type.
-This relationship is mainly true when you manage a resource type that represents a group of realm resources, such as realm groups
-and their members.
+Некоторые области видимости из типа ресурса имеют отношение (не переходную зависимость) к области видимости другого типа ресурса.
+Эта взаимосвязь в основном справедлива, когда вы управляете типом ресурса, представляющим группу ресурсов области, например группами областей
+и их членами.
 
-===== Users Resource Type
+===== Тип ресурса пользователя
 
-The *Users* realm resource type represents the users in a realm. You can manage permissions for users based on the following
-set of scopes:
+Тип ресурса *Пользователи* Realm представляет собой пользователя в реалме. Вы можете управлять разрешениями для пользователей на основе следующего набора областей:
 
 [cols="30%,50%,20%"]
 |===
-|*Scope* |*Description* |*Also granted by*
+|*Область * |*Описание* |*Также предоставлено *
 
-|*view* |Defines if a realm administrator can view users. This scope should be set whenever you want to make users available from queries. |`view-members`
+|*Вид* |Определяет, может ли администратор Realm просматривать пользователей. Этот охват должен быть установлен всякий раз, когда вы хотите сделать пользователей доступными из запросов. |`view-members`
 
-|*manage* |Defines if a realm administrator can manage and create users. |`manage-members`
+|*Управление* |Определяет, может ли администратор области управлять и создавать пользователей. |`manage-members`
 
-|*manage-group-membership* |Defines if a realm administrator can assign or unassign users to/from groups. |`manage-membership-of-members`
+|*manage-group-membership* |Определяет, может ли администратор области назначать или удалять пользователей из групп. |`manage-membership-of-members`
 
-|*map-roles* |Defines if a realm administrator can assign or unassign roles to/from users. |None
+|*картографические роли* |Определяет, может ли администратор области назначить или отменить назначение ролей пользователям. |Нет
 
-|*impersonate* |Defines if a realm administrator can impersonate other users. |`impersonate-members`
+|*имперса* |Определяет, может ли администратор Realm выдавать себя за других пользователей. |`impersonate-members`
 
-|*reset-password* |Defines if a realm administrator can reset user passwords. If no permission with `reset-password` is found, it falls back to check `manage` scope. |None
+|*сброс пароля* |Определяет, может ли администратор Realm сбросить пароли пользователя. Если разрешение с `reset-password` не найдено, он вернется к проверке области `manage`. |Нет
 |===
 
-The user resource type has a strong relationship with some of the permissions you can set to groups. Most of the time,
-users are members of groups and granting access to `view-members` or `manage-members` of a group should also allow
-a realm administrator to `view` and `manage` members of that group. Note that `manage` for users includes creating new users.
+Тип пользовательского ресурса имеет сильную связь с некоторыми разрешениями, которые вы можете установить в группы. В большинстве случаев
+пользователи являются членами групп, и предоставление доступа к "просмотру участников" или "управлению участниками" группы также должно позволить
+администратору области "просматривать" и "управлять` членами этой группы. Обратите внимание, что `manage` для пользователей включает в себя создание новых пользователей.
 
-To assign or unassign a specific user to or from a group, both sides of the relationship are required: `manage-group-membership`
-on the user and `manage-membership` on the target group.
-The `manage-membership-of-members` scope can be used to grant or deny `manage-group-membership` based on the groups that
-the target user currently belongs to.
+Для назначения или отмены назначенного пользователя группе или из нее, обе стороны отношений требуются: `manage-group-membership`
+у пользователя и `manage-membership` в целевой группе.
+Область "управление членством в группах" может использоваться для предоставления или отказа в "управлении членством в группах" на основе групп, к которым
+в данный момент принадлежит целевой пользователь.
 
 [NOTE]
 ====
-This feature does not support enforcing access to federated resource, however, this limitation is being considered
-for future improvement.
+Эта функция не поддерживает принудительный доступ к федеральным ресурсам, однако это ограничение считается
+для будущего улучшения.
 ====
 
-===== Groups Resource Type
+===== Тип ресурса группы
 
-The *Groups* realm resource type represents the groups in a realm. You can manage permissions for groups based on the following
-set of management operations:
-
-[cols="30%,70%"]
-|===
-|*Operation* |*Description*
-
-|*view* |Defines if a realm administrator can view groups. This scope should be set whenever you want
-                              to make groups available from queries.
-
-|*manage* |Defines if a realm administrator can manage groups.
-
-|*view-members* |Defines if a realm administrator can view group members.
-                              This operation applies to any child group in the group hierarchy.
-                              This can be prevented by explicitly denying permission for specific subgroups.
-
-|*manage-members* |Defines if a realm administrator can manage group members. Together with `manage-membership`, also allows creating new users as members of the group.
-                              This operation applies to any child group in the group hierarchy.
-                              This can be prevented by explicitly denying permission for specific subgroups.
-
-|*impersonate-members* |Defines if a realm administrator can impersonate group members.
-                              This operation applies to any child group in the group hierarchy.
-                              This can be prevented by explicitly denying permission for specific subgroups.
-
-|*manage-membership* |Defines if a realm administrator can add or remove members from groups.
-
-|*manage-membership-of-members* |Defines if a realm administrator can grant or deny `manage-group-membership` for members of a group.
-|===
-
-===== Clients Resource Type
-
-The *Clients* realm resource type represents the clients in a realm. You can manage permissions for clients based on the following
-set of management operations:
+Тип ресурсов *группы* области представляет группы в реалме. Вы можете управлять разрешениями для групп на основе следующего набора
+команд управления:
 
 [cols="30%,70%"]
 |===
-|*Operation* |*Description*
+|*Операция* |*Описание*
 
-|*view* |Defines if a realm administrator can view clients. This scope should be set whenever you want
-                              to make clients available from queries.
+|*Вид* |Определяет, может ли администратор Realm просматривать группы. Этот охват должен быть установлен всякий раз, когда вы хотите, чтобы
+                              делал группы доступными из запросов.
 
-|*manage* |Defines if a realm administrator can manage clients.
+|*Управление* |Определяет, может ли администратор области управлять группами.
 
-|*map-roles* |Defines if a realm administrator can assign any role defined by a client to a user.
+|*view-members* |Определяет, может ли администратор Realm просматривать членов группы.
+                              Эта операция применяется к любой дочерней группе в групповой иерархии.
+                              Это может быть предотвращено явным отказом в разрешении для определенных подгрупп.
 
-|*map-roles-composite* |Defines if a realm administrator can assign any role defined by a client as a composite to
-                              another role.
+|*manage-members* |Определяет, может ли администратор области управлять участниками группы. Вместе с `manage-membership` также позволяет создавать новых пользователей в качестве членов группы.
+                              Эта операция применяется к любой дочерней группе в групповой иерархии.
+                              Это может быть предотвращено явным отказом в разрешении для определенных подгрупп.
 
-|*map-roles-client-scope* |Define if a realm administrator can assign any role defined by a client to a client scope.
+|*имперсоны-члены* |Определяет, может ли администратор Realm выдавать себя за членов группы.
+                              Эта операция применяется к любой дочерней группе в групповой иерархии.
+                              Это может быть предотвращено явным отказом в разрешении для определенных подгрупп.
+
+|*Управляющий членство* |Определяет, может ли администратор области добавлять или удалять участников из групп.
+
+|*Управляющий членство* |Определяет, может ли администратор области предоставлять или запрещать членам группы `manage-group-membership`.
 |===
 
-The *map-roles* operation does not grant the ability to manage users or assign roles arbitrarily. The administrator must also
-have user role mapping permissions on the user.
+===== Тип ресурса клиента
 
-===== Roles Resource Type
-
-The *Roles* realm resource type represents the roles in a realm. You can manage permissions for roles based on the following set of management operations:
+Тип ресурсов *Клиент* представляет интересы клиентов в реалме. Вы можете управлять разрешениями для клиентов на основе следующих
+наборов операций управления:
 
 [cols="30%,70%"]
 |===
-|*Operation* |*Description*
+|*Операция* |*Описание*
 
-|*map-role* |Defines if a realm administrator can assign a role (or multiple roles) to a user.
+|*Вид* |Определяет, может ли администратор Realm просматривать клиентов. Этот охват должен быть установлен всякий раз, когда вы хотите, чтобы
+                              предоставлял клиентам доступ к запросам.
 
-|*map-role-composite* |Defines if a realm administrator can assign a role (or multiple roles) as a composite to another role.
+|*Управление* |Определяет, может ли администратор области управлять клиентами.
 
-|*map-role-client-scope* |Defines if a realm administrator can apply a role (or multiple roles) to a client scope.
+|*картографические роли* |Определяет, может ли администратор области назначать пользователю любую роль, определенную клиентом.
+
+|*сопоставление ролей-композитов* |Определяет, может ли администратор области назначать любую роль, определенную клиентом в качестве составного для
+                              другой роли.
+
+|*карт-роли - рамки клиентов* |Определяет, может ли администратор Realm назначать любую роль, определенную клиентом для границ клиента.
 |===
 
-The *map-roles* operation does not grant the ability to manage users or assign roles arbitrarily. The administrator must also
-have user role mapping permissions on the user.
+Операция *map-roes* не дает возможности управлять пользователями или произвольно назначать роли. Администратор также должен
+иметь разрешения на сопоставление ролей пользователей для этого пользователя.
 
-If there is a client resource type permission for the *map-roles*, *map-roles-composite*, or *map-roles-client-scope* scopes,
-it will take precedence over any role resource type permission if the role is a client role.
+===== Тип ресурсов для ролей
 
-===== Organizations Resource Type
-
-The *Organizations* realm resource type represents the organizations in a realm. You can manage permissions for organizations based on the following
-set of management operations:
+*Роль* тип ресурсов области представляет собой роли в мире. Вы можете управлять разрешениями ролей на основе следующего набора операций управления:
 
 [cols="30%,70%"]
 |===
-|*Operation* |*Description*
+|*Операция* |*Описание*
 
-|*view* |Defines if a realm administrator can view organizations. This scope should be set whenever you want
-                              to make organizations available from queries.
+|*маппинг ролей* |Определяет, может ли администратор области назначать роль (или несколько ролей) пользователю.
 
-|*manage* |Defines if a realm administrator can manage organizations, including updating and deleting them.
+|*map-role-composite* |Определяет, может ли администратор области назначить роль (или несколько ролей) составным для другой роли.
+
+|*map-role-client-scope* |Определяет, может ли администратор области применить роль (или несколько ролей) к масштабу клиента.
 |===
 
-Creating new organizations requires `manage` permission on all organizations (the resource type level), not just on a specific organization.
+Операция *map-roes* не дает возможности управлять пользователями или произвольно назначать роли. Администратор также должен
+иметь разрешения на сопоставление ролей пользователей для этого пользователя.
 
-==== Enabling admin permissions to a realm
+Если есть разрешение на тип клиентского ресурса для *ролей карты*, *карт-ролики*, или *карт-ролики-клиент-рамки* рамок,
+он будет иметь приоритет над любой ролью типа ресурса роли, если роль является ролью клиента.
 
-To enable fine-grained admin permissions in a realm, follow these steps:
+===== Тип ресурсов организаций
 
-* Log in to the Admin Console.
-* Click *Realm settings*.
-* Enable *Admin Permissions* and click *Save*.
+Ресурсный тип *Организаций* представляет организации в сфере. Вы можете управлять разрешениями организаций, основанных на следующем наборе
+функций управления:
+
+[cols="30%,70%"]
+|===
+|*Операция* |*Описание*
+
+|*Вид* |Определяет, может ли администратор Realm просматривать организации. Этот охват должен быть установлен всякий раз, когда вы хотите, чтобы
+                              сделать организации доступными из запросов.
+
+|*Управление* |Определяет, может ли администратор области управлять организациями, включая обновление и удаление их.
+|===
+
+Создание новых организаций требует права управления на все организации (уровень ресурсов), а не только на конкретную организацию.
+
+==== Включение прав администратора в реалм
+
+Чтобы включить мелкие права администратора в реалме, выполните следующие действия:
+
+* Войти в консоль администратора.
+* Нажмите *Настройки реалма*.
+* Включите *Права Администратора* и нажмите *Сохранить*.
 
 image:images/fine-grain-enable.png[Fine grain enable]
 
-Once enabled, a *Permissions* section appears in the left-side menu of the administration console.
+После включения, в левом меню консоли администрирования появится секция *Разрешения*.
 
-image:images/fine-grain-permissions-tab.png[Fine grain permissions tab]
+image:images/fine-grain-permissions-tab.png[Жёлтая вкладка разрешения зерна]
 
-From this section, you can manage the permissions for realm resources.
+Из этого раздела вы можете управлять разрешениями на ресурсы реалма.
 
 [[_managing-permissions]]
-==== Managing Permissions
+==== Управление правами доступа
 
-The *Permissions* tab provides an overview of all active permissions within a realm. From here, administrators can create,
-update, delete, or search for permissions. You can also pre-evaluate the permissions you have created to check
-if they are enforcing access to realm resources as expected.
-For more details, see <<_evaluating-permissions,Evaluating Permissions>>.
+На вкладке *Разрешения* представлен обзор всех активных разрешений в реалме. Отсюда администраторы могут создавать,
+обновлять, удалять или выполнять поиск разрешений. Вы также можете предварительно оценить созданные вами разрешения, чтобы проверить
+, обеспечивают ли они надлежащий доступ к ресурсам области.
+Подробнее см. <<_evaluating-permissions,Evaluating Permissions>>.
 
-To create a permission, click on the `Create permission` button and select the resource type you want to protect.
+Чтобы создать разрешение, нажмите кнопку «Создать разрешение» и выберите тип ресурсов, который вы хотите защитить.
 
-image:images/select-resource-type.png[Selecting a resource type to protect]
+image:images/select-resource-type.png[Выбор типа ресурса для защиты]
 
-Once you select the resource type, you can now define how access should be enforced for a set of one or more resources of the selected type:
+После выбора типа ресурса, теперь вы можете определить, как принудительный доступ к набору одного или нескольких ресурсов выбранного типа:
 
-image:images/create-permission.png[Creating a permission]
+image:images/create-permission.png[Создание разрешения]
 
-When managing a permission you can define the following settings:
+При управлении разрешением можно определить следующие параметры:
 
-* *Name*: A unique name for the permission. The name should also not conflict with any policy name
-* *Description*: An optional description to better describe what the permission is about
-* *Authorization scopes*: A set of one or more scopes representing the operations you want to protect for the selected resource type.
-An administrator must have explicit permission assigned for each operation to perform the corresponding action. For example,
-assigning only *manage* without *view* will prevent the user from being visible.
-* *Enforce access to*: Defines if the permission should enforce access to all resources of the selected type or to specific resources in a realm.
-* *Policies*: Defines a set of one or more policies that should be evaluated to grant or deny access to the selected resource(s).
+* *Имя*: Уникальное имя для разрешения. Имя также не должно противоречить ни с одним именем политики
+* *Описание*: Необязательное описание, в котором описаны права доступа
+* *Области авторизации*: Набор одного или нескольких областей представляющих операции, которые вы хотите защитить для выбранного типа ресурса.
+Администратор должен иметь явное разрешение для каждой операции для выполнения соответствующего действия. Например,
+назначение только *Управление* без *просмотра* не позволит видеть пользователя.
+* *Принудительный доступ к*: Определяет, должно ли разрешение требовать доступа ко всем ресурсам выбранного типа или к определенным ресурсам в реалме.
+* *Политики*: Определяет набор одного или нескольких политик, которые должны быть оценены, чтобы предоставить или запретить доступ к выбранному ресурсу (ресурсам).
 
-After creating the permission, it will automatically take effect when enforcing access to (all) resources and scopes you selected.
-Keep that fact in mind when creating and updating permissions in production.
+После создания разрешения, оно автоматически вступает в силу при обеспечении доступа к (всем) выделенным ресурсам и областям.
+Не забывайте об этом при создании и обновлении разрешений в производстве.
 
-===== Defining permissions for viewing realm resources
+===== Определение прав на просмотр ресурсов области
 
-This feature relies on a partial evaluation mechanism to partially evaluate the permissions that a realm administrator has
-when listing and viewing realm resources. This mechanism will pre-fetch all the permissions set for view-related scopes where the realm administrator
-is referenced either directly or indirectly.
+Эта функция полагается на механизм частичной оценки для частичной оценки разрешений, которые у администратора области есть
+при отображении и просмотре ресурсов Realm. Этот механизм предварительно извлекает все разрешения, установленные для областей, связанных с представлением, в которых
+прямо или косвенно упоминается администратор области.
 
-Permissions that grant access to `view` a realm resource of a certain type must use one of the following policies to
-make them available from queries:
+Разрешения, предоставляющие доступ к ресурсу области `view` определенного типа, должны использовать одну из следующих политик для
+чтобы сделать их доступными из запросов:
 
-* `User`
-* `Group`
-* `Role`
-* `Aggregated`
+* `Пользователь`
+* `Группа`
+* `Роль`
+* `Агрегация`
 
-In case of using an `Aggregated` policy, all the underlying policies must be of type `User`, `Group`, or `Role`. Otherwise,
+При использовании политики `Aggregated` все политики должны быть типа `User`, `Group` или `Role`. Otherwise,
 the policy will always evaluate to `DENY` when performing partial evaluation.
 
-By using any of the policies above, {project_name} can pre-calculate the set of resources that a realm administration can view
-by looking for a direct (if using a user policy) or indirect (if using a role or group policy) reference to the realm administrator.
-Therefore, the partial evaluation mechanism involves decorating queries with access controls that will run at the database level. This capability is mainly important to
-properly allow paginating resources as well as avoid an additional overhead on the server-side when evaluating permissions for each
-realm resource returned by queries.
+Используя любую из вышеперечисленных политик, {project_name} может предварительно рассчитать набор ресурсов, которые администрирование Realm может просматривать
+путем прямого поиска (если используется пользовательская политика) или косвенного (если используется роль или групповая политика) ссылки на администратора Realm.
+Поэтому механизм частичной оценки включает деление запросов на контроль доступа, который будет работать на уровне базы данных. Эта возможность в основном важна для
+для корректной пагинации ресурсов, а также для избежания дополнительных накладных расходов на стороне сервера при оценке разрешений для каждого ресурса области
+по запросам.
 
 Partial evaluation and filtering occurs only if the feature is enabled to a realm, and if the user is not granted
-with view-related administrative roles like `view-users` or `view-clients`. For instance, it will not happen for administrators granted
-with the `admin` role at the master realm (server administrators), or realm administrators granted with the `realm-admin` role in a realm other than the master realm.
+with view-related administrative roles like `view-users` or `view-clients`. Например, администраторам дается
+роль `admin` в мастерской области (администраторы сервера), или администраторы миров с `realm-admin` ролью в мирах кроме мастер-реалма.
 
-When querying resources, the partial evaluation mechanism works as follows:
+При запросе ресурсов механизм частичной оценки работает следующим образом:
 
-* Resolve all the permissions for a certain resource type that reference the realm administrator
-* Pre-evaluate each permission to check if the realm administrator does or does not have access to the resources associated with the permission
-* Decorate database queries based on the resources granted or denied
+* Определить все разрешения для определенного типа ресурса, который ссылается на администратора области
+* Предварительно оцените каждое разрешение на проверку, имеет ли администратор области или нет доступ к ресурсам, связанным с разрешением
+* Делать запросы к базе данных на основе ресурсов, предоставленных или отклоненных
 
-As a result, the result set of a query will hold only the realm resources where realm administrators have access to any of the view-related scopes.
+В результате результирующий набор запросов будет содержать только ресурсы реалма, в которых администраторы Realm имеют доступ к любому из сфер зрения.
 
-===== Searching Permissions
+===== Поиск разрешений
 
-The Admin Console provides several ways to search for permissions, supporting the following capabilities:
+Консоль администратора предоставляет несколько способов поиска разрешений, поддерживая следующие возможности:
 
-* Search for permissions that contain a specific string in their *Name*
-* Search for permissions of a specific resource type, such as *Users*
-* Search for permissions of a specific resource type that apply to a particular resource (such as *Users* resource type for user `myadmin`).
-* Search for permissions of a specific resource type with a given scope (such as *Users* resource type permissions with the *manage* scope).
+* Поиск разрешений, содержащих определенную строку в их *Название*
+* Поиск разрешений определенного типа ресурса, например *Пользователи*
+* Поиск разрешений определенного типа ресурса, применимого к определенному ресурсу (например *Пользователи* тип ресурса для `myadmin`).
+* Поиск разрешений определенного типа ресурса с заданной областью (например, разрешения *Пользователи* ресурса с областью *Управления*).
 * Search for permissions of a specific resource type that apply to a particular resource and have a specific scope (such as *Users* resource
 type permissions with the *manage* scope for user `myadmin`).
 
-image:images/fine-grain-search.png[Fine grained permissions search]
+image:images/fine-grain-search.png[Жёлтый поиск разрешений]
 
-These capabilities allow realm administrators to perform queries on their universe of permissions and identify which ones
-are enforcing access to a set of one or more realm resources and their scopes. Combined with the evaluation tool on the
-*Evaluation* tab, they provide a key management tool for managing permissions in a realm. See <<_evaluating-permissions, Evaluating Permissions>>
-for more details.
+Эти возможности позволяют администраторам Realm выполнять запросы о вселенной прав доступа и определять, какие
+обеспечивают доступ к набору ресурсов одной или нескольких областей и их рамок. Combined with the evaluation tool on the
+*Evaluation* tab, they provide a key management tool for managing permissions in a realm. Смотрите <<_evaluating-permissions, Evaluating Permissions>>
+для получения более подробной информации.
 
-==== Managing Policies
+==== Политики управления
 
 The *Policies* tab allows administrators to define conditions using different access control methods to determine whether
 a permission should be granted to an administrator attempting to perform operations on a realm resource. When managing permissions,
 you must associate at least a single policy to grant or deny access to a realm resource.
 
-Policies are basically conditions that will evaluate to either a `GRANT` or a `DENY`. Their outcome will decide whether
+Политики являются в основном условиями, которые будут оценивать либо «GRANT», либо «DENY». Their outcome will decide whether
 a permission should be granted or denied.
 
-A permission is only granted if all its associated policies evaluate to a `GRANT`. Otherwise, the permission is denied
+Разрешение предоставляется только в том случае, если все связанные с ним политики оцениваются в «GRANT». Otherwise, the permission is denied
 and a realm administrator will not be able to access the protected resource.
 
-{project_name} provides a set of built-in policies that you can choose from:
+{project_name} предоставляет набор политик, которые вы можете выбрать:
 
-image:images/select-policy-type.png[Selecting a policy type]
+image:images/select-policy-type.png[Выбор типа политики]
 
-Once you have a well-defined and stable permission model for your realm, less need exists to create policies. You can instead reuse existing policies to create more permissions.
+Как только у вас есть четко определенная и стабильная модель прав для вашего мира, не нужно создавать политики. Вместо этого вы можете повторно использовать существующие политики для создания дополнительных разрешений.
 
-For more details about each policy type, see link:{authorizationguide_link}#_policy_overview[Managing policies].
+Дополнительную информацию о каждом типе политики см. по ссылке:{authorizationguide_link}#_policy_overview[Управление политиками].
 
 [[_evaluating-permissions]]
-==== Evaluating Permissions
+==== Оценка разрешений
 
 The *Evaluation* tab provides a testing environment where administrators can verify that permissions are enforcing access
-as expected. The administrator can see what permissions are involved when enforcing access to a particular resource and what the outcome is.
+as expected. Администратор может видеть, какие разрешения вовлекаются при обеспечении доступа к определенному ресурсу и каков результат.
 
-You need to provide a set of fields in order to run an evaluation:
+Вы должны предоставить набор полей для выполнения оценки:
 
-* `User`, the realm administrator or the subject trying to access a resource
-* `Resource Type`, the resource type you want to evaluate
-* `Resource Selector`, depending on the selected `Resource Type` you will be prompted to select a specific realm resource like a user, group, or client.
-* `Authorization scope`, the scope or the operation you want to evaluate. If not provided, the evaluation will happen for all the scopes of the selected resource type.
+* Пользователь, администратор области или тема, пытающаяся получить доступ к ресурсу
+* `Тип ресурса`, тип ресурса, который вы хотите вычислить
+* `Выборщик ресурсов`, в зависимости от выбранного `Тип ресурсов` вам будет предложено выбрать конкретный ресурс реалма, такой как пользователь, группа или клиент.
+* `Область авторизации`, область или операция, которую вы хотите оценить. Если не указано, то оценка будет производиться для всех областей выбранного типа ресурса.
 
-image:images/fine-grain-evaluation.png[Fine grained permissions evaluation tab]
+image:images/fine-grain-evaluation.png[Жёлтая вкладка с разрешениями]
 
 By clicking the `Evaluate` button, the server will evaluate all the permissions associated with the selected resource and scopes
 just like if the selected `User` were trying to access the resource when using the administration console or the Admin API.
 
 For instance, in the example above you can see that the user `myadmin` can *manage* user `user-1` because a `Allow managing all realm users` permission
-voted to a `PERMIT`, therefore granting access to the `manage` scope. However, all the other scopes were denied.
+voted to a `PERMIT`, therefore granting access to the `manage` scope. Вместе с тем было отказано во всех других видах применения.
 
 Combined with the searching capabilities from the *Permissions* tab, you can perform troubleshooting to identify any permission that
 is not behaving as expected.
 
-When evaluating permissions, the following rules apply:
+При оценке прав доступа применяются следующие правила:
 
-* The outcome from resource-specific permissions have precedence over broader permissions that give access to all resources of a certain type
-* If no permissions exist for a specific resource, access will be granted based on the permission that grants access to all resources of a certain type
-* The outcome from different permissions that enforce access to a specific resource will only grant access if they all permit access to the resource
+* Результат прав доступа для конкретного ресурса имеет приоритет над более широкими разрешениями, которые дают доступ ко всем ресурсам определенного типа
+* Если разрешения для определенного ресурса не существуют, доступ будет предоставлен на основе разрешения, предоставляющего доступ ко всем ресурсам определенного типа
+* Результат из различных разрешений, обеспечивающих доступ к определенному ресурсу будет предоставлен доступ только в том случае, если все они разрешит доступ к ресурсу
 
 [[_resolving-conflicting-permissions]]
-===== Resolving conflicting permissions
+===== Решение конфликтующих разрешений
 
-Permissions can have multiple policies associated with them. As the authorization model evolves, it is common for some policies within a permission or
-even different permissions related to a specific resource to conflict.
+Разрешения могут иметь несколько политик связанных с ними. По мере развития модели авторизации, он часто используется для некоторых политик в пределах разрешения или
+даже для различных разрешений, связанных с конкретным ресурсом в конфликте.
 
-The evaluation outcome will be "denied" whenever any permission is evaluated to "DENY." If there are multiple permissions related to the same resource,
+Результаты оценки будут "запрещены" всякий раз, когда какое-либо разрешение будет вычислено в "DENY." If there are multiple permissions related to the same resource,
 all of them must grant access in order for the outcome to be "granted."
 
 IMPORTANT: Fine-grained admin permissions allow you to set up permissions for individual resources or for the resource type itself (such as all users,
 all groups, and so on.). If a permission or permissions related to a specific resource exist, the "all-resource" permission is *NOT* taken into account
-during evaluation. If no specific permission exists, the fallback is to the "all-resource" permission. This approach helps address scenarios like
-allowing members of the `realm-admins` group to manage members of realm groups, but preventing them from managing members of the `realm-admins` group
-themselves.
+during evaluation. Если специального разрешения не существует, резервная копия - это разрешение "всех ресурсов". Этот подход помогает решить такие сценарии, как
+позволяя членам группы `realm-admins` управлять членами групп реалмов, но не позволяя им управлять членами группы `realm-admins`
+.
 
 [[_realm_access_control]]
-==== Accessing a Realm administration console as a Realm Administrator
+==== Доступ к консоли администрирования Realm как администратора Realm
 
-Realm administrators can access a dedicated realm-specific administration console that allows them to manage resources within their assigned realm.
-This console is separate from the main {project_name} Admin Console, which is typically used by realm administrators.
+Администраторы Realm могут получить доступ к специальной консоли администрирования, которая позволяет им управлять ресурсами в назначенном им реалме.
+Эта консоль отделена от {project_name} консоли администратора, которая обычно используется администраторами Realm.
 
-For more details on dedicated realm administration consoles and available roles, refer to: <<_per_realm_admin_permissions, Dedicated admin consoles>>.
+Дополнительную информацию о специальных консолях администрирования и функциях можно получить по адресу: <<_per_realm_admin_permissions, Dedicated admin consoles>.
 
 To access the administration console, a realm administrator must have at least one of the following roles assigned, depending on the resources they
 need to administer:
 
-- *query-users* – Required to query realm users.
-- *query-groups* – Required to query realm groups.
-- *query-clients* – Required to query realm clients.
-- *query-organizations* – Required to query realm organizations.
+- *query-users* – требуется для запроса пользователей реалма.
+- *query-groups* – требуется для запросов групп реалмов.
+- *запросы-клиенты* – Требуется для запроса клиентов реалма.
+- *запрашивающие организации* – требуется для запроса организаций реалма.
 
-By granting any of these roles to a realm user, they will be able to access the administration console, but only for the
-areas that correspond to roles granted. For instance, if you assign the `query-users` role, the realm administrator
+Предоставляя любую из этих ролей пользователю Realm, он сможет получить доступ к консоли администрирования, но только для областей
+, соответствующих ролям. For instance, if you assign the `query-users` role, the realm administrator
 will only have access to the `Users` section in the administration console. If an administrator is responsible for
 multiple resource types (such as both users and groups), they must have all the corresponding "query-*" roles assigned.
 
-These roles enable basic access to query resources but do not grant permission to view or modify them. To grant or deny access
+Эти роли позволяют базовый доступ к запросу ресурсов, но не дают разрешения на их просмотр или изменение. To grant or deny access
 to realm resources you need to set up the permissions for any of the operations available from each resource type.
-For more details, see <<_managing-permissions,Managing Permissions>>.
+Подробнее см. <<_managing-permissions,Управление разрешения>>.
 
-===== Roles and Permission relationship
+===== Отношения ролей и прав доступа
 
-Fine grained permissions are used to grant additional permissions. You cannot override the default behavior of the built-in admin roles.
-If a realm administrator is assigned one or more admin roles, it prevents the permissions from being evaluated. This means that
-if a respective admin role is assigned to a realm administrator, permission evaluation will be bypassed, and access will be granted.
+Полученные права используются для предоставления дополнительных разрешений. Вы не можете переопределить поведение по умолчанию встроенных ролей администратора.
+Если администратору Realm назначена одна или несколько ролей администратора, то он предотвращает оценку прав доступа. Это означает, что
+если соответствующая роль администратора назначена администратору Realm, то оценка прав доступа будет прервана, а доступ будет предоставлен.
 
 [cols="30%,70%"]
 |===
-|*Admin Role* |*Description*
+|*Роль администратора* |*Описание*
 
-|*query-users* |A realm administrator can see the *Users* section in administration console and can search for users in the realm.
-                             It does not grant the ability to *view* users.
+|*запросы* |Администратор области может видеть раздел *Пользователи* в административной консоли и может искать пользователей в реалме.
+                             Она не предоставляет возможность *просмотреть* пользователей.
 
-|*query-groups* |A realm administrator can see the *Groups* section in administration console and can search for groups in the realm.
-                             It does not grant the ability to *view* groups.
+|*группы запросов* |Администратор области может видеть раздел *Группа* в административной консоли и может искать группы в реалме.
+                             Она не предоставляет возможность *просматривать* группы.
 
-|*query-clients* |A realm administrator can see the *Clients* section in administration console and can search for clients in the realm.
-                             It does not grant the ability to *view* clients.
+|*запросы-клиенты* |Администратор области может видеть раздел *Клиенты* в административной консоли и может искать клиентов в реалме.
+                             Она не предоставляет возможность *просмотреть* клиентов.
 
-|*query-organizations* |A realm administrator can see the *Organizations* section in administration console and can search for organizations in the realm.
-                             It does not grant the ability to *view* organizations.
+|*запросы организаций* |Администратор области видит раздел *Организации* в административной консоли и может искать организации в этой области.
+                             Она не предоставляет возможности *просматривать* организации.
 
-|*view-users* |A realm administrator can *view* all users and groups in the realm.
+|*Вид* |Администратор Realm может *просматривать* все пользователи и группы в реалме.
 
-|*manage-users* |A realm administrator can *view*, *map-roles*, *manage-group-membership* and *manage* all users in the realm,
-                             as well as *view*, *manage-membership*, *manage-membership-of-members* and *manage* groups in the realm.
+|*управляющие пользователи* |Администратор области может *просматривать*, *роли карты*, *manage-group-groupship* и *Управление* всеми пользователями в реалме,
+                             а также *view*, *Управляющий членство*, *manage-membership-membership* and *manage* groups in the realm.
 
-|*impersonation* |A realm administrator can *impersonate* all users in the realm.
+|*имперство* |Администратор Realm может *имперсонировать* всех пользователей в этом реалме.
 
-|*view-clients* |A realm administrator can *view* all clients in the realm.
+|*Вид-клиенты* |Администратор области может *просматривать* всех клиентов в реалме.
 
-|*manage-clients* |A realm administrator can *view* and *manage* all clients and client scopes in the realm.
+|*управляющие-клиенты* |Администратор области может *просматривать* и *администрировать* все клиентские и клиентские рамки в реалме.
 
-|*view-organizations* |A realm administrator can *view* all organizations in the realm.
+|*view-organizations* |Администратор области может *просматривать* все организации в реалме.
 
-|*manage-organizations* |A realm administrator can *view* and *manage* all organizations in the realm.
+|*Управляющие организации* |Администратор области может *просматривать* и *управлять* все организации в реалме.
 |===
 
-When this feature is enabled in a realm, only server and realm administrators with the corresponding admin roles can grant these roles
-to other realm administrators. Delegated realm administrators cannot assign administrative roles to other realm administrators.
+Когда эта функция включена в реалме, только серверные администраторы и области с соответствующими ролями администратора могут предоставлять эти роли
+другим администраторам реалмов. Администраторы делегированных миров не могут назначать административные роли другим администраторам.
 
-==== Understanding some common use cases
+==== Понимание некоторых общих вариантов использования
 
 Consider a situation where an administrator wants to allow a group of administrators to manage all users in the realm except those that
-belong to the administrators group. This example includes a `test` realm and a `test-admins` group.
+belong to the administrators group. В этот пример входит `test` мира и группа `test-admins`.
 
-===== Allowing to manage users by group of administrators
+===== Разрешить управление пользователями по группам администраторов
 
-Create user permission permission, allowing to view and manage all users in the realm for members of the `test-admins` group:
+Создайте разрешение пользователя, позволяющее просматривать и управлять всеми пользователями в области для членов группы `test-admins`:
 
-* Navigate to the *Permissions* tab in the administration console.
-* Click *Create permission* and choose *Users* resource type.
-* Fill in the name, such as `Allow managing test-admins`.
-* Choose *view* and *manage* authorization scopes, keep checked *All Users*.
-* Create a condition, which needs to be met to get an access by clicking *Create new policy*.
-* Fill in the name `Allow test-admins`, select *Group* as *Policy type*.
-* Click *Add groups* button and select `test-admins` group, click *Save*.
-* Click *Save* on *Create permission* page.
+* Перейдите на вкладку *Разрешения* в административной консоли.
+* Нажмите *Создать разрешение* и выберите *Пользователь* тип ресурса.
+* Заполните имя, например `Разрешить управление test-admins`.
+* Выберите *просмотр* и *управление* области авторизации, проверяйте *Все пользователи*.
+* Создайте условие, которое должно быть выполнено, чтобы получить доступ, нажав *Создать новую политику*.
+* Заполните имя `Разрешить test-admins`, выберите *Группу* как *Тип политики*.
+* Нажмите *Добавить группы* и выберите `test-admins` группу, нажмите *Сохранить*.
+* Нажмите *Сохранить* на странице *Создать разрешение*.
 
-===== Allowing to manage users by group of admins but not group members
+===== Разрешение управления пользователями по группам администраторов, но не участников группы
 
-Let's exlude the members of the group itself, so that `test-admins` cannot manage other admins.
+Давайте изгнаем членов самой группы, чтобы `test-admins` не мог управлять другими администраторами.
 
-* Create new permission by clicking *Create permission*.
-* This time choose *Groups* resource type.
-* Fill in the name, such as `Disallow managing test-admins`.
-* Choose *manage-members* authorization scope.
-* Select *Specific Groups* and choose `test-admins` group.
-* *Create new policy* of type *Group*.
-* Fill the name `Disallow test-admins` and select `test-admins` group.
-* Switch to *Negative Logic* for the policy, *Save* the policy
-* *Save* the permission
+* Создайте новое разрешение, нажав *Создать разрешение*.
+* На этот раз выберите *Группа* тип ресурса.
+* Заполните имя, например `Запретить управление test-admins`.
+* Выберите *manage-members* область авторизации.
+* Выберите *Специальные группы* и выберите группу `test-admins`.
+* *Создать новую политику* типа *Группа*.
+* Заполните имя `Disallow test-admins` и выберите `test-admins`.
+* Переключиться на *отрицательную логику* для политики, *Сохраните* политики
+* *Сохраните* разрешения
 
-===== Allowing to impersonate users for members of a group with a specific role assigned
+===== Разрешение имитировать пользователей для членов группы с определенной ролью
 
-- Create a "User Permission" for specific users (or all users) you want to allow impersonation.
-- Create a "Group Policy" allowing access to members of `test-admins`.
-- Create a "Role Policy" allowing access to users assigned the `impersonation-admin` role.
-- Assign both policies to the permission.
+- Создайте "User Permission" для определенных пользователей (или всех пользователей), которым вы хотите разрешить имперсацию.
+- Создайте "Групповую политику", позволяющую пользователям `test-admins`.
+- Создайте "Role Policy" позволяющий пользователям назначать роль `impersonation-admin`.
+- Назначить обе политики для разрешения.
 
-===== Preventing specific users from being impersonated
+===== Предотвращение импровизирования конкретных пользователей
 
-- Create a *User Permission* for the specific users you want to prevent from being impersonated.
-- Create any policy that evaluates to deny (such as a user policy with no users selected).
-- Assign the policy to the permission to effectively block impersonation for the selected users.
+- Создайте *права пользователя* для конкретных пользователей, которых вы хотите предотвратить от импровизирования.
+- Создайте политику блокирования (такую как политика пользователя без выбранных пользователей).
+- Назначить политику разрешения на эффективную блокировку имперсонирования для выбранных пользователей.
 
-===== Allowing to view users but not managing them for admins with a defined role assigned
+===== Разрешение просматривать пользователей, но не управлять ими для администраторов с определенной ролью
 
-- Create a "User Permission" with the *view* scope for all users.
-- Create a "Role Policy" allowing access to users with specific role assigned.
-- Do _not_ assign the `manage` scope to prevent modification of user details.
+- Создайте "User Permission" с *view* области для всех пользователей.
+- Создать «Политику ролей» для доступа к пользователям с определенной ролью.
+- Выполните _not_ задайте область управления для предотвращения изменения пользовательских данных.
 
-===== Allowing to manage users and role assignment for members of a group
+===== Разрешение управления пользователями и назначением ролей для членов группы
 
-- Create a "User Permission" with the *manage*, *map-roles* scopes for all users.
-- Create a "Group Policy" allowing access to members of `test-admins`.
+- Создайте "User Permission" с помощью *manage*, *map-roles* области охвата для всех пользователей.
+- Создайте "Групповую политику", позволяющую пользователям `test-admins`.
 
-===== Allowing to view and manage members of a group but not members of its subgroups
+===== Разрешено просматривать и управлять членами группы, но не членами ее подгрупп
 
-- Create a "Group Permission" with the *view-members* and *manage-members* scopes for specific group `mygroup`.
-- Assign a "Group Policy" targeting `test-admins` to it.
-- Create another "Group Permission" with the *view-members* and *manage-members* scopes for specific group, select all subgroups of the `mygroup`.
-- Create negative "Group Policy" for `test-admins` and assign it to the "subgroups" permission.
+- Создайте "Права Группа" с *view-members* и *manage-members* области для конкретной группы `mygroup`.
+- Назначить «Групповую политику», направленную на «test-admins».
+- Создайте еще одну область «Права Группа» с *view-members* и *manage-members* для конкретной группы, выберите все подгруппы `mygroup`.
+- Создайте отрицательную «групповую политику» для «test-admins» и назначьте её на «подгруппы».
 
-===== Allowing to impersonate members of a specific group
+===== Разрешение имперсонировать членов определенной группы
 
-- Create a "Group Permission" with the *impersonate-members* for specific group `mygroup`.
-- Assign a "Group Policy" targeting `mygroup-helpdesk` to it.
+- Создайте "Права Группа" с *имперсонами-членами* для конкретной группы `mygroup`.
+- Назначить «Групповую политику» в направлении «mygroup-helpdesk».
 
 [[_managing-permissions-rest-api]]
-==== Managing permissions using the Admin REST API
+==== Управление разрешениями с помощью API REST администратора
 
-In addition to the Admin Console, you can manage fine-grained admin permissions programmatically using the Admin REST API.
+В дополнение к консоли администратора вы можете управлять тонкими правами администратора программно с помощью API REST API.
 
-All permission and policy management is performed through the authorization endpoints of the `admin-permissions` client that is automatically created when you enable admin permissions for a realm.
+Все права и управление политикой выполняются через конечные точки авторизации клиента `admin-permissions`, который автоматически создается при включении прав администратора для реалма.
 
-===== Enabling admin permissions for a realm
+===== Включение прав администратора для реалма
 
-To enable admin permissions via the Admin REST API, update the realm representation:
+Чтобы включить разрешения администратора через Администратор REST API, обновите представительство реалма:
 
 [source,bash]
 ----
@@ -523,31 +521,31 @@ Content-Type: application/json
 }
 ----
 
-===== Discovering the admin-permissions client
+===== Поиск клиента админ-прав
 
-Once admin permissions are enabled, a special `admin-permissions` client is created in the realm.
-You need this client's internal UUID to manage permissions and policies via the REST API.
+Как только права администратора включены, в реалме создается специальный клиент `admin-permissions`.
+Вам нужен внутренний UUID этого клиента для управления разрешениями и политиками через REST API.
 
 [source,bash]
 ----
 GET /admin/realms/{realm}/clients?clientId=admin-permissions
 ----
 
-The response contains the client representation with the `id` field you will use in subsequent requests.
-All permission and policy endpoints are under:
+Ответ содержит представление клиента с полем `id`, который вы будете использовать в последующих запросах.
+Все права доступа и конечные пункты политики подчиняются:
 
 ----
 /admin/realms/{realm}/clients/{admin-permissions-client-uuid}/authz/resource-server
 ----
 
-===== Creating policies
+===== Создание политик
 
-Before creating permissions, you must create one or more policies that define _who_ should be granted or denied access.
-Policies are created under the `policy` sub-resource, with the policy type as a path segment.
+Перед созданием прав доступа вы должны создать одну или несколько политик, определяющих _who_ должен быть предоставлен или запрещен доступ.
+Политики создаются в рамках подресурса `policy`, с типом политики как сегментом контура.
 
-====== User policy
+====== Политика пользователя
 
-A user policy grants or denies access based on specific users.
+Пользовательская политика предоставляет или запрещает доступ на основе конкретных пользователей.
 
 [source,bash]
 ----
@@ -561,9 +559,9 @@ Content-Type: application/json
 }
 ----
 
-====== Group policy
+====== Групповая политика
 
-A group policy grants or denies access based on group membership.
+Политика группы предоставляет или запрещает доступ в зависимости от членства в группе.
 
 [source,bash]
 ----
@@ -577,9 +575,9 @@ Content-Type: application/json
 }
 ----
 
-====== Role policy
+====== Политика роли
 
-A role policy grants or denies access based on role assignment.
+Политика ролей предоставляет или запрещает доступ в зависимости от назначения ролей.
 
 [source,bash]
 ----
@@ -593,16 +591,16 @@ Content-Type: application/json
 }
 ----
 
-For all policy types, set `logic` to `NEGATIVE` to invert the condition (deny when the condition is met).
+Для всех типов политики установите `logic` на `NEGATIVE` и инвертируйте условие (запретите при выполнении условия).
 
-===== Creating permissions
+===== Создание разрешений
 
-Permissions are scope-based and are created under the `permission/scope` sub-resource.
-A permission ties together a resource type, one or more scopes (operations), and one or more policies.
+Разрешения основаны на области действия и создаются в подресурсе `permission/scope`.
+Разрешение связывает тип ресурсов, один или несколько рамок (операций), и одну или несколько политик.
 
-====== Permission for all resources of a type
+====== Разрешение для всех ресурсов типа
 
-To grant access to all resources of a given type (for example, all groups):
+Предоставить доступ ко всем ресурсам данного типа (например, всем группам):
 
 [source,bash]
 ----
@@ -617,10 +615,10 @@ Content-Type: application/json
 }
 ----
 
-====== Permission for specific resources
+====== Разрешение на определенные ресурсы
 
-To grant access to specific resources, provide the resource identifiers in the `resources` field.
-For users, groups, and clients, use the entity's UUID. For roles, use the role UUID.
+Чтобы предоставить доступ к определенным ресурсам, предоставьте идентификаторы ресурса в поле «ресурсы».
+Для пользователей, групп и клиентов используйте UUID сущности. Для ролей, используйте UUID роли.
 
 [source,bash]
 ----
@@ -636,26 +634,26 @@ Content-Type: application/json
 }
 ----
 
-The `resourceType` field must be one of: `Users`, `Groups`, `Clients`, `Roles`, or `Organizations`.
-The `scopes` must be valid for the chosen resource type — see <<_understanding_realm_resource_types, Understanding the Realm Resource Types>> for the available scopes.
+Поле `resourceType` должно быть одним из следующих: `Users`, `Groups`, `Clients`, `Roles`, или `Organizations`.
+Значение `scopes` должно быть допустимым для выбранного типа ресурса — смотрите <<_understanding_realm_resource_types, почитайте типы ресурсов реалма>> для доступных рамок.
 
-===== Listing, updating, and deleting permissions
+===== Объявление, обновление и удаление разрешений
 
-To list all scope permissions:
+Чтобы перечислить все права доступа:
 
 [source,bash]
 ----
 GET /admin/realms/{realm}/clients/{client-uuid}/authz/resource-server/permission/scope
 ----
 
-To search for a permission by name:
+Для поиска разрешений по имени:
 
 [source,bash]
 ----
 GET /admin/realms/{realm}/clients/{client-uuid}/authz/resource-server/permission/scope/search?name={name}
 ----
 
-To update a permission:
+Чтобы обновить разрешение:
 
 [source,bash]
 ----
@@ -671,22 +669,22 @@ Content-Type: application/json
 }
 ----
 
-To delete a permission:
+Чтобы удалить разрешение:
 
 [source,bash]
 ----
 DELETE /admin/realms/{realm}/clients/{client-uuid}/authz/resource-server/permission/scope/{permission-id}
 ----
 
-The same CRUD operations are available for policies under the corresponding policy type path
-(for example, `/authz/resource-server/policy/user/{policy-id}`).
+Те же операции CRUD доступны для политик под соответствующим типом политики
+(например, `/authz/resource-server/policy/user/{policy-id}`).
 
-===== Example: Allowing a group of administrators to manage specific groups
+===== Пример: Разрешение группе администраторов управлять конкретными группами
 
-The following example creates a policy and permission that allows members of an `admins` group to view and manage
-a specific group and its members.
+Следующий пример создает политику и разрешения, которые позволяют членам группы `admins` просматривать и управлять
+конкретной группой и ее членами.
 
-. Enable admin permissions for the realm:
+. Включить права администратора для реалма:
 +
 [source,bash]
 ----
@@ -695,13 +693,13 @@ Content-Type: application/json
 
 {"adminPermissionsEnabled": true}
 ----
-. Discover the `admin-permissions` client UUID:
+. Откройте для себя UUID клиента `admin-permissions`:
 +
 [source,bash]
 ----
 GET /admin/realms/myrealm/clients?clientId=admin-permissions
 ----
-. Create a group policy referencing the `admins` group:
+. Создайте групповую политику с ссылками на группу `admins`:
 +
 [source,bash]
 ----
@@ -714,7 +712,7 @@ Content-Type: application/json
   "groups": [{"id": "{admins-group-uuid}"}]
 }
 ----
-. Create a permission granting view and manage access to a target group:
+. Создать разрешение на просмотр и управление доступом к целевой группе:
 +
 [source,bash]
 ----
@@ -730,51 +728,51 @@ Content-Type: application/json
 }
 ----
 
-==== Performance considerations
+==== Соображения эффективности
 
-When enabling the feature to a realm, there is an additional overhead when realm administrators are managing any of the
-supported resource types. This is mainly true when performing these operations:
+При включении функции в реалм, есть дополнительные накладные расходы, когда администраторы Realm управляют любыми типами ресурсов, поддерживаемых
+. Это в основном верно при выполнении этих операций:
 
-* Listing and searching
-* Updating or deleting
+* Список и поиск
+* Обновление или удаление
 
-The feature introduces additional checks whenever you are listing or managing realm resources in order to enforce access
-based on the permissions you have defined. This is mainly true when querying realm resources due to the additional overhead
-to partially evaluate the permissions for a realm administrator to filter and paginate the results.
+Эта функция вводит дополнительные проверки всякий раз, когда вы перечисляете или управляете ресурсами Realm для принудительного обеспечения доступа
+на основе определенных разрешений. Это в основном верно при запросе ресурсов Realm из-за дополнительных накладных
+для частичной оценки прав администратора Realm на фильтрацию и обработку результатов.
 
-Fewer permissions referencing a realm administrator user and most of the resources they can access is better. For instance,
-if you want to delegate access to a realm administrator to manage users, it is better to have those users as members of a group. By doing that,
-you are improving not only the performance when evaluating permissions but also creating a permission model that is easier to manage.
+Меньше прав доступа к администратору области и большая часть доступных им ресурсов лучше. Например,
+если вы хотите делегировать доступ администратору Realm для управления пользователями, лучше иметь этих пользователей в качестве членов группы. При этом
+улучшает производительность не только при оценке прав доступа, но и создает модель разрешений, которая легче управлять.
 
-The main impact of access enforcement is when querying realm resources. If a realm administrator is, for instance, referenced
-in thousands of permissions through a user, role, or group policy, the partial evaluation mechanism that happens when querying
-realm resources will query all those permissions from the database. A more concise and optimized model will help to fetch fewer
+Основное воздействие обеспечения доступа оказывает при поиске ресурсов в реалме. Если администратор Realm, например, ссылается на
+в тысячах разрешений через пользователь, роль или групповую политику, механизм частичной оценки, который происходит при запросе ресурсов области
+будет запрашивать все эти разрешения из базы данных. A more concise and optimized model will help to fetch fewer
 permissions but the enough to grant or deny access to realm resources.
 
 For instance, granting access to a realm administrator to view and manage users in a realm is better done with a group permission
-than create individual permissions for each individual user in a realm. As well as make sure the policies associated with a
-permission referencing a realm administrator either by a direct reference (user policy),
-or indirect (role or group policy) reference, do not span multiple (thousands of) permissions, regardless of the resource type.
+than create individual permissions for each individual user in a realm. Кроме того, убедитесь, что политики, связанные с
+разрешением администратора области либо по прямой ссылке (политики пользователей),
+или косвенные (роль или групповая политика) ссылки не охватывают несколько (тысяч) прав, независимо от типа ресурса.
 
-As an example, suppose you have three users in a realm, and you want to allow `bob`, a realm administrator, to `view` and `manage` them.
-A non-optimal permission model would create three different permissions, for each user, where a user policy grants access to `bob`. Instead,
-you can have a single group permission, or even a single user permission, that groups those three users while still granting access to `bob`
-using the same user policy.
+Например, предположим, что у вас есть три пользователя в реалме, и вы хотите разрешить администратору реалма `bob`, `view` и `manage` их.
+Неоптимальная модель разрешений создала бы три разных разрешения для каждого пользователя, где пользовательская политика предоставляет доступ к `bob`. Вместо этого,
+вы можете иметь одно разрешение группы или даже разрешение одного пользователя, группирует эти три пользователя, предоставляя доступ к `bob`
+, используя ту же политику пользователя.
 
-The same is true if you want to give access to more realm administrators to those three users. Instead of creating individual policies,
+То же самое справедливо, если вы хотите дать этим трем пользователям доступ к большему количеству администраторов реалмов. Instead of creating individual policies,
 you can consider using a group or role policy instead. The permission model is use-case-specific, but these recommendations are important
 to provide not only better manageability but also improve the overall performance of the server when managing realm resources.
 
-In terms of server configuration, depending on the size of your realm and the number of permissions and policies you have, you might consider
-changing the cache configuration to increase the size of the following caches:
+В терминах конфигурации сервера, в зависимости от размера вашего реалма, а также количества разрешений и политик, которые у вас есть, вы можете рассмотреть
+изменить конфигурацию кэша для увеличения размера следующих кэша:
 
-* `realms`
-* `users`
-* `authorization`
+* «Регламенты»
+* `Пользователи`
+* `авторизация`
 
-Consider looking at the server metrics for these caches to find the best value when sizing your deployment.
+Рассмотрим показатели сервера для этих тайников, чтобы определить оптимальное значение при их установке.
 
-When filtering resources, the partial evaluation mechanism will eventually rely on `IN` clauses in SQL statements
-to filter the results. Depending on your database, you might have limitations on the number of parameters for the `IN` clause.
-That is the case for old versions of the Oracle database, which has a hard limit to 1000 parameters. To avoid such problems,
+При фильтрации ресурсов механизм частичной оценки в конечном итоге будет полагаться на оговорки `IN` в выражениях SQL
+для фильтрации результатов. В зависимости от вашей базы данных вы можете иметь ограничения на количество параметров для оговорки `IN`.
+Так обстоит дело со старыми версиями базы данных Oracle, которая имеет жесткий предел 1000 параметров. To avoid such problems,
 keep in mind the considerations above about the number of permissions that grants or deny access to a single realm administrator.
