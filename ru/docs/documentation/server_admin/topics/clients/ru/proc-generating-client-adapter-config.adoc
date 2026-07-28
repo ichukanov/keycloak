@@ -1,10 +1,10 @@
-= Generating client adapter config
+= Создание конфигурации клиентского адаптера
 
-{project_name} can generate configuration files that you can use to install a client adapter in your application's deployment environment. A number of adapter types are supported for OIDC and SAML.
+{project_name} может создать конфигурационные файлы, которые вы можете использовать для установки клиентского адаптера в среде установки вашего приложения. Для OIDC и SAML поддерживается несколько типов адаптеров.
 
-. Click on the _Action_ menu and select the *Download adapter config* option
+. Нажмите на меню _Action_ и выберите опцию *Загрузить конфигурацию адаптера*
 +
 image:images/client-installation.png[]
-. Select the *Format Option* you want configuration generated for.
+. Выберите *Опцию Формата*, для которой вы хотите создать конфигурацию.
 
-All {project_name} client adapters for OIDC and SAML are supported. The mod-auth-mellon Apache HTTPD adapter for SAML is supported as well as standard SAML entity descriptor files.
+Все клиентские адаптеры {project_name} для OIDC и SAML поддерживаются. Поддерживается mod-auth-mellon Apache HTTPD адаптер для SAML, а также стандартные файлы SAML дескрипторов сущностей.
