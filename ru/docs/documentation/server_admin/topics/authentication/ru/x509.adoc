@@ -1,163 +1,163 @@
 [[_x509]]
-=== X.509 client certificate user authentication
+=== X.509 аутентификация пользователя сертификата клиента
 
-{project_name} supports logging in with an X.509 client certificate if you have configured the server to use mutual SSL authentication.
+{project_name} поддерживает вход с клиентским сертификатом X.509, если вы настроили сервер на использование взаимной аутентификации SSL.
 
-A typical workflow:
+Типичный рабочий процесс:
 
-* A client sends an authentication request over SSL/TLS channel.
-* During the SSL/TLS handshake, the server and the client exchange their x.509/v3 certificates.
-* The container ({appserver_name}) validates the certificate PKIX path and the certificate expiration date.
-* The x.509 client certificate authenticator validates the client certificate by using the following methods:
-** Checks the certificate revocation status by using CRL or CRL Distribution Points.
-** Checks the Certificate revocation status by using OCSP (Online Certificate Status Protocol).
-** Validates whether the key in the certificate matches the expected key.
-** Validates whether the extended key in the certificate matches the expected extended key.
-* If any of the these checks fail, the x.509 authentication fails. Otherwise, the authenticator extracts the certificate identity and maps it to an existing user.
+* Клиент отправляет запрос на аутентификацию через SSL/TLS канал.
+* Во время рукопожатия SSL/TLS сервер и клиент обменивают свои сертификаты x.509/v3.
+* Контейнер ({appserver_name}) проверяет путь к сертификату PKIX и дату окончания срока действия сертификата.
+* x.509 клиентский сертификат удостоверяет сертификат клиента, используя следующие методы:
+** Проверяет статус отзыва сертификата с использованием точек распределения CRL или CRL.
+** Проверяет статус отзыва Сертификата с помощью OCSP (Online Certificate Status Protocol).
+** Проверяет, соответствует ли ключ в сертификате ожидаемый ключ.
+** Проверяет, соответствует ли расширенный ключ сертификата ожидаемому расширенному ключу.
+* Если одна из этих проверок не удается, аутентификация x.509 не удалась. В противном случае аутентификатор извлекает идентификацию сертификата и сопоставляет его существующему пользователю.
 
-When the certificate maps to an existing user, the behavior diverges depending on the authentication flow:
+Когда сертификат сопоставляется с существующим пользователем, поведение меняется в зависимости от потока аутентификации:
 
-* In the Browser Flow, the server prompts users to confirm their identity or sign in with a username and password.
-* In the Direct Grant Flow, the server signs in the user.
+* В Browser Flow, сервер предлагает пользователям подтвердить свою личность или войти с помощью имени пользователя и пароля.
+* В Direct Grant Flow, сервер подписывается пользователем.
 
-IMPORTANT: Note that it is the responsibility of the web container to validate certificate PKIX path. X.509 authenticator on the
-{project_name} side provides just the additional support for check the certificate expiration, certificate revocation status and key usage. If you are
-using {project_name} deployed behind reverse proxy, make sure that your reverse proxy is configured to validate PKIX path. If you
+IMPORTANT: Обратите внимание, что веб-контейнер отвечает за проверку пути сертификата PKIX. X.509 аутентификатор на стороне
+{project_name} предоставляет только дополнительную поддержку для проверки срока действия сертификата, статуса отзыва сертификата и использования ключа. Если вы
+с помощью {project_name} развернутого позади обратного прокси, убедитесь, что ваш обратный прокси настроен для проверки пути PKIX. If you
 do not use reverse proxy and users directly access the {appserver_name}, you should be fine as {appserver_name} makes sure that PKIX path is validated as long
 as it is configured as described below.
 
-==== Features
+==== Возможности
 
-Supported Certificate Identity Sources:
+Поддерживаемые источники идентификации сертификата:
 
-* Match SubjectDN by using regular expressions
-* X500 Subject's email attribute
-* X500 Subject's email from Subject Alternative Name Extension (RFC822Name General Name)
-* X500 Subject's other name from Subject Alternative Name Extension. This other name is the User Principal Name (UPN), typically.
-* X500 Subject's Common Name attribute
-* Match IssuerDN by using regular expressions
-* Certificate Serial Number
-* Certificate Serial Number and IssuerDN
-* SHA-256 Certificate thumbprint
-* Full certificate in PEM format
+* Совпадение SubjectDN с помощью регулярных выражений
+* Атрибут электронной почты субъекта X500
+* Электронное письмо субъекта X500 от расширения альтернативного имени (RFC822Name Общее имя)
+* Другое имя предмета X500 от альтернативного расширения предмета. Это другое имя пользователя обычно называется директорией (UPN).
+* Атрибут общего имени субъекта X500
+* Выдача матчей с использованием регулярных выражений
+* Серийный номер сертификата
+* Серийный номер сертификата и эмитент
+* Отпечаток сертификата SHA-256
+* Полный сертификат в формате PEM
 
-===== Regular expressions
+===== Регулярные выражения
 
-{project_name} extracts the certificate identity from Subject DN or Issuer DN by using a regular expression as a filter. For example, this regular expression matches the email attribute:
+{project_name} извлекает идентификацию сертификата из субъекта DN или DN эмитента, используя регулярное выражение в качестве фильтра. Например, это регулярное выражение соответствует атрибуту электронной почты:
 
 ```
 emailAddress=(.*?)(?:,|$)
 ```
 
-The regular expression filtering applies if the `Identity Source` is set to either `Match SubjectDN using regular expression` or `Match IssuerDN using regular expression`.
+Регулярное выражение применяется, если `Identity Source` имеет значение `Match SubjectDN используя регулярное выражение` или `Match IssuerDN с помощью регулярного выражения`.
 
-====== Mapping certificate identity to an existing user
+====== Сопоставление личности сертификата с существующим пользователем
 
-The certificate identity mapping can map the extracted user identity to an existing user's username, email, or a custom attribute whose value matches the certificate identity. For example, setting `Identity source` to _Subject's email_ or `User mapping method` to _Username or email_ makes the X.509 client certificate authenticator use the email attribute in the certificate's Subject DN as the search criteria when searching for an existing user by username or by email.
+Сопоставление идентификации сертификата может привести извлеченную идентификацию пользователя к существующему имени пользователя, , или пользовательский атрибут, значение которого соответствует идентификатору сертификата. Например, установка электронной почты `Identity source` в _Subject's email_ или `User mapping method` на _Username or email_ делает X. 09 аутентификатор сертификата клиента использует атрибут электронной почты в теме сертификата DN в качестве критерия поиска существующего пользователя по имени пользователя или по электронной почте.
 
 [IMPORTANT]
 ====
-* If you disable *Login with email* at realm settings, the same rules apply to certificate authentication. Users are unable to log in by using the email attribute.
-* Using `Certificate Serial Number and IssuerDN` as an identity source requires two custom attributes for the serial number and the IssuerDN.
-* `SHA-256 Certificate thumbprint` is the lowercase hexadecimal representation of SHA-256 certificate thumbprint.
-* Using `Full certificate in PEM format` as an identity source is limited to the custom attributes mapped to external federation sources, such as LDAP. {project_name} cannot store certificates in its database due to length limitations, so in the case of LDAP, you must enable `Always Read Value From LDAP`.
+* Если вы отключите *Войти с помощью электронной почты* в настройках Realm, то к аутентификации сертификата применяются те же правила. Пользователи не могут войти с помощью атрибута электронной почты.
+* Использование `Certificate Serial Number and IssuerDN` в качестве источника идентификации требует двух пользовательских атрибутов для серийного номера и IssuerDN.
+* `SHA-256 Сертификат thumbprint` является шестнадцатеричным представлением сертификата SHA-256.
+* Использование `полного сертификата в формате PEM` в качестве источника идентификации ограничивается пользовательскими атрибутами, сопоставленными с внешними источниками федерации, такими как LDAP. {project_name} не может хранить сертификаты в своей базе данных из-за ограничений длины, поэтому в случае LDAP, вы должны включить `Always Read Value From LDAP`.
 ====
 
-====== Extended certificate validation
+====== Расширенная проверка сертификата
 
-* Revocation status checking using CRL.
-* Revocation status checking using CRL/Distribution Point.
-* Revocation status checking using OCSP/Responder URI.
-* Certificate KeyUsage validation.
-* Certificate ExtendedKeyUsage validation.
+* Проверка статуса отзыва с помощью CRL.
+* Проверка статуса отзыва с использованием CRL/Distribution Point.
+* Проверка статуса отзыва с использованием OCSP/Responder URI.
+* Проверка использования ключей сертификата.
+* Проверка сертификата Расширенного KeyUsage.
 
 [[_browser_flow]]
-==== Adding X.509 client certificate authentication to browser flows
+==== Добавление аутентификации по сертификату X.509 в потоки браузера
 
-. Click *Authentication* in the menu.
-. Click the *Browser* flow.
-. From the *Action* list, select *Duplicate*.
-. Enter a name for the copy.
+. Нажмите *Authentication* в меню.
+. Нажмите на *Браузер* поток.
+. Из списка *Действия* выберите *Дублировать*.
+. Введите имя для копии.
 . Click *Duplicate*.
-. Click *Add step*.
-. Click "X509/Validate Username Form".
-. Click *Add*.
+. Нажмите *Добавить шаг*.
+. Нажмите "X509/Validate Username Form".
+. Нажмите *Добавить*.
 +
 image:images/x509-execution.png[X509 Execution]
-. Click and drag the "X509/Validate Username Form" over the "Browser Forms" execution.
-. Set the requirement to "ALTERNATIVE".
+. Нажмите и перетащите "X509/Validate Username Form" через "Browser Forms".
+. Установите требование "ALTERNATIVE".
 +
-image:images/x509-browser-flow.png[X509 Browser Flow]
-. Click the *Action* menu.
-. Click the *Bind flow*.
-. Click the *Browser flow* from the drop-down list.
-. Click *Save*.
+image:images/x509-browser-flow.png[Flowser браузер]
+. Нажмите на меню *Действие*.
+. Нажмите на *Привязку потока*.
+. Нажмите на *Browser flow* из выпадающего списка.
+. Нажмите *Сохранить*.
 +
 image:images/x509-browser-flow-bindings.png[X509 Browser Flow Bindings]
 
 [[_x509-config]]
-==== Configuring X.509 client certificate authentication
+==== Настройка аутентификации сертификата X.509
 
-image:images/x509-configuration.png[X509 Configuration]
+image:images/x509-configuration.png[X509 Конфигурация]
 
-*User Identity Source*:: Defines the method for extracting the user identity from a client certificate.
-*Canonical DN representation enabled*:: Defines whether to use the canonical format to determine a distinguished name. The format adds additional normalization rules to the RFC 2253 conformant string representation. The official link:https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName(java.lang.String)[Java API documentation] describes the additions in detail. This option affects the following User Identity Sources only:
-* _Match SubjectDN using regular expression_
-* _Match IssuerDN using regular expression_
-* _Certificate Serial Number and IssuerDN_ (the IssuerDN portion)
+*Источник идентификации пользователя*:: Определяет способ извлечения идентификации пользователя из клиентского сертификата.
+*Каноническое представление DN включено*:: Определяет, следует ли использовать канонический формат для определения отличительного имени. Формат добавляет к RFC 2253 дополнительные правила нормализации. Официальная ссылка:https://docs.oracle.com/ru/java/javase/25/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName(java.lang.String)[Java API documentation] подробно описывает эти дополнения. Эта опция влияет только на следующие источники идентификации пользователя:
+* _Совпадение SubjectDN с помощью регулярного выражения_
+* _Выдача матчей с помощью регулярного выражения_
+* _Серийный номер сертификата и номер эмитента_ (часть IssuerDN)
 
-WARNING: Do not enable this option to retain backward compatibility with existing {project_name} instances.
+WARNING: Не включайте эту опцию, чтобы сохранить обратную совместимость с существующими экземплярами {project_name}.
 
-WARNING: The `canonical` format performs modifications over the presented DN in the certificate (e.g., leading and trailing spaces are removed or the entire name is converted to uppercase and lowercase using the English locale). This behavior can lead to collisions in user matching if the Certificate Authorities (CA) that issue the certificates do not validate the assigned DN (e.g., if DNs are issued using any locale and present problems when performing the upper and lower case in English). Do not enable this option if you cannot guarantee that the canonical representation avoids duplications for later matching.
+WARNING: Формат `canonical` выполняет модификации по представленному DN в сертификате (т.е. пробелы удаляются или полное имя преобразуется в верхний и нижний регистры с использованием английской локали). Это поведение может привести к столкновениям в пользователе, совпадающем с данными, если центры сертификатов (США) выдают сертификаты не подтверждают присвоенный DN (e. ., если DNS выдаются с использованием любой локали и возникают проблемы при выполнении верхнего и нижнего регистров на английском языке). Не включайте эту опцию, если вы не можете гарантировать, что каноническое представление избегает дублирования для последующего сопоставления.
 
-*Enable Serial Number hexadecimal representation*:: Represent the link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.2[serial number] as hexadecimal. The serial number with the sign bit set to 1 must be left padded with 00 octet. For example, a serial number with decimal value _161_, or _a1_ in hexadecimal representation is encoded as _00a1_, according to RFC 5280. See link:https://datatracker.ietf.org/doc/html/rfc5280#appendix-B[RFC 5280, appendix-B] for more details.
-*A regular expression*:: A regular expression to use as a filter for extracting the certificate identity. The expression must contain a single group.
-*User Mapping Method*:: Defines the method to match the certificate identity with an existing user. _Username or email_ searches for existing users by username or email. _Custom Attribute Mapper_ searches for existing users with a custom attribute that matches the certificate identity. The name of the custom attribute is configurable.
-*A name of user attribute*:: A custom attribute whose value matches against the certificate identity. Use multiple custom attributes when attribute mapping is related to multiple values, For example,  'Certificate Serial Number and IssuerDN'.
-*CRL Checking Enabled*:: Check the revocation status of the certificate by using the Certificate Revocation List. The location of the list is defined in the *CRL file path* attribute.
-*Enable CRL Distribution Point to check certificate revocation status*:: Use CDP to check the certificate revocation status. Most PKI authorities include CDP in their certificates.
-*CRL file path*:: The path to a file containing a CRL list. The value must be a path to a valid file if the *CRL Checking Enabled* option is enabled.
-*CRL abort if non updated*:: A CRL conforming to link:https://datatracker.ietf.org/doc/html/rfc5280#section-5.1.2.5[RFC 5280] contains a next update field that indicates the date by which the next CRL will be issued. When that time is passed, the CRL is considered outdated and it should be refreshed. If this option is `true`, the authentication will fail if the CRL is outdated (recommended). If the option is set to `false`, the outdated CRL is still used to validate the user certificates.
-*OCSP Checking Enabled*:: Checks the certificate revocation status by using Online Certificate Status Protocol.
-*OCSP Fail-Open Behavior*:: By default the OCSP check must return a positive response in order to continue with a successful authentication. Sometimes however this check can be inconclusive: for example, the OCSP server could be unreachable, overloaded, or the client certificate may not contain an OCSP responder URI. When this setting is turned ON, authentication will be denied only if an explicit negative response is received by the OCSP responder and the certificate is definitely revoked. If a valid OCSP response is not available the authentication attempt will be accepted.
+*Включить шестнадцатеричное представление серийных номеров*:: Представляет ссылку:https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.2[serial number] как hexadecimal. Серийный номер с битом знака, установленным на 1, должен быть опущен 00-октетом. Например, серийный номер с десятичным значением _161_, или _a1_ в шестнадцатеричном представлении кодируется как _00a1_, согласно RFC 5280. link:https://datatracker.ietf.org/doc/html/rfc5280#appendix-B[RFC 5280, appendix-B] для получения более подробной информации.
+*Регулярное выражение*:: Регулярное выражение для использования в качестве фильтра для извлечения идентификатора сертификата. Выражение должно содержать одну группу.
+*Метод сопоставления пользователей*:: Определяет способ сопоставления идентификации сертификата с существующим пользователем. _Username или email_ ищет существующих пользователей по имени пользователя или электронной почте. _Пользовательский атрибут Mapper_ ищет для существующих пользователей с пользовательским атрибутом, который соответствует идентификатору сертификата. Имя пользовательского атрибута настраивается.
+*Имя атрибута пользователя*:: Пользовательский атрибут, значение которого совпадает с идентификатором сертификата. Использовать несколько пользовательских атрибутов, когда сопоставление атрибутов связано с несколькими значениями, например, «Серийный номер сертификата и IssuerDN».
+*CRL проверка включена*:: Проверьте статус отзыва сертификата с помощью списка отозванных сертификатов. Расположение списка задано в атрибуте *CRL файл пути*.
+*Включить точку распределения CRL для проверки статуса отзыва сертификата*:: Используйте CDP для проверки статуса отзыва сертификата. Большинство властей PKI включают CDP в свои сертификаты.
+*Путь к файлу CRL*:: Путь к файлу, содержащему список CRL. Значение должно быть путь к файлу, если опция *Проверка CRL включена* включена.
+*Прервать CRL, если не обновлено*:: CRL соответствующий link:https://datatracker.ietf.org/doc/html/rfc5280#section-5.1.2.5[RFC 5280] содержит поле обновления, указывающее на дату выпуска следующего CRL. По истечении этого времени CRL считается устаревшей, и его следует обновить. Если эта опция `true`, аутентификация не будет выполнена, если CRL устарел (рекомендуется). Если параметр установлен в `false`, то устаревшая CRL по-прежнему используется для проверки пользовательских сертификатов.
+*Проверка OCSP включена*:: Проверяет статус отзыва сертификата с использованием протокола о состоянии сертификатов.
+*Не удалось открыть поведение OCSP*:: По умолчанию проверка OCSP-кода должна возвращать положительный ответ, чтобы продолжить успешную аутентификацию. Иногда эта проверка может быть неубедительна: например, OCSP-сервер может быть недоступен, перегружен или сертификат клиента не может содержать URI OCSP-ответчика. Когда этот параметр включен, аутентификация будет отклонена только в том случае, если OCSP-отправитель получил отрицательный ответ и сертификат определенно отозван. Если правильный OCSP-ответ не доступен, то будет принята попытка аутентификации.
 
-NOTE: OCSP retry behavior is configured server-wide through the HTTP client provider. See <@links.server id="outgoinghttp"/> for details on configuring retry settings for all outgoing HTTP requests, including OCSP validation.
+NOTE: OCSP retry поведение настроен на весь сервер через HTTP клиента провайдера. Смотрите <@links.server id="outgoinghttp"/> для подробной информации о настройке повторных параметров для всех исходящих HTTP-запросов, включая проверку OCSP.
 
-*OCSP Responder URI*:: Override the value of the OCSP responder URI in the certificate.
-*Validate Key Usage*:: Verifies the certificate's KeyUsage extension bits are set. For example, "digitalSignature,KeyEncipherment" verifies if bits 0 and 2 in the KeyUsage extension are set.
-Leave this parameter empty to disable the Key Usage validation. See link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3[RFC 5280, Section-4.2.1.3] for more information. {project_name} raises an error when a key usage mismatch occurs.
-*Validate Extended Key Usage*:: Verifies one or more purposes defined in the Extended Key Usage extension. See link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12[RFC 5280, Section-4.2.1.12] for more information. Leave this parameter empty to disable the Extended Key Usage validation. {project_name} raises an error when flagged as critical by the issuing CA and a key usage extension mismatch occurs.
-*Validate Certificate Policy*:: Verifies one or more policy OIDs as defined in the Certificate Policy extension. See link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4[RFC 5280, Section-4.2.1.4]. Leave the parameter empty to disable the Certificate Policy validation. Multiple policies should be separated using a comma.
-*Certificate Policy Validation Mode*:: When more than one policy is specified in the `Validate Certificate Policy` setting, it decides whether the matching should check for all requested policies to be present, or one match is enough for a successful authentication. Default value is `All`, meaning that all requested policies should be present in the client certificate.
-*Bypass identity confirmation*:: If enabled, X.509 client certificate authentication does not prompt the user to confirm the certificate identity. {project_name} signs in the user upon successful authentication.
-*Revalidate client certificate*:: If set, the client certificate trust chain will be always verified at the application level using the certificates present in the configured trust store. This can be useful if the underlying web server does not enforce client certificate chain validation, for example because it is behind a non-validating load balancer or reverse proxy, or when the number of allowed CAs is too large for the mutual SSL negotiation (most browsers cap the maximum SSL negotiation packet size at 32767 bytes, which corresponds to about 200 advertised CAs). By default this option is off.
+*OCSP Responder URI*:: Переопределяет значение URI OCSP-ответчика в сертификате.
+*Проверить использование ключа*:: Проверяет установленный бит расширения KeyUsage. Например, "digitalSignature,KeyEncipherment" проверяет, установлены ли биты 0 и 2 в расширении KeyUsage.
+Оставьте этот параметр пустым, чтобы отключить проверку использования ключа. См. link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3[RFC 5280, Section-4.2.1.3] для получения дополнительной информации. {project_name} вызывает ошибку, когда возникает несоответствие использования ключа.
+*Проверка расширенного использования ключа*:: Проверяет одно или несколько целей, определенных в расширении использования ключа. См. link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12[RFC 5280, Section-4.2.1.12] для получения дополнительной информации. Оставьте этот параметр пустым, чтобы отключить проверку расширенного использования ключей. {project_name} вызывает ошибку, когда отмечено как критическое значение при выпуске CA и возникает несоответствие расширений использования ключа.
+*Проверить политику сертификатов*:: Проверяет один или несколько OID политики, как это определено в расширении политики сертификатов. См. link:https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.4[RFC 5280, Section-4.2.1.4]. Оставьте пустым параметр, чтобы отключить проверку политики сертификации. Несколько политик должны быть разделены запятыми.
+*Режим проверки политики сертификатов*:: Когда в параметре «Подтвердить политику сертификата» указывается несколько политик, он решает, должно ли сопоставление проверяться для всех политик присутствовать, или один матч достаточно для успешной аутентификации. Значение по умолчанию - `Все`, что означает, что все запрошенные политики должны присутствовать в клиентском сертификате.
+*Игнорировать подтверждение личности*:: Если этот параметр включен, аутентификация по сертификату X.509 не требует от пользователя подтверждения личности сертификата. {project_name} входит в систему после успешной аутентификации.
+*Пересмотр клиентского сертификата*:: Если установлено, доверительная цепочка сертификатов клиента будет всегда верифицирована на уровне приложения, используя сертификаты, присутствующие в настроенном магазине доверия. Это может быть полезно, если лежащий в основе веб-сервера не требует проверки клиентской цепочки сертификатов, например, потому что он находится за невалидируемым балансировщиком нагрузки или обратным прокси, или если количество допустимых CAs слишком велико для взаимных переговоров по SSL (большинство браузеров ограничивают максимальный размер пакета для SSL-согласования на 32767 байт, , которая соответствует примерно 200 объявленных CAs). По умолчанию эта опция отключена.
 
-==== Adding X.509 Client Certificate Authentication to a Direct Grant Flow
+==== Добавление аутентификации Сертификата Клиента X.509 к прямому потоку
 
-. Click *Authentication* in the menu.
-. Select *Duplicate* from the "Action list" to make a copy of the built-in "Direct grant" flow.
-. Enter a name for the copy.
+. Нажмите *Authentication* в меню.
+. Выберите *Дублировать* из "Список действий", чтобы сделать копию встроенного потока "Прямой грант".
+. Введите имя для копии.
 . Click *Duplicate*.
-. Click the created flow.
-. Click the trash can icon 🗑️ of the "Username Validation" and click *Delete*.
-. Click the trash can icon 🗑️ of the "Password" and click *Delete*.
-. Click *Add step*.
+. Нажмите на созданный поток.
+. Нажмите на иконку корзина 🗑️ "Проверка имени пользователя" и нажмите *Удалить*.
+. Нажмите на значок корзины для корзины 🗑️ "Password" и нажмите *Delete*.
+. Нажмите *Добавить шаг*.
 . Click "X509/Validate Username".
-. Click *Add*.
+. Нажмите *Добавить*.
 +
 image:images/x509-directgrant-execution.png[X509 Direct Grant Execution]
-. Set up the x509 authentication configuration by following the steps described in the <<_browser_flow, x509 Browser Flow>> section.
-. Click the *Bindings* tab.
-. Click the *Direct Grant Flow* drop-down list.
-. Click the newly created "x509 Direct Grant" flow.
-. Click *Save*.
+. Настройте конфигурацию аутентификации x509 следуя инструкциям, описанным в разделе <<_browser_flow, x509 Browser Flow>> .
+. Нажмите на вкладку *Bindings*.
+. Нажмите на выпадающий список *Direct Grant Flow*.
+. Нажмите на недавно созданный поток "x509 Direct Grant".
+. Нажмите *Сохранить*.
 +
 image:images/x509-directgrant-flow-bindings.png[X509 Direct Grant Flow Bindings]
 
-===== Example using CURL
+===== Пример использования CURL
 
-The following example shows how to obtain an access token for a user in the realm `test` with the direct grant flow. The example is using
-*OAuth2 Resource Owner Password Credentials Grant* in the link:{securing_apps_link}[securing apps] section and the confidential client `resource-owner`:
+Следующий пример показывает, как получить токен доступа для пользователя в области `test` с прямым потоком грантов. Этот пример использует раздел
+*OAuth2 Resource Owner Password Credentials Grant* по ссылке:{securing_apps_link}[securing apps] и конфиденциальный клиент `resource-owner`:
 
 [source,bash,subs="attributes+"]
 ----
@@ -170,20 +170,20 @@ curl \
   "https://localhost:8543/realms/test/protocol/openid-connect/token"
 ----
 
-The file `/tmp/truststore.pem` points to the file with the truststore containing the certificate of the {project_name} server. The file `/tmp/keystore.pem` contains
-the private key and certificates corresponding to the {project_name} user, which would be successfully authenticated by this request. It is dependent on the configuration of the authenticator on how
-exactly is the content from the certificate mapped to the {project_name} user as described in <<_x509-config, the configuration section>>. The `kssecret` might be the password of this keystore file.
+Файл `/tmp/truststore.pem` указывает на файл с хранилищем доверия, содержащий сертификат сервера {project_name}. Файл `/tmp/keystore.pem` содержит
+закрытый ключ и сертификаты, соответствующие пользователю {project_name} , который был бы успешно аутентифицирован по этому запросу. Он зависит от конфигурации аутентификатора относительно того, как
+точно соответствует содержимому сертификата, сопоставленного с пользователем {project_name} , как описано в <_x509-config, раздел конфигурации>>. `kssecret` может быть паролем этого файла ключевого хранилища.
 
-According to your environment, it might be needed to use more options to CURL commands like for instance:
+В зависимости от вашего окружения, может потребоваться больше параметров для CURL команд, например:
 
-* Option `--insecure` if you are using self-signed certificates
-* Option `--capath` to include the whole directory containing the certificate authority path
-* Options `--cert-type` or `--key-type` in case you want to use different files than `PEM`
+* Параметр `--insecure`, если вы используете самоподписанные сертификаты
+* Параметр `--capath` включает в себя весь каталог, содержащий путь к сертификату
+* Опции `--cert-type` или `--key-type` если вы хотите использовать файлы, отличные от `PEM`
 
-Please consult the documentation of the `curl` tool for the details if needed. If you are using other tools than `curl`,
-consult the documentation of your tool. However, the setup would be similar.  A need exists to include keystore and truststore as well as client credentials in case you are using a confidential
-client.
+Для получения подробной информации обратитесь к документации по инструменту "curl". Если вы используете другие инструменты, кроме `curl`,
+обратитесь к документации по инструменту. Однако эта настройка будет аналогичной.  Если вы используете конфиденциальный
+клиент, необходимо включить ключевое хранилище и надёжное хранилище, а также учетные данные клиента.
 
-NOTE: If it is possible, it is preferred to use <<_service_accounts, Service accounts>> together with the MTLS client authentication (client authenticator `X509 Certificate`) rather than using
-the Direct grant with X.509 authentication as direct grant may require sharing of the user certificate with client applications. When using service account, the tokens are obtained on behalf
+NOTE: Если возможно, предпочтительнее использовать <<_service_accounts, Сервисные учетные записи>> вместе с аутентификацией клиента MTLS (аутентификатор клиента `X509 Certificate`), а не с использованием
+прямого гранта с X. Аутентификация 09 может потребовать совместного использования пользовательского сертификата с приложениями клиента. When using service account, the tokens are obtained on behalf
 of the client itself, which in general is better and more secure practice.
