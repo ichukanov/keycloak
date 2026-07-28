@@ -1,10 +1,10 @@
 === SAML
 
 [role="_abstract"]
-link:https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html[SAML 2.0] is a similar specification to OIDC but more mature.  It is descended from SOAP and web service messaging specifications so is generally more verbose than OIDC.  SAML 2.0 is an authentication protocol that exchanges XML documents between authentication servers and applications.  XML signatures and encryption are used to verify requests and responses.
+link:https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html[SAML 2.0] является аналогичной спецификации OIDC, но более зрелой.  Он исходит из спецификаций SOAP и веб-сервисов и обычно более подробно, чем OIDC.  SAML 2.0 — это протокол аутентификации, который обменивается XML-документами между серверами аутентификации и приложениями.  XML-подписи и шифрование используются для проверки запросов и ответов.
 
-In general, SAML implements two use cases.
+В общем, SAML реализует два варианта использования.
 
-The first use case is an application that requests the {project_name} server authenticates a user.  Upon successful login, the application will receive an XML document. This document contains an SAML assertion that specifies user attributes. The realm digitally signs the document which contains access information (such as user role mappings) that applications use to determine the resources users are allowed to access in the application.
+Первый вариант использования - это приложение, запрашивающее {project_name} сервер аутентифицирует пользователя.  После успешной авторизации приложение получит XML-документ. Этот документ содержит утверждение SAML, указывающее атрибуты пользователя. Область подписывает документ, содержащий информацию о доступе (например, сопоставления ролей пользователей), которую приложения используют для определения доступа пользователей к ресурсам.
 
-The second use case is a client accessing remote services.  The client requests a SAML assertion from {project_name} to invoke on remote services on behalf of the user.
+Второй вариант использования - это клиентский доступ к удаленным сервисам.  Клиент запрашивает SAML утверждение от {project_name} для вызова удаленных сервисов от имени пользователя.
