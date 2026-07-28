@@ -3,27 +3,27 @@
 
 include::../../topics/templates/techpreview.adoc[]
 
-SCIM (System for Cross-domain Identity Management) is a standard protocol designed to simplify identity management across
-multiple systems and domains. Defined by https://datatracker.ietf.org/doc/html/rfc7643[RFC 7643] (Core Schema) and
-https://datatracker.ietf.org/doc/html/rfc7644[RFC 7644] (Protocol), SCIM provides a common set of REST APIs and schemas
-for creating, reading, updating, and deleting identity resources such as users and groups. By adopting SCIM, organizations
-can automate user provisioning and deprovisioning across their identity infrastructure using widely supported tooling and
-libraries.
+SCIM (System for Cross-domain Identity Management) - это стандартный протокол, предназначенный для упрощения управления идентичностью между
+несколькими системами и доменами. Определяется https://datatracker.ietf.org/doc/html/rfc7643[RFC 7643] (ore Schema) и
+https://datatracker.ietf. rg/doc/html/rfc7644[RFC 7644] (Protocol), SCIM предоставляет общий набор REST API и схем
+для создания, чтение, обновление и удаление идентификационных ресурсов, таких как пользователи и группы. Приняв SCIM, организации
+могут автоматизировать предоставление и дезактивацию пользователей в своей инфраструктуре идентификации с использованием широко поддерживаемых библиотек и
+.
 
-{project_name} supports SCIM APIs for managing users and groups within a realm. External systems such as identity governance
-platforms, HR systems, or other identity providers can use these standardized APIs to provision and manage users in
-{project_name} without relying on the proprietary Admin REST API.
+{project_name} поддерживает SCIM API для управления пользователями и группами в реалме. Внешние системы, такие, как платформы управления личностью
+и HR-системы, или другие провайдеры идентификации могут использовать эти стандартизированные API для обеспечения и управления пользователями в
+{project_name} без использования патентного API Admin REST API.
 
-In the current release, the SCIM implementation covers:
+В текущем выпуске реализация SCIM охватывает:
 
-* **User management**: Create, read, update, patch, and delete user resources.
-* **Group management**: Create, read, update, patch, and delete group resources, including membership management.
-* **Filtering and pagination**: Search resources using the full SCIM filter syntax with support for pagination.
-* **Schema extensions**: Support for the Enterprise User extension (RFC 7643, Section 4.3) and custom schema extensions through User Profile attribute mapping.
-* **Schema discovery**: Endpoints for discovering supported schemas, resource types, and server capabilities.
+* **Управление пользователем**: Создание, чтение, обновление, патч и удаление ресурсов пользователя.
+* **Управление группами**: Создание, чтение, обновление, исправление и удаление групповых ресурсов, включая управление членством.
+* **Фильтрация и пагинация**: Искать ресурсы, используя полный синтаксис SCIM фильтра с поддержкой пагинации.
+* **Расширения схемы**: Поддержка расширения пользователя предприятия (RFC 7643, раздел 4.3) и пользовательских схем через сопоставление атрибутов пользовательского профиля.
+* **Поиск схемы**: Конечные точки для обнаружения поддерживаемых схем, типов ресурсов и возможностей сервера.
 
-Future releases are planned to extend SCIM support with additional capabilities, including federation of users from external
-SCIM service providers and push-based real-time event updates.
+Будущие релизы планируется расширить поддержку SCIM с дополнительными возможностями, включая федерацию пользователей из внешних
+поставщиков услуг SCIM и обновления событий в режиме реального времени на базе пушки.
 
 The SCIM API is based on the same underlying user and group management functionality as the Admin REST API, ensuring
 consistency in behavior and permissions. However, the SCIM API provides a standardized interface that can be easily
