@@ -1,14 +1,14 @@
-=== Limiting scope
+=== Ограничение области
 
-==== Scope availability
+==== Доступность рамок
 
-By default, new client applications have unlimited `role scope mappings`. Every access token for that client contains all permissions that the user has. If an attacker compromises the client and obtains the client's access tokens, each system that the user can access is compromised.
+По умолчанию новые клиентские приложения имеют неограниченные `роль`. Каждый токен доступа для этого клиента содержит все разрешения, которые имеет пользователь. Если злоумышленник ставит под угрозу клиента и получает токены доступа клиента, каждая система, к которой пользователь может получить доступ, скомпрометирована.
 
-Limit the roles of an access token by using the <<_role_scope_mappings, Scope menu>> for each client. Alternatively, you can set role scope mappings at the Client Scope level and assign Client Scopes to your client by using the <<_client_scopes_linking, Client Scope menu>>.
+Ограничить роли токена доступа с помощью <_role_scope_mappings, Scope menu>> для каждого клиента. Кроме того, вы можете установить сопоставления рамок ролей на уровне Клиента и назначить клиентские области для вашего клиента, используя <<_client_scopes_linking, Меню рамок клиентов>>.
 
-Removing the offline scope for a client also removes the ability to issue long-lived offline tokens for a client and offers better control over sessions by users.
+Удаление автономной области действия для клиента также устраняет возможность выпуска давно существующих автономных токенов для клиента и обеспечивает лучший контроль над сессиями со стороны пользователей.
 
-==== Scope visibility
+==== Видимость рамок
 
-By default, all scopes are included in the OpenID Connect discovery endpoint.
-To reduce the discoverability and OSINT-exposure, you can configure each scope to be excluded by disabling *Include in OpenID Provider Metadata*.
+По умолчанию, все области включены в конечную точку обнаружения OpenID Connect.
+Чтобы уменьшить возможность обнаружения и воздействия OSINT, вы можете настроить каждую область для исключения, отключив *Включение в метаданные OpenID провайдера*.
