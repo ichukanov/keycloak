@@ -1,149 +1,149 @@
 [[_understanding_scim_endpoints_]]
-= Understanding the SCIM endpoints
+= Понимание концов SCIM
 
-All SCIM endpoints use the `application/scim+json` content type for both requests and responses, as specified by RFC 7644.
-The `application/json` content type is also accepted for requests.
+Все конечные точки SCIM используют тип содержимого `application/scim+json` для запросов и ответов, как указано в RFC 7644.
+Тип содержимого `application/json` также принимается для запросов.
 
-== Available endpoints
+== Доступные конечные точки
 
-The following table summarizes all available SCIM endpoints:
+В следующей таблице резюмируются все имеющиеся конечные точки SCIM:
 
 [cols="2,1,3", options="header"]
 |===
 |Endpoint
-|Methods
-|Description
+|Методы
+|Описание
 
-|`/Users`
-|GET, POST
-|List all users or create a new user.
+|`/Пользователи`
+|ПОЛУЧИТЬ
+|Список всех пользователей или создать нового пользователя.
 
-|`/Users/{id}`
-|GET, PUT, PATCH, DELETE
-|Retrieve, replace, partially update, or delete a specific user.
+|`/Пользователи/{id}`
+|GET, PUT, PATCH, УДАЛИТЬ
+|Получь, заменить, частично обновить или удалить конкретного пользователя.
 
-|`/Users/.search`
-|POST
-|Search users using a request body (useful for complex or long filter expressions).
+|`/Пользователи/.search`
+|ПОСТ
+|Поиск пользователей с телом запроса (полезно для сложных или длинных выражений).
 
-|`/Groups`
-|GET, POST
-|List all groups or create a new group.
+|`/группы`
+|ПОЛУЧИТЬ
+|Список всех групп или создать новую группу.
 
-|`/Groups/{id}`
-|GET, PUT, PATCH, DELETE
-|Retrieve, replace, partially update, or delete a specific group.
+|`/Группы/{id}`
+|GET, PUT, PATCH, УДАЛИТЬ
+|Получь, заменить, частично обновить или удалить конкретную группу.
 
-|`/Groups/.search`
-|POST
-|Search groups using a request body.
+|`/Группыs/.search`
+|ПОСТ
+|Поиск групп с использованием тела запроса.
 
 |`/ServiceProviderConfig`
-|GET
-|Retrieve the SCIM capabilities supported by the server.
+|ПОЛУЧИТЬ
+|Получить возможности SCIM, поддерживаемые сервером.
 
-|`/ResourceTypes`
-|GET
-|List the resource types (User, Group) available on the server.
+|`/Виды ресурсов`
+|ПОЛУЧИТЬ
+|Список типов ресурсов (Пользователь, Группа), доступных на сервере.
 
 |`/Schemas`
-|GET
-|List all SCIM schemas supported by the server, including extensions.
+|ПОЛУЧИТЬ
+|Список всех схем SCIM, поддерживаемых сервером, включая расширения.
 |===
 
-== HTTP methods
+== Методы HTTP
 
-The SCIM API supports the following HTTP methods for resource management:
+SCIM API поддерживает следующие методы HTTP для управления ресурсами:
 
 [cols="1,1,2", options="header"]
 |===
-|Method
-|Status Code
-|Description
+|Метод
+|Код статуса
+|Описание
 
-|POST
-|201 Created
-|Create a new resource.
+|ПОСТ
+|201 Создано
+|Создать новый ресурс.
 
-|GET
-|200 OK
-|Retrieve a single resource by ID, or list/search resources.
+|ПОЛУЧИТЬ
+|200 ОК
+|Получить один ресурс по ID, или список/поиск.
 
-|PUT
-|200 OK
-|Replace an existing resource entirely.
+|ПОКУПИТЬ
+|200 ОК
+|Заменить существующий ресурс целиком.
 
-|PATCH
-|200 OK
-|Partially modify a resource using add, replace, or remove operations.
+|ПАТЧ
+|200 ОК
+|Частично изменяйте ресурс, используя операции добавления, замены или удаления.
 
-|DELETE
-|204 No Content
-|Delete a resource.
+|УДАЛИТЬ
+|204 Нет контента
+|Удалить ресурс.
 |===
 
-== Query parameters
+== Параметры запроса
 
-The following query parameters can be used with GET requests to control the response. The same parameters
+Следующие параметры запроса могут быть использованы с GET запросами для управления ответом. The same parameters
 are also accepted in the body of `POST /.search` requests.
 
 [cols="1,1,3", options="header"]
 |===
-|Parameter
-|Type
-|Description
+|Параметр
+|Тип
+|Описание
 
-|`filter`
-|String
-|A SCIM filter expression to search for resources. See <<_scim_filtering_resources,Filtering resources>>.
+|`фильтр`
+|Строка
+|Выражение фильтра SCIM для поиска ресурсов. См. <<_scim_filtering_resources,Filtering resources>>.
 
 |`startIndex`
-|Integer
-|The 1-based index of the first result to return. Defaults to 1.
+|Целое
+|1 ориентированный индекс первого результата возврата. По умолчанию 1.
 
 |`count`
-|Integer
-|The maximum number of results to return per page.
+|Целое
+|Максимальное количество результатов для возврата на странице.
 
 |`attributes`
-|String
-|A comma-separated list of attribute names to include in the response. When specified, only the listed attributes (plus `id` and `schemas`, which are always returned) are included.
+|Строка
+|Список имён атрибутов, разделённых запятыми, для включения в ответ. Если указано, то включаются только перечисленные атрибуты (плюс `id` и `schemas`, которые всегда возвращаются).
 
 |`excludedAttributes`
-|String
-|A comma-separated list of attribute names to exclude from the response. Applied after the `attributes` filter. The `id` attribute cannot be excluded.
+|Строка
+|Список имён атрибутов, разделенных запятыми, для исключения из ответа. Применяется после фильтра `attributes`. Атрибут `id` не может быть исключен.
 
 |`sortBy`
-|String
-|The attribute name to sort results by. See note below.
+|Строка
+|Имя атрибута для сортировки по результату. См. примечание ниже.
 
 |`sortOrder`
-|String
-|The sort order: `ascending` (default) or `descending`. See note below.
+|Строка
+|Порядок сортировки: «по возрастанию» (по-умолчанию) или «по убыванию». См. примечание ниже.
 |===
 
 NOTE: While the `sortBy` and `sortOrder` parameters are accepted by the API, custom sorting is not currently
 supported. Resources are returned in the default order used by the underlying store, consistent with the
 behavior of the {project_name} Admin REST API.
 
-== Resource metadata
+== Метаданные ресурса
 
-Every SCIM resource returned by the API includes a `meta` object with the following attributes:
+Каждый SCIM ресурс, возвращаемый API, включает в себя объект `meta` со следующими атрибутами:
 
 [cols="1,3", options="header"]
 |===
-|Attribute
-|Description
+|Атрибут
+|Описание
 
 |`resourceType`
-|The type of the resource (for example, `User` or `Group`).
+|Тип ресурса (например, `User` или `Group`).
 
-|`created`
-|The timestamp when the resource was created, in ISO 8601 format.
+|`создан`
+|Временная метка при создании ресурса в формате ISO 8601.
 
 |`lastModified`
-|The timestamp when the resource was last modified, in ISO 8601 format.
+|Временная метка при последней модификации ресурса в формате ISO 8601.
 
-|`location`
-|The full URI of the resource (for example, `\http://localhost:8080/realms/myrealm/scim/v2/Users/{id}`).
+|`размещение`
+|Полный URI ресурса (например, `\http://localhost:8080/realms/myrealm/scim/v2/Users/{id}`).
 |===
