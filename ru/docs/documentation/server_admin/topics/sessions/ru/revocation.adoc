@@ -1,12 +1,12 @@
-=== Revoking active sessions
+=== Аннулирование активных сессий
 
-If your system is compromised, you can revoke all active sessions and access tokens.
+Если ваша система поставлена под угрозу, вы можете отозвать все активные сессии и маркеры доступа.
 
-.Procedure
-. Click *Sessions* in the menu.
-. From the *Actions* list, select *Revocation*.
+.Процедура
+. Нажмите *Сессии* в меню.
+. Из списка *Действия* выберите *Аннулирование*.
 +
 image:images/revocation.png[Revocation]
-. Specify a time and date where sessions or tokens issued before that time and date are invalid using this console.
-* Click *Set to now* to set the policy to the current time and date.
-* Click *Push* to push this revocation policy to any registered OIDC client with the {project_name} OIDC client adapter.
+. Укажите время и дату, когда сессии или токены, выпущенные до этого времени и даты, недействительны с помощью этой консоли.
+* Нажмите *Установите сейчас*, чтобы установить политику на текущее время и дату.
+* Нажмите *Push*, чтобы отослать эту политику отзыва любому зарегистрированному OIDC клиенту с адаптером {project_name} OIDC.
