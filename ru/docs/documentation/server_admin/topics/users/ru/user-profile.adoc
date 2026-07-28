@@ -1,503 +1,503 @@
 [[user-profile]]
-= Managing user attributes
+= Управление атрибутами пользователя
 
-In {project_name} a user is associated with a set of attributes. These attributes are used to better describe and identify
+В {project_name} пользователь связан с набором атрибутов. These attributes are used to better describe and identify
 users within {project_name} as well as to pass over additional information about them to applications.
 
-A user profile defines a well-defined schema for representing user attributes and how they are managed within a realm.
-By providing a consistent view over user information, it allows administrators to control the different aspects on how
-attributes are managed as well as to make it much easier to extend {project_name} to support additional attributes.
+Профиль пользователя определяет хорошо определенную схему представления атрибутов пользователя и того, как они управляются в реалме.
+Предоставляя последовательный просмотр информации о пользователе, позволяет администраторам контролировать различные аспекты управления атрибутами
+, а также упростить расширение {project_name} для поддержки дополнительных атрибутов.
 
 Although the user profile is mainly targeted for attributes that end-users can manage (e.g.: first and last names, phone, etc)
 it also serves for managing any other metadata you want to associate with your users.
 
-Among other capabilities, user profile enables administrators to:
+Среди других возможностей, профиль пользователя позволяет администраторам:
 
-* Define a schema for user attributes
-* Define whether an attribute is required based on contextual information (e.g.: if required only for users, or admins, or both, or depending on the scope being requested.)
-* Define specific permissions for viewing and editing user attributes, making possible to adhere to strong privacy requirements where some attributes can not be seen or be changed by third-parties (including administrators)
-* Dynamically enforce user profile compliance so that user information is always updated and in compliance with the metadata and rules associated with attributes
-* Define validation rules on a per-attribute basis by leveraging the built-in validators or writing custom ones
-* Dynamically render forms that users interact with like registration, update profile, brokering, and personal information in the account console, according to the attribute definitions and without any need to manually change themes.
-* Customize user management interfaces in the administration console so that attributes are rendered dynamically based on the user profile schema
+* Определить схему для атрибутов пользователя
+* Определяет, требуется ли атрибут на основе контекстной информации (напр. если требуется только для пользователей, или администраторов, или и то и другое, или в зависимости от запрашиваемой границы.)
+* Определить специальные права для просмотра и редактирования атрибутов пользователя, возможность соблюдать жесткие требования к конфиденциальности, в которых некоторые атрибуты не могут быть видны или изменены третьими лицами (включая администраторов)
+* Динамически применять соответствие профилю пользователя таким образом, чтобы информация пользователя всегда обновлялась и соответствовала метаданным и правилам, связанным с атрибутами
+* Определить правила проверки на основе атрибутов путем использования встроенных валидаторов или написания пользовательских
+* Динамически отображать формы, с которыми пользователи взаимодействуют как регистрация, обновление профиля, брокерство, и личную информацию в консоли аккаунта, в соответствии с определениями атрибутов и без необходимости вручную изменять темы.
+* Настроить интерфейсы управления пользователями в консоли администрирования, чтобы атрибуты отображались динамически на основе схемы профиля пользователя
 
-The user profile schema or configuration uses a <<_user-profile-json-configuration,JSON>> format to represent attributes and their metadata. From the administration console,
-you are able to manage the configuration by clicking on the `Realm Settings` on the left side menu and then clicking on the `User Profile` tab on that page.
+Конфигурация профиля пользователя использует формат <<_user-profile-json-configuration,JSON>> для представления атрибутов и их метаданных. Из консоли администратора,
+вы можете управлять конфигурацией, нажав в меню `Realm Settings` в левой части и нажав на вкладку `User Profile` на этой странице.
 
-In the next sections, we'll be looking at how to create your own user profile schema or configuration, and how to manage attributes.
+В следующих разделах мы рассмотрим, как создать собственную схему вашего профиля или конфигурацию и как управлять атрибутами.
 
-== Understanding the Default Configuration
+== Понимание настроек по умолчанию
 
-By default, {project_name} provides a basic user profile configuration covering some of the most common user attributes:
+По умолчанию, {project_name} предоставляет базовую конфигурацию профиля пользователя, охватывающую некоторые из наиболее распространенных атрибутов пользователя:
 
 [cols="2*", options="header"]
 |===
-|Name
-|Description
+|Наименование
+|Описание
 
-|`username` |The username
+|`username` |Имя пользователя
 
-|`email` |End-User's preferred e-mail address.
+|`email` |Предпочтительный адрес электронной почты конечного пользователя.
 
-|`firstName` |Given name(s) or first name(s) of the end-user
+|`имя` |Имя или имя конечного пользователя
 
-|`lastName` |Surname(s) or last name(s) of the End-User
+|`lastName` |Фамилия(и) или фамилия (фамилии) конечного пользователя
 |===
 
 In {project_name}, both `username` and `email` attributes have a special handling as they are often used to identify, authenticate,
-and link user accounts. For those attributes, you are limited to changing their settings, and you can not remove them.
+and link user accounts. Для этих атрибутов вы можете изменить их настройки, и вы не можете их удалить.
 
 [NOTE]
 ====
-The behavior of both `username` and `email` attributes changes accordingly to the `Login` settings of your realm. For instance,
-changing the `Email as username` or the `Edit username` settings will override any configuration you have set in the user profile configuration.
+Поведение атрибутов `username` и `email` соответственно меняется в настройках `Login` в вашем реалме. Например,
+изменение `Email как имя пользователя` или `Edit username` перезапишет любую конфигурацию, которую вы указали в конфигурации профиля пользователя.
 ====
 
-As you will see in the following sections, you are free to change the default configuration by bringing your own attributes
-or changing the settings for any of the available attributes to better fit it to your needs.
+Как вы увидите в следующих разделах, вы можете изменить конфигурацию по умолчанию, добавив свои собственные атрибуты
+или изменив настройки для любого из доступных атрибутов, чтобы лучше соответствовать вашим потребностям.
 
-== Understanding the User Profile Contexts
+== Понимание контекстов профиля пользователя
 
-In {project_name}, users are managed through different contexts:
+В {project_name}пользователи управляются через различные контекста:
 
-* Registration
-* Update Profile
-* Reviewing Profile when authenticating through a broker or social provider
-* Account Console
-* Administrative (e.g.: administration console and Admin REST API)
+* Регистрация
+* Обновить профиль
+* Просмотр профиля при аутентификации через брокера или социального провайдера
+* Консоль аккаунта
+* Администрация (например: администраторская консоль и API администратора REST API)
 
 Except for the `Administrative` context, all other contexts are considered end-user contexts as they are related to user self-service
 flows.
 
-Knowing these contexts is important to understand where your user profile configuration will take effect when managing users.
+Знание этих контекстов важно понимать, где конфигурация вашего профиля пользователя вступит в силу при управлении пользователями.
 Regardless of the context where the user is being managed, the same user profile configuration will be used to render UIs and validate
 attribute values.
 
-As you will see in the following sections, you might restrict certain attributes to be available only from the administrative context and disable them
-completely for end-users. The other way around is also true if you don't want administrators to have access to certain user attributes but only the end-user.
+Как вы увидите в следующих разделах, вы можете ограничить определенные атрибуты доступными только из административного контекста и полностью отключить их
+для конечных пользователей. Другое решение также верно, если вы не хотите, чтобы администраторы имели доступ к определенным атрибутам пользователя, но только к конечному пользователю.
 
 [[_understanding-managed-and-unmanaged-attributes]]
-== Understanding Managed and Unmanaged Attributes
+== Понимание Управляемых и Неуправляемых Атрибутов
 
-By default, {project_name} will only recognize the attributes defined in your user profile configuration.
-The server ignores any other attribute not explicitly defined there.
+По умолчанию, {project_name} распознает только атрибуты, определенные в конфигурации вашего профиля.
+Сервер игнорирует любой другой атрибут, который там явно не определен.
 
-By being strict about which user attributes can be set to your users, as well as how their values are validated,
-{project_name} can add another defense barrier to your realm and help you to prevent unexpected attributes and values associated to your users.
+Строго относиться к каким пользовательским атрибутам могут быть установлены ваши пользователи, а также к тому, как их значения валидированы,
+{project_name} может добавить еще один защитный барьер в ваш реалм и помочь вам избежать неожиданных атрибутов и значений, связанных с вашими пользователями.
 
-That said, user attributes can be categorized as follows:
+При этом атрибуты пользователей можно классифицировать следующим образом:
 
-* *Managed*. These are attributes controlled by your user profile, to which you want to allow end-users and administrators
-to manage from any user profile context.
-For these attributes, you want complete control on how and when they are managed.
-* *Unmanaged*. These are attributes you do not explicitly define in your user profile so that they are completely ignored by {project_name}, by default.
+* *Управляет*. Это атрибуты, контролируемые вашим профилем пользователя, которым вы хотите разрешить конечным пользователям и администраторам
+управлять из любого контекста профиля пользователя.
+Для этих атрибутов требуется полный контроль над тем, как и когда они управляются.
+* *Неуправляемый*. Это атрибуты, которые вы явно не определяете в вашем профиле пользователя, поэтому по умолчанию {project_name}игнорирует их.
 
-Although unmanaged attributes are disabled by default, you can configure your realm using different policies to define how they are handled by the server.
-For that, click on the `Realm Settings` at the left side menu, click on the `General` tab, and then choose any of the following options from the `Unmanaged Attributes` setting:
+Хотя неуправляемые атрибуты отключены по умолчанию, вы можете настроить свой реалм, используя различные политики для определения того, как они обрабатываются сервером.
+Для этого нажмите в меню «Параметры реалма» в левой части нажмите на вкладку «Общие», и выберите любой из следующих опций в настройках `Unmanaged Attributes`:
 
-* *Disabled*. This is the default policy so that unmanaged attributes are disabled from all user profile contexts.
-* *Enabled*. This policy enables unmanaged attributes to all user profile contexts.
-* *Admin can view*. This policy enables unmanaged attributes only from the administrative context as read-only.
-* *Admin can edit*. This policy enables unmanaged attributes only from the administrative context for reads and writes.
+* *Отключено*. Это политика по умолчанию, так что неуправляемые атрибуты отключены во всех контекстах профиля пользователя.
+* *Включено*. Эта политика позволяет использовать неуправляемые атрибуты для всех контекстов профиля пользователя.
+* *Администратор может просматривать*. Эта политика позволяет использовать неуправляемые атрибуты только в административном контексте только для чтения.
+* *Администратор может редактировать*. Эта политика позволяет использовать неуправляемые атрибуты только из административного контекста для чтения и записей.
 
-These policies give you a fine-grained control over how the server will handle unmanaged attributes.
-You can choose to completely disable or only support unmanaged attributes when managing users through the administrative context.
+Эти политики дают вам более точный контроль над тем, как сервер будет обрабатывать неуправляемые атрибуты.
+Вы можете полностью отключить или поддерживать неуправляемые атрибуты при управлении пользователями через административный контекст.
 
-When unmanaged attributes are enabled (even if partially) you can manage them from the administration console at the `Attributes` tab in the User Details UI.
-If the policy is set to `Disabled` this tab is not available.
+Когда неуправляемые атрибуты включены (даже если частично), вы можете управлять ими из консоли администрирования на вкладке «Атрибуты» в пользовательском интерфейсе.
+Если у политики установлен параметр `Disabled` эта вкладка недоступна.
 
 As a security recommendation, try to adhere to the most strict policy as much as possible (e.g.: `Disabled` or `Admin can edit`) to prevent unexpected
 attributes (and values) set to your users when they are managing their profile through end-user contexts.
-Avoid setting the `Enabled` policy and prefer defining all the attributes that end-users can manage in your user profile configuration, under your control.
+Избегайте установки политики `Включить` и предпочтительно определить все атрибуты, которые конечные пользователи могут управлять в конфигурации профиля пользователя под вашим контролем.
 
 [NOTE]
 ====
-The `Enabled` policy is targeted for realms migrating from previous versions of {project_name} and to avoid breaking
-behavior when using custom themes and extending the server with their own custom user attributes.
+Политика `Включить` предназначена для миграции миров из предыдущих версий {project_name} и избежания нарушения
+поведения при использовании пользовательских тем и расширении сервера своими пользовательскими атрибутами.
 ====
 
-As you will see in the following sections, you can also restrict the audience for an attribute by choosing if it should be visible or writable by users and/or administrators.
+Как вы увидите в следующих разделах, вы также можете ограничить аудиторию для атрибута, выбрав, что она должна быть видна или доступна для записи пользователям и/или администраторам.
 
-For unmanaged attributes, the maximum length is 2048 characters.
-To specify a different minimum or maximum length, change the unmanaged attribute to a managed attribute and add a `length` validator.
+Для неуправляемых атрибутов максимальная длина составляет 2048 символов.
+Чтобы указать другую минимальную или максимальную длину, измените неуправляемый атрибут на управляемый атрибут и добавьте валидатор `length`.
 
-WARNING: {project_name} caches user-related objects in its internal caches.
-The longer the attributes are, the more memory the cache consumes.
-Therefore, limiting the size of the length attributes is recommended.
-Consider storing large objects outside {project_Name} and reference them by ID or URL.
+WARNING: {project_name} кэширует пользовательские объекты во внутренних кэшах.
+Чем дольше атрибуты, тем больше потребляет память.
+Поэтому рекомендуется ограничить размер атрибутов длины.
+Рассмотрим возможность хранения больших объектов за пределами {project_Name} и ссылки на них по ID или URL.
 
-== Managing the User Profile
+== Управление профилем пользователя
 
-The user profile configuration is managed on a per-realm basis. For that, click on the
-`Realm Settings` link on the left side menu and then click on the `User Profile` tab.
+Конфигурация профиля пользователя управляется на основе каждого реалма. Для этого нажмите на ссылку
+в меню `Realm Settings` и нажмите на вкладку `User Profile`.
 
 image:images/user-profile-tab.png[]
 
-In the `Attributes` sub-tab you have a list of all managed attributes.
+В субвкладке `Атрибуты` у вас есть список всех управляемых атрибутов.
 
-In the `Attribute Groups` sub-tab you can manage attribute groups. An attribute group allows you to correlate attributes so that they are displayed together when rendering user facing forms.
+На субвкладке `Атрибуты группы` вы можете управлять группами атрибутов. Группа атрибутов позволяет связать атрибуты так, чтобы они отображались вместе при отрисовке форм для пользователя.
 
-In the `JSON Editor` sub-tab you can view and edit the <<_user-profile-json-configuration,JSON>> configuration. You can use this tab
-to grab your current configuration or manage it manually. Any change you make to this tab is reflected in the other tabs, and vice-versa.
+В подвкладке `JSON Editor` вы можете просматривать и редактировать <_user-profile-json-configuration,JSON>>. Вы можете использовать эту вкладку
+для захвата текущей конфигурации или управления ею вручную. Любые изменения, внесенные в эту вкладку, отражены в других вкладках и наоборот.
 
-In the next section, you are going to learn how to manage attributes.
+В следующем разделе вы узнаете, как управлять атрибутами.
 
-== Managing Attributes
+== Управление атрибутами
 
-At the `Attributes` sub-tab you can create, edit, and delete the managed attributes.
+На субвкладке `Атрибуты` вы можете создавать, редактировать и удалять управляемые атрибуты.
 
-To define a new attribute and associate it with the user profile, click on the *Create attribute* button at the top of the attribute listing.
+Чтобы определить новый атрибут и связать его с профилем пользователя, нажмите на кнопку *Создать атрибут* в верхней части списка атрибутов.
 
 image:images/user-profile-create-attribute.png[]
 
-When configuring the attribute you can define the following settings:
+При настройке атрибута вы можете определить следующие параметры:
 
-Name:: The name of the attribute, used to uniquely identify an attribute.
-Display name:: A user-friendly name for the attribute, mainly used when rendering user-facing forms. It also supports <<_using-internationalized-messages,Using Internationalized Messages>>.
-Multivalued:: If enabled, the attribute supports multiple values and UIs are rendered accordingly to allow setting many values. When enabling this
-setting, make sure to add a validator to set a hard limit to the number of values.
-Default Value:: Defines the value that will be automatically assigned to the attribute if the user does not provide one.
-Ensure that this default value complies with all configured validators for the attribute.
-Attribute Group:: The attribute group to which the attribute belongs to, if any.
-Enabled when:: Enables or disables an attribute. If set to `Always`, the attribute is available from any user profile context.
-If set to `Scopes are requested`, the attribute is only available when the client acting on behalf of the user is requesting a
-set of one or more scopes. You can use this option to dynamically enforce certain attributes depending on the client scopes
-being requested. For the administration console, scopes are not evaluated and the attribute is always enabled.
-That is because filtering attributes by scopes only works when running end-user authentication flows.
-Required:: Set the conditions to mark an attribute as required. If disabled, the attribute is optional.
-If enabled, you can set the `Required for` setting to mark the attribute as required depending on the user profile context so that
-the attribute is required for end-users (via end-user contexts) or to administrators (via administrative context), or both.
-You can also set the `Required when` setting to mark the attribute as required only when a set of one or more client scopes are requested.
-If set to `Always`, the attribute is required from any user profile context.
-If set to `Scopes are requested`, the attribute is only required when the client acting on behalf of the user is requesting a
-set of one or more scopes. For the account and administration consoles, scopes are not evaluated and the attribute is not required.
-That is because filtering attributes by scopes only works when running authentication flows.
-Permission:: In this section, you can define read and write permissions when the attribute is being managed from an end-user or administrative context.
-The `Who can edit` setting mark an attribute as writable by `User` and/or `Admin`, from an end-user and administrative context, respectively.
-The `Who can view` setting mark an attribute as read-only by `User` and/or `Admin` from an end-user and administrative context, respectively.
-Validation:: In this section, you can define the validations that will be performed when managing the attribute value.
-{project_name} provides a set of built-in validators you can choose from with the possibility to add your own. For more details, look at
+Наименование:: Название атрибута, используемое для уникальной идентификации атрибута.
+Отображать имя:: Удобное имя атрибута, в основном используемое при отрисовке пользовательских форм. Он также поддерживает <<_using-internationalized-messages,Использование интернационализированных сообщений>>.
+Множество значений:: Если этот параметр включен, атрибут поддерживает несколько значений и UI отображаются соответствующим образом, чтобы разрешить установку многих значений. При включении этой настройки
+убедитесь, что добавьте валидатор для установки жесткого ограничения на количество значений.
+Значение по умолчанию:: Определяет значение, которое будет автоматически назначено атрибуту, если пользователь не предоставит его.
+Убедитесь, что это значение по умолчанию соответствует всем настроенным валидаторам атрибута.
+Группа атрибутов:: Группа атрибутов, к которой принадлежит атрибут, если таковые имеются.
+Включено когда:: Включает или отключает атрибут. Если установлено значение `Всегда`, атрибут доступен из любого контекста профиля пользователя.
+Если установлено значение `Область запрошена`, атрибут доступен только в том случае, если клиент, действующий от имени пользователя, запрашивает набор
+одного или нескольких рамок. You can use this option to dynamically enforce certain attributes depending on the client scopes
+being requested. Для консоли администрирования область не вычисляется и атрибут всегда включен.
+Это происходит потому, что атрибуты фильтрации по областям работают только при запуске потоков аутентификации конечного пользователя.
+Требуется:: Установите условия, чтобы отметить атрибут как требуемый. Если отключено, атрибут является необязательным.
+Если включено, вы можете установить параметр `Обязательно для`, чтобы отметить атрибут как требуемый в зависимости от контекста пользовательского профиля, чтобы
+атрибут необходим для конечных пользователей (через контекст конечного пользователя) или для администраторов (через административный контекст), или и то и другое.
+Вы также можете установить параметр `Обязательно когда`, чтобы отметить атрибут как требуемый, только когда запрашивается набор одного или более клиентских областей охвата.
+Если установлено значение `Всегда`, атрибут требуется из любого контекста профиля пользователя.
+Если установлено значение `Область запрошена`, атрибут требуется только в том случае, если клиент, действующий от имени пользователя, запрашивает набор
+одного или нескольких областей действия. Для Учетных и административных консолей рамки не оцениваются и атрибут не требуется.
+Это происходит потому, что атрибуты фильтрации по областям работают только при запуске потоков аутентификации.
+Разрешение:: В этом разделе вы можете определить разрешения на чтение и запись, когда атрибут управляется от конечного пользователя или административного контекста.
+Параметр `Кто может редактировать` помечает атрибут как доступный для записи пользователем `User` и/или `Admin`, из пользовательского и административного контекста соответственно.
+Параметр «Кто может просматривать» помечает атрибут как «Пользователь» и/или «Администратор» из конечного пользователя и административного контекста, соответственно.
+Проверка:: В этом разделе вы можете определить валидации, которые будут выполняться при управлении значением атрибута.
+{project_name} предоставляет набор встроенных валидаторов, которые вы можете выбрать, с возможностью добавить свои собственные. For more details, look at
 the <<_validating-attributes,Validating Attributes>> section.
-Annotation:: In this section, you can associate annotations to the attribute. Annotations are mainly useful to pass over additional metadata to frontends for rendering purposes.
-For more details, look at the <<_defining-ui-annotations,Defining UI Annotations>> section.
+Аннотация:: В этом разделе вы можете связать аннотации с атрибутом. Аннотации в основном полезны для передачи дополнительных метаданных фронтендам для целей рендеринга.
+Для получения более подробной информации обратитесь к разделу <_defining-ui-annotations>> .
 
-When you create an attribute, the attribute is only available from administrative contexts to avoid unexpectedly exposing attributes to end-users.
-Effectively, the attribute won't be accessible to end-users when they are managing their profile through the end-user contexts. You can change the `Permissions` settings anytime accordingly
-to your needs.
+При создании атрибута атрибут доступен только в административных контекстах, чтобы избежать неожиданно разоблачения атрибутов конечным пользователям.
+В самом деле, атрибут не будет доступен конечным пользователям, если они управляют своим профилем через контекст конечного пользователя. Вы можете в любое время изменить настройки `Разрешения`
+на ваши потребности.
 
 [[_validating-attributes]]
-== Validating Attributes
+== Проверка атрибутов
 
-You can enable validation to managed attributes to make sure the attribute value conforms to specific rules.
-For that, you can add or remove validators from the `Validations` settings when managing an attribute.
+Вы можете включить валидацию для управляемых атрибутов, чтобы убедиться, что значение атрибута соответствует определенным правилам.
+Для этого вы можете добавить или удалить валидаторы из настроек `Validations` при управлении атрибутом.
 
 image:images/user-profile-validation.png[]
 
-Validation happens at any time when writing to an attribute, and they can throw errors that will be shown in UIs when the value
-fails a validation.
+Проверка происходит в любое время при написании атрибута, и они могут бросать ошибки, которые будут показаны в UI, когда значение
+не прошло валидацию.
 
-For security reasons, every attribute that is editable by users should have a validation to restrict the size of the values users enter.
-If no `length` validator has been specified, {project_name} defaults to a maximum length of 2048 characters.
+По соображениям безопасности, каждый атрибут, который можно редактировать пользователям, должен иметь проверку для ограничения размера введенных значений.
+Если валидатор `length` не задан, то максимальная длина 2048 символов по умолчанию {project_name} по умолчанию
 
-=== Built-in Validators
+=== Встроенные валидаторы
 
-{project_name} provides some built-in validators that you can choose from, and you are also able to provide
-your own validators by extending the `Validator SPI`.
+{project_name} предоставляет встроенные валидаторы, которые вы можете выбрать, и вы также можете предоставить
+свои собственные валидаторы, расширяя SPI "Validator".
 
-The list below provides a list of all the built-in validators:
+В приведенном ниже списке содержится список всех встроенных валидаторов:
 
 [cols="3*", options="header"]
 |===
-|Name
-|Description
-|Configuration
+|Наименование
+|Описание
+|Конфигурация
 
-|length
-|Check the length of a string value based on a minimum and maximum length.
+|длина
+|Проверьте длину строкового значения на основе минимальной и максимальной длины.
 |
-*min*: an integer to define the minimum allowed length.
+*min*: целое число для определения минимальной допустимой длины.
 
-*max*: an integer to define the maximum allowed length.
+*max*: целое число для определения максимально допустимой длины.
 
-*trim-disabled*: a boolean to define whether the value is trimmed prior to validation.
+*trim-выключено*: логическое значение для определения обрезания перед проверкой.
 
-|integer
-|Check if the value is an integer and within a lower and/or upper range. If no range is defined, the validator only checks whether the value is a valid number.
+|целое
+|Проверьте, является ли значение целым и в нижнем и/или верхнем диапазонах. Если диапазон не определен, валидатор проверяет только ли значение является допустимым числом.
 |
-*min*: an integer to define the lower range.
+*min*: целое число для определения нижнего диапазона.
 
-*max*: an integer to define the upper range.
+*max*: целое число для определения верхнего диапазона.
 
-|double
-|Check if the value is a double and within a lower and/or upper range. If no range is defined, the validator only checks whether the value is a valid number.
+|двойной
+|Проверьте, является ли значение двойным и в нижнем и/или верхнем диапазонах. Если диапазон не определен, валидатор проверяет только ли значение является допустимым числом.
 |
-*min*: an integer to define the lower range.
+*min*: целое число для определения нижнего диапазона.
 
-*max*: an integer to define the upper range.
+*max*: целое число для определения верхнего диапазона.
 
 |uri
-|Check if the value is a valid URI.
-|None
+|Проверьте, является ли значение верным URI.
+|Нет
 
-|pattern
-|Check if the value matches a specific RegEx pattern.
+|шаблон
+|Проверьте, соответствует ли значение определенному регулярному выражению.
 |
-*pattern*: the RegEx pattern to use when validating values.
+*pattern*: шаблон RegEx, используемый для проверки значений.
 
-*error-message*: the key of the error message in i18n bundle. If not set a generic message is used.
+*сообщение об ошибке*: ключ сообщения об ошибке в пакете i18n. Если не задано, то используется общее сообщение.
 
-|email
-|Check if the value has a valid e-mail format. If <<_email, the realm is configured to send emails>> and the option *Allow UTF-8* is not enabled to support internationalized emails, this validator also checks that the local part of the address contains only ASCII characters.
+|почта
+|Проверьте, имеет ли значение корректный формат электронной почты. Если <<_email, область настроена на отправку электронной почты>> и опция *Разрешить UTF-8* не включена для поддержки интернационализированных писем, этот валидатор также проверяет, что локальная часть адреса содержит только символы ASCII.
 |
-*max-local-length*: an integer to define the maximum length for the local part of the email. It defaults to 64 per specification.
+*max-local-length*: целое число, чтобы определить максимальную длину для локальной части сообщения. По умолчанию это 64 на спецификацию.
 
-|local-date
-|Check if the value has a valid format based on the realm and/or user locale.
-|None
+|локальная дата
+|Отметьте, если значение имеет допустимый формат, основанный на области и/или локали пользователя.
+|Нет
 
 |iso-date
-|Check if the value has a valid format based on ISO 8601. This validator can be used with inputs using the html5-date input type.
-|None
+|Проверьте, имеет ли значение допустимый формат на основе ISO 8601. Этот валидатор может быть использован для ввода с использованием входного типа html5-date.
+|Нет
 
-|person-name-prohibited-characters
-|Check if the value is a valid person name as an additional barrier for attacks such as script injection. The validation is based on a default RegEx pattern that blocks characters not common in person names.
+|запрещенные именам символы
+|Проверьте, является ли значение правильным именем человека дополнительным барьером для таких атак, как инъекция скрипта. Проверка основана на стандартном RegEx шаблоне, который блокирует общие символы в именах личности.
 |
-*error-message*: the key of the error message in i18n bundle. If not set a generic message is used.
+*сообщение об ошибке*: ключ сообщения об ошибке в пакете i18n. Если не задано, то используется общее сообщение.
 
-|username-prohibited-characters
-|Check if the value is a valid username as an additional barrier for attacks such as script injection. The validation is based on a default RegEx pattern that blocks characters not common in usernames.
-When the realm setting `Email as username` is enabled, this validator is skipped to allow email values.
+|запрещенное имя пользователя
+|Проверьте, является ли значение допустимым именем пользователя дополнительным барьером для таких атак, как инъекция скрипта. Проверка основана на стандартном RegEx шаблоне, который блокирует общие символы в именах пользователей.
+Когда включена опция «Email как имя пользователя», проверка пропущена, чтобы разрешить значения электронной почты.
 |
-*error-message*: the key of the error message in i18n bundle. If not set a generic message is used.
+*сообщение об ошибке*: ключ сообщения об ошибке в пакете i18n. Если не задано, то используется общее сообщение.
 
-|options
-|Check if the value is from the defined set of allowed values. Useful to validate values entered through select and multiselect fields.
+|опции
+|Проверьте, является ли значение из определенного набора допустимых значений. Полезно для проверки значений, введенных с помощью полей выбора и множественного выбора.
 |
-*options*: array of strings containing allowed values.
+*options*: массив строк, содержащих разрешенные значения.
 
 |up-username-not-idn-homograph
-|The field can contain only latin characters and common unicode characters. Useful for the fields, which can be subject of IDN homograph attacks (typically username).
+|Поле может содержать только латинские символы и обычные символы юникода. Полезно для полей, которые могут быть объектом IDN гомографа атак (обычно имя пользователя).
 |
-*error-message*: the key of the error message in i18n bundle. If not set a generic message is used.
+*сообщение об ошибке*: ключ сообщения об ошибке в пакете i18n. Если не задано, то используется общее сообщение.
 
-|multivalued
-|Validates the size of a multivalued attribute.
+|многоценный
+|Проверяет размер многозначного атрибута.
 |
-*min*: an integer to define the minimum allowed count of attribute values.
+*min*: целое число для определения минимально допустимого количества значений атрибута.
 
-*max*: an integer to define the maximum allowed count of attribute values.
+*max*: целое число для определения максимально допустимого количества значений атрибута.
 |===
 
 [[_defining-ui-annotations]]
-== Defining UI Annotations
+== Определение аннотаций интерфейса
 
 In order to pass additional information to frontends, attributes can be decorated with
-annotations to dictate how attributes are rendered. This capability is mainly useful when extending {project_name} themes
-to render pages dynamically based on the annotations associated with attributes.
+annotations to dictate how attributes are rendered. Эта возможность в основном полезна при расширении {project_name} тем
+для динамического отображения страниц на основе аннотаций, связанных с атрибутами.
 
-Annotations are used, for example, for <<_changing-the-html-type-for-an-attribute,Changing the HTML `type` for an Attribute>> and <<_changing-the-dom-representation-of-an-attribute,Changing the DOM representation of an Attribute>>, as you will
-see in the following sections.
+Используются, например, для <_changing-the-html-type-for-an-attribute,Изменение HTML `type` для атрибутов>> и <_changing-the-dom-representation-of-an-attribute, висит представление DOM атрибута>>, как вы
+увидите в следующих разделах.
 
 image:images/user-profile-annotation.png[]
 
-An annotation is a key/value pair shared with the UI so that they can change how the HTML element corresponding to the attribute is rendered.
-You can set any annotation you want to an attribute as long as the annotation is supported by the theme your realm is using.
+Аннотация - это пара ключ/значение, совместно с интерфейсом, чтобы они могли изменить способ представления HTML-элемента, соответствующего атрибуту.
+Вы можете установить любую аннотацию, которую хотите присвоить атрибуту, пока аннотация поддерживается темой вашего реалма.
 
 [NOTE]
 ====
-The only restriction you have is to avoid using annotations using the `kc` prefix in their keys because these annotations
-using this prefix are reserved for {project_name}.
+Единственное ограничение, которое у вас есть, заключается в том, чтобы избежать использования аннотаций с использованием префикса `kc` в их ключах, потому что эти аннотации
+с использованием этого префикса зарезервированы для {project_name}.
 ====
 
-=== Built-in Annotations
+=== Встроенные аннотации
 
-The following annotations are supported by {project_name} built-in themes:
+Следующие аннотации поддерживаются встроенными темами {project_name}:
 
 [cols="2*", options="header"]
 |===
-|Name
-|Description
+|Наименование
+|Описание
 
 |inputType
-|Type of the form input field. Available types are described in a table below.
+|Тип поля ввода формы. Доступные типы описаны в таблице ниже.
 
 |inputHelperTextBefore
-|Helper text rendered before (above) the input field. Direct text or internationalization pattern (like `${i18n.key}`) can be used here.
-Text is NOT html escaped when rendered into the page, so you can use html tags here to format the text, but you also have to correctly escape html control characters.
+|Helper текст отображается перед (выше) полем ввода. Прямой текст или интернационализация (например, `${i18n.key}`) можно использовать здесь.
+Текст НЕ HTML экранирован при отображении на странице, так что вы можете использовать html-теги здесь для форматирования текста, но вы также должны корректно экранировать html контрольные символы.
 
 |inputHelperTextAfter
-|Helper text rendered after (under) the input field. Direct text or internationalization pattern (like `${i18n.key}`) can be used here.
-Text is NOT html escaped when rendered into the page, so you can use html tags here to format the text, but you also have to correctly escape html control characters.
+|Helper текст отображается после (внизу) поля ввода. Прямой текст или интернационализация (например, `${i18n.key}`) можно использовать здесь.
+Текст НЕ HTML экранирован при отображении на странице, так что вы можете использовать html-теги здесь для форматирования текста, но вы также должны корректно экранировать html контрольные символы.
 
 |inputOptionsFromValidation
-|Annotation for select and multiselect types. Optional name of custom attribute validation to get input options from. See the <<_managing_options_for_select_fields,detailed description>> below.
+|Аннотация для выбора и выбора типов. Необязательное имя проверки пользовательского атрибута, чтобы получить параметры ввода. См. <<_managing_options_for_select_fields,подробное описание>>
 
 |inputOptionLabelsI18nPrefix
-|Annotation for select and multiselect types. Internationalization key prefix to render options in UI. See the <<_managing_options_for_select_fields,detailed description>> below.
+|Аннотация для выбора и выбора типов. Префикс ключа интернационализации для отображения опций пользовательского интерфейса. См. <<_managing_options_for_select_fields,подробное описание>>
 
 |inputOptionLabels
-|Annotation for select and multiselect types. Optional map to define UI labels for options (directly or using internationalization). See the <<_managing_options_for_select_fields,detailed description>> below.
+|Аннотация для выбора и выбора типов. Необязательная карта для определения пользовательского интерфейса параметров (напрямую или с использованием интернационализации). См. <<_managing_options_for_select_fields,подробное описание>>
 
 |inputTypePlaceholder
-|HTML input `placeholder` attribute applied to the field - specifies a short hint that describes the expected value of an input field (e.g. a sample value
-or a short description of the expected format). The short hint is displayed in the input field before the user enters a value.
+|Атрибут 'placeholder', применяемый к полю - определяет короткую подсказку, которая описывает ожидаемое значение поля ввода (e. . пример значения
+или краткое описание ожидаемого формата). Короткая подсказка отображается в поле ввода перед введением пользователем значения.
 
 |inputTypeSize
-|HTML input `size` attribute applied to the field - specifies the width, in characters, of a single line input field. For fields based on HTML `select` type
-it specifies number of rows with options shown. May not work, depending on css in used theme!
+|Атрибут `size` HTML для поля - определяет ширину в символах поля ввода одной строки. Для полей на основе HTML `select` типа
+определяет количество строк с параметрами. Может не работать, в зависимости от css в используемой теме!
 
 |inputTypeCols
-|HTML input `cols` attribute applied to the field - specifies the width, in characters, for `textarea` type. May not work, depending on css in used theme!
+|HTML входной атрибут `cols` применяется к полю - определяет ширину в символах для типа `textarea`. Может не работать, в зависимости от css в используемой теме!
 
 |inputTypeRows
-|HTML input `rows` attribute applied to the field - specifies the height, in characters, for `textarea` type. For select fields it specifies number
-of rows with options shown. May not work, depending on css in used theme!
+|HTML входной атрибут «строки», примененный к полю - определяет высоту символов, для типа «textarea». Для выбора полей она указывает число
+строк с помощью параметров. Может не работать, в зависимости от css в используемой теме!
 
 |inputTypePattern
-|HTML input `pattern` attribute applied to the field providing client side validation - specifies a regular expression that an input field's value
-is checked against. Useful for single line inputs.
+|HTML входной атрибут `pattern` применяется к полю, предоставляющему клиентскую проверку - определяет регулярное выражение, которое значение поля ввода
+проверяется. Полезно для ввода одной строки.
 
-|inputTypeMaxLength
-|HTML input `maxlength` attribute applied to the field providing client side validation - maximal length of the text which can be entered into the input
-field. Useful for text fields.
+|длина inputTypeMaxLth
+|HTML ввод `maxlength` применяется к полю, предоставляющему клиентскую проверку - максимальную длину текста, который может быть введен в поле ввода
+. Полезно для текстовых полей.
 
-|inputTypeMinLength
-|HTML input `minlength` attribute applied to the field providing client side validation - minimal length of the text which can be entered into the input
-field. Useful for text fields.
+|длина inputTypeMinLth
+|Атрибут «minlength», применяемый к полю, предоставляющему клиентскую проверку - минимальную длину текста, который может быть введен в поле ввода
+. Полезно для текстовых полей.
 
 |inputTypeMax
-|HTML input `max` attribute applied to the field providing client side validation - maximal value which can be entered into the input field.
-Useful for numeric fields.
+|Ввод HTML атрибута `max` применяется к полю, предоставляющему клиентскую проверку - максимальное значение, которое может быть введено в поле ввода.
+Полезно для числовых полей.
 
 |inputTypeMin
-|HTML input `min` attribute applied to the field providing client side validation - minimal value which can be entered into the input field.
-Useful for numeric fields.
+|HTML входной атрибут `min` применяется к полю, обеспечивающему проверку стороны клиента - минимальное значение, которое может быть введено в поле ввода.
+Полезно для числовых полей.
 
 |inputTypeStep
-|HTML input `step` attribute applied to the field - Specifies the interval between legal numbers in an input field. Useful for numeric fields.
+|Ввод HTML атрибута `step` применяемого к полю - задает интервал между допустимыми числами в поле ввода. Полезно для числовых полей.
 
-|Number Format
-|If set, the `data-kcNumberFormat` attribute is added to the field to format the value based on a given format. This annotation is targeted for numbers where the format is based on the
-number of digits expected in a determined position. For instance, a format `(\{2}) \{5}-\{4}` will format the field value to `(00) 00000-0000`.
+|Числовой формат
+|Если установлено, атрибут `data-kcNumberFormat` добавлен в поле в формате значения, основанного на заданном формате. This annotation is targeted for numbers where the format is based on the
+number of digits expected in a determined position. Например, формат `(\{2}) \{5}-\{4}` будет отформатировать значение поля `(00) 00000-0000`.
 
-|Number UnFormat
-|If set, the `data-kcNumberUnFormat` attribute is added to the field to format the value based on a given format before submitting the form. This annotation
-is useful if you do not want to store any format for a specific attribute but only format the value on the client side. For instance, if the current value
-is `(00) 00000-0000`, the value will change to `00000000000` if you set the value `\{11}` to this annotation or any other format you want by specifying a set of one or more group of digits.
-Make sure to add validators to perform server-side validations before storing values.
+|Номер UnFormat
+|Если установлено, атрибут `data-kcNumberUnFormat` добавляется в поле в формат значения, основанного на заданном формате, перед отправкой формы. Это примечание
+полезно, если вы не хотите хранить какой-либо формат для определенного атрибута, но отформатируйте только значение на стороне клиента. Например, если текущее значение
+является `(00) 00000-0000`, значение изменится на `000000000`, если вы установите значение `\{11}` на эту аннотацию или любой другой формат, который вы хотите, указав набор одной или более цифр.
+Перед сохранением значений убедитесь, что добавляли валидаторы для проверки на стороне сервера.
 |===
 
 [NOTE]
 ====
-Field types use HTML form field tags and attributes applied to them - they behave based on the HTML specifications and browser support for them.
+Типы полей используют применяемые к ним теги и атрибуты поля HTML - они ведут себя на основе HTML спецификаций и поддержки браузера.
 
-Visual rendering also depends on css styles applied in the used theme.
+Визуальный рендеринг также зависит от стилей css, применяемых в используемой теме.
 ====
 
 [[_changing-the-html-type-for-an-attribute]]
-=== Changing the HTML `type` for an Attribute
+=== Изменение HTML `type` для атрибута
 
-You can change the `type` of a HTML5 input element by setting the `inputType` annotation. The available types are:
+Вы можете изменить тип элемента HTML5, установив аннотацию `inputType`. Доступные типы:
 
 [cols="3*", options="header"]
 |===
-|Name
-|Description
-|HTML tag used
+|Наименование
+|Описание
+|Используемый HTML тег
 
-|text
-|Single line text input.
+|текст
+|Ввод текста в одну строку.
 |input
 
 |textarea
-|Multiple line text input.
+|Ввод нескольких строк текста.
 |textarea
 
-|select
-|Common single select input. See the <<_managing_options_for_select_fields,description of how to configure options>> below.
-|select
+|выбрать
+|Обычный единичный ввод. Смотрите <<_managing_options_for_select_fields,описание того, как настроить параметры>>.
+|выбрать
 
-|select-radiobuttons
-|Single select input through group of radio buttons. See the <<_managing_options_for_select_fields,description of how to configure options>> below.
-|group of input
+|выбрать радиокнопки
+|Одиночный выбор ввода по группе радиокнопок. Смотрите <<_managing_options_for_select_fields,описание того, как настроить параметры>>.
+|ввод группы
 
-|multiselect
-|Common multiselect input. See the <<_managing_options_for_select_fields,description of how to configure options>> below.
-|select
+|множественный выбор
+|Обычный множественный ввод. Смотрите <<_managing_options_for_select_fields,описание того, как настроить параметры>>.
+|выбрать
 
-|multiselect-checkboxes
-|Multiselect input through group of checkboxes. See the <<_managing_options_for_select_fields,description of how to configure options>> below.
-|group of input
+|множественные флажки
+|Множественный ввод через группу чекбоксов. Смотрите <<_managing_options_for_select_fields,описание того, как настроить параметры>>.
+|ввод группы
 
 |html5-email
-|Single line text input for email address based on HTML 5 spec.
+|Однострочный текст для адреса электронной почты на основе спецификации HTML 5.
 |input
 
 |html5-tel
-|Single line text input for phone number based on HTML 5 spec.
+|Однострочный текст ввода номера телефона на основе спецификации HTML 5.
 |input
 
-|html5-url
-|Single line text input for URL based on HTML 5 spec.
+|html5-адрес
+|Однострочный текстовый ввод для URL на основе спецификации HTML 5.
 |input
 
-|html5-number
-|Single line input for number (integer or float depending on `step`) based on HTML 5 spec.
+|html5-номер
+|Один вход строки для числа (целое число или число с плавающей точкой в зависимости от `step`) на основе HTML 5 специфика.
 |input
 
 |html5-range
-|Slider for number entering based on HTML 5 spec.
+|Слайдер для номера вводится на основе HTML 5 спецификации.
 |input
 
 |html5-datetime-local
-|Date Time input based on HTML 5 spec.
+|Ввод даты на основе HTML 5 специфика.
 |input
 
-|html5-date
-|Date input based on HTML 5 spec.
+|html5-дата
+|Ввод даты на основе HTML 5 спецификации.
 |input
 
-|html5-month
-|Month input based on HTML 5 spec.
+|html5-месяц
+|Месячный ввод основан на HTML 5 spec.
 |input
 
-|html5-week
-|Week input based on HTML 5 spec.
+|html5-неделя
+|Ввод недели на основе HTML 5 специфика.
 |input
 
-|html5-time
-|Time input based on HTML 5 spec.
+|html5-время
+|Ввод времени на основе HTML 5 спецификации.
 |input
 |===
 
 [[_managing_options_for_select_fields]]
-=== Defining options for select and multiselect fields
+=== Определение опций для выбора и выбора полей
 
-Options for select and multiselect fields are taken from validation applied to the attribute to be
-sure validation and field options presented in UI are always consistent. By default, options are taken from built-in `options` validation.
+Варианты для выбора и мультивыбора полей взяты из валидации, применяемой к атрибуту
+убедитесь, что варианты проверки и поля в пользовательском интерфейсе всегда являются согласованными. По умолчанию, параметры взяты из встроенных опций валидации.
 
-You can use various ways to provide nice human-readable labels for select and multiselect options. The simplest
-case is when attribute values are same as UI labels. No extra configuration is necessary in this case.
+Вы можете использовать различные способы предоставления красивых человеко-читаемых этикеток для выбора и выбора опций. Самый простой
+— когда значения атрибута совпадают с метками пользовательского интерфейса. Дополнительная конфигурация в данном случае не требуется.
 
 image:images/user-profile-select-options-simple.png[]
 
-When attribute value is kind of ID not suitable for UI, you can use simple internationalization support provided
-by `inputOptionLabelsI18nPrefix` annotation. It defines prefix for internationalization keys, option value is dot appended to this prefix.
+Когда значение атрибута не подходит для пользовательского интерфейса, вы можете использовать простую поддержку интернационализации, предоставленную
+в `inputOptionLabelsI18nPrefix` аннотации. Она определяет префикс для интернационализационных ключей, значение параметра добавляется к этому префиксу.
 
 image:images/user-profile-select-options-simple-i18n.png[]
 
-Localized UI label texts for option value have to be provided by `userprofile.jobtitle.sweng` and `userprofile.jobtitle.swarch`
-keys then, using common localization mechanism.
+Локализованные тексты ярлыков пользовательского интерфейса для значения параметра должны быть предоставлены `userprofile.jobtitle.sweng` и `userprofile.jobtitle.swarch`
+ключей, затем, используя обычный механизм локализации.
 
-You can also use `inputOptionLabels` annotation to provide labels for individual options. It contains a map of labels for option - key in the map is
-option value (defined in validation), and value in the map is UI label text itself or its internationalization pattern (like `${i18n.key}`) for that option.
+Вы также можете использовать аннотацию `inputOptionLabels` для предоставления меток для отдельных параметров. Она содержит карту меток для опции - ключ в карте
+значения опции (определено в валидации), и значение на карте является пользовательским интерфейсом для самого текста или для его интернационализации (например, `${i18n.key}`).
 
 [NOTE]
 ====
-You have to use User Profile `JSON Editor` to enter map as `inputOptionLabels` annotation value.
+Вы должны использовать профиль пользователя `JSON Editor` для входа на карту как значение аннотации `inputOptionLabels`.
 ====
 
-Example of directly entered labels for individual options without internationalization:
+Пример непосредственно введенных ярлыков для отдельных опций без интернационализации:
 
 [source,json]
 ----
@@ -525,7 +525,7 @@ Example of directly entered labels for individual options without internationali
 ]
 ----
 
-Example of the internationalized labels for individual options:
+Пример интернационализированных этикеток для отдельных вариантов:
 
 [source,json]
 ----
@@ -553,28 +553,28 @@ Example of the internationalized labels for individual options:
 ]
 ----
 
-Localized texts have to be provided by `jobtitle.swengineer` and `jobtitle.swarchitect` keys then, using common localization mechanism.
+Локализованные тексты должны быть предоставлены `jobtitle.swengineer` и `jobtitle.swarchitect`, затем, с использованием общего механизма локализации.
 
-Custom validator can be used to provide options thanks to `inputOptionsFromValidation` attribute annotation.
-This validation have to have `options` config providing array of options. Internationalization works the same way as for options
-provided by built-in `options` validation.
+Пользовательская валидатор может быть использован для предоставления параметров благодаря аннотации атрибута `inputOptionsFromValidation`.
+Эта проверка должна иметь конфигурацию `options` с набором параметров. Интернационализация работает так же, как и для опций
+предоставленных встроенной проверкой «options».
 
 image:images/user-profile-select-options-custom-validator.png[]
 
 [[_changing-the-dom-representation-of-an-attribute]]
-=== Changing the DOM representation of an Attribute
+=== Изменение DOM-представления атрибута
 
-You can enable additional client-side behavior by setting annotations with the `kc` prefix. These annotations are going to
+Вы можете включить дополнительное поведение клиента, установив аннотации с префиксом `kc`. These annotations are going to
 translate into an HTML attribute in the corresponding element of an attribute, prefixed with `data-`, and a script with
 the same name will be loaded to the dynamic pages so that you can select elements from the DOM based on the custom `data-` attribute
 and decorate them accordingly by modifying their DOM representation.
 
-For instance, if you add a `kcMyCustomValidation` annotation to an attribute, the HTML attribute `data-kcMyCustomValidation` is added to
-the corresponding HTML element for the attribute, and a JavaScript module is loaded from your custom theme at `<THEME TYPE>/resources/js/kcMyCustomValidation.js`.
-See the {developerguide_link}[{developerguide_name}] for more information about how to deploy a custom JavaScript module to your theme.
+Например, если вы добавите атрибут аннотации `kcMyCustomValidation`, атрибут HTML `data-kcMyCustomValidation` добавлен в
+соответствующий HTML элемент атрибута, и JavaScript модуль загружен из пользовательской темы в `<THEME TYPE>/resources/js/kcMyCustomValidation. s`.
+Смотрите {developerguide_link}[{developerguide_name}] для получения дополнительной информации о том, как установить пользовательский модуль JavaScript в вашу тему.
 
-The JavaScript module can run any code to customize the DOM and the elements rendered for each attribute. For that,
-you can use the `userProfile.js` module to register an annotation descriptor for your custom annotation as follows:
+Модуль JavaScript может запускать любой код для настройки DOM и отображаемых элементов для каждого атрибута. Для этого
+вы можете использовать модуль `userProfile.js` для регистрации дескриптора аннотации следующим образом:
 
 [source,javascript]
 ----
@@ -595,15 +595,15 @@ registerElementAnnotatedBy({
 });
 ----
 
-The `registerElementAnnotatedBy` is a method to register annotation descriptors. A descriptor is an object with a `name`,
-referencing the annotation name,
-and a `onAdd` function. Whenever the page is rendered or an attribute with the annotation is added to the DOM, the `onAdd`
-function is invoked so that you can customize the behavior for the element.
+`registerElementAnnotatedBy` - это метод регистрации дескрипторов аннотаций. Дескриптор - это объект с функцией `name`,
+ссылки на имя аннотации,
+и 'onAdd`. Всякий раз, когда страница отображается или атрибут с аннотацией добавляется в DOM, функция `onAdd`
+вызывается, чтобы вы могли настроить поведение элемента.
 
-The `onAdd` function can also return a function to perform a cleanup. For instance, if you are adding event listeners
+Функция `onAdd` также может возвращать функцию для очистки. For instance, if you are adding event listeners
 to elements, you might want to remove them in case the element is removed from the DOM.
 
-Alternatively, you can also use any JavaScript code you want if the `userProfile.js` is not enough for your needs:
+Кроме того, вы также можете использовать любой код JavaScript, который вы хотите, если `userProfile.js` недостаточно для ваших нужд:
 
 [source,javascript]
 ----
@@ -616,36 +616,36 @@ document.querySelectorAll(`[data-kcMyCustomValidation]`).forEach((element) => {
   });
 ----
 
-== Managing Attribute Groups
+== Управление группами атрибутов
 
-At the `Attribute Groups` sub-tab you can create, edit, and delete attribute groups. An attribute group allows you to define a container for correlated attributes so that they are rendered together when at the user-facing forms.
+На субвкладке `Атрибуты` вы можете создавать, редактировать и удалять группы атрибутов. Группа атрибутов позволяет вам определить контейнер для корреляционных атрибутов таким образом, чтобы он отображался вместе, когда в формах пользователя.
 
 image:images/user-profile-attribute-group-list.png[]
 
 [NOTE]
 ====
-You can't delete attribute groups that are bound to attributes. For that, you should first update the attributes to remove the binding.
+Нельзя удалить группы атрибутов, которые связаны с атрибутами. Для этого необходимо сначала обновить атрибуты, чтобы удалить привязку.
 ====
 
-To create a new group, click on the *Create attributes group* button on the top of the attribute groups listing.
+Чтобы создать новую группу, нажмите на кнопку *Создать группу атрибутов* в верхней части списка групп атрибутов.
 
 image:images/user-profile-create-attribute-group.png[]
 
-When configuring the group you can define the following settings:
+При настройке группы вы можете определить следующие параметры:
 
-Name:: The name of the attribute, used to uniquely identify an attribute.
-Display name:: A user-friendly name for the attribute, mainly used when rendering user-facing forms. It also supports <<_using-internationalized-messages,Using Internationalized Messages>>.
-Display description:: A user-friendly text that will be displayed as a tooltip when rendering user-facing forms. It also supports <<_using-internationalized-messages,Using Internationalized Messages>>.
-Annotation:: In this section, you can associate annotations to the attribute. Annotations are mainly useful to pass over additional metadata to frontends for rendering purposes.
+Наименование:: Название атрибута, используемое для уникальной идентификации атрибута.
+Отображать имя:: Удобное имя атрибута, в основном используемое при отрисовке пользовательских форм. Он также поддерживает <<_using-internationalized-messages,Использование интернационализированных сообщений>>.
+Отобразить описание:: Удобный текст, который будет отображаться как подсказка при отображении пользовательских форм. Он также поддерживает <<_using-internationalized-messages,Использование интернационализированных сообщений>>.
+Аннотация:: В этом разделе вы можете связать аннотации с атрибутом. Аннотации в основном полезны для передачи дополнительных метаданных фронтендам для целей рендеринга.
 
 [[_user-profile-json-configuration]]
-== Using the JSON configuration
+== Использование конфигурации JSON
 
-The user profile configuration is stored using a well-defined JSON schema. You can choose from editing the user profile configuration directly by clicking on the `JSON Editor` sub-tab.
+Конфигурация профиля пользователя хранится с помощью хорошо определенной схемы JSON. Вы можете выбрать редактирование конфигурации профиля пользователя напрямую, нажав на подвкладку `JSON Editor`.
 
 image:images/user-profile-json-config.png[]
 
-The JSON schema is defined as follows:
+Схема JSON определяется следующим образом:
 
 [source,json]
 ----
@@ -691,23 +691,23 @@ The JSON schema is defined as follows:
 }
 ----
 
-The schema supports as many attributes and groups as you need.
+Схема поддерживает столько атрибутов и групп, сколько вам нужно.
 
-The `unmanagedAttributePolicy` property defines the unmanaged attribute policy by setting one of following values. For more details,
+Свойство `unmanagedAttributePolicy` определяет неуправляемую политику атрибутов, установив одно из следующих значений. For more details,
 look at the <<_understanding-managed-and-unmanaged-attributes,Understanding Managed and Unmanaged Attributes>>.
 
-* `DISABLED`
-* `ENABLED`
+* `ОТКЛЮЧИТЬ`
+* `ВНИМАНИЕ`
 * `ADMIN_VIEW`
 * `ADMIN_EDIT`
 
-=== Attribute Schema
+=== Схема атрибутов
 
-For each attribute you should define a `name` and, optionally, the `required`, `permission`, and the `annotations` settings.
+Для каждого атрибута вы должны определить имя и параметры `required`, `permission` и `annotations`.
 
-The `required` property defines whether an attribute is required. {project_name} allows you to set an attribute as required based on different conditions.
+Свойство `required` определяет, требуется ли атрибут. {project_name} позволяет вам устанавливать атрибут как требуемый на основе различных условий.
 
-When the `required` property is defined as an empty object, the attribute is always required.
+Если свойство `required` определяется как пустой объект, то атрибут всегда требуется.
 
 [source,json]
 ----
@@ -720,9 +720,9 @@ When the `required` property is defined as an empty object, the attribute is alw
 }
 ----
 
-On the other hand, you can choose to make the attribute required only for users, or administrators, or both. As well as mark the attribute as required only in case a specific scope is requested when the user is authenticating in {project_name}.
+С другой стороны, вы можете сделать атрибут обязательным только для пользователей, или администраторов, или и то и другое. равно как отметить атрибут как требуемый только в том случае, если запрашивается конкретная область действия, когда пользователь аутентифицируется в {project_name}.
 
-To mark an attribute as required for a user and/or administrator, set the `roles` property as follows:
+Чтобы отметить атрибут, необходимый для пользователя и/или администратора, установите свойство «роли»:
 
 [source,json]
 ----
@@ -737,9 +737,9 @@ To mark an attribute as required for a user and/or administrator, set the `roles
 }
 ----
 
-The `roles` property expects an array whose values can be either `user` or `admin`, depending on whether the attribute is required by the user or the administrator, respectively.
+Свойство `roles` предполагает массив, значения которого могут быть `user` или `admin`, в зависимости от того, требуется ли атрибут для пользователя или администратора, соответственно.
 
-Similarly, you can choose to make the attribute required when a set of one or more scopes is requested by a client when authenticating a user. For that, you can use the `scopes` property as follows:
+Аналогичным образом вы можете сделать атрибут требуемым, если набор одного или нескольких областей запрашивается клиентом при аутентификации пользователя. Для этого вы можете использовать свойство `scopes` следующим образом:
 
 [source,json]
 ----
@@ -754,9 +754,9 @@ Similarly, you can choose to make the attribute required when a set of one or mo
 }
 ----
 
-The `scopes` property is an array whose values can be any string representing a client scope.
+Свойство `scopes` является массивом, значения которого могут быть любой строкой, представляющей область клиента.
 
-The attribute-level `permissions` property can be used to define the read and write permissions to an attribute. The permissions are set based on whether these operations can be performed on the attribute by a user, or administrator, or both.
+Свойство атрибута `permissions` можно использовать для определения прав на чтение и запись атрибута. Разрешения устанавливаются на основе того, могут ли эти операции выполняться по атрибуту пользователем или администратором или и тем и другим.
 
 [source,json]
 ----
@@ -772,11 +772,11 @@ The attribute-level `permissions` property can be used to define the read and wr
 }
 ----
 
-Both `view` and `edit` properties expect an array whose values can be either `user` or `admin`, depending on whether the attribute is viewable or editable by the user or the administrator, respectively.
+Свойства `view` и `edit` ожидают массива, значения которого могут быть `user` или `admin`, в зависимости от того, доступен ли атрибут или редактируется пользователем или администратором, соответственно.
 
-When the `edit` permission is granted, the `view` permission is implicitly granted.
+Когда разрешение `edit` предоставлено, разрешение `view` выдается неявно.
 
-The attribute-level `annotation` property can be used to associate additional metadata to attributes. Annotations are mainly useful for passing over additional information about attributes to frontends rendering user attributes based on the user profile configuration. Each annotation is a key/value pair.
+Свойство атрибута `annotation` может быть использовано для привязки дополнительных метаданных к атрибутам. Аннотации в основном полезны для передачи дополнительной информации об атрибутах интерфейса, отображающих пользовательские атрибуты на основе конфигурации профиля пользователя. Каждая аннотация - это пара ключ/значение.
 
 [source,json]
 ----
@@ -792,72 +792,72 @@ The attribute-level `annotation` property can be used to associate additional me
 }
 ----
 
-=== Attribute Group Schema
+=== Схема группы атрибутов
 
-For each attribute group you should define a `name` and, optionally, the `annotations` settings.
+Для каждой группы атрибутов необходимо определить параметры «имя» и, по желанию, «аннотации».
 
-The attribute-level `annotation` property can be used to associate additional metadata to attributes. Annotations are mainly useful for passing over additional information about attributes to frontends rendering user attributes based on the user profile configuration. Each annotation is a key/value pair.
+Свойство атрибута `annotation` может быть использовано для привязки дополнительных метаданных к атрибутам. Аннотации в основном полезны для передачи дополнительной информации об атрибутах интерфейса, отображающих пользовательские атрибуты на основе конфигурации профиля пользователя. Каждая аннотация - это пара ключ/значение.
 
-== Customizing How UIs are Rendered
+== Настройка пользовательского интерфейса
 
-The UIs from all the user profile contexts (including the administration console) are rendered dynamically accordingly to your
-user profile configuration.
+Пользовательские интерфейсы из всех контекстов профиля пользователя (включая консоль администрирования) отображаются динамически соответственно к конфигурации вашего профиля
+пользователя.
 
-The default rendering mechanism provides the following capabilities:
+Механизм рендеринга по умолчанию предоставляет следующие возможности:
 
-* Show or hide fields based on the permissions set to attributes.
-* Render markers for required fields based on the constraints set to the attributes.
-* Change the field input type (text, date, number, select, multiselect) set to an attribute.
-* Mark fields as read-only depending on the permissions set to an attribute.
-* Order fields depending on the order set to the attributes.
-* Group fields that belong to the same attribute group.
-* Dynamically group fields that belong to the same attribute group.
+* Показать или скрыть поля, основанные на разрешениях, установленных для атрибутов.
+* Отображение маркеров обязательных полей в зависимости от ограничений, установленных к атрибутам.
+* Изменить тип поля ввода (текст, дата, число, выборка, множественный выбор) для атрибута.
+* Отметить поля только для чтения в зависимости от разрешений, установленных в атрибуте.
+* Поля сортировки в зависимости от атрибутов заказа.
+* Поля группы, принадлежащие той же группе атрибутов.
+* Динамическая группировка полей, принадлежащих одной и той же группе атрибутов.
 
-=== Ordering attributes
+=== Сортировка атрибутов
 
-The attribute order is set by dragging and dropping the attribute rows on the attribute listing page.
+Порядок атрибутов задается перетаскиванием строк атрибутов на странице списка атрибутов.
 
 image:images/user-profile-attribute-list-order.png[]
 
-The order you set in this page is respected when fields are rendered in dynamic forms.
+Порядок, который вы устанавливаете на этой странице, соблюдается при отображении полей в динамических формах.
 
-=== Grouping attributes
+=== Атрибуты группировки
 
-When dynamic forms are rendered, they will try to group together attributes that belong to the same attribute group.
+Когда динамические формы будут отображены, они попытаются группировать атрибуты, принадлежащие одной и той же группе атрибутов.
 
 image:images/user-profile-update-profile.png[]
 
 [NOTE]
 ====
-When attributes are linked to an attribute group, the attribute order is also important to make sure attributes within the same group are close together, within a same group header. Otherwise, if attributes within a group do not have a sequential order you might have the same group header rendered multiple times in the dynamic form.
+Когда атрибуты связаны с группой атрибутов, порядок атрибутов также важен для того, чтобы убедиться, что атрибуты внутри одной группы были близки друг к другу, внутри одного заголовка группы. В противном случае если атрибуты внутри группы не имеют последовательного порядка, вы можете иметь один и тот же заголовок группы отображается несколько раз в динамической форме.
 ====
 
 == Enabling Progressive Profiling
 
-In order to make sure end-user profiles are in compliance with the configuration, administrators can use the `VerifyProfile` required action to eventually force users to update their profiles when authenticating to {project_name}.
+Чтобы удостовериться, что профили конечных пользователей соответствуют конфигурации, администраторы могут использовать `VerifyProfile` необходимые действия, чтобы в конечном итоге заставить пользователей обновить свои профили при аутентификации на {project_name}.
 
 [NOTE]
 ====
-The `VerifyProfile` action is similar to the `UpdateProfile` action. However, it leverages all the capabilities provided by the user profile to automatically enforce compliance with the user profile configuration.
+Действие `VerifyProfile` похоже на действие `UpdateProfile`. Однако он использует все возможности, предоставляемые профилем пользователя, для автоматического обеспечения соответствия конфигурации профиля пользователя.
 ====
 
-When enabled, the `VerifyProfile` action is going to perform the following steps when the user is authenticating:
+Если этот параметр включен, действие `VerifyProfile` будет выполнять следующие шаги при аутентификации пользователя:
 
-* Check whether the user profile is fully compliant with the user profile configuration set to the realm. That means running
-validations and make sure all of them are successful.
-* If not, perform an additional step during the authentication so that the user can update any missing or invalid attribute.
-* If the user profile is compliant with the configuration, no additional step is performed, and the user continues with the authentication process.
+* Проверьте, полностью ли профиль пользователя соответствует конфигурации пользовательского профиля в реалме. Это означает, что валидации
+и убедитесь, что все они успешны.
+* Если нет, выполните дополнительный шаг во время аутентификации, чтобы пользователь мог обновить любой недостающий или недопустимый атрибут.
+* Если профиль пользователя соответствует конфигурации, не выполняется дополнительный шаг и пользователь продолжает процесс аутентификации.
 
-The `VerifyProfile` action is enabled by default. To disable it, click on the
-`Authentication` link on the left side menu and then click on the `Required Actions` tab. At this tab, use the *Enabled* switch of the `VerifyProfile` action to disable it.
+Действие `VerifyProfile` включено по умолчанию. Чтобы отключить его, нажмите на ссылку
+`Authentication` в левом меню и нажмите на вкладку `Required Actions`. На этой вкладке используйте переключатель *Включено* действия `VerifyProfile`, чтобы отключить его.
 
 image:images/user-profile-register-verify-profile-action.png[]
 
 [[_using-internationalized-messages]]
-== Using Internationalized Messages
+== Использование интернационализированных сообщений
 
 If you want to use internationalized messages when configuring attributes, attributes groups, and annotations, you can
 set their display name, description, and values, using a placeholder that will translate to a message from a message bundle.
 
-For that, you can use a placeholder to resolve messages keys such as `${myAttributeName}`, where `myAttributeName` is the key for a message in a message bundle. For more details,
+Для этого вы можете использовать метку-заполнитель для разрешения ключей сообщений, таких как `${myAttributeName}`, где `myAttributeName` является ключом для сообщения в наборе сообщений. For more details,
 look at link:https://www.keycloak.org/ui-customization/localization#_localizing_messages_in_a_theme[Localizing messages in a theme] about how to add message bundles to custom themes.
