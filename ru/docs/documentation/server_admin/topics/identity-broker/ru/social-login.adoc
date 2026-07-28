@@ -1,3 +1,3 @@
-=== Social Identity Providers
+=== Поставщики социальных идентификаторов
 
-A social identity provider can delegate authentication to a trusted, respected social media account. {project_name} includes support for social networks such as Google, Facebook, Twitter, GitHub, LinkedIn, Microsoft, and Stack Overflow.
+Провайдер социальной идентификации может делегировать аутентификацию доверенному и уважаемому аккаунту в социальных сетях. {project_name} включает поддержку социальных сетей, таких как Google, Facebook, Twitter, GitHub, LinkedIn, Microsoft и Stack Overflow.
