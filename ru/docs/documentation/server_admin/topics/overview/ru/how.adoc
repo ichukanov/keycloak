@@ -1,11 +1,10 @@
 === Основные операции {project_name}
 
-{project_name} является отдельным сервером, которым вы управляете в своей сети.  Applications are configured to point to and
-be secured by this server.  {project_name} uses open protocol standards like link:https://openid.net/developers/how-connect-works/[OpenID Connect]
-or link:https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html[SAML 2.0] to secure
-your applications.  Браузер приложения перенаправляет браузер пользователя из приложения на сервер аутентификации {project_name}
-, где он вводит свои учетные данные.  This redirection is important because users are completely isolated from applications and
-applications never see a user's credentials.  Applications instead are given an identity token or assertion that is cryptographically
-signed.  Эти токены могут иметь данные о личности, такие как имя пользователя, адрес, адрес электронной почты и другие данные профиля.  They can also
-hold permission data so that applications can make authorization decisions.  Эти токены также могут использоваться для защиты
+{project_name} является отдельным сервером, которым вы управляете в своей сети.  Приложения настроены таким образом, чтобы указывать на
+этот сервер и быть защищенными с его помощью.   {project_name} использует OIDC link:https://openid.net/developers/how-connect-works/[OpenID Connect]
+или link:https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html[SAML 2.0] для защиты подключенных приложений.  Браузер приложения перенаправляет браузер пользователя из приложения на сервер аутентификации {project_name}
+, где он вводит свои учетные данные.  Это перенаправление важно, поскольку пользователи полностью изолированы от приложений, а
+приложения никогда не видят учетные данные пользователя.  Вместо этого приложениям выдается идентификационный токен или утверждение, которое имеет криптографическую
+подпись.  Эти токены могут иметь данные о личности, такие как имя пользователя, адрес, адрес электронной почты и другие данные профиля.  Они также могут
+содержать данные о разрешениях, чтобы приложения могли принимать решения об авторизации.  Эти токены также могут использоваться для защиты
 от вызовов на службы REST.
