@@ -1,19 +1,19 @@
-=== OpenID Connect
+=== Подключить OpenID
 
 [role="_abstract"]
-link:https://openid.net/developers/how-connect-works/[OpenID Connect] (OIDC) is an authentication protocol that is an extension of link:https://datatracker.ietf.org/doc/html/rfc6749[OAuth 2.0].
+link:https://openid.net/developers/how-connect-works/[OpenID Connect] (OIDC) — это протокол аутентификации, который является расширением link:https://datatracker.ietf.org/doc/html/rfc6749[OAuth 2.0].
 
-OAuth 2.0 is a framework for building authorization protocols and is incomplete. OIDC, however, is a full authentication and authorization protocol that uses the link:https://www.jwt.io/[Json Web Token] (JWT) standards.  The JWT standards define an identity token JSON format and methods to digitally sign and encrypt data in a compact and web-friendly way.
+OAuth 2.0 - это основа для создания протоколов авторизации и неполной. Однако OIDC представляет собой протокол проверки подлинности и авторизации в полном объеме, который использует стандарты link:https://www.jwt.io/[Json Web Token] (JWT).  Стандарты JWT определяют формат JSON и методы цифрового подписи и шифрования данных компактным и удобным в использовании веб-способом.
 
-In general, OIDC implements two use cases. The first case is an application requesting that a  {project_name} server authenticates a user. Upon successful login, the application receives an _identity token_ and an _access token_.
-The _identity token_ contains user information including user name, email, and profile information. The realm digitally signs the _access token_ which contains access information (such as user role mappings) that applications use to determine the resources users can access in the application.
+В целом OIDC реализует два варианта использования. Первый случай - это приложение, требующее аутентификации сервера  {project_name}. После успешной авторизации приложение получает _идентификационный токен_ и _access token_.
+Маркер _identity содержит информацию о пользователе, включая имя пользователя, электронную почту и информацию о профиле. Область в цифровом формате подписывает ключ _access token_ содержащий информацию о доступе (например, сопоставления ролей пользователей), которую приложения используют для определения ресурсов, которые пользователи могут получить в приложении.
 
-The second use case is a client accessing remote services.
+Второй вариант использования - это клиентский доступ к удаленным сервисам.
 
-* The client requests an _access token_ from {project_name} to invoke on remote services on behalf of the user.
-* {project_name} authenticates the user and asks the user for consent to grant access to the requesting client.
-* The client receives the _access token_ which is digitally signed by the realm.
-* The client makes REST requests on remote services using the _access token_.
-* The remote REST service extracts the _access token_.
-* The remote REST service verifies the tokens signature.
-* The remote REST service decides, based on access information within the token, to process or reject the request.
+* Клиент запрашивает ключ _доступа от {project_name} для вызова удалённых сервисов от имени пользователя.
+* {project_name} аутентифицирует пользователя и просит пользователя дать ему разрешение на доступ к запрашивающему клиенту.
+* Клиент получает _access token_, который подписывается в цифровом виде.
+* Клиент делает REST запросы на удаленных сервисах с помощью ключа _доступа.
+* Удаленная служба REST извлекает ключ _доступа.
+* Удаленная служба REST проверяет подпись токенов.
+* Удаленная служба REST обязуется обрабатывать или отклонять запрос, основываясь на информации доступа в рамках токена.
