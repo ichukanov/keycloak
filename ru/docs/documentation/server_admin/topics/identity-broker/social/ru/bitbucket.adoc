@@ -1,17 +1,17 @@
 ==== Bitbucket
 
-To log in with Bitbucket, perform the following procedure.
+Чтобы войти в Bitbucket, выполните следующую процедуру.
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *Bitbucket*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Bitbucket*.
 +
-image:images/bitbucket-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, perform the https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud/[OAuth on Bitbucket Cloud] process. When you click *Add Consumer*:
-.. Paste the value of *Redirect URI* into the *Callback URL* field.
-.. Ensure you select *Email* and *Read* in the *Account* section to permit your application to read email.
-. Note the *Key* and *Secret* values Bitbucket displays when you create your consumer.
-. In {project_name}, paste the value of the `Key` into the *Client ID* field.
-. In {project_name}, paste the value of the `Secret` into the *Client Secret* field.
-. Click *Add*.
+image:images/bitbucket-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера выполните https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud/[OAuth в облаке Bitbucket]. При нажатии *Добавить потребителя*:
+.. Вставьте значение *Redirect URI* в поле *Callback URL*.
+.. Убедитесь, что вы выбрали *Email* и *Читаете* в разделе *Аккаунт*, чтобы ваше приложение могло читать электронную почту.
+. Обратите внимание на *Ключ* и *Secret* значения Bitbucket отображаются при создании потребителя.
+. В {project_name}вставьте значение `Key` в поле *Client ID*.
+. В {project_name}вставьте значение `Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.
