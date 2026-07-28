@@ -1,62 +1,62 @@
 [[_oid4vci_proofs]]
-=== Proof Types and Key Binding in OID4VCI
+=== Подтверждение типов и привязка ключей в OID4VCI
 
-This section documents the proof types supported by OpenID for Verifiable Credential Issuance (OID4VCI), how to configure trusted attester keys, and how key binding works in the resulting credentials.
+Этот раздел документирует документы, поддерживаемые OpenID для верификационных реквизитов (OID4VCI), как настроить доверенные ключи аттестера и как работает привязка ключей в результирующих учетных данных.
 
-==== Supported Proof Types
+==== Поддерживаемые типы
 
-{project_name} currently supports the following proof types for holder binding:
+{project_name} поддерживает следующие типы доказательств для привязки держателя:
 
 [cols="1,1,2", options="header"]
 |===
-|Proof Type
-|Value
-|Description
+|Подтверждение типа
+|Значение
+|Описание
 
-|JWT Proof
+|Подтверждение JWT
 |`jwt`
-|A signed JWT containing holder binding information. The key used to sign the JWT becomes the holder binding key in the credential.
+|Подписанный JWT, содержащий информацию о привязке держателя. Ключ, используемый для подписания JWT, становится ключом держателя привязки в Учетной записи.
 
-|Attestation Proof
-|`attestation`
-|Proof containing key attestations from a trusted attestation authority.
+|Доказательство Аттестации
+|`аттестация`
+|Доказательство, содержащее ключевые свидетельства от доверенного аттестационного органа.
 |===
 
-When a credential requires cryptographic holder binding, the client must provide a proof of an appropriate type. The issuer validates the proof and extracts the binding key, which is then included in the issued credential.
+Когда учетные данные требуют привязки криптографического держателя, клиент должен представить доказательства соответствующего типа. Эмитент удостоверяет доказательство и извлекает обязательный ключ, который затем включается в выданные учетные данные.
 
-==== Configuring Trusted Attester Keys
+==== Настройка доверенных ключей Атестера
 
-{project_name} supports JWT proofs that can optionally include key attestations, and the `attestation` proof type. To validate these attestations, configure the trusted attester keys through trust-material identity providers and link those identity providers to the OID4VCI client.
+{project_name} поддерживает доказательства JWT, которые по желанию могут включать в себя ключевые аттестации, и тип доказательства 'аттестации'. Для проверки этих сертификатов настройте доверенные ключи аттестаторов через доверенных поставщиков идентификационных данных и свяжите их с клиентом OID4VCI.
 
-Trusted attester keys are configured per client because different wallets can rely on different attestation authorities. The former realm-level options **Trusted Key IDs** and **Trusted Keys (JSON)** are no longer used for OID4VCI proof validation.
+Доверенные ключи аттестера настраиваются на клиент, так как разные кошельки могут полагаться на различные аттестационные власти. Первые опции реального уровня **Trusted Key ID** и **Trusted Keys (JSON)** больше не используются для проверки надежности OID4VCI.
 
-===== Admin Console
+===== Консоль администратора
 
-. Create or configure a trust-material identity provider, such as **Default Trust**, that exposes the trusted attester public keys. The identity provider must be configured with either a JWKS URL or a validating public key.
-. Go to *Clients* and select the wallet client that requests credentials.
-. Open the *Advanced* tab.
-. In the *OpenID Verifiable Credentials* section, enable **Enable OID4VCI**.
-. In **OID4VCI Attester Trust Identity Providers**, select the trust-material identity providers that contain the trusted attester public keys.
-. Save the client.
+. Создание или настройка надежного поставщика идентификации, например **Default Trust**, который раскрывает доверенные открытые ключи. Идентификационный провайдер должен быть настроен либо с JWKS, либо с проверенным публичным ключом.
+. Перейдите на *Клиенты* и выберите клиент кошелька, который запрашивает учетные данные.
+. Откройте вкладку *Дополнительное*.
+. В разделе *Проверка учетных данных OpenID*, включите **Включите OID4VCI**.
+. В **OID4VCI Attester Trust Identity Providers** выберите надежных поставщиков идентификационных данных, содержащих доверенные открытые ключи.
+. Сохранить клиента.
 
-The **OID4VCI Attester Trust Identity Providers** option is only shown when **Enable OID4VCI** is enabled for the client. It accepts only trust-material identity providers from the current realm. If no trust-material identity provider is configured, the dropdown has no values to select.
+Опция **OID4VCI Attester Identity Provider** отображается только тогда, когда для клиента включен **Включить OID4VCI**. В настоящее время она принимает удостоверения личности, удостоверяющие личность доверенных лиц. Если поставщик идентификации доверенных материалов не настроен, то в выпадающем списке ничего не выбрать.
 
-===== Client Attribute
+===== Атрибут клиента
 
 [cols="1,1,2", options="header"]
 |===
-|Attribute
-|Default
-|Description
+|Атрибут
+|По умолчанию
+|Описание
 
 |`oid4vci.attester_trust_idps`
-|none
-|Comma-separated aliases of trust-material identity providers containing trusted attester public keys for OID4VCI key attestation validation.
+|нет
+|Псевдонимы идентификаторов через запятую, содержащие доверенные публичные ключи аттестатора для проверки ключа OID4VCI.
 |===
 
-===== Admin REST API
+===== API REST администратора
 
-Use the Admin REST API when you need to configure the client attribute directly.
+Использовать API администратора, когда необходимо настроить атрибут клиента напрямую.
 
 [source,bash]
 ----
@@ -71,15 +71,15 @@ curl -X PUT "https://localhost:8443/admin/realms/{realm}/clients/{client-uuid}" 
       }'
 ----
 
-For a JWT proof with a `key_attestation` JOSE header, or for an `attestation` proof, {project_name} resolves the attester signing key from the configured identity providers. Key resolution can use the attestation JWT header and payload, including the `kid`, `alg`, and `iss` values. If no configured identity provider exposes a matching trusted key, proof validation fails.
+Для доказательства JWT с заголовком `key_attestation` или для доказательства `attestation`, {project_name} разрешает ключ подписи аттестера от сконфигурированных провайдеров идентификации. Ключевое разрешение может использовать заголовок и полезную нагрузку аттестации, включая значения `kid`, `alg`, и `iss`. Если ни один из настроенных поставщиков идентификации не обнаруживает подходящего надежного ключа, проверка не удалась.
 
-==== Creating and Sending JWT Proofs
+==== Создание и отправка JWT подтверждений
 
-JWT proofs are the most common proof type. To create a JWT proof:
+Доказывание JWT - это наиболее распространенный тип доказательств. Для создания доказательств JWT:
 
-===== 1. Obtain a Nonce
+===== 1. Получить Nonce
 
-First, call the nonce endpoint to obtain a fresh nonce:
+Сначала вызовите конечную точку следующего раза, чтобы получить свежий нон:
 
 [source,bash]
 ----
@@ -87,7 +87,7 @@ curl -X POST "https://localhost:8443/realms/{realm}/protocol/oid4vc/nonce" \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ----
 
-Response:
+Реакция:
 
 [source,json]
 ----
@@ -97,58 +97,58 @@ Response:
 }
 ----
 
-===== 2. Create the JWT Proof
+===== 2. Создать подтверждение JWT
 
-The JWT proof must contain the following claims:
+Доказательство JWT должно содержать следующие претензии:
 
 [cols="1,1,2", options="header"]
 |===
 |Claim
-|Required
-|Description
+|Требуется
+|Описание
 
 |`iss`
-|Conditional
-|For client-bound flows, must be the client_id. For anonymous flows, omit this claim.
+|Условный
+|Для работы с потоками клиентов должен быть client_id. Для анонимных потоков, пропустите эту претензию.
 
-|`aud`
-|Yes
-|Must be the Credential Issuer Identifier of the issuing realm
+|«aud»
+|Да
+|Должен быть идентификатор эмитента эмитента эмитента
 
 |`nonce`
-|Yes
-|The c_nonce value obtained from the nonce endpoint.
+|Да
+|Значение c_nonce полученное из конечной точки none.
 
 |`iat`
-|Yes
-|Issued-at time (Unix timestamp). Must be within 30 seconds of server time.
+|Да
+|Выпущено во время (метка времени Unix). Должно быть в течение 30 секунд от времени сервера.
 
 |`exp`
-|No
-|Expiration time. If provided, must be in the future.
+|Нет
+|Срок действия. Если это предусмотрено, то должны быть в будущем.
 
 |`nbf`
-|No
-|Not-before time. If provided, must be before server time + 10 seconds.
+|Нет
+|Не до времени. Если указано, должно быть до времени сервера + 10 секунд.
 |===
 
-.Header Requirements
+.Заголовок требований
 [cols="1,2", options="header"]
 |===
-|Header
-|Description
+|Заголовок
+|Описание
 
 |`typ`
-|Must be `openid4vci-proof+jwt`
+|Должно быть `openid4vci-proof+jwt`
 
 |`alg`
-|One of the algorithms listed in `proof_signing_alg_values_supported` (e.g., `ES256`, `RS256`, `PS256`)
+|Один из алгоритмов, перечисленных в файле `proof_signing_alg_values_supported` (например, `ES256`, `RS256`, `PS256`)
 
-|`jwk` or `kid` or `x5c`
-|The binding key. Only one of these should be present.
+|`jwk` или `kid` или `x5c`
+|Ключ привязки. Только один из них должен присутствовать.
 |===
 
-====== Example: JWT Proof with JWK in Header
+====== Пример: JWT Proof с JWK в заголовке
 
 [source,javascript]
 ----
@@ -173,7 +173,7 @@ The JWT proof must contain the following claims:
 }
 ----
 
-====== Example: JWT Proof with kid Header
+====== Пример: JWT Proof с детским заголовком
 
 [source,javascript]
 ----
@@ -193,9 +193,9 @@ The JWT proof must contain the following claims:
 }
 ----
 
-===== 3. Send the Credential Request
+===== 3. Отправить запрос учётных данных
 
-Include the JWT proof in the credential request:
+Включить доказательства JWT в запрос учетных данных:
 
 [source,json]
 ----
@@ -208,67 +208,67 @@ Include the JWT proof in the credential request:
 }
 ----
 
-==== Using Attestation Proofs
+==== Использование сертификатов Attestation
 
-Attestation proofs allow the holder to prove key ownership through an attestation authority. This is useful for hardware-backed keys or keys managed by secure enclaves.
+Доказывание атестации позволяет держателю доказать право собственности на ключи через аттестацию. Это полезно для клавиш, скрепленных с аппаратным обеспечением, или ключей, управляемых безопасными анклавами.
 
-===== Structure of an Attestation Proof
+===== Структура доказательства Аттестации
 
-An attestation proof is a JWT containing:
+Доказательством этому является JWT содержание:
 
-.Header
+.Заголовок
 [cols="1,2", options="header"]
 |===
-|Header
-|Description
+|Заголовок
+|Описание
 
 |`typ`
 |`openid4vci-attestation+jwt`
 
-|`kid`
-|Key ID of the attestation signing key
+|«Ребенок»
+|ID ключа подписи аттестации
 
 |`alg`
-|Algorithm (e.g., `ES256`)
+|Алгоритм (например, `ES256`)
 |===
 
-.Payload
+.Нагрузка
 [cols="1,1,2", options="header"]
 |===
 |Claim
-|Required
-|Description
+|Требуется
+|Описание
 
 |`nonce`
-|Yes
-|The c_nonce from the nonce endpoint
+|Да
+|С_нова из конечной точки
 
 |`iat`
-|Yes
-|Issued-at time
+|Да
+|Выпущено время
 
 |`exp`
-|Yes
-|Expiration time
+|Да
+|Время истечения
 
 |`attested_keys`
-|Yes
-|Array of JWK objects representing the holder's attested keys
+|Да
+|Массив объектов JWK, представляющих заверенные ключи владельца
 
 |`key_storage`
-|No
-|List of acceptable key storage attack potential levels (ISO 18045)
+|Нет
+|Перечень допустимых уровней атаки на ключевое хранилище (ISO 18045)
 
 |`user_authentication`
-|No
-|List of acceptable user authentication attack potential levels
+|Нет
+|Список допустимых уровней атаки пользователей
 
-|`status`
-|Yes
-|Object with `status` claim (e.g., `{"status": "valid"}`)
+|`статус`
+|Да
+|Объект с требованием `status` (например, `{"status": "valid"}`)
 |===
 
-===== Credential Request with Attestation Proof
+===== Запрос учетных данных с подтверждением аттестации
 
 [source,json]
 ----
@@ -281,13 +281,13 @@ An attestation proof is a JWT containing:
 }
 ----
 
-==== Key Binding in Credentials
+==== Привязка ключей в учетных данных
 
-The binding key from the proof is included in the issued credential to ensure the holder possesses the corresponding private key.
+Принудительный ключ из доказательства включается в выданные регистрационные данные для обеспечения того, чтобы держатель обладал соответствующим частным ключом.
 
 ===== JWT VC JSON Format
 
-For `jwt_vc_json` format credentials, the binding key is included in the `cnf` (confirmation) claim:
+Для учётных данных в формате `jwt_vc_json` привязка включена в претензию `cnf` (confirmation):
 
 [source,json]
 ----
@@ -312,26 +312,26 @@ For `jwt_vc_json` format credentials, the binding key is included in the `cnf` (
 }
 ----
 
-===== SD-JWT Format
+===== Формат SD-JWT
 
-For `dc+sd-jwt` format credentials, the binding key is included as a disclosure in the SD-JWT:
+Для «dc+sd-jwt» в формат `dc+sd-jwt` привязка включается в SD-JWT:
 
 [source]
 ----
 eyJhbGciOiJFUzI1NiJ9.eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiTXlDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7fSwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6ImY4M09PM0IyZjRHZ3VYdi4uLmQ4M3JWVSJ9fX0.K3ZkVYZ2B9...#eyJjdHgiOnsidHlwZSI6ImNuZiIsIm9iaiI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2In19"
 ----
 
-The holder binding key appears in the `_sd_hash` of the SD-JWT, allowing verifiers to confirm the holder possesses the corresponding private key.
+Ключ привязки держателя появляется в `_sd_hash` SD-JWT, позволяя верификаторам подтвердить наличие у держателя соответствующего закрытого ключа.
 
-===== Verifying Key Binding
+===== Проверка привязки ключа
 
-When presenting a credential, the verifier should:
+При представлении учётных данных проверяющий должен быть:
 
-1. Extract the `cnf` claim (for JWT VC) or verify the `_sd_hash` (for SD-JWT)
-1. Challenge the holder to sign a challenge with the corresponding private key
-1. Verify the signature matches the bound key
+1. Извлеките претензию `cnf` (для JWT VC) или проверьте `_sd_hash` (для SD-JWT)
+1. Бросьте вызов владельцу с соответствующим приватным ключом
+1. Проверка подписи совпадает с привязкой ключа
 
-==== Complete Example: Credential Request with JWT Proof
+==== Полный пример: Запрос учетных данных с использованием JWT Proof
 
 [source,bash]
 ----
@@ -361,9 +361,9 @@ curl -X POST "https://localhost:8443/realms/myrealm/protocol/oid4vc/credential" 
   }'
 ----
 
-==== Client Scope Configuration for Proof Types
+==== Конфигурация Клиентских рамок для Подтипов
 
-To require key binding for a credential, configure the OID4VCI client scope with the appropriate attributes. These settings are advertised in the issuer metadata as `cryptographic_binding_methods_supported` and `proof_types_supported`, and they determine which proof types the wallet can use.
+Чтобы потребовать привязки ключей для учетных данных, настройте область действия клиента OID4VCI с соответствующими атрибутами. Эти настройки рекламируются в метаданных издателя как `cryptographic_binding_methods_supported` и `proof_types_supported`, и они определяют, какие типы кошелька могут использовать.
 
 [source,json]
 ----
@@ -393,12 +393,12 @@ To require key binding for a credential, configure the OID4VCI client scope with
 }
 ----
 
-The `vc.binding_required_proof_types` attribute accepts a comma-separated list of supported proof types, currently `jwt` and `attestation`. If `vc.binding_required` is not enabled, the credential configuration does not require holder binding and the issuer metadata omits `cryptographic_binding_methods_supported` and `proof_types_supported`.
+Атрибут `vc.binding_required_proof_types` принимает разделенный запятыми список поддерживаемых типов доказательств, в настоящее время `jwt` и `attestation`. Если `vc.binding_required` не включен, конфигурация учетных данных не требует привязки владельца, а метаданные эмитента `cryptographic_binding_methods_supported` и `proof_types_supported`.
 
-The `proof_signing_alg_values_supported` values are automatically included in the issuer metadata based on the realm's supported asymmetric signing algorithms.
+Значения `proof_signing_alg_values_supported` автоматически включаются в метаданные издателя на основе асимметричных алгоритмов подписей, поддерживаемых Realm.
 
-==== Related Configuration
+==== Связанная конфигурация
 
-- <<_oid4vci, OID4VCI Configuration>> - General OID4VCI setup
-- <<proc-creating-a-realm_{context}, Creating a Realm>> - Realm creation
-- <<realm_keys, Managing Realm Keys>> - Key management
+- <_oid4vci, OID4VCI конфигурация>> - Общие настройки OID4VCI
+- <<proc-creating-a-realm_{context}, Creating a Realm>> - Создание реалма
+- <<realm_keys, Managing Realm Keys>> - Управление ключами
