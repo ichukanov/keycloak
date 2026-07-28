@@ -1,82 +1,82 @@
 [[_scim_managing_schema_extensions_]]
-= Managing schema extensions
+= Управление расширениями схемы
 
-In addition to the core SCIM user and group schemas, {project_name} supports schema extensions that allow you to expose
-additional attributes through the SCIM API. Extension schemas are configured using the same User Profile SCIM attribute
-mapping described in <<_scim_mapping_attributes_,Mapping user attributes to SCIM schemas>>, but with URN-prefixed
-values that identify which extension schema the attribute belongs to. All configured extension schemas are automatically discoverable through the `/Schemas` endpoint.
+Помимо основных пользовательских и групповых схем SCIM, {project_name} поддерживает расширения схем, которые позволяют выявлять
+дополнительных атрибутов через SCIM API. Схемы расширений настроены с использованием того же атрибута профиля пользователя SCIM
+сопоставление описано в <<_scim_mapping_attributes_, добавление пользовательских атрибутов к схемам SCIM>>, но с значениями URN-префикса
+, которые определяют к какой схеме расширения принадлежит атрибут. Все настроенные схемы расширений автоматически видны через конечную точку `/Schemas`.
 
-== Enterprise User extension
+== Расширение корпоративного пользователя
 
 The Enterprise User extension (`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User`) is defined in
 https://datatracker.ietf.org/doc/html/rfc7643#section-4.3[RFC 7643, Section 4.3] and provides attributes commonly
 used in enterprise environments.
 
-=== Available attributes
+=== Доступные атрибуты
 
 [cols="1,2", options="header"]
 |===
-|Attribute
-|Description
+|Атрибут
+|Описание
 
-|`employeeNumber`
-|The employee's number or identifier.
+|`сотрудник`
+|Номер сотрудника или его идентификатор.
 
-|`costCenter`
-|The cost center to which the user belongs.
+|«стоимостной центр»
+|Центру стоимости, к которому принадлежит пользователь.
 
-|`organization`
-|The name of the organization.
+|«Организация»
+|Название организации.
 
-|`division`
-|The name of the division.
+|«Раздел»
+|Название подразделения.
 
-|`department`
-|The name of the department.
+|«Отдел»
+|Название отделения.
 
-|`manager`
-|The user's manager, with sub-attributes `value` (manager identifier) and `displayName`.
+|`менеджер`
+|Менеджер пользователя, с податрибутами `value` (manager identifier) и `displayName`.
 |===
 
-=== Enabling the enterprise extension
+=== Включение расширения предприятия
 
-To use the Enterprise User extension, you must configure user profile attributes for each enterprise attribute
-you want to expose. Each attribute must have a SCIM attribute mapping pointing to the enterprise schema attribute.
+Для использования расширения Enterprise User необходимо настроить атрибуты пользовательского профиля для каждого предприятия
+вы хотите показать. Каждый атрибут должен иметь отображение атрибутов SCIM, указывающее на атрибут схемы предприятия.
 
-In the Admin Console, when creating or editing a user profile attribute, the *SCIM* section provides the Enterprise
-User schema attributes as selectable options. Alternatively, you can type the full URN-prefixed value manually.
+В консоли администратора, при создании или редактировании атрибута профиля пользователя, раздел *SCIM* предоставляет свойствам схемы Enterprise
+Пользователя в качестве выборочных параметров. Кроме того, вы можете ввести полное значение префикса URN вручную.
 
-For example, to enable the `employeeNumber` and `department` attributes, create two user profile attributes:
+Например, чтобы включить атрибуты `employeeNumber` и `department`, создайте два атрибута профиля пользователя:
 
 [cols="1,1", options="header"]
 |===
-|User Profile Attribute Name
-|SCIM Attribute Value
+|Атрибут пользователя
+|Значение атрибута SCIM
 
-|`employeeNumber`
+|`сотрудник`
 |`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:employeeNumber`
 
-|`department`
+|«Отдел»
 |`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department`
 |===
 
-For complex attributes like `manager`, you map individual sub-attributes:
+Для сложных атрибутов, таких как `manager`, вы соотносите отдельные субатрибуты:
 
 [cols="1,1", options="header"]
 |===
-|User Profile Attribute Name
-|SCIM Attribute Value
+|Атрибут пользователя
+|Значение атрибута SCIM
 
-|`manager`
+|`менеджер`
 |`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.value`
 
 |`managerName`
 |`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.displayName`
 |===
 
-=== Creating an enterprise user
+=== Создание пользователя предприятия
 
-Once the user profile attributes are configured, you can create users with enterprise extension data:
+После настройки атрибутов профиля пользователя, вы можете создавать пользователей с данными расширения предприятия:
 
 [source,bash]
 ----
@@ -107,12 +107,12 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-=== Patching enterprise attributes
+=== Патч атрибутов предприятия
 
-You can update enterprise extension attributes using PATCH operations. There are several ways to reference
+Вы можете обновить атрибуты расширения предприятия, используя операции PATCH. There are several ways to reference
 extension attributes in the path:
 
-Using the full URN with colon separator:
+Использование полного URN с двоеточием разделителя:
 
 [source,bash]
 ----
@@ -131,7 +131,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-Using the URN as the path with a JSON object as the value:
+Использование URN в качестве пути с объектом JSON:
 
 [source,bash]
 ----
@@ -150,7 +150,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-Or without a path, including the full URN in the value object:
+Или без пути, включая полный URN в объекте значения:
 
 [source,bash]
 ----
@@ -172,9 +172,9 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
   }'
 ----
 
-=== Filtering by enterprise attributes
+=== Фильтрация по атрибутам предприятия
 
-You can search users by enterprise extension attributes using the full URN prefix in the filter:
+Вы можете искать пользователей по атрибутам расширения предприятия, используя полный префикс URN в фильтре:
 
 [source,bash]
 ----
@@ -183,20 +183,20 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=urn:ietf:params:
   -H "Accept: application/scim+json"
 ----
 
-== Custom schema extensions
+== Пользовательские расширения схемы
 
-Beyond the standard Enterprise User extension, {project_name} allows you to define custom schema extensions using
-any URN-based schema identifier. This is useful for exposing organization-specific attributes through SCIM.
+Помимо стандартного расширения Enterprise User extension, {project_name} позволяет вам определить пользовательские расширения схемы с использованием
+любого идентификатора схемы, основанного на URN. Это полезно для раскрытия специфических атрибутов организации через SCIM.
 
-=== Defining a custom extension
+=== Определение пользовательского расширения
 
-To create a custom extension schema, configure user profile attributes with a SCIM attribute mapping
-pointing to your custom schema URN:
+Чтобы создать пользовательскую схему расширения, настройте атрибуты профиля пользователя с сопоставлением атрибутов SCIM
+указывая на пользовательскую схему URN:
 
 [cols="1,1", options="header"]
 |===
-|User Profile Attribute Name
-|SCIM Attribute Value
+|Атрибут пользователя
+|Значение атрибута SCIM
 
 |`keycloak.team`
 |`urn:my:params:scim:schemas:extension:custom:1.0:User:memberOf`
@@ -205,12 +205,12 @@ pointing to your custom schema URN:
 |`urn:my:params:scim:schemas:extension:custom:1.0:User:area`
 |===
 
-NOTE: The user profile attribute name does not need to match the SCIM attribute name. The SCIM attribute value
-defines the schema mapping. You can use any valid attribute name in the user profile.
+NOTE: Имя атрибута профиля пользователя не должно совпадать с именем атрибута SCIM. Значение атрибута SCIM
+определяет отображение схемы. Вы можете использовать любое допустимое имя атрибута в профиле пользователя.
 
-=== Using custom extensions
+=== Использование пользовательских расширений
 
-Once configured, the custom extension attributes can be used in SCIM operations just like the enterprise extension:
+После настройки, пользовательские атрибуты расширения могут использоваться в операциях SCIM, так же, как и расширение предприятия:
 
 [source,bash]
 ----
@@ -230,7 +230,7 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-Custom extension attributes can also be patched and filtered:
+Пользовательские расширенные атрибуты также могут быть изменены и отфильтрованы:
 
 [source,bash]
 ----
@@ -256,24 +256,24 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=urn:my:params:sc
   -H "Accept: application/scim+json"
 ----
 
-=== Multiple custom extensions
+=== Несколько пользовательских расширений
 
-You can define multiple custom schema extensions simultaneously. Each extension is identified by its unique URN
-and can contain different attributes. Users can have data from multiple extension schemas at the same time, and
-each schema is listed in the user's `schemas` array when the extension has data.
+Вы можете определить несколько пользовательских расширений схемы одновременно. Каждое расширение идентифицируется по уникальному URN
+и может содержать различные атрибуты. Пользователи могут иметь данные из нескольких схем расширений одновременно, и
+каждая схема отображается в пользовательском массиве `schemas`, когда расширение имеет данные.
 
-== Keycloak realm extension
+== Расширение области клавиатуры
 
-{project_name} includes a built-in extension schema (`urn:keycloak:params:scim:schemas:extension:realm:1.0:User`)
-that can be used as a convenience schema for realm-specific custom attributes. It works the same way as any other
-custom schema extension, but does not require you to define your own URN. If you need to expose attributes to
+{project_name} включает встроенную схему расширений (`urn:keycloak:params:scim:schemas:extension:realm:1.0:User`)
+, которая может быть использована как схема удобства для специфичных Realm-атрибутов. Он работает так же, как и любое другое пользовательское расширение
+, но не требует, чтобы вы определили свой URN. If you need to expose attributes to
 multiple external systems that each expect their own schema URN, use custom extensions with distinct URNs instead.
 
-== Schema discovery
+== Обнаружение схемы
 
-All configured extension schemas are automatically advertised through the SCIM schema discovery endpoints.
+Все сконфигурированные схемы расширения автоматически рекламируются через конечные точки обнаружения схем SCIM.
 
-To view all available schemas, including extensions:
+Смотреть все доступные схемы, включая расширения:
 
 [source,bash]
 ----
@@ -282,7 +282,7 @@ curl http://localhost:8080/realms/myrealm/scim/v2/Schemas \
   -H "Accept: application/scim+json"
 ----
 
-To view the resource types and their associated schemas:
+Просматривать типы ресурсов и связанные с ними схемы:
 
 [source,bash]
 ----
@@ -291,12 +291,12 @@ curl http://localhost:8080/realms/myrealm/scim/v2/ResourceTypes \
   -H "Accept: application/scim+json"
 ----
 
-The resource types endpoint lists the schema extensions for each resource type, indicating which extensions are
-available and whether they are required.
+На конечной точке ресурсов перечислены расширения схемы для каждого типа ресурса, указывающие, какие расширения
+доступны и нужны ли они для них.
 
-=== Requesting extension attributes
+=== Запрос атрибутов расширения
 
-You can request only extension attributes by including the schema URN in the `attributes` parameter:
+Вы можете запрашивать только атрибуты расширения, включив URN схемы в параметр `attributes`:
 
 [source,bash]
 ----
@@ -305,7 +305,7 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=urn:iet
   -H "Accept: application/scim+json"
 ----
 
-Similarly, you can exclude extension attributes:
+Аналогичным образом вы можете исключить атрибуты расширения:
 
 [source,bash]
 ----
