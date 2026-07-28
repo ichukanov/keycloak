@@ -1,20 +1,20 @@
 [[_themes]]
-= Configuring themes
+= Настройка тем
 
-For a given realm, you can change the appearance of any UI in {project_name} by using themes.
+Для данного мира вы можете изменить внешний вид любого пользовательского интерфейса в {project_name} , используя темы.
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click the *Themes* tab.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Темы*.
 +
 image:images/themes-tab.png[Themes tab]
-. Pick the theme you want for each UI category and click *Save*.
-Login theme:: Username password entry, OTP entry, new user registration, and other similar screens related to login.
-Account theme:: The console used by the user to manage his or her account.
-Admin console theme:: The skin of the {project_name} Admin Console.
-Email theme:: Whenever {project_name} has to send out an email, it uses templates defined in this theme to craft the email.
+. Выберите тему для каждой категории пользовательского интерфейса и нажмите *Сохранить*.
+Тема для входа:: Ввод пароля для пользователя, OTP, регистрации новых пользователей и других аналогичных экранов, связанных с входом.
+Тема учетной записи:: Консоль, используемая пользователем для управления своей учетной записью.
+Тема консоли администратора:: Облик консоли администратора {project_name}.
+Тема письма:: Каждый раз, когда {project_name} должен отправлять письмо, он использует шаблоны, определенные в этой теме для создания электронной почты.
 
 //-
 
-.Additional resources
-* For details on creating or modifying themes, see link:{ui_customization_deploying_themes}[Deploying Themes] in the {ui_customization_guide_name}.
+.Дополнительные ресурсы
+* Подробнее о создании или изменении тем см. ссылку:{ui_customization_deploying_themes}[Установка тем] в {ui_customization_guide_name}.
