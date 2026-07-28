@@ -1,111 +1,111 @@
 [[_scim_accessing_endpoints_]]
-= Accessing the SCIM endpoints
+= Доступ к конечным точкам SCIM
 
-All SCIM endpoints require authorization using an OAuth 2.0 Bearer Token.
+Для всех конечных точек SCIM требуется авторизация с помощью токена владельца OAuth 2.0.
 
-Unauthorized requests receive a `401 Unauthorized` response. The bearer token must also have the appropriate permissions
-to perform the requested operation.
+Неавторизованные запросы получают «401 Неавторизованный» ответ. Токен предъявителя должен также иметь соответствующие разрешения
+для выполнения запрошенной операции.
 
-Only confidential clients can access the SCIM endpoints. Public clients are not supported for SCIM API calls.
+Только конфиденциальные клиенты могут получить доступ к концевым точкам SCIM. Публичные клиенты не поддерживаются для вызовов SCIM API.
 
-== Setting up a service account client
+== Настройка клиента сервиса
 
-To access the SCIM APIs programmatically, you typically create a confidential client with a service account in {project_name}.
-This client obtains access tokens using the client credentials grant.
+Для доступа к SCIM API обычно создается конфиденциальный клиент с учетной записью сервиса в {project_name}.
+Этот клиент получает токены доступа, используя предоставленные клиентом учетные данные.
 
-.Procedure
-. Click *Clients* in the menu and then click *Create client*.
-. Set the *Client ID* (for example, `scim-client`) and click *Next*.
-. Enable *Client authentication* and *Service accounts roles*, then click *Save*.
-. On the *Credentials* tab, note the *Client secret*.
+.Процедура
+. Нажмите *Клиент* в меню и нажмите *Создать клиент*.
+. Установите *ID клиента* (например, `scim-client`) и нажмите *Далее*.
+. Включите *Проверка подлинности клиентов* и *Роль учетных записей службы*, затем нажмите *Сохранить*.
+. На вкладке *Учетные данные* отметьте *Клиентский секрет*.
 
-== Assigning permissions
+== Назначение разрешений
 
-The service account associated with the client must be granted the appropriate realm management roles to access
-SCIM resources. The required roles depend on the operations the client needs to perform.
+Для доступа к ресурсам
+должна быть предоставлена учетная запись сервиса, связанная с клиентом. Требуемые роли зависят от операций, которые необходимо выполнить клиенту.
 
-.Procedure
-. Click *Clients* in the menu, then select the client you created.
-. Click the *Service account roles* tab.
-. Click *Assign role*, then filter by clients and select the `realm-management` client.
-. Assign the required roles based on the operations the client needs to perform.
+.Процедура
+. Нажмите *Клиенты* в меню, затем выберите созданный клиент.
+. Нажмите на вкладку *Сервисный счет*.
+. Нажмите *Назначить роль*, затем фильтровать по клиентам и выберите клиент `realm-management`.
+. Назначить нужные роли, основанные на операциях, которые должен выполнить клиент.
 
-The SCIM API relies on the same <<_admin_permissions,permission model>> as the {project_name} Admin REST API. If a service account
-already has the admin roles needed to manage users and groups through the Admin API, no additional configuration is
-required to use the SCIM endpoints.
+SCIM API полагается на тот же <_admin_permissions,модель разрешений>> как на {project_name} Admin REST API. Если у учетной записи службы
+уже есть роли администратора, необходимые для управления пользователями и группами через Администратор API, не требуется дополнительных настроек
+для использования конечных точек SCIM.
 
 If fine-grained admin permissions are enabled for the realm, access to SCIM resources can be further
-restricted on a per-resource basis. For example, a client could be granted permission to view only specific users
-or groups. For more details, see <<_fine_grained_permissions,Fine-grained admin permissions>>.
+restricted on a per-resource basis. Например, клиенту может быть предоставлено разрешение на просмотр только конкретных пользователей
+или групп. Подробнее см. <_fine_grained_permissions,Fine-grained admin permissions>>.
 
-The following table summarizes the permissions required for each type of SCIM operation:
+В следующей таблице перечислены разрешения, необходимые для каждого типа операции SCIM:
 
 [cols="1,1,2", options="header"]
 |===
-|Operation
-|Required Role
-|Description
+|Операция
+|Необходимая роль
+|Описание
 
-|Create, update, delete users
+|Создание, обновление, удаление пользователей
 |`manage-users`
-|Full management access to user resources.
+|Полный доступ к пользовательским ресурсам.
 
-|Read users
+|Читать пользователей
 |`view-users`
-|Read-only access to individual user resources.
+|Доступ к отдельным ресурсам пользователей только для чтения.
 
-|Search users
+|Поиск пользователей
 |`query-users`
-|Ability to list and filter user resources.
+|Возможность просматривать и фильтровать ресурсы пользователя.
 
-|Create, update, delete groups
+|Создание, обновление, удаление групп
 |`manage-users`
-|Full management access to group resources.
+|Полноценный доступ к коллективным ресурсам.
 
-|Read groups
+|Чтение групп
 |`view-users`
-|Read-only access to individual group resources.
+|Доступ только для чтения к отдельным групповым ресурсам.
 
-|Search groups
-|`query-groups`
-|Ability to list and filter group resources.
+|Поиск групп
+|«группы запросов»
+|Возможность перечислять и фильтровать групповые ресурсы.
 
-|Access discovery endpoints
-|`query-users` or `query-groups`
-|Read access to `/ServiceProviderConfig`, `/ResourceTypes`, and `/Schemas`. Any role that implies `query-users` or `query-groups` (such as `view-users` or `manage-users`) also grants access.
+|Обнаружение конечных точек доступа
+|`query-users` или `query-groups`
+|Доступ к `/ServiceProviderConfig`, `/ResourceTypes`, и `/Schemas`. Любая роль, подразумевающая `query-users` или `query-groups` (например, `view-users` или `manage-users`) также предоставляет доступ.
 |===
 
 The minimum set of roles required for full access to the SCIM API is `manage-users`, which covers all user and group
 management operations as well as access to discovery endpoints.
 
-== Configuring the token audience
+== Настройка аудитории токенов
 
-The SCIM API validates that access tokens contain the correct audience (`aud`) claim. The expected audience
-is the SCIM API base URL for the realm:
+SCIM API проверяет, что токены доступа содержат правильную аудиторию (`aud`). Ожидаемая аудитория
+является базовым URL-адресом SCIM API для этой сферы:
 
 ----
 http://<host>:<port>/realms/<realm-name>/scim/v2
 ----
 
-Tokens without this audience are rejected with a `401 Unauthorized` response.
+Токены без этой аудитории отвергаются ответом «401 Неавторизованный».
 
-To configure the audience, add an *Audience* protocol mapper to the client:
+Чтобы настроить аудиторию, добавьте клиенту карту протокола *аудитория*:
 
-.Procedure
-. Click *Clients* in the menu, then select the client you created.
-. Click the *Client scopes* tab, then click the dedicated scope for the client (for example, `scim-client-dedicated`).
-. Click *Configure a new mapper*, then select *Audience*.
-. Set *Name* to a descriptive value (for example, `scim-audience`).
-. In *Included Custom Audience*, enter the SCIM API base URL for your realm (for example, `\http://localhost:8080/realms/myrealm/scim/v2`).
-. Ensure *Add to access token* is enabled.
-. Click *Save*.
+.Процедура
+. Нажмите *Клиенты* в меню, затем выберите созданный клиент.
+. Щелкните на вкладку *Область клиента*, затем щелкните область действия для клиента (например, `scim-client-dedicated`).
+. Нажмите *Настроить нового картографа*, затем выберите *Аудио*.
+. Установите *Название* в описательное значение (например, `scim-audience`).
+. В *Включенной пользовательской аудитории*, введите базовый URL-адрес SCIM API для вашего реалма (например, `\http://localhost:8080/realms/myrealm/scim/v2`).
+. Убедитесь, что *Добавить токен* включен.
+. Нажмите *Сохранить*.
 
-The audience value must match the SCIM API base URL exactly as seen by {project_name}, including the scheme, host, port,
-and path. If {project_name} is running behind a reverse proxy, use the frontend URL configured through the hostname settings.
+Значение аудитории должно соответствовать базовому URL API SCIM, как показано {project_name}, включая схему, хост, порт,
+и путь. Если {project_name} работает за обратным прокси, используйте URL интерфейса, настроенный через настройки имени хоста.
 
-== Obtaining an access token
+== Получение токена доступа
 
-To call the SCIM APIs, obtain an access token using the client credentials grant:
+Для вызова SCIM API необходимо получить токен доступа, используя предоставленные учетные данные клиента:
 
 [source,bash]
 ----
@@ -117,7 +117,7 @@ ACCESS_TOKEN=$(curl -s -X POST \
   | jq -r '.access_token')
 ----
 
-Then use the token in the `Authorization` header when calling the SCIM endpoints:
+Затем используйте токен в заголовке `Authorization` при вызове конечных точек SCIM:
 
 [source,bash]
 ----
