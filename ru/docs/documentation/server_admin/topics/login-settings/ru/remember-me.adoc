@@ -1,20 +1,20 @@
-== Enabling Remember Me
+== Включение запомнить меня
 
-A logged-in user closing their browser destroys their session, and that user must log in again. You can set {project_name} to keep the user's login session open if that user clicks the _Remember Me_ checkbox upon login. This action turns the login cookie from a session-only cookie to a persistence cookie.
+Введённый пользователь, закрывающий свой браузер, уничтожает сеанс, и этот пользователь должен снова войти в систему. Вы можете установить {project_name} , чтобы сеанс входа пользователя был открыт, если этот пользователь нажимает флажок _Запомнить_ при входе в систему. Это действие приводит к тому, что cookie для входа из сессионных файлов cookie используется только для сохранения cookie.
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click the *Login* tab.
-. Toggle the *Remember Me* switch to *On*.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Логин*.
+. Переключить *Запомнить меня* на *Вкл*.
 +
-image:images/login-tab-remember-me.png[Login Tab Remember Me]
+image:images/login-tab-remember-me.png[Вход запомнить меню]
 +
-When you save this setting, a `remember me` checkbox displays on the realm's login page.
+Когда вы сохраните этот параметр, на странице входа в Realm отображается поле `remember me`.
 +
-image:images/remember-me.png[Remember Me]
+изображение:images/remember-me.png[Запомнить меня]
 
-WARNING: Disabling the "Remember me" option will invalidate all sessions created with the "Remember me" checkbox selected during login, requiring users to log in again.
-Any refresh tokens related to these sessions will also become invalid.
+WARNING: Отключение опции "Запомнить меня" приведет к аннулированию всех сессий, созданных с помощью флажка "Запомнить меня", выбранного во время входа, требующего от пользователей повторного входа.
+Все токены обновления, связанные с этими сессиями, также станут недействительными.
 
-The sessions will not be invalidated immediately when the switch is disabled, but when a cookie or token associated with an invalid session is used, or asynchronously in the background.
-This means that disabling and then re-enabling the "Remember me" switch cannot be used to invalidate old sessions.
+Сессии не будут аннулированы, если переключатель отключен, , но при использовании Cookie или токена, связанного с некорректным сеансом, или асинхронно в фоновом режиме.
+Это означает, что отключение и повторное включение переключателя «Запомнить меня» не может быть использовано для аннулирования старых сессий.
