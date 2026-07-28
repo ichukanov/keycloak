@@ -1,107 +1,107 @@
-==== Twitter
+==== Твиттер
 
-IMPORTANT: The Twitter Identity Broker is deprecated for removal. It relies on Twitter's legacy OAuth 1.0a endpoints.
-Configure the generic *OAuth v2* identity provider against the X (formerly Twitter) OAuth 2.0 endpoints instead, as described in <<_twitter_oauth2_migration>>.
-The broker remains enabled by default, but is planned for removal in a future release.
+IMPORTANT: Twitter Identity Broker является устаревшим для удаления. Он полагается на наследие Твиттера OAuth 1.0a конечных пунктов.
+Вместо этого настройте общий *OAuth v2* провайдер идентификации против конечных точек OAuth (ранее Twitter), как описано в <_twitter_oauth2_migration>>.
+Брокер остается включенным по умолчанию, но планируется удалить в будущем релизе.
 
-.Prerequisites
-. A Twitter developer account.
+.Предпосылки
+. Twitter аккаунт разработчика.
 
 //-
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *Twitter*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Twitter*.
 +
-image:images/twitter-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, create an app in https://developer.twitter.com/apps/[Twitter Application Management].
-.. Enter App name and click *Next*.
-.. Note the value of *API Key* and *API Key Secret* and click *App settings*.
-.. In the *User authentication settings* section click on the *Set up* button.
-.. Select *Web App* as the *Type of App*.
-.. Paste the value of the *Redirect URL* into the *Callback URI / Redirect URL* field.
-.. The value for *Website URL* can be any valid URL except `localhost`.
-.. Click *Save* and then *Done*.
-. In {project_name}, paste the value of the `API Key` into the *Client ID* field.
-. In {project_name}, paste the value of the `API Key Secret` into the *Client Secret* field.
-. Click *Add*.
+image:images/twitter-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера создайте приложение в https://developer.twitter.com/apps/[Twitter Application Management].
+.. Введите имя приложения и нажмите *Далее*.
+.. Обратите внимание на значение *API Key* и *API Key Secret* и нажмите *Настройки приложения*.
+.. В разделе *Параметры аутентификации пользователя* нажмите кнопку *Установить*.
+.. Выберите *Web App* в качестве *Type of App*.
+.. Вставьте значение *Redirect URL* в поле *Callback URI / Redirect URL*.
+.. Значение *URL веб-сайта* может быть действительным URL-адресом, за исключением `localhost`.
+.. Нажмите *Сохранить* и затем *Готово*.
+. В {project_name}вставьте значение `API Key` в поле *Client ID*.
+. В {project_name}вставьте значение `API Key Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.
 
 [[_twitter_oauth2_migration]]
-===== Using the generic OAuth v2 provider to connect to X/Twitter
+===== Использование общего поставщика OAuth v2 для подключения к X/Twitter
 
-X (formerly Twitter) supports OAuth 2.0, so the built-in generic *OAuth v2* identity provider can be used as a replacement for the deprecated Twitter broker.
-See the https://docs.x.com/fundamentals/authentication/oauth-2-0/overview[X OAuth 2.0 documentation] for details.
+X (ранее Twitter) поддерживает OAuth 2.0, так что встроенный провайдер идентификации *OAuth v2* может быть использован как замена устаревшего провайдера Twitter.
+Смотрите https://docs.x.com/fundamentals/authentication/oauth-2-0/overview[X OAuth 2.0 documentation] для подробностей.
 
-NOTE: As of 2026, you require a paid API V2 plan, for example pay-per-use. The original Free plan will not work, and you will see a `403 required_enrollment` error when {project_name} calls the user info endpoint.
+NOTE: Начиная с 2026 года, вам необходим платный план API, например платный тарифный план. Исходный свободный план не будет работать, и вы увидите ошибку `403 required_enrollment` при вызове {project_name} в конечную точку информации пользователя.
 
 // https://devcommunity.x.com/t/an-appeal-to-x-consumer-apps-need-workable-api-pricing/266858
 
-In early 2026, using the `+https://api.x.com/2/users/me+` API with the pay-per-use plan is free.
-Check with X as pricing might change.
+В начале 2026 года использование `+https://api.x.com/2/users/me+` API с планом pay-per-use бесплатно.
+Проверьте с X по мере изменения цен.
 
-.Procedure
-. In the https://developer.twitter.com/apps/[X developer portal], open your app and go to *User authentication settings*.
-.. Set the *Type of App* to a confidential client (for example *Web App*).
-.. Note the *OAuth 2.0 Client ID* and *Client Secret*.
-. Click *Identity Providers* in the {project_name} menu.
-. From the *Add provider* list, select *OAuth v2*.
-. Copy the value of *Redirect URI* and paste it into the *Callback URI / Redirect URL* field of your X app.
-. Configure the provider with the following values:
+.Процедура
+. В https://developer.twitter.com/apps/[X portal] откройте ваше приложение и перейдите в *Настройки аутентификации пользователя*.
+.. Установите *Тип приложения* на конфиденциальный клиент (например, *Web App*).
+.. Обратите внимание на *OAuth 2.0 ID клиента* и *Секретарь*.
+. Нажмите *Identity Providers* в меню {project_name}.
+. Из списка *Добавить провайдера* выберите *OAuth v2*.
+. Скопируйте значение *Redirect URI* и вставьте его в поле *Callback URI / Redirect URL* вашего приложения.
+. Настройте провайдера со следующими значениями:
 +
 [%autowidth]
 |===
-|Setting |Value
+|Настройка |Значение
 
-|Use discovery endpoint |Off
+|Использовать конечную точку поиска |Выкл
 
-|Authorization URL |`+https://x.com/i/oauth2/authorize+`
+|URL авторизации |`+https://x.com/i/oauth2/authorize+`
 
-|Token URL |`+https://api.x.com/2/oauth2/token+`
+|URL токена |`+https://api.x.com/2/oauth2/token+`
 
-|User Info URL |`+https://api.x.com/2/users/me?user.fields=confirmed_email+`
+|URL информации пользователя |`+https://api.x.com/2/users/me?user.fields=confirmed_email+`
 
-|Use PKCE |On
+|Использовать PKCE |На
 
-|PKCE Method |S256
+|Метод PKCE |S256
 
-|Client ID |The *OAuth 2.0 Client ID* of your X app
+|ID клиента |*OAuth 2.0 ID клиента* вашего X приложения
 
-|Client Secret |The *Client Secret* of your X app
+|Секрет клиента |*Клиент* вашего X приложения
 
-|Client authentication |*Client secret sent as basic auth*
+|Аутентификация клиента |*Секрет клиента отправлен в качестве базового автора*
 
-|User ID Claim |`data.id`
+|Запрос ID пользователя |`data.id`
 
-|Username Claim |`data.username`
+|Имя пользователя |`data.username`
 
-|Email Claim |`data.confirmed_email`
+|Электронная почта |`data.confirmed_email`
 |===
-. Click *Add*.
-. Continue editing the provider to update the scopes:
+. Нажмите *Добавить*.
+. Продолжить редактирование провайдера для обновления областей:
 +
 [%autowidth]
 |===
-|Setting |Value
+|Настройка |Значение
 
-|Advanced -> Scopes |`users.read tweet.read`
+|Расширенные -> Области |`users.read tweet.read`
 |===
 
-NOTE: Specifying the scope `tweet.read` is necessary, otherwise the user info endpoint will return a 403 error.
+NOTE: Указанная область `tweet.read` необходима, в противном случае конечная точка пользовательской информации возвращает ошибку 403.
 
-NOTE: The X `/2/users/me` endpoint nests user attributes under a `data` object, so the claims above use the dotted path notation (for example `data.id`).
+NOTE: X `/2/users/me` использует атрибуты пользовательской точки `data`, поэтому вышеописанные претензии используют пунктирную нотацию пути (например, `data.id`).
 
-===== Migrating existing users from the old provider to the new provider
+===== Перенос существующих пользователей со старого провайдера на нового провайдера
 
-Users who have authenticated with the old Twitter provider will not be able to authenticate with the new OAuth 2.0 provider unless they enroll with it.
-If they enroll, they will need to link their existing account by authenticating with the new provider and with their existing account.
-Additionally, once you delete the old provider, all users will lose the identity provider link to Twitter and will not be able to log in with X anymore.
+Пользователи, аутентифицировавшиеся со старым поставщиком Twitter, не смогут аутентифицироваться с помощью нового OAuth 2. , если они не записываются с ним.
+Если они зарегистрируются, они должны будут связать их существующую учетную запись путем аутентификации с новым провайдером и с существующей учетной записью.
+Кроме того, после удаления старого провайдера все пользователи потеряют ссылку провайдера идентификации на Twitter и больше не смогут войти с помощью X.
 
-To avoid this, migrate existing users as follows. As usual, verify the procedure in a test environment first.
+Чтобы избежать этого, переместите существующих пользователей следующим образом. Как обычно, сначала проверьте процедуру в испытательной среде.
 
-. Create the new OAuth 2.0 identity provider for X/Twitter and verify it is working.
-. Shut down {project_name} to prevent users from updating identity providers and to avoid stale caches (preferred).
-Alternatively, clear the user cache after the migration via the Admin REST API or Admin Console, or perform a rolling restart of all nodes.
-. Create a database backup so you can restore if the migration fails.
-. In the `FEDERATED_IDENTITY` table, update the `IDENTITY_PROVIDER` column to the alias of the new OAuth 2.0 identity provider for those entries pointing to the old alias for the affected `REALM_ID`.
-. Start {project_name} and verify that users who used the old provider can log in with the new provider.
+. Создайте нового поставщика идентификации OAuth 2.0 для X/Twitter и убедитесь, что он работает.
+. Выключить {project_name} для предотвращения обновления поставщика идентификационных данных и предотвращения устаревших кэшей (предпочтительно).
+Кроме того, очистите кэш пользователя после миграции через REST API или консоль администратора или выполните перезапуск всех узлов.
+. Создайте резервную копию базы данных, чтобы вы могли восстановиться, если миграция завершилась неудачей.
+. В таблице `FEDERATED_IDENTITY` обновите столбец `IDENTITY_PROVIDER` до псевдонима нового OAuth 2. провайдер для записей, указывающих на старый псевдоним для затрагиваемого `REALM_ID`.
+. Запустите {project_name} и убедитесь, что пользователи, которые использовали старый провайдер, могут войти в систему с новым провайдером.
