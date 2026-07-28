@@ -1,157 +1,157 @@
 [[audience-support]]
-= Audience support
+= Поддержка аудитории
 
-These clients are _frontend clients_, which may directly redirect user to {project_name} to request browser authentication. The particular client would then receive set of tokens after successful authentication.
+Эти клиенты _frontend clients_, которые могут напрямую перенаправить пользователя на {project_name} для запроса аутентификации браузера. Затем конкретный клиент получит набор токенов после успешной аутентификации.
 
-_Services_ (_Resource Servers_ in the https://datatracker.ietf.org/doc/html/draft-ietf-oauth-mtls-08#section-4.2[OAuth 2 specification]) are also available that serve requests from client applications and provide resources to these applications.
-These services require an _Access token_ (Bearer token) to be sent to them from _frontend application_ or from other service to authenticate a request.
+_Services_ (_Resource Servers_ в https://datatracker.ietf.org/doc/html/draft-ietf-oauth-mtls-08#section-4.2[OAuth 2 specification]) также доступны для обработки запросов от клиентских приложений и предоставления ресурсов этим приложениям.
+Эти службы требуют от _Access token_ (токен предъявителя) для отправки им с _frontend application_ или с другого сервиса для аутентификации запроса.
 
-The care must be taken to make sure that access tokens have limited privileges and the particular access token cannot be misused by the service to access other third-party services.
-In the environment where trust among services is low, you may encounter this example scenario:
+Необходимо принять меры для того, чтобы убедиться, что токены доступа имеют ограниченные привилегии, а конкретный токен доступа не может использоваться службой для доступа к другим сторонним услугам.
+В среде, где доверие к службам является низким, вы можете столкнуться со сценарием:
 
-. A frontend client application `frontend-client` requires authentication against {project_name}.
-. {project_name} authenticates a user.
-. {project_name} issues a token to the application `frontend-client`.
-. The `frontend-client` application uses the token to invoke a service `service1`.
-. The `service1` service returns the response to the application. But assume that this service will try to misuse the token and keep it for the further use.
-. The `service1` then invokes another service `service2` using the applications token, which was previously sent to it. The `service2` does not check that token was not supposed to be
-used to invoke it and it will serve the request and return successful response. This results in broken security as the `service1` misused the token to access other services on behalf of the client application `frontend-client`.
+. `frontend client application `frontend-client` requires authentication against {project_name}.
+. {project_name} аутентифицирует пользователя.
+. {project_name} выдает токен для приложения `frontend-client`.
+. Приложение «frontend-client» использует токен для вызова службы «service1».
+. Сервис «service1» возвращает ответ приложению. Но предположим, что эта услуга попытается использовать токен и сохранить его для дальнейшего использования.
+. `service1` затем вызывает другую службу `service2` с помощью токена приложений, который ранее был выслан ему. `service2` не проверяет, что токен не должен был быть
+использован для вызова и он будет обрабатывать запрос и возвращать успешный ответ. Это приводит к нарушенной безопасности, поскольку `service1` неправильно использовал токен для доступа к другим сервисам от имени клиентского приложения `frontend-client`.
 
-This scenario is unlikely in environments with a high level of trust between services but not in environments where trust is low.
+Этот сценарий маловероятен в условиях с высоким уровнем доверия между службами, но не в условиях, где уровень доверия является низким.
 
-To prevent any misuse of the access token, the access token can contain the claim `aud`, which represents the audience. The claim `aud` should typically represent client ids of all services where the token
-is supposed to be used. In the environments with low trust among services, it is recommended to:
+Чтобы предотвратить любое неправомерное использование ключа доступа, токен доступа может содержать претензию "aud", представляющую аудиторию. Претензия `aud` обычно должна представлять клиентские идентификаторы всех служб, в которых должен использоваться токен
+. В условиях низкого доверия между службами рекомендуется:
 
-* Limit the audience on the token to make sure that access tokens contain just limited amount of audiences.
-* Configure your services to verify the audience on the token.
+* Ограничить аудиторию на токене, чтобы убедиться, что токены доступа содержат лишь ограниченное количество аудитории.
+* Настройте ваши сервисы для верификации аудитории на токене.
 
-To prevent `service1` from the example above to misuse the token, the secure variant of the flow may instead look like this:
+Чтобы предотвратить использование «service1» из приведенного выше примера, безопасный вариант потока может выглядеть следующим образом:
 
-. A frontend application `frontend-client` authenticates against {project_name}.
-. {project_name} authenticates a user.
-. {project_name} issues a token to the `frontend-client` application. The `frontend-client` knows that it will need to invoke `service1` so it places `scope=service1-scope` in the authentication request sent to {project_name}.
-The scope `service1-scope` is a <<_client_scopes,Client scope>>, which may need to be created by administrator. In the <<_audience_setup,sections below>> there are some options how to setup such a client scope.
-The token claim will look like:
+. Интерфейсное приложение `frontend-client` аутентифицируется против {project_name}.
+. {project_name} аутентифицирует пользователя.
+. {project_name} выдаёт токен приложению `frontend-client`. `frontend-client` знает, что нужно вызвать `service1`, чтобы он поместил `scope=service1-scope` в запрос аутентификации, отправленный {project_name}.
+Область `service1-scope` является <_client_scopes,Client scope>, который может быть создан администратором. В <<_audience_setup,разделы ниже>> есть некоторые параметры, как настроить такие клиентские рамки.
+Токен владения будет выглядеть так:
 +
 [source,json]
 ----
 "aud": "service1"
 ----
 +
-This declares that the client can use this access token to invoke the `service1`.
-. The `frontend-client` application uses the token to invoke a service `service1`.
-. The `service1` serves the request to the client application `frontend-application`. But assume that this service will try to misuse the token and keep it for the further use.
-. The `service1` will then try to invoke a `service2` with the token. Invocation is not successful because the `service2` service checks the audience on the token and find that its audience is only for the `service1`. Hence `service2` will reject the request and will return an error to `service1`. This behavior is expected and security is not broken.
+Это объявляет, что клиент может использовать этот токен доступа для вызова сервиса «service1».
+. Приложение «frontend-client» использует токен для вызова службы «service1».
+. `service1` служит запросу `frontend-application` клиентского приложения. Но предположим, что эта услуга попытается использовать токен и сохранить его для дальнейшего использования.
+. Затем «service1» попытается вызвать «service2» с токеном. Вызывание не удалось, поскольку сервис «service2» проверяет аудиторию на токен и обнаруживает, что ее аудитория только для «service1». Поэтому `service2` отклонит запрос и вернет ошибку в `service1`. Это поведение ожидается и безопасность не нарушается.
 
-== Ability for the service to call another service
+== Возможность звонить в другую услугу
 
-In some environments, it may be desired that the `service1` may have to retrieve additional data from a `service2` to return data to the original client application `frontend-client`. In order to make this
+В некоторых условиях может быть желательно, чтобы `service1` мог потребоваться извлечь дополнительные данные из `service2` для возврата данных первоначальному клиентскому приложению `frontend-client`. In order to make this
 possible to work, there are few possibilities:
 
-* Make sure that initial access token issued to `frontend-client` will contain both `service1` and `service2` as audiences. Assuming that there are proper client scopes set, the `frontend-client` can possibly use
-the `scope=service1-scope service2-scope` as a value of the `scope` parameter. The issued token would then contain the `aud` claim like:
+* Убедитесь, что первоначальный токен доступа, выданный «frontend-client», будет содержать как «service1», так и «service2» как аудиторию. Если предположить, что существуют правильные рамки клиента, то `frontend-client` возможно может использовать
+в качестве значения параметра `scope=service1-scope service2-scope` в качестве значения параметра scope`. После этого выданный токен будет содержать претензию "aud":
 +
 [source,json]
 ----
 "aud": [ "service1", "service2" ]
 ----
 +
-Such access token can be used to invoke both `service1` or `service2`. Hence `service1` will be able to successfully use such token to invoke `service2` to retrieve additional data.
-* The previous approach with both services in the token audience allows that `service1` is allowed to invoke `service2`. However it means that `frontend-client` can also directly use his access token to invoke `service2`.
-This may not be desired in some cases. You may want `service1` to be able to invoke `service2`, but at the same time, you do not want `frontend-client` to be able to directly invoke `service2`. The solution
-to such scenario might be the use of the link:{securing_apps_token_exchange_link}[Token exchange]. In that case, the initial token would still have only `service1` as an audience.
-However once the token is sent to `service1`, the `service1` may send Token exchange request to exchange the token for another token, which would have `service2` as an audience. Please see
-the link:{securing_apps_token_exchange_link}[{securing_apps_token_exchange_name}] for the details on how to use it.
+Такой токен доступа может использоваться для вызова как «service1», так и «service2». Поэтому `service1` сможет успешно использовать такой токен для вызова `service2` для получения дополнительных данных.
+* Предыдущий подход к обеим службам в token audience позволяет "service1" вызывать `service2`. Однако это означает, что `frontend-client` также может напрямую использовать токен доступа для вызова `service2`.
+В некоторых случаях это может быть нежелательным. Вы можете использовать `service1` для вызова `service2`, но в то же время вы не хотите, чтобы `frontend-client` мог напрямую вызвать `service2`. The solution
+to such scenario might be the use of the link:{securing_apps_token_exchange_link}[Token exchange]. В этом случае первоначальный токен по-прежнему будет иметь только "service1" в аудитории.
+Однако после того, как токен отправлен на `service1`, `service1` может послать запрос на обмен токена на другой токен, который будет иметь `service2` в качестве аудитории. Пожалуйста, смотрите
+ссылку:{securing_apps_token_exchange_link}[{securing_apps_token_exchange_name}] для подробной информации о том, как его использовать.
 
 [[_audience_setup]]
-== Setup
+== Настройка
 
-When setting up audience checking:
+При настройке проверки аудитории:
 
-* Ensure that services are configured to check audience on the access token sent to them. This may be done in a way specific to your client OIDC adapter, which you are using to secure your OIDC client application.
-* Ensure that access tokens issued by {project_name} contain all necessary audiences.
+* Убедитесь, что службы настроены на проверку аудитории на токен доступа, отправленный им. Это может быть сделано именно для вашего клиента OIDC адаптера, который вы используете, чтобы защитить ваше OIDC клиентское приложение.
+* Убедитесь, что токены доступа, выпущенные {project_name} , содержат все необходимые аудитории.
 +
-Audiences can be added to the token by two ways:
-** Using the client roles as described in the <<_audience_resolve, Audience resolve section>>.
-** Hardcoded audience as described in the <<_audience_hardcoded, Hardcoded audience section>>.
+В токен можно добавить аудиторию двумя способами:
+** Использование ролей клиентов, как описано в секции <_audience_resolve, Разрешение аудитории>>.
+** Аудитория с жестким кодом, как описано в разделе <<_audience_hardcoded, Hardcoded audience section>>.
 
 [[_audience_resolve]]
-== Automatically add audience based on client roles
+== Автоматически добавлять аудиторию на основе ролей клиента
 
-An _Audience Resolve_ protocol mapper is defined in the default client scope _roles_. The mapper checks for clients that have at least one client role available for the current token. The client ID of each such client is then added as an audience, which is useful
-if your service clients rely on client roles. Service client could be usually a client without any flows enabled, which may not have any tokens issued directly to itself. It represents an OAuth 2 _Resource Server_.
+Маппер протокола _Резолирование аудиенции_ определяется по умолчанию в _roles_. Карта проверяет для клиентов, у которых есть хотя бы одна роль клиента для текущего токена. Идентификатор клиента каждого такого клиента добавляется в качестве аудитории, которая полезна
+если ваши сервисные клиенты полагаются на роли клиента. Сервисный клиент обычно может быть клиентом без включения каких-либо потоков, у которого не может быть никаких токенов, выданных непосредственно самому себе. Она представляет собой _сервер ресурсов OAuth 2_.
 
-The <<_oidc_token_role_mappings,Token role mappings section>> contains the details about how are client roles added into the token. Please also see the example below.
+Раздел сопоставления роли токенов <<_oidc_token_role_mappings,>> содержит подробную информацию о том, как добавлены роли клиента в токен. Пожалуйста, также смотрите пример ниже.
 
-=== Example - token role mappings and audience claim
+=== Пример - сопоставления ролей токенов и претензий аудитории
 
-Here are the example steps how to use the client roles to make `aud` claim added to the token:
+Ниже приведен пример шагов, как использовать роли клиента для того, чтобы претендовать на «aud», добавленную в токен:
 
-. Create a <<proc-creating-oidc-client_{context},OIDC client>> `service1`. It may be possible to disable *Standard flow* or any other flows for this client
-as it is a service client, which may never directly authenticate by itself. The possible exception might be *Standard Token Exchange* switch if needed as described above.
-. Go to *Roles* tab of that client and create client role `service1-role`.
-. Create user `john` in the same realm and assign him the client role `service1-role` of client `service1` created in the previous step.
-<<proc-assigning-role-mappings_{context},This section>> contains some details on how to do it.
-. Create client scope named `service1-scope`. It can be marked with *Include in token scope* as *ON*. See <<_client_scopes,this section>> for the details on how to create and set new client scope.
-. Go to the tab *Scope* of the `service1-scope` and add the role `service1-role` of the client `service1` to the <<_role_scope_mappings,Role scope mappings>> of this client scope
-. Create another client `frontend-client` in the realm.
-. Click to the tab *Client scopes* of this client and select the first dedicated client scope `frontend-client-dedicated` and then go to the tab *Scope* and disable *Full scope allowed* switch
-. Go back to the tab *Client scopes* of this client and click *Add client scope* and link the `service1-scope` as *Optional*. See <<_client_scopes_linking, Client Scopes Linking section>> for more details.
-. Click the sub-tab *Evaluate* in the *Client scopes* as described in <<_client_scopes_evaluate,this section>>. When filling user `john` and the subtab *Generated access token*, it can be seen that
-there is not any `aud` claim as there are not any client roles in the generated example token. However when adding also the scope `service1-scope` to the *Scope* field, it can be seen that there is client
-role `service1-role` as it is in *Role scope mappings* of the `service1-scope` and also in the role mappings of the user `john`. Due to that the `aud` claim will also contain `service1`.
+. Создайте <<proc-creating-oidc-client_{context},OIDC client>> `service1`. Возможно отключить *Стандартный поток* или любые другие потоки для этого клиента
+так как это клиент сервиса, , который никогда не может напрямую аутентифицироваться самостоятельно. Возможным исключением может быть *Стандартный ключ обмена токенов*, если это необходимо, как описано выше.
+. Перейдите на вкладку *Роль* этого клиента и создайте роль клиента `service1-role`.
+. Создайте пользователя `john` в том же мире и назначьте ему роль `service1-role` клиента `service1`, созданную на предыдущем шаге.
+<<proc-assigning-role-mappings_{context},This section>> содержит некоторую информацию о том, как это сделать.
+. Создать область деятельности клиента под названием `service1-scope`. Может быть отмечено *Включать в область символа* как *ON*. Смотрите <<_client_scopes,этот раздел>> для подробностей о том, как создать и установить новую область применения.
+. Перейдите на вкладку *Область* `service1-scope` и добавьте роль `service1-role` клиента `service1` в <<_role_scope_mappings, или сопоставления рамочных условий>> этой области действия клиента
+. Создайте в реалме другого клиента «фронтенд-клиент».
+. Щелкните на вкладку *Клиентские границы* этого клиента и выберите первую выделенную область клиента `frontend-client-dedicated` и затем перейдите на вкладку *Scope* и отключите *Full scope allowed* switch
+. Вернитесь на вкладку *Области клиента* этого клиента и нажмите *Добавить область клиента* и свяжите `service1-scope` как *Необязательно*. Смотрите <<_client_scopes_linking, Клиентский раздел Связывания>> .
+. Нажмите на подвкладку *Evaluate* в области *Клиента*, как описано в <<_client_scopes_evaluate,this section>. При заполнении пользовательских «john» и подвкладки *Генерировал токен доступа*, можно видеть, что
+нет никаких претензий `aud`, так как в генерируемом примере нет ни одной роли клиента. However when adding also the scope `service1-scope` to the *Scope* field, it can be seen that there is client
+role `service1-role` as it is in *Role scope mappings* of the `service1-scope` and also in the role mappings of the user `john`. Из-за того, что претензия «aud» будет также содержать «service1».
 
 image:images/audience_resolving_evaluate.png[]
 
-If you want the `service1` audience to be always applied for the tokens issued to the `frontend-client` client (without using the parameter `scope=service1-scope`), it can be fine to instead do any of these:
+Если вы хотите, чтобы аудитория `service1` всегда использовалась для токенов, выданных клиенту `frontend-client` (без использования параметра `scope=service1-scope`), это может быть отлично, чтобы вместо этого сделать что-либо из них:
 
-* Assign the `service1-scope` as *Default* client scope rather than *Optional*
-* Add the role scope mapping of the `service1-role` directly to the <<_client_scopes_dedicated,Dedicated client scope>> of the client. In this case, you will not need the `service1-scope` at all.
+* Назначить `service1-scope` как *По умолчанию* область клиента, а не *Необязательно*
+* Добавьте отображение рамок ролей `service1-role` непосредственно на <<_client_scopes_dedicated,Выделенная область клиента>> клиента. В этом случае вам вообще не понадобится `service1-scope`.
 
-Note that since this approach is based on client roles, it also requires that user himself (user `john` in the example above) is a member of some client role of the client `service1`. Otherwise if there
-are not any client roles assigned, the audience `service1` will not be included. If you want audience to be included regardless of client roles, see the <<_audience_hardcoded,Hardcoded audience>> section instead.
+Обратите внимание, что этот подход основан на ролях клиентов, также требует, чтобы сам пользователь (пользователь `john` в примере выше) являлся членом некоторой роли клиента `service1`. В противном случае, если
+не является никакой назначенной роли клиента, аудитория `service1` не будет включена. Если вы хотите, чтобы аудитория была включена вне зависимости от роли клиента, смотрите раздел <<_audience_hardcoded,Hardcoded audience>> .
 
 [NOTE]
 ====
-The frontend client itself is not automatically added to the access token audience, therefore allowing easy differentiation between the access token and the ID token, since the access token will not contain the client for which the token is issued as an audience.
+Сам фронтенд клиент автоматически не добавляется в токен доступа, что позволяет легко дифференцировать токен доступа и токен ID, поскольку токен доступа не будет содержать клиента, для которого токен выдан в качестве аудитории.
 
 If you need the client itself as an audience, see the
-<<_audience_hardcoded, hardcoded audience>> option. However, using the same client as both frontend and REST service is not recommended.
+<<_audience_hardcoded, hardcoded audience>> option. Тем не менее, использование одного и того же клиента, что и внешний интерфейс, и REST сервис не рекомендуется.
 ====
 
 [[_audience_hardcoded]]
-== Hardcoded audience
+== Аудитория с жестким кодом
 
-When your service relies on realm roles or does not rely on the roles in the token at all, it can be useful to use a hardcoded audience. A hardcoded audience is a protocol mapper, that will add the client ID of the specified service client as an audience to the token.
-You can use any custom value, for example a URL, if you want to use a different audience than the client ID.
+Когда служба использует роли Realm или не полагается на роли в токене вообще, может быть полезно использовать жесткую аудиторию. Твердокодированная аудитория – это протокольный картер, который добавит идентификатор клиента клиента в качестве аудитории к токену.
+Вы можете использовать любое пользовательское значение, например URL, если вы хотите использовать другую аудиторию, чем идентификатор клиента.
 
-You can add the protocol mapper directly to the frontend client. If the protocol mapper is added directly, the audience will always be added as well.
+Вы можете добавить карту протокола непосредственно к клиенту фронтенда. Если карта протокола добавляется напрямую, то всегда будет добавлена и аудитория.
 
-For more control over the protocol mapper, you can create the protocol mapper on the dedicated client scope, which will be called for example *service2*.
+Для большего контроля над картографом протокола, вы можете создать карту протокола в выделенной области клиента, которая будет вызвана, например, *service2*.
 
-Here the example steps for the hardcoded audience
+Вот пример шагов для твердой аудитории
 
-. Create a client `service2`
-. Create a client scope `service2-scope`.
-. In the tab *Mappers* of that client scope, select *Configure a new mapper* and select *Audience*
-. Select *Included Client Audience* as a `service2` and save the mapper
+. Создать клиент «service2»
+. Создать круг клиентов «service2-scope».
+. На вкладке *Mappers* этой области клиента, выберите *Настройка нового карта* и выберите *Audience*
+. Выберите *Включенную клиентскую аудиторию* в качестве `service2` и сохраните карту
 +
 image:images/audience_mapper.png[]
-. Link the newly created client scope with some client. For example it can be linked as *Optional* client scope to the client `frontend-client` created in the <<_audience_resolve,previous example>>.
-. You can optionally <<_client_scopes_evaluate, Evaluate Client Scopes>> for the client where the client scope was linked (For example `frontend-client`) and generate an example access token.
-The audience `service2` will be added to the audience of the generated access token if `service2-scope` is included in the _scope_ parameter, when you assigned it as an optional client scope.
+. Связать только что созданный клиентский охват с некоторыми клиентами. Например, он может быть привязан как *Необязательно* клиентская область к клиенту `frontend-client`, созданному в <<_audience_resolve,предыдущий пример>.
+. Вы можете опционально <<_client_scopes_evaluate, Evaluate Client Scopes>> для клиента, в котором была привязана область действия клиента (например, `frontend-client`) и генерировать пример токена доступа.
+Аудитория `service2` будет добавлена аудитории сгенерированного ключа доступа, если `service2-scope` включен в параметр _scope_, когда вы назначили его в качестве опциональной области клиента.
 
-In your confidential client application, ensure that the _scope_ parameter is used. The value like _scope=service2-scope_ must be included when you want to issue the token for accessing `service2`.
+В вашем конфиденциальном клиентском приложении убедитесь, что используется параметр _scope_. Значение типа _scope=service2-scope_ должно быть включено, когда вы хотите выдать токен для доступа к `service2`.
 
-See in the link:{securing_apps_base_link}/javascript-adapter[{project_name} JavaScript adapter] section if your application uses the javascript adapter for how to send the _scope_ parameter with the desired value.
+Смотрите по ссылке:{securing_apps_base_link}/javascript-adapter[{project_name} JavaScript adapter], если ваше приложение использует адаптер JavaScript для того, как отправить _scope_ параметр с желаемым значением.
 
-If you prefer to not include `scope` parameter in your requests, you can instead link the `service2-scope` as a *Default* client scope or use the client dedicated scope where you configure this mapper.
-This is useful if you want to always apply the audience for all the authentication request of OIDC client `frontend-client`.
+Если вы предпочитаете не включать в запросы параметр `scope`, вместо этого вы можете связать `service2-scope` как *по умолчанию* клиентскую область или использовать выделенную область клиента, где вы настраиваете этот картер.
+Это полезно, если вы хотите всегда применять аудиторию для всех запросов аутентификации OIDC клиента `frontend-client`.
 
-NOTE: Both the _Audience_ and _Audience Resolve_ protocol mappers add the audiences to the access token only, by default. The ID Token typically contains only a single audience, the client ID for which the token was issued, a requirement of the OpenID Connect specification. However, the access token does not necessarily have the client ID, which was the token issued for, unless the _Audience_ mapper added it.
+NOTE: Как _Audience_ так и _Audience Resolve_ по умолчанию добавляют аудитории только к токену доступа. ID Токен обычно содержит только одну аудиторию, идентификатор клиента, для которого был выпущен токен, требование об OpenID Connect. Однако, токен доступа не обязательно имеет идентификатор клиента, который был выдан, если не добавил _Audience_mapper.
 
-== Token introspection audience validation
+== Проверка аудитории проспекции токена
 
-The OAuth2 token introspection endpoint validates that the authenticated client is present in the token's audience (`aud`) claim before allowing introspection. This prevents clients from introspecting tokens that were not intended for them.
+Конечная точка интроспекции токена OAuth2 проверяет, что клиент присутствует в заявлении аудитории токена (`aud`), прежде чем разрешить интроспективность. Это предотвращает интроспективные токены, которые не предназначались для клиентов.
 
-If you need to disable this validation during migration, you can enable a backwards compatibility option in *OpenID Connect Compatibility Modes* by enabling *Allow token introspection without audience check* on the client that performs the introspection. See link:https://www.keycloak.org/server/all-provider-config#_openid_connect[OpenID Connect provider configuration] for the server-wide option.
+Если вам нужно отключить эту проверку во время миграции, вы можете включить функцию обратной совместимости в *OpenID Connect Compatibility Modes*, включив *Разрешить интроспекцию токена без проверки аудитории* у клиента, выполняющего интроспекцию. link:https://www.keycloak.org/server/all-provider-config#_openid_connect[OpenID Connect provider configuration] для настройки общесистемного сервера.
