@@ -1,17 +1,17 @@
-= Assigning role mappings
+= Присвоение ролей
 
-.Procedure
-. Click *Users* in the menu.
-. Click the user that you want to perform a role mapping on.
-. Click the *Role mappings* tab.
-. Click *Assign role*.
-. Select the role you want to assign to the user from the dialog.
-. Click *Assign*.
+.Процедура
+. Нажмите *Пользователи* в меню.
+. Нажмите на пользователя, на который вы хотите сопоставить роли.
+. Нажмите на вкладку *Сопоставления ролей*.
+. Нажмите *Назначить роль*.
+. Выберите роль, которую вы хотите назначить пользователю из диалогового окна.
+. Нажмите *Назначать*.
 
 image:images/user-role-mappings.png[Role mappings]
 
-In the preceding example, we are assigning the composite role *developer* to a user. That role was created in the <<_composite-roles, Composite Roles>> topic.
+В предыдущем примере мы назначаем составную роль *разработчика* пользователю. Эта роль была создана в теме <_composite-roles, Composite Roles>>.
 
-image:images/effective-role-mappings.png[Effective role mappings]
+image:images/effective-role-mappings.png[Эффективные сопоставления ролей]
 
-When the *developer* role is assigned, the *employee* role associated with the *developer* composite is displayed with *Inherited* "True". *Inherited* roles are the roles explicitly assigned to users and roles that are inherited from composites.
+При назначении роли *Разработчика* роль *сотрудника* с составом *Разработчика* отображается с *Наследуемым* «Правда». *Наследуемые* роли являются ролями, которые явно назначаются пользователям и ролям, которые унаследованы от композитов.
