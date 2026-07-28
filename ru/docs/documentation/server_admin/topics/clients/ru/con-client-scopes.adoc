@@ -1,135 +1,135 @@
 //[id="con-client-scopes_{context}"]//
 
 [[_client_scopes]]
-= Client scopes
+= Области деятельности клиента
 
 [role="_abstract"]
-Use {project_name} to define a shared client configuration in an entity called a _client scope_. A _client scope_ configures <<_protocol-mappers, protocol mappers>> and <<_role_scope_mappings, role scope mappings>> for multiple clients.
+Используйте {project_name} для определения общей конфигурации клиента в сущности, которая называется _client scope_. _client scope_ настраивает <<_protocol-mappers, протокол mappers>> и <_role_scope_mappings, mappings>> для нескольких клиентов.
 
-Client scopes also support the OAuth 2 *scope* parameter. Client applications use this parameter to request claims or roles in the access token, depending on the requirement of the application.
+Клиентские рамки также поддерживают параметр OAuth 2 *scope*. Клиентские приложения используют этот параметр для запроса претензий или ролей в токене доступа, в зависимости от требования приложения.
 
 include::proc-creating-client-scopes.adoc[]
 
 [[_client_scopes_protocol]]
 == Protocol
 
-When you create a client scope, choose the *Protocol*. Clients linked in the same scope must have the same protocol.
+При создании клиентской области выберите *Протокол*. Клиенты, связанные с той же областью, должны иметь тот же протокол.
 
-Each realm has a set of pre-defined built-in client scopes in the menu.
+В каждом реалме есть набор встроенных в меню клиентских рамок.
 
-* SAML protocol: The *role_list*. This scope contains one protocol mapper for  the roles list in the SAML assertion.
-* OpenID Connect protocol: Several client scopes are available:
-** *roles*
+* SAML протокол: *role_list*. Этот диапазон содержит один протокол сопоставления списка ролей в утверждении SAML.
+* Протокол OpenID Connect: Доступно несколько областей клиента:
+** *роли*
 +
-This scope is not defined in the OpenID Connect specification and is not added automatically to the *scope* claim in the access token. This scope has mappers, which are used to add the roles of the user to the access token and
-add audiences for clients that have at least one client role. These mappers are described in more detail in the <<_oidc_token_role_mappings, Token Role mappings section>> and <<_audience_resolve, Audience section>>.
-** *web-origins*
+Эта область не определена в спецификации OpenID Connect и не добавляется автоматически в претензию *scope* в токене доступа. В этом диапазоне есть карты, которые используются для добавления ролей пользователя к токену доступа и
+добавляет аудитории для клиентов, имеющих хотя бы одну роль клиента. Более подробно эти карты описаны в разделе <_oidc_token_role_mappings, разделе сопоставления фишек ролей >> и <<_audience_resolve, раздел Audienc>>.
+** *веб-происхождения*
 +
-This scope is also not defined in the OpenID Connect specification and not added to the *scope* claiming the access token. This scope is used to add allowed web origins to the access token *allowed-origins* claim.
+Эта область также не определена в спецификации OpenID Connect и не добавлена в *scope* с указанием ключа доступа. Эта область используется для добавления разрешенного веб-происхождения в токен доступа *allowed-origins* претензии.
 ** *microprofile-jwt*
 +
-This scope handles claims defined in the https://github.com/eclipse/microprofile/wiki/JWT_Auth[MicroProfile/JWT Auth Specification]. This scope defines a user property mapper for the *upn* claim and a realm role mapper for the *groups* claim. These mappers can be changed so different properties can be used to create the MicroProfile/JWT specific claims.
+Эта область обработки обрабатывает претензии, определенные в https://github.com/eclipse/microprofile/wiki/JWT_Auth[MicroProfile/JWT Auth Specification]. Этот диапазон определяет отображение пользовательских свойств для *верхних* претензий и карты ролей области для претензий *групп*. Эти карты могут быть изменены таким образом, чтобы можно было использовать различные свойства для создания конкретных претензий MicroProfile/JWT.
 ** *offline_access*
 +
-This scope is used in cases when clients need to obtain offline tokens. More details on offline tokens is available in the  <<_offline-access, Offline Access section>> and in the https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess[OpenID Connect specification].
-** *profile*
+Этот диапазон используется в тех случаях, когда клиентам необходимо получить оффлайн токены. Подробнее о токенах в автономном режиме можно найти в <_offline-access, разделе Offline Access >> и в https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess[Описание подключения OpenID].
+** *профиль*
 ** *email*
-** *address*
-** *phone*
+** *адрес*
+** *телефон*
 
-The client scopes *profile*, *email*, *address* and *phone* are defined in the https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims[OpenID Connect specification]. These scopes do not have any role scope mappings defined but they do have protocol mappers defined. These mappers correspond to the claims defined in the OpenID Connect specification.
+Клиентские области *профиль*, *email*, *адрес* и *телефон* определяются в описании https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims[OpenID Connect спецификации]. Эти рамки не имеют каких-либо сопоставлений рамок ролей, но они имеют определенные карты протоколов. Эти карты соответствуют требованиям, определенным в спецификации OpenID Connect.
 
-For example, when you open the *phone* client scope and open the *Mappers* tab, you will see the protocol mappers which correspond to the claims defined in the specification for the scope *phone*.
+Например, когда вы открываете область *телефон* клиента и открываете вкладку *Mappers*, вы увидите карты протоколов, которые соответствуют претензиям, определенным в спецификации области *телефон*.
 
 image:images/client-scopes-phone.png[]
 
-When the *phone* client scope is linked to a client, the client automatically inherits all the protocol mappers defined in the *phone* client scope. Access tokens issued for this client contain the phone number information about the user, assuming that the user has a defined phone number.
+Когда *телефон* область действия клиента связана с клиентом, клиент автоматически наследует все схемы протокола, определенные в *телефон* области действия клиента. Маркеры доступа, выпущенные для этого клиента, содержат информацию о номере телефона о пользователе, предполагая, что у пользователя есть определенный номер телефона.
 
-Built-in client scopes contain the protocol mappers as defined in the specification. You are free to edit client scopes and create, update, or remove any protocol mappers or role scope mappings.
+Встроенные клиентские рамки содержат контроллеры протоколов, как это определено в спецификации. Вы можете редактировать рамки клиента и создавать, обновлять или удалять любые схемы протоколов, или сопоставления ролей.
 
-== Consent related settings
+== Настройки согласия
 
-Client scopes contain options related to the consent screen. Those options are useful if the linked client if *Consent Required* is enabled on the client.
+Рамки действия клиента содержат параметры, связанные с экраном согласия. Эти опции полезны, если связанный клиент включен, если *Требуется согласие*.
 
-Display On Consent Screen:: If *Display On Consent Screen* is enabled, and the scope is added to a client that requires consent, the text specified in *Consent Screen Text* will be displayed on the consent screen. This text is shown when the user is authenticated and before the user is redirected from {project_name} to the client. If *Display On Consent Screen* is disabled, this client scope will not be displayed on the consent screen.
-Consent Screen Text:: The text displayed on the consent screen when this client scope is added to a client when consent required defaults to the name of client scope. The value for this text can be customised by specifying a substitution variable with *${var-name}* strings. The customised value is  configured within the property files in your theme. See the  link:{developerguide_link}[{developerguide_name}] for more information on customisation.
+Показывать на экране согласия:: Если включена *Отображать на согласительном экране*, и область добавляется к клиенту, который требует согласия, текст, указанный в *Текст экрана согласия*, будет отображаться на экране согласия. Этот текст показывается, когда пользователь аутентифицирован и прежде чем пользователь будет перенаправлен из {project_name} к клиенту. Если опция *Отображать на разрешенном экране* отключена, область действия клиента не будет отображаться на экране согласия.
+Текст экрана согласия:: Текст, отображаемый на экране согласия, когда эта область действия клиента добавляется к клиенту, когда требуется согласие по умолчанию на имя области действия клиента. Значение этого текста может быть изменено путем указания переменной подстановки с помощью *${var-name}* строк. Персонализированное значение настроено в файлах свойств вашей темы. См. ссылку:{developerguide_link}[{developerguide_name}] для получения дополнительной информации о настройках.
 
-== Include in token scope
+== Включить в область действия токена
 
-There is the *Include in token scope* switch on the client scope. If on, the name of this client scope will be added to the access token property scope, and to the Token Response and Token Introspection Endpoint
-response claim `scope`. If off, this client scope will be omitted from the token and from the Token Introspection Endpoint response. As mentioned above, some built-in client scopes have this switch disabled, which means
-that they are not included in the `scope` claim even if they are applied for the particular request.
+*Включено в область видимости токенов*. Если включено, имя этой области действия клиента будет добавлено в область видимости токена доступа, и фишке ответ и интроспектива токена Endpoint
+claim `scope`. Если этот параметр выключен, область действия клиента будет исключена из токена и из ответа Endpoint Token Introspection. Как упоминалось выше, в некоторых встроенных областях действия клиента этот переключатель отключен, это означает, что
+не включены в претензию `scope` даже если они применяются в отношении конкретного запроса.
 
 [[_client_scopes_linking]]
-== Link client scope with the client
+== Связать область клиента с клиентом
 
-Linking between a client scope and a client is configured in the *Client Scopes* tab of the client. Here is how it looks for the client application `myclient`:
+Связь между областью действия клиента и клиентом настроена на вкладке *Клиентские Области* клиента. Вот как он ищет приложение `myclient`:
 
 image:images/client-scopes-default.png[]
 
-There are two ways of linking between the client scope and the client.
+Между рамками клиента и клиентом существует два способа.
 
-Default Client Scopes:: This setting is applicable to the OpenID Connect and SAML clients. Default client scopes are applied when issuing OpenID Connect tokens or SAML assertions for a client. The client will inherit Protocol Mappers and Role Scope Mappings that are defined on the client scope. For the OpenID Connect Protocol, the Mappers and Role Scope Mappings are always applied, regardless of the value used for the scope parameter in the OpenID Connect authorization request.
-Optional Client Scopes:: This setting is applicable only for OpenID Connect clients. Optional client scopes are applied when issuing tokens for this client but only when requested by the *scope* parameter in the OpenID Connect authorization request.
+Области клиента по умолчанию:: Эта настройка применима к клиентам OpenID Connect и SAML. Границы клиентов по умолчанию применяются при выдаче токенов OpenID Connect или утверждений SAML для клиента. Клиент унаследовал протокол Mappers и сопоставления рамок роли, которые определены в пределах клиентской области. Для протокола OpenID Connect карты и сопоставления рамок роли всегда применяются, вне зависимости от значения, используемого для параметра области в запросе авторизации OpenID Connect.
+Необязательные клиентские области:: Эта настройка применима только для клиентов OpenID Connect. Необязательные рамки клиента применяются при выдаче токенов для этого клиента, но только по запросу параметра *scope* в запросе авторизации OpenID Connect.
 
-=== Example
+=== Пример
 
-For this example, assume the client has *profile* and *email* linked as default client scopes, and *phone* and *address* linked as optional client scopes. The client uses the value of the scope parameter when sending a request to the OpenID Connect authorization endpoint.
+В данном примере предполагается, что у клиента есть *профиль* и *электронная почта*, привязанные к стандартным областям клиента, и *телефон* и *адрес*, привязанные к ним как необязательные рамки для клиентов. Клиент использует значение параметра области действия при отправке запроса к конечной точке авторизации OpenID Connect.
 
 [source,bash,subs=+attributes]
 ----
 scope=openid phone
 ----
 
-The scope parameter contains the string, with the scope values divided by spaces. The value *openid* is the meta-value used for all OpenID Connect requests. The token will contain mappers and role scope mappings from the default client scopes *profile* and *email* as well as *phone*, an optional client scope requested by the scope parameter.
+Параметр области видимости содержит строку, значения области видимости разделены на пробелы. Значение *openid* — это мета-значение, используемое для всех запросов OpenID Connect. Токен будет содержать карты и сопоставления рамок ролей из рамок клиента по умолчанию *профиль* и *email*, а также *телефон*, необязательный объем клиентской области, запрошенный параметром области охвата.
 
 [[_client_scopes_dedicated]]
-=== Dedicated client scope
+=== Выделенный охват клиентов
 
-There is a special client scope, which is linked to every client. It is a dedicated client scope, which is always shown as the first client scope when you click on the tab *Client scopes* of the particular client.
-For example, for client `myclient`, the client scope is shown as `myclient-dedicated`. This client scope represents the protocol mappers and role scope mappings, which are linked directly to the client itself.
+Существует специальный диапазон клиента, который связан с каждым клиентом. Это выделенный круг клиентов, которая всегда отображается как первая область деятельности клиента, когда вы нажимаете на вкладку *Области клиента* конкретного клиента.
+Например, для «myclient» клиента область охвата клиента отображается как «ориентированная на Myclient». Эта область действия клиента представляет собой карты протокола и сопоставления ролевых охватов, которые напрямую связаны с самим клиентом.
 
-It is not possible to unlink the dedicated client scope from a client. Also, it is not possible to link this dedicated client scope to a different client. In other words, the dedicated client scope is useful
+Невозможно отсоединить область действия выделенного клиента от клиента. Также невозможно связать эту область деятельности клиента с другим клиентом. In other words, the dedicated client scope is useful
 just for protocol mappers and role scope mappings, which are specific to a single client. In case you want to share the same protocol mapper configuration among multiple clients, it is usually useful to create
 a client scope in the realm tab *Client scopes* and then link this shared client scope to every client that should apply this shared configuration.
 
-In the tab *Scope* of the dedicated client scope, you can define role scope mappings applicable to this client. You can also see the switch *Full scope allowed* in this tab.
-The details about this switch are described in <<_role_scope_mappings, this section>> and in <<_oidc_token_role_mappings,this section>>.
+На вкладке *Область* выделенной области клиента, вы можете определить сопоставления ролей, применимые к этому клиенту. Вы также можете увидеть переключатель *Разрешенные полные рамки* на этой вкладке.
+Подробности об этом переключателе описаны в <_role_scope_mappings, этом разделе>> и в <_oidc_token_role_mappings,этом разделе>>.
 
-NOTE: In the admin REST API and in the internal {project_name} storage, the dedicated client scope does not exist as its protocol mappers and role scope mappings are internally linked to the client itself. The.
-dedicated client scope is in fact just an abstraction for the admin console UI.
+NOTE: В админе REST API и во внутренней памяти {project_name} , выделенные клиентом рамки не существуют, так как его протокольные карты и сопоставления ролей внутренне связаны с самим клиентом. Этого
+выделенная область деятельности клиента на самом деле просто абстракция для консольного интерфейса администратора.
 
 [[_client_scopes_evaluate]]
-== Evaluating Client Scopes
+== Вычисление диапазонов клиентов
 
 include::proc-evaluating-client-scopes.adoc[]
 
 [[client-scopes-permissions]]
-== Client scopes permissions
+== Разрешения рамок клиента
 
-When issuing tokens to a user, the client scope applies only if the user is permitted to use it.
+При выдаче токенов пользователю, область действия применима только в том случае, если пользователю разрешено его использовать.
 
-When a client scope does not have any role scope mappings defined, each user is permitted to use this client scope. However, when a client scope has role scope mappings defined, the user must be a member of at least one of the roles. There must be an intersection between the user roles and the roles of the client scope. Composite roles are factored into evaluating this intersection.
+Когда область действия клиента не имеет определенных сопоставлений рамок ролей, каждому пользователю разрешено использовать эту область действия. Однако, когда рамки действия клиента имеют определенные сопоставления, пользователь должен быть членом по крайней мере одной из ролей. Должно быть пересечение между ролями пользователя и ролями рамок клиента. Составные роли учитываются при оценке этого перекрестка.
 
-If a user is not permitted to use the client scope, no protocol mappers or role scope mappings will be used when generating tokens. The client scope will not appear in the _scope_ value in the token.
+Если пользователю не разрешено использовать рамки клиента, при генерации токенов не будут использоваться протоколы или сопоставления рамок ролей. Область действия клиента не будет отображаться в значении _scope_ в маркере.
 
-== Realm default client scopes
+== Области клиента по умолчанию
 
 include::proc-updating-default-scopes.adoc[]
 
 [[_downscoping]]
-== Downscoping
+== Понизить границы
 
-In OAuth/OIDC, *downscoping* is the process of exchanging an existing JWT access token for a new one with a more restricted set of permissions (scopes) and/or a narrower audience. In the OAuth 2.0 refresh token grant type, the https://datatracker.ietf.org/doc/html/rfc6749#section-6[RFC 6749] itself restricts the requested scope, saying that it must not include any scope not originally granted by the resource owner. So, this *downscoping* concept is very common and very recommended for security reasons.
+В OAuth/OIDC, *downscoping* - это процесс обмена существующим токеном доступа JWT для нового с более ограниченным набором прав (областей) и/или узкой аудиторией. In the OAuth 2.0 refresh token grant type, the https://datatracker.ietf. сам rg/doc/html/rfc6749#section-6[RFC 6749] ограничивает запрошенную область, заявив, что она не должна включать ни одну область, которая первоначально не была предоставлена владельцем ресурса. Таким образом, эта концепция *понижается* очень распространена и очень рекомендуется по соображениям безопасности.
 
-{project_name} provides a <<_client_policies,client policy>> executor that ensures this *downscoping* idea for other grant types. The client executor is called `downscope-assertion-grant-enforcer` and, for the moment, applies for the link:{securing_apps_token_exchange_link}#_standard-token-exchange[Standard token exchange]. When this client executor is enforced, the token exchange is only allowed for the scopes that are already present in the initial JWT (`subject_token` parameter). An error is returned if any other extra scope is requested, no matter if the client configuration permits this scope as optional or default. Default scopes that are configured as *include in token scope* set to *false* (for example `basic` or `acr` in the default configuration) are the only exception. Those scopes are invisible for the requester and are considered compulsory for any grant type. Once this executor is applied for the client, *downscoping* is the only option when exchanging an access token, no additional scopes will ever be granted.
+{project_name} предоставляет исполнителю <<_client_policies,client policy>>, который обеспечивает это *downscoping* идея для других типов грантов. Исполнитель называется `downscope-assertion-grant-enforcer` и на данный момент применяется к ссылке:{securing_apps_token_exchange_link}#_standard-token-exchange[Standard token exchange]. Когда этот клиентский исполнитель применяется, обмен токенов допускается только для тех областей, которые уже присутствуют в первоначальном JWT (параметр `subject_token`). Возвращается ошибка, если запрашивается какая-либо другая дополнительная область, независимо от того, разрешена ли клиентская конфигурация эта область как опциональная или по умолчанию. Ограничения по умолчанию, которые настроены как *включить в область символа* *false* (например, `basic` или `acr` в конфигурации по умолчанию) являются единственным исключением. Эти области невидимы для запрашивающего лица и считаются обязательными для любого типа гранта. Как только этот исполнитель будет применен для клиента, *downscoping* является единственной опцией при обмене токена доступа, никаких дополнительных рамок никогда не будет предоставлено.
 
 include::con-parameterized-client-scopes.adoc[]
 
-== Scopes explained
+== Объяснены области применения
 
-The term _scope_ has multiple meanings within {project_name} and across the OAuth/OIDC specifications. Below is a clarification of the different _scopes_ used in {project_name}:
+Термин _scope_ имеет несколько значений в спецификациях {project_name} и OAuth/OIDC. Ниже даны разъяснения по различным _сферам_ используемым в {project_name}:
 
-Client scope:: Client scopes are entities in {project_name} that are configured at the realm level and can be linked to clients. Client scopes are referenced by their name when a request is sent to the {project_name} authorization endpoint with a corresponding value of the *scope* parameter. See the <<_client_scopes_linking, client scopes linking>> section for more details.
-Role scope mapping:: This is available under the *Scope* tab of a client or client scope. Use *Role scope mapping* to limit the roles that can be used in the access tokens. See the <<_role_scope_mappings, Role Scope Mappings section>> for more details.
-Authorization scopes:: The *Authorization Scope* covers the actions that can be performed in the application. See the link:{authorizationguide_link}[Authorization Services Guide] for more details.
+Область действия клиента:: Клиентские рамки являются объектами {project_name} , которые настроены на уровне области и могут быть связаны с клиентами. Рамки действия клиента ссылаются на их имя, когда запрос отправлен в конечную точку авторизации {project_name} с соответствующим значением параметра *scope*. Смотрите раздел <<_client_scopes_linking, область видимости клиента >> для получения более подробной информации.
+Сопоставление рамок ролей:: Это доступно под вкладкой *Область* границ клиента или клиента. Используйте *сопоставление рамок ролей* для ограничения ролей, которые могут быть использованы в токенах доступа. Смотрите <_role_scope_mappings, раздел сопоставления ролей>> для получения подробной информации.
+Области авторизации:: *Область авторизации* охватывает действия, которые могут быть выполнены в приложении. См. ссылку:{authorizationguide_link}[Руководство служб авторизации] для получения более подробной информации.
