@@ -1,79 +1,79 @@
 [[_troubleshooting_workflows_]]
-= Troubleshooting workflows
+= Обработчики устранения неполадок
 
-When workflows are not behaving as expected, server logs are the primary tool for understanding what is happening.
-The workflow engine logs detailed information about workflow lifecycle events, step execution, and errors.
+Когда рабочие процессы не ведут себя как ожидалось, логи сервера являются основным инструментом для понимания того, что происходит.
+Двигатель рабочего процесса записывает подробную информацию о событиях жизненного цикла рабочего процесса, шагах и ошибках.
 
-== Enabling workflow debug logging
+== Включение журнала отладки рабочего процесса
 
-By default, the workflow engine logs warnings and errors. To see the full execution flow, enable `DEBUG` level
-logging for the `org.keycloak.models.workflow` category by setting the following server configuration option:
+По умолчанию, движок рабочих процессов регистрирует предупреждения и ошибки. Чтобы увидеть полный поток выполнения, включите `DEBUG` уровень
+для категории `org.keycloak.models.workflow`, установив следующий параметр конфигурации сервера:
 
-    --log-level=org.keycloak.models.workflow:debug
+    --log-level=org.keycloak.models.workflow:отладка
 
-This enables debug logging for the workflow engine, all step providers, and the workflow state provider.
+Это позволяет вести журнал отладки для движка рабочего процесса, всех поставщиков шагов и поставщика рабочих процессов.
 
-== What to look for in the logs
+== Что искать в логах
 
-=== Workflow activation and scheduling
+=== Активация и планирование рабочего процесса
 
-When a workflow is triggered by an event, the engine logs the activation and scheduling of the first step:
+Когда рабочий поток инициируется событием, движок регистрирует активацию и планирование первого шага:
 
-* `Workflow '<name>' activated for resource <id> (execution id: <id>)` — the workflow execution has been created and is being processed.
+* `Рабочий процесс'<name>активирован для ресурса <id> (исполнительный id: <id>)` — выполнение рабочего процесса было создано и обрабатывается.
 * `Scheduled step <step> to run in <duration> for resource <id> (execution id: <id>)` — a scheduled step has been queued to run after the specified duration.
 
-=== Step execution
+=== Шаг выполнения
 
-As steps are executed, the engine logs their progress:
+По мере выполнения шагов, движок логает их прогресс:
 
-* `Running step <step> on resource <id> (execution id: <id>)` — a step is about to be executed.
+* `Запуск шага <step> на ресурсе <id> (id исполнения: <id>)` — шаг скоро будет выполнен.
 * `Step <step> completed successfully (execution id: <id>)` — the step finished without errors.
-* `Workflow '<name>' completed for resource <id> (execution id: <id>)` — all steps in the workflow have been executed.
+* `Workflow '<name>завершен для ресурса <id> (исполняющего id: <id>)` — все шаги в рабочем процессе были выполнены.
 
-=== Step failures and timeouts
+=== Ошибки и таймауты шага
 
-When a step fails or the executor times out, the engine logs the error and fires a step failed event. The step will be
-retried in the next execution cycle (see <<_handling_failures_>> for more details).
+Когда шаг потерпел неудачу или время исполнителя, движок регистрирует ошибку и запускает шаг с ошибкой. Шагом будет
+повтор в следующем цикле выполнения (подробнее см. <_handling_failures_>>).
 
-* `Step <step> failed (execution id: <id>) - error message: <message>` — the step threw an exception during execution.
-* `Workflow executor timed out during execution of step <step>` — runtime exception indicating that the step exceeded the configured executor task timeout. See <<_understanding_workflows_engine_>> for how to configure the timeout.
-* `Workflow executor was cancelled during execution of step <step>` — runtime exception indicating that the executor service was cancelled for a reason other than timeout.
+* `Step <step> failed (execution id: <id>) - сообщение об ошибке: <message>` — шаг бросил исключение во время выполнения.
+* `Задержка исполнителя рабочего потока истекла во время выполнения шага <step>— исключение для выполнения шага с указанием на то, что шаг превысил установленный тайм-аут выполнения задачи. Смотрите <<_understanding_workflows_engine_>> , как настроить тайм-аут.
+* `Исполнитель рабочего потока был отменен во время выполнения шага <step>— исключение для времени выполнения команды, указывающее на то, что сервис исполнителя был отменен по причине, отличной от тайм-аута.
 
-=== Skipped and cancelled workflows
+=== Пропущенные и отмененные рабочие процессы
 
-* `Skipping workflow <name> as it is disabled` — the workflow is disabled and will not process events.
-* `Workflow '<name>' cancelled for resource <id> (execution id: <id>)` — the workflow execution was cancelled.
-* `Resource <id> is no longer eligible for workflow <name>. Cancelling execution of the workflow.` — the resource no longer meets the workflow conditions upon resuming a scheduled step.
+* `Пропуск рабочего процесса <name> как он отключен" — рабочий процесс отключен и не будет обрабатывать события.
+* «Рабочий процесс»<name>отменен для ресурса <id> (исполняемого id: <id>)» — выполнение рабочего процесса было отменено.
+* `Ресурс <id> больше не имеет права на рабочий процесс <name>. Отмена выполнения рабочего процесса.` — ресурс больше не соответствует условиям рабочего процесса после возобновления запланированного шага.
 
-=== Workflow errors
+=== Ошибки рабочего процесса
 
-* `Error processing event <event> for workflow <name>: <message>` — an error occurred while processing the event that triggers the workflow.
-* `Error resuming workflow <name> for resource <id>: <message>` — an error occurred while resuming a scheduled workflow execution.
-* `Could not find step <step> in workflow <name> for resource <id>. Cancelling execution of the workflow.` — the step scheduled to run could not be found in the workflow.
+* `Ошибка обработки события <event> для рабочего процесса <name>: <message>— ошибка при обработке события, вызывающего рабочий процесс.
+* `Ошибка возобновления процесса <name> для ресурса <id>: <message>— ошибка при возобновлении запланированного выполнения рабочего процесса.
+* `Could not find step <step> in workflow <name> for resource <id>. Отмена выполнения рабочего процесса.` — не удалось найти шага, запланированного на запуск.
 
-=== Step-level warnings
+=== Предупреждения на каждом уровне
 
-Individual step providers log warnings when configuration is missing or invalid. Examples include:
+Индивидуальные предупреждения поставщиков шагов, когда конфигурация отсутствует или недействительна. К примерам относятся:
 
 * `Missing required configuration option '<key>' in <step>` — a required parameter was not provided in the step's `with` block.
-* `Invalid required action <action> configured in <step>` — the required action name is not recognized.
-* `User <id> has no email address, skipping notification` — the `notify-user` step could not send an email.
-* `Failed to send notification email to <recipient>` — an email delivery failure occurred.
+* `Недопустимое требуемое действие <action> настроенное в <step>` — требуемое имя действия не распознано.
+* `Пользователь <id> не имеет email-адреса, пропуска уведомления` — «notify-user» не удалось отправить письмо.
+* `Не удалось отправить письмо с уведомлением на адрес <recipient>— произошла ошибка доставки электронной почты.
 
-== Useful log categories
+== Полезные категории журнала
 
-If you need more targeted logging, you can enable debug logging for specific components:
+Если вам нужно более целевое ведение журнала, вы можете включить ведение журнала отладки для конкретных компонентов:
 
 [cols="2*", options="header"]
 |===
-|Category
-|Description
+|Категория
+|Описание
 
-|`org.keycloak.models.workflow` |All workflow-related logging (engine, steps, state)
+|`org.keycloak.models.workflow` |Все журналы, связанные с рабочим процессом (движок, шаги, состояния)
 
-|`org.keycloak.models.workflow.DefaultWorkflowProvider` |Workflow engine lifecycle (activation, conditions, event processing)
+|`org.keycloak.models.workflow.DefaultWorkflowProvider` |Жизненный цикл движка (активация, условия, обработка событий)
 
-|`org.keycloak.models.workflow.RunWorkflowTask` |Step execution, completion, failures, and timeouts
+|`org.keycloak.models.workflow.RunWorkflowTask` |Шаг, выполнение, завершение, неудачи и таймауты
 
-|`org.keycloak.models.workflow.ScheduleWorkflowTask` |Step scheduling and delayed execution
+|`org.keycloak.models.workflow.ScheduleWorkflowTask` |Шаг планирования и отложенного выполнения
 |===
