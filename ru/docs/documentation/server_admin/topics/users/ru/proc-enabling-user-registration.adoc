@@ -5,14 +5,14 @@
 // con-user-registration.adoc
 
 [id="proc-enabling-user-registration_{context}"]
-= Enabling user registration
+= Включение регистрации пользователя
 
 [role="_abstract"]
-Enable users to self-register.
+Разрешить пользователям самостоятельно регистрироваться.
 
-.Procedure
-. Click *Realm Settings* in the main menu.
-. Click the *Login* tab.
-. Toggle *User Registration* to *ON*.
+.Процедура
+. Нажмите *Настройки реалма* в главном меню.
+. Нажмите на вкладку *Логин*.
+. *Регистрация пользователей* на *ВКЛЮЧЕНИЕ*.
 
-After you enable this setting, a *Register* link displays on the login page of the Admin Console.
+После того, как вы включите эту опцию, на странице входа в консоль администратора отображается ссылка *Регистрация*.
