@@ -1,34 +1,34 @@
 [[_enabling_scim_]]
-= Enabling SCIM for a realm
+= Включение SCIM для области
 
-Once the feature is enabled on the server, you must also enable SCIM for each realm individually. This can be done through
-the Admin Console or the Admin REST API.
+Как только функция включена на сервере, вы также должны включить SCIM для каждой области в отдельности. Это можно сделать с помощью
+консоли администратора или API REST администратора.
 
-== Using the Admin Console
+== Использование консоли администратора
 
-.Procedure
-. Click *Realm settings* in the menu.
-. On the *General* tab, locate the *SCIM API* toggle.
-. Set the toggle to *On*.
-. Click *Save*.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. На вкладке *General* найдите переключатель *SCIM API*.
+. Установите переключатель на *Вкл*.
+. Нажмите *Сохранить*.
 
-image:images/scim-realm-settings.png[alt="Enabling SCIM API in realm settings"]
+image:images/scim-realm-settings.png[alt="Включение SCIM API в настройках Realm"]
 
-== Obtaining the SCIM API base URL
+== Получение базового URL SCIM API
 
-The SCIM API in {project_name} is exposed under the following base URL:
+SCIM API в {project_name} выводится в соответствии со следующим базовым URL:
 
 ----
 http://<host>:<port>/realms/<realm-name>/scim/v2
 ----
 
-This base URL is used to construct the full URLs for the available SCIM endpoints:
+Этот базовый URL используется для создания полных URL-адресов доступных конечных точек SCIM:
 
 * `/ServiceProviderConfig`
-* `/ResourceTypes`
+* `/Виды ресурсов`
 * `/Schemas`
-* `/Users`
-* `/Groups`
+* `/Пользователи`
+* `/группы`
 
-The SCIM API requires a bearer token with the appropriate permissions. See <<_scim_accessing_endpoints_,Authorizing access to SCIM endpoints>>
-for details on how to set up a client and obtain an access token.
+Для SCIM API требуется токен предъявителя с соответствующими разрешениями. Смотрите <<_scim_accessing_endpoints_,Разрешение доступа к концам SCIM>>
+для подробностей о настройке клиента и получении ключа доступа.
