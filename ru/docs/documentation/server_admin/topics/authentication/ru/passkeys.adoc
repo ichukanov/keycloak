@@ -1,97 +1,97 @@
 [id="passkeys_{context}"]
-=== Passkeys
+=== Пароли
 
-{project_name} provides support for https://fidoalliance.org/passkeys/[Passkeys]. {project_name} works as a Passkeys Relying Party (RP).
+{project_name} поддерживает https://fidoalliance.org/passkeys/[Passkeys]. {project_name} работает как паролей, полагающихся на (RP).
 
-Passkey registration and authentication are performed using the same features of xref:webauthn_{context}[WebAuthn]. More specifically *Passkeys* are related to xref:_webauthn_loginless[LoginLess WebAuthn] as they try to avoid any password during login.
-Therefore, users of {project_name} can do Passkey registration and authentication by existing xref:webauthn_{context}[WebAuthn registration and authentication], using the *passwordless* variants.
+Регистрация и аутентификация паролем выполняются с использованием тех же возможностей xref:webauthn_{context}[WebAuthn]. *Passkeys* относятся к xref:_webauthn_loginless[LoginLess WebAuthn], поскольку они пытаются избежать любого пароля при входе в систему.
+Поэтому пользователи {project_name} могут осуществлять регистрацию и аутентификацию Passkey с помощью существующих xref:webauthn_{context}[регистрации и аутентификации WebAuthn], используя *passwordless* варианты.
 
-The *Passkeys* feature has been integrated seamlessly in the default authentication forms in two different ways. When activated, both conditional UI and modal UI are available in the forms in which the username input is displayed (for example *Username Password Form*  or *Username Form*).
-The exact behavior on page load — whether a passkey selection dialog appears automatically or credentials are offered only through browser autofill — is controlled by the *Passkey Mediation* setting in the *WebAuthn Passwordless Policy*.
+Функция *Passkeys* легко интегрируется в формы аутентификации по умолчанию двумя разными способами. При включении, оба условного интерфейса и модального интерфейса доступны в формах, в которых отображаются вводные данные пользователя (например, *Форма пароля пользователя* или *Форма имени пользователя*).
+Точное поведение при загрузке страницы — будет ли диалог выбора пароля автоматически появляться или же учетные данные доступны только через автозаполнение браузера — контролируется параметром *Передача паролей* в политике *WebAuthn Passwordless Policy*.
 
-Besides, the password forms, when the username was already selected, always show the modal UI button to login by passkey if the current user has passwordless WebAuthn credentials associated. This way modal and conditional UI can be used to perform a complete login from scratch that needs username and password, and only modal UI is presented when the username is already selected in the authentication process (because of re-authentication or because the user was selected before in the process not using a passkey).
+Кроме того, формы паролей, когда имя пользователя уже было выбрано, всегда показывать модальную кнопку пользовательского интерфейса для входа по паролю, если текущий пользователь имеет связанные учетные данные WebAuthn. Таким способом модальный и условный интерфейс может быть использован для выполнения полного входа с нуля, который требует имя пользователя и пароль, и только modal UI отображается, когда имя пользователя уже выбрано в процессе аутентификации (из-за повторной проверки подлинности или потому, что пользователь был выбран ранее в процессе не использования секретного ключа).
 
-*Passkeys* have been added to the following authenticator implementations:
+*Паролей* были добавлены в следующие реализации аутентификатора:
 
-. *Username Password Form*: The username and password form used by default in {project_name}.
-. *Username Form*: The form in which the username is displayed alone and is typically followed by the password form. This authenticator is used when the username and password fields want to be presented to the user in two different steps.
-. *Password Form*: Authenticating using *Passkeys* in the *Username Form* skips the next *Password Form* execution. The *Password Form* implementation checks if the user was already authenticated using a passwordless WebAuthn credential and, if that is the case, no password is requested. If the *Password Form* cannot be skipped, it allows using modal UI to authenticate the user if the account has passkey credentials associated.
-. *Organization Identity - First Login*: The organization form that is used when the <<_enabling_organization_, organizations>> feature is enabled for the realm. Using *Passkeys* in this step avoids the subsequent execution of the username and password form in the same way than in the username form.
-. *Username Password Form for identity provider re-authentication*: Similar to the default *Username Password Form* but used in the first login flow to re-authenticate and prove ownership of the account. Now the modal UI button is available to use passkeys to re-authenticate.
+. *Форма для пароля пользователя *: Форма для имени пользователя и пароля, используемая по умолчанию в {project_name}.
+. *Форма имени пользователя*: Форма, в которой имя пользователя отображается отдельно и обычно сопровождается формой пароля. Этот аутентификатор используется, когда поля имени пользователя и пароля должны быть представлены пользователю в два различных шага.
+. *Форма пароля*: Аутентификация с помощью *Passkeys* в *Форме имени пользователя* пропускает следующее выполнение *Форма пароля*. *Форма пароля* проверяет подлинность пользователя с использованием учетных данных WebAuthn без паролей, и если это так, пароль не запрашивается. Если *Форма паролей* не может быть пропущен, то она позволяет использовать modal UI для аутентификации пользователя, если учетная запись имеет привязанные учетные данные пароля.
+. *Organization Identity - First Login*: Форма организации, используемая при включенной опции <_enabling_organization_, organizations>> для этой области включена. Использование *Passkeys* на этом этапе позволяет избежать последующего исполнения формы имени пользователя и пароля таким же образом, как и в форме имени пользователя.
+. *Форма для имени пользователя для повторной аутентификации провайдера*: похожа на стандартный *Форму для пароля пользователя*, но используется в первом потоке входа для повторной аутентификации и подтверждения права собственности на учетную запись. Теперь доступна кнопка modal UI для повторной аутентификации.
 
-Finally, the default *browser* flow is modified to skip the flow *Browser - Conditional 2FA* if a passkey was used previously to authenticate the account. So now, when passkeys are enabled in the realm, 2FA is only presented if the user introduced a common password to login, not if a passkey was used. The new *Condition - credential* is added to the sub-flow to check the credential presented before. If you want to always use 2FA, you can just change the requirement from *Required* to *Disabled* for this condition. See <<conditions-in-conditional-flows, Conditions in conditional flows>> for more information.
+Наконец, поток *browser* по умолчанию изменяется, чтобы пропустить поток *Browser - Conditional 2FA*, если ключ был использован ранее для аутентификации аккаунта. Так что теперь, когда пароли включены в Realm, 2FA предоставляется только в том случае, если пользователь ввел общий пароль для входа, а не в случае использования пароля. Новый *Состояние - учетные данные* добавляется в подпоток для проверки представленных ранее учетных данных. Если вы хотите всегда использовать 2FA, вы можете просто изменить требование с *Обязательно* на *Отключено* для этого условия. См. <<conditions-in-conditional-flows, Conditions in conditional flows>> для получения дополнительной информации.
 
 [NOTE]
 ====
-Both synced Passkeys and device-bound Passkeys can be used for both Same-Device and Cross-Device Authentication (CDA).
-However, Passkeys operations success depends on the user's environment. Make sure which operations can succeed in https://passkeys.dev/device-support/[the environment].
+Как синхронизированные пароли, так и привязанные к устройству Passkeys могут использоваться как для аутентификации Same-Device так и для Cross-Device Authentication (CDA).
+Тем не менее, работа с паролем зависит от окружения пользователя. Убедитесь, какие операции могут быть успешными в https://passkeys.dev/device-support/[environment].
 ====
 
 [[_passkeys-conditional-ui]]
-==== Passkey Authentication with Conditional UI or autofill
+==== Аутентификация Passkey с использованием условного пользовательского интерфейса или автозаполнения
 
-The Conditional User Interface (UI) or autofill is a feature related to passkeys in which the username input (the field in which the username to login is typed) is tagged with a `webauthn` autofill detail token (for example using the attribute `autocomplete="username webauthn"`). When the user clicks in such an input field, the user agent (browser) can render a list of discovered credentials for the user to select from, and perhaps also give the user the option to _try another way_. If the user selects one of the presented passkeys, {project_name} initiates the WebAuthn authentication with that key and avoids any password typing.
+Условный пользовательский интерфейс (UI) или автозаполнение — это функция, связанная с паролем, в которой вводится имя пользователя (поле, в котором введено имя пользователя) помечен маркером автозаполнения `webauthn` (например, с использованием атрибута `autocomplete="username webauthn"`). Когда пользователь нажимает в такое поле ввода, пользовательский агент (браузер) может отобразить список обнаруженных учетных данных, из которых пользователь выбирает, и, возможно, дайте пользователю возможность _попробовать другой способ_. Если пользователь выбирает один из предоставленных паролей, {project_name} инициализирует аутентификацию WebAuthn этим ключом и избегает любых типов паролей.
 
-Compared with xref:_webauthn_loginless[LoginLess WebAuthn], the authentication improves the user's experience of authentication.
+По сравнению с xref:_webauthn_loginless[LoginLess WebAuthn], аутентификация улучшает пользовательский опыт аутентификации.
 
 image:images/passkey-conditional-ui-autofill.png[Passkey Authentication with Conditional UI Autofill using Chrome browser]
 
 [NOTE]
 ====
-This authentication uses the https://github.com/w3c/webauthn/wiki/Explainer:-WebAuthn-Conditional-UI/[WebAuthn Conditional UI].
-Therefore, this authentication success depends on the user's environment.
-If the environment does not support WebAuthn Conditional UI, the user should use the direct modal UI or username and password login.
+Эта аутентификация использует https://github.com/w3c/webauthn/wiki/Explainer:-WebAuthn-Conditional-UI/[WebAuthn Conditional UI].
+Поэтому успех аутентификации зависит от среды пользователя.
+Если среда не поддерживает WebAuthn Conditional UI, то пользователь должен использовать прямой модальный интерфейс или имя пользователя и пароль входа.
 ====
 
-==== Passkeys Authentication with Modal UI
+==== Аутентификация паролей с помощью модального интерфейса
 
-Nevertheless, because conditional UI can sometimes not show all the credentials to the user, the modal UI can always be initiated using the button *Sign in with Passkey*. The Modal User Interface (UI) ensures all passkeys are usable, including the ones stored in hardware tokens or on other devices that cannot be enumerated without user interaction.
+Тем не менее, поскольку условный интерфейс иногда не может показывать пользователю все учетные данные, модальный интерфейс всегда может быть запущен с помощью кнопки *Войдите с помощью Passkey*. Интерфейс модального пользователя (UI) гарантирует, что все пароли будут использоваться, включая те, которые хранятся в аппаратных токенах или на других устройствах, которые не могут быть перечислены без пользовательского взаимодействия.
 
-The modal UI button is also presented in the password forms when the user is already selected, for example when re-authenticating in the common *Username Password Form*. In this case, the modal UI is limited to the passwordless WebAuthn credentials that {project_name} has defined for the account.
+Кнопка modal UI также отображается в формах пароля при уже выбранном пользователе, Например, при повторной аутентификации в общем *Форме пароля пользователя*. В этом случае модальный интерфейс ограничен учетными данными WebAuthn, которые {project_name} определена для учетной записи.
 
 image:images/passkey-modal-ui.png[Passkey Authentication with Modal UI using Chrome browser]
 
 [[_passkeys-mediation]]
-==== Passkey Mediation
+==== Посредник паролем
 
-The *Passkey Mediation* setting in the *WebAuthn Passwordless Policy* controls how the browser interacts with the user's passkeys when the login page loads. It maps directly to the https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation[`mediation` parameter of the WebAuthn `navigator.credentials.get()` API].
+Параметр *Медиация паролей* в политике безпарольного доступа WebAuthn* определяет, как браузер взаимодействует с паролями пользователя при загрузке страницы входа в систему. It maps directly to the https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation[`mediation` параметра WebAuthn `navigator.credentials.get()` API].
 
-.Passkey Mediation options
+.Параметры медиации паролем
 [cols="1,3", options="header"]
 |===
-|Value
-|Behavior
+|Значение
+|Поведение
 
-|`conditional` (default)
-|No dialog is shown on page load. Passkeys are offered only through the browser's autofill dropdown when the user focuses the username input field. This is the least intrusive option and corresponds to the <<_passkeys-conditional-ui,Conditional UI>> behavior. If the browser does not support conditional mediation, the behaviour is the same as `none`.
+|«условие» (по умолчанию)
+|При загрузке страницы диалоговое окно не отображается. Пароли доступны только через раскрывающийся список автозаполнения браузера при фокусировании поля ввода имени пользователя. Это наименее назойливый параметр и соответствует поведению <_passkeys-conditional-ui,Conditional UI>>. Если браузер не поддерживает условное медиа-соединение, то поведение равно «нет».
 
-|`none`
-|No automatic passkey action is taken on page load. The user can still authenticate using a passkey by clicking the *Sign in with Passkey* button. Use this option when you want passkeys to be available but prefer not to display any prompt automatically.
+|«нет»
+|При загрузке страницы автоматическое действие passkey не выполняется. Пользователь все еще может аутентифицироваться с помощью секретного ключа, нажав на кнопку *Войти с помощью Passkey*. Используйте этот параметр, если вы хотите, чтобы пароли были доступны, но не должны показывать никаких запросов автоматически.
 
-|`optional`
-|A passkey selection dialog is shown automatically on page load. The browser may skip the prompt if no credentials are found. Use this to invite the user to use a passkey without strictly enforcing it.
+|`опционное`
+|При загрузке страницы автоматически отображается диалог выбора паролей. Браузер может пропустить запрос, если учетные данные не найдены. Используйте это, чтобы пригласить пользователя использовать секретный ключ без его строгого применения.
 
-|`required`
-|A passkey selection dialog is shown immediately on page load. The user is forced to authenticate or manually dismiss the prompt to proceed. Use this when passkey verification is a mandatory requirement for the current action.
+|«требуется»
+|При загрузке страницы сразу же отображается диалог выбора паролей. Пользователь вынужден аутентифицировать или вручную отклонить запрос, чтобы продолжить. Используйте это, когда проверка пароля является обязательным требованием для текущего действия.
 
-|`silent`
-|The browser attempts to authenticate without any user interaction or visible UI. Authentication fails silently if user interaction is required. This is intended for advanced scenarios and is unlikely to succeed for most passkey types.
+|«тихий»
+|Браузер пытается аутентифицироваться без какого-либо взаимодействия пользователя или видимого интерфейса. Аутентификация не удается, если требуется взаимодействие пользователя. Это предназначено для продвинутых сценариев и вряд ли увенчается успехом для большинства типов паролей.
 |===
 
 [NOTE]
 ====
-The behavior of the `mediation` option, although defined in the specification, can vary between browsers and authenticators. {project_name} simply passes this option during the registration process. The actual final behavior is beyond its control. For example, the support for `required` and `silent` mediation are known to be different among browsers. Refer to your target browser's documentation before relying on these values in production.
+Поведение параметра `mediation`, хотя и определено в спецификации, может варьироваться в зависимости от браузеров и аутентификаторов. {project_name} просто передает эту опцию во время процесса регистрации. Фактическое окончательное поведение выходит за рамки его контроля. Например, поддержка `required` и `silent` медиации известны как разные между браузерами. Обратитесь к документации вашего браузера, прежде чем полагаться на эти значения в производстве.
 
-When the *Authenticator Attachment* in the policy is set to `platform` and the device does not have a user-verifying platform authenticator available, the automatic passkey flow on page load is skipped regardless of the mediation value. The user can still authenticate using the *Sign in with Passkey* button or fall back to password login.
+Если в политике *Прикрепления для аутентификации* установлено значение `platform`, а в устройстве отсутствует аутентификатор, подтверждающий пользователь, автоматический поток паролей при загрузке страницы пропущен, независимо от значения медиации. Пользователь по-прежнему может аутентифицироваться, используя кнопку *Войти с помощью Пароля* или вернуться к авторизации с паролем.
 ====
 
-==== Setup
+==== Настройка
 
-Set up Passkey Authentication for the default forms as follows:
+Настройте аутентификацию Passkey для форм по умолчанию:
 
-. (If not already done) Check the required action for *WebAuthn Register Passwordless* is enabled. Use the steps described in <<_webauthn-register, Enable WebAuthn Authenticator Registration>>, but using *WebAuthn Register Passwordless* instead of *WebAuthn Register*.
-. Configure the *WebAuthn Passwordless Policy* in the same way that is explained in xref:_webauthn_loginless[LoginLess WebAuthn]. The default configuration for the passwordless policy is usually enough for correct passkeys integration.
-. In the Admin Console, navigate to *Realm Settings* → *Login* tab. In the *Login Screen Customization* section, activate the *Enable Passkeys* switch. Use the settings icon next to the switch to navigate directly to the *WebAuthn Passwordless Policy* for additional configuration.
-. Once *Enable Passkeys* is on, the *Passkey Mediation* select appears. Choose the value that best fits your use case. The default `conditional` value keeps behavior unobtrusive — passkeys are offered through autofill only. Switch to `optional` if you want the browser to automatically open a passkey selection dialog on page load while still allowing the user to dismiss it and fall back to autofill. See <<_passkeys-mediation,Passkey Mediation>> for a description of all available values.
+. (Если еще не создан) Проверьте необходимое действие для *Регистрация WebAuthn без пароля* включено. Используйте шаги, описанные в <<_webauthn-register, Enable WebAuthn Authenticator Registration>>, но используйте *WebAuthn Register Passwordless* вместо *WebAuthn Register*.
+. Настройте *WebAuthn безпарольную политику* таким же образом, что и в xref:_webauthn_loginless[LoginLess WebAuthn]. Конфигурация по умолчанию для безпарольной политики обычно достаточно для корректной интеграции паролей.
+. В консоли администратора перейдите на вкладку *Параметры реалма* → *Авторизация*. В разделе *Настройка экрана входа в систему* активируйте *Включение переключателя паролей*. Используйте значок настроек рядом с переключателем, чтобы перейти к *политике безпарольного доступа* для дополнительной конфигурации.
+. После включения *Включите Passkeys*, появляются *Передача паролей*. Выберите значение, которое лучше всего подходит вашему варианту использования. По умолчанию значение `conditional` сохраняет незаметное поведение — passkeys предлагаются только через автозаполнение. Переключитесь на `optional`, если вы хотите, чтобы браузер автоматически открывал диалог выбора ключей при загрузке страницы, позволяя пользователю удалять его и вернуться на autofill. Смотрите <<_passkeys-mediation,Mediation>> для описания всех доступных значений.
 +
-NOTE: Storage capacity is usually very limited on hardware passkeys meaning that you cannot store many discoverable credentials on your passkey. However, this limitation may be mitigated for instance if you use an Android phone backed by a Google account as a passkey device or an iPhone backed by Bitwarden.
+NOTE: Емкость хранилища обычно ограничена аппаратными ключами доступа, что означает, что вы не можете хранить много видимых учетных данных в вашем коде. Однако это ограничение может быть смягчено, например, если вы используете Android-телефон с поддержкой учетной записи Google в качестве устройства с паролем или iPhone, поддерживаемого Bitwarden.
