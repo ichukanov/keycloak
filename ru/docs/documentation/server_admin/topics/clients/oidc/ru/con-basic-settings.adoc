@@ -1,106 +1,106 @@
 [id="con-basic-settings_{context}"]
-= Basic configuration
+= Базовая конфигурация
 
-The *Settings* tab includes many options to configure this client.
+Вкладка *Настройки* содержит множество опций для настройки этого клиента.
 
-image:images/client-settings-oidc.png[Settings tab]
+image:images/client-settings-oidc.png[Настройки вкладки]
 
-== General Settings
+== Общие настройки
 
-*Client ID*:: The alphanumeric ID string that is used in OIDC requests and in the {project_name} database to identify the client.
-*Name*:: The name for the client in {project_name} UI screen. To localize
-the name, set up a replacement string value. For example, a string value such as $\{myapp}.  See the link:{developerguide_link}[{developerguide_name}] for more information.
-*Description*:: The description of the client.  This setting can also be localized.
-*Always Display in Console*:: Always list this client in the Account Console even if this user does not have an active session.
+*ID клиента*:: Строка с буквенно-цифровым идентификатором, которая используется в OIDC запросах и в базе данных {project_name} для идентификации клиента.
+*Имя*:: Имя клиента в экране интерфейса {project_name}. Чтобы локализовать
+имя, настройте строковое значение замены. Например, строковое значение, такое как $\{myapp}.  См. ссылку:{developerguide_link}[{developerguide_name}] для получения дополнительной информации.
+*Описание*:: Описание клиента.  Этот параметр также может быть локализован.
+*Всегда отображать в консоли*:: Всегда отображать этого клиента в консоли аккаунта, даже если у этого пользователя нет активного сеанса.
 
-== Access Settings
+== Настройки доступа
 
-*Root URL*:: If {project_name} uses any configured relative URLs, this value is prepended to them.
-*Home URL*:: Provides the default URL for when the auth server needs to redirect or link back to the client.
-*Valid Redirect URIs*:: Required field.  Enter a URL pattern and click *+* to add and *-* to remove existing URLs and click *Save*. Exact (case sensitive) string matching is used to compare valid redirect URIs.
+*Корневой URL*:: Если {project_name} использует какие-либо настроенные относительные URL, это значение добавляется к ним.
+*Домашний URL*:: Предоставляет URL-адрес по умолчанию, когда сервер авторизации должен перенаправлять или ссылаться на клиента.
+*Допустимые URI перенаправления*:: Обязательное поле.  Введите шаблон URL и нажмите *+*, чтобы добавить и *-*, чтобы удалить существующие URL, и нажмите *Сохранить*. Точное (чувствительное к регистру) сопоставление строк используется для сравнения допустимых URI перенаправления.
 +
-You can use wildcards at the end of the URL pattern. For example `$$http://host.com/path/*$$`. To avoid security issues, if the passed redirect URI contains the *userinfo* part or its *path* manages access to parent directory (`/../`) no wildcard comparison is performed but the standard and secure exact string matching.
+Вы можете использовать маски в конце шаблона URL. Например, `$$http://host.com/path/*$$`. Во избежание проблем с безопасностью, если передаваемый URI содержит *пользовательскую информацию* или его *путь* управляет доступом к родительскому каталогу (`/. /`) сравнение шаблонов не проводится, но стандартное и безопасное сопоставление строк.
 +
-The full wildcard `$$*$$` valid redirect URI can also be configured to allow any *http* or *https* redirect URI. Please do not use it in production environments.
+Полная маска `$$*$` корректный URI перенаправления также может быть настроена на разрешение любого *http* или *https* перенаправления. Пожалуйста, не используйте его в производственной среде.
 +
-Exclusive redirect URI patterns are typically more secure. See xref:unspecific-redirect-uris_{context}[Unspecific Redirect URIs] for more information.
-Web Origins:: Enter a URL pattern and click + to add and - to remove existing URLs. Click Save.
+Эксклюзивные шаблоны редиректов URI обычно более безопасны. Смотрите xref:unspecific-redirect-uris_{context}[Unspecific Redirect URI] для получения дополнительной информации.
+Веб-сайты:: Введите шаблон URL и нажмите +, чтобы добавить и - для удаления существующих URL. Нажмите "Сохранить".
 +
-This option handles link:https://fetch.spec.whatwg.org/[Cross-Origin Resource Sharing (CORS)].
-If browser JavaScript attempts an AJAX HTTP request to a server whose domain is different from the one that the
-JavaScript code came from, the request must use CORS. The server must handle CORS requests, otherwise the browser will not display or allow the request to be processed. This protocol protects against XSS, CSRF, and other JavaScript-based attacks.
+Эта опция обрабатывает link:https://fetch.spec.whatwg.org/[Cross-Origin Resource Sharing (CORS)].
+Если в браузере JavaScript попытается выполнить HTTP запрос AJAX на сервер, домен которого отличается от кода, от которого был код
+JavaScript, запрос должен использовать CORS. Сервер должен обрабатывать CORS-запросы, иначе браузер не будет отображать или разрешить обработку запроса. Этот протокол защищает XSS, CSRF и другие атаки на основе JavaScript.
 +
-Domain URLs listed here are embedded within the access token sent to the client application. The client application uses this information to decide whether to allow a CORS request to be invoked on it. Only {project_name} client adapters support this feature. See link:{securing_apps_link}[{securing_apps_name}] for more information.
+Указанные здесь URL-адреса домена встроены в токен доступа, отправленный клиентскому приложению. Клиентское приложение использует эту информацию, чтобы решить, следует ли ссылаться на CORS-запрос на него. Только {project_name} адаптеры поддерживают эту функцию. См. ссылку:{securing_apps_link}[{securing_apps_name}] для получения дополнительной информации.
 
 [[_admin-url]]
-Admin URL:: Callback endpoint for a client. The server uses this URL to make callbacks like pushing revocation policies, performing backchannel logout, and other administrative operations. For {project_name} servlet adapters, this URL can be the root URL of the servlet application.
-The callback messages sent to this URL are sent in the {project_name} specific format, which is not OIDC standard. This format is supported only for clients secured by
-the legacy {project_name} Java OIDC adapters or by the link:https://docs.wildfly.org/37/WildFly_Elytron_Security.html#Keycloak_Integration[Elytron Wildfly OIDC adapter].
+Админ URL:: Обратная конечная точка для клиента. Сервер использует этот URL-адрес для выполнения обратных вызовов, таких как толкание политики отзыва, выполнение выхода из бэкканала, и другие административные операции. Для {project_name} servlet адаптеров может быть корневым URL-адресом сервлета.
+Сообщения обратного вызова, отправленные на этот URL, отправляются в конкретном формате {project_name} , который не является стандартом OIDC. Этот формат поддерживается только для клиентов, обеспеченных
+унаследованными адаптерами {project_name} Java OIDC или link:https://docs.wildfly.org/37/WildFly_Elytron_Security.html#Keycloak_Integration[Elytron Wildfly OIDC адаптер].
 
-== Capability Config
+== Настройка способностей
 
-*Client authentication*:: Specifies the type of OIDC client.
+*Аутентификация Клиента*:: Тип OIDC клиента.
 * _ON_
 +
-For server-side clients that perform browser logins and require client secrets when making an Access Token Request. This setting should be used for server-side applications.
-Clients with the client authentication enabled are referred as confidential clients. For more details, see <<_client-credentials, Client credentials>>.
-* _OFF_
+Для клиентов на сервере, выполняющих вход в браузер и требующих клиентских секретов при выполнении запроса ключа доступа. Этот параметр должен использоваться для приложений на сервере.
+Клиенты с включенной аутентификацией клиентов именуются конфиденциальными клиентами. Подробнее см. <<_client-credentials>>.
+* _ВЫКЛЯ_
 +
-For client-side clients that perform browser logins. As it is not possible to ensure that secrets can be kept safe with client-side clients, it is important to restrict access by configuring correct redirect URIs.
-Clients with the client authentication disabled are referred as public clients.
-*Authorization*:: Enables or disables fine-grained authorization support for this client.
-*Standard Flow*:: If enabled, this client can use the OIDC xref:_oidc-auth-flows-authorization[Authorization Code Flow].
-*Direct Access Grants*:: If enabled, this client can use the OIDC xref:_oidc-auth-flows-direct[Direct Access Grants].
-*Implicit Flow*:: If enabled, this client can use the OIDC xref:_oidc-auth-flows-implicit[Implicit Flow].
-*Service account roles*:: If enabled, this client can authenticate to {project_name} and retrieve access token dedicated to this client. In terms of OAuth2 specification, this enables support of `Client Credentials Grant` for this client.
-*Standard Token Exchange*:: If enabled, this client can use the link:{securing_apps_token_exchange_link}#_standard-token-exchange[Standard token exchange].
-*Auth 2.0 Device Authorization Grant*:: If enabled, this client can use the OIDC xref:con-oidc-auth-flows_server_administration_guide[Device Authorization Grant].
-*OIDC CIBA Grant*:: If enabled, this client can use the OIDC xref:con-oidc-auth-flows_{context}[Client Initiated Backchannel Authentication Grant].
+Для клиентских клиентов, выполняющих вход в браузер. Поскольку невозможно удостовериться в том, что секреты могут быть надежно сохранены клиентам, важно ограничить доступ настройкой правильного перенаправления URI.
+Клиенты с отключенной аутентификацией являются публичными клиентами.
+*Авторизация*:: Включает или отключает поддержку тонкой авторизации для этого клиента.
+*Стандартный цвет*:: Если включено, этот клиент может использовать OIDC xref:_oidc-auth-flows-authorization[Код авторизации].
+*Предоставление прямого доступа*:: Если включено, этот клиент может использовать OIDC xref:_oidc-auth-flows-direct[Предоставление прямого доступа].
+*Неявный Блок*:: Если включено, этот клиент может использовать OIDC xref:_oidc-auth-flows-implicit[Implicit Flow].
+*Роли сервисных счетов*:: Если включено, этот клиент может аутентифицироваться на {project_name} и получить токен доступа, посвященный этому клиенту. В соответствии с OAuth2 это позволяет поддерживать `Client Credentials Grant` для этого клиента.
+*Стандартная Обмен Токенов*:: Если включено, этот клиент может использовать ссылку:{securing_apps_token_exchange_link}#_standard-token-exchange[Стандартный обмен токено].
+*Авторизация 2.0 Авторизация*:: Если включено, этот клиент может использовать OIDC xref:con-oidc-auth-flows_server_administration_guide[Авторизация устройства].
+*Грант OIDC CIBA*:: Если этот параметр включен, этот клиент может использовать OIDC xref:con-oidc-auth-flows_{context}[Предоставление бэкканальной аутентификации клиента].
 
 [[_proof-key-for-code-exchange]]
-*PKCE method*
+*Метод PKCE*
 
-If an attacker steals an authorization code of a legitimate client, Proof Key for Code Exchange (PKCE) prevents the attacker from receiving the tokens that apply to the code. With this option,
-you can specify which PKCE challenge method is required for this client.
+Если злоумышленник крадет код авторизации законного клиента, Proof Key for Code Exchange (PKCE) запрещает злоумышленнику получать токены, которые применяются к коду. С помощью этой опции
+вы можете указать, какой метод проверки PKCE необходим для этого клиента.
 
-An administrator can select one of these options:
+Администратор может выбрать один из этих вариантов:
 
-*(blank)*:: {project_name} does not apply PKCE unless the client sends the appropriate PKCE parameters to {project_name} authorization endpoint. So PKCE is still possible to use, but it is not required.
-*S256*:: {project_name} applies to the client PKCE whose code challenge method is S256.
-*plain*:: {project_name} applies to the client PKCE whose code challenge method is plain.
+*(пусто)*:: {project_name} не применяет PKCE, если клиент не посылает соответствующие параметры PKCE в конечную точку авторизации {project_name}. Поэтому PKCE все еще можно использовать, но это не требуется.
+*S256*:: {project_name} применяется к клиенту PKCE, чей метод проверки кода является S256.
+*обычный*:: {project_name} применяется к клиенту PKCE, чей метод проверки кода является простым.
 
-See https://datatracker.ietf.org/doc/html/rfc7636[RFC 7636 Proof Key for Code Exchange by OAuth Public Clients] for more details.
+Более подробную информацию см. https://datatracker.ietf.org/doc/html/rfc7636[RFC 7636 Proof Key for Code Exchange by OAuth Public Clients].
 
-*Require DPoP bound tokens*
+*Требовать токены привязки DPoP*
 
-DPoP binds an access token and a refresh token together with the public part of a client's key pair. For the details, see <<_dpop-bound-tokens, DPoP>>.
+DPoP связывает токен доступа и токен обновления вместе с публичной частью пары ключей клиента. Подробнее см. <_dpop-bound-tokens, DPoP>>.
 
-== Login settings
+== Настройки входа
 
-*Login theme*:: A theme to use for login, OTP, grant registration, and forgotten password pages.
-*Consent required*:: If enabled, users have to consent to client access.
+*Тема входа*:: Тема для использования для входа, OTP, предоставления регистрации и забытых страниц с паролем.
+*Требуется согласие*:: Если включено, пользователи должны дать согласие на доступ к клиенту.
 +
-For client-side clients that perform browser logins. As it is not possible to ensure that secrets can be kept safe with client-side clients, it is important to restrict access by configuring correct redirect URIs.
-*Display client on screen*:: This switch applies if *Consent Required* is *Off*.
-* _Off_
+Для клиентских клиентов, выполняющих вход в браузер. Поскольку невозможно удостовериться в том, что секреты могут быть надежно сохранены клиентам, важно ограничить доступ настройкой правильного перенаправления URI.
+*Отображать клиент на экране*:: Этот переключатель применяется, если *Обязательное Соглашение* *выключено.
+* _Выкл_
 +
-The consent screen will contain only the consents corresponding to configured client scopes.
-* _On_
+Экран согласия будет содержать только согласия, соответствующие заданному клиентскому охвату.
+* _Вкл_
 +
-There will be also one item on the consent screen about this client itself.
-*Client consent screen text*:: Applies if *Consent required* and *Display client on screen* are enabled. Contains the text that will be on the consent screen about permissions for this client.
+На экране согласия будет также один элемент о самом клиенте.
+*Текст с согласия клиента*:: Применяется, если *Требуется согласие* и *Отображение клиента на экране* включено. Содержит текст, который будет на экране согласия о разрешениях для этого клиента.
 
-== Logout settings
+== Настройки выхода
 
 [[_front-channel-logout]]
-*Front channel logout*:: If *Front Channel Logout* is enabled, the application should be able to log out users through the front channel as per link:https://openid.net/specs/openid-connect-frontchannel-1_0.html[OpenID Connect Front-Channel Logout] specification. If enabled, you should also provide the `Front-Channel Logout URL`.
-*Front-channel logout URL*:: URL that will be used by {project_name} to send logout requests to clients through the front-channel. If not provided, it defaults to the Home URL. This option is applicable just if `Front channel logout` option is ON.
-*Front-channel logout session required*:: Specifies whether a sid (session ID) and iss (issuer) parameters are included in the Logout request when the Front-channel Logout URL is used.
+*Выход из фронт-канала*:: Если включена *Выход из фронт-канала*, приложение должно иметь возможность выходить пользователей через фронт-канал по ссылке:https://openid. et/specs/openid-connect-frontchannel-1_0.html[OpenID Connect Front-Channel Logout]. Если этот параметр включен, вы также должны указать URL-адрес `Front-Channel Logout`.
+*URL выхода на фронт-канал*:: URL, который будет использоваться {project_name} для отправки запросов о выходе клиентам через фронт-канал. Если не указано, то по умолчанию он используется для домашнего URL-адреса. Эта опция применима только если опция 'Выход из фронтального канала' включена.
+*Требуется сеанс выхода на фронт-канал*:: Определяет, включены ли параметры sid (ID сеанса) и iss (эмитент) в запрос выхода при использовании URL на фронт-канал Выход.
 
 [[_back-channel-logout-url]]
-*Backchannel logout URL*:: URL that will cause the client to log itself out when a logout request is sent to this realm (via end_session_endpoint). The logout is done by sending logout token as specified in the OIDC Backchannel logout specification. If omitted, the logout request might be sent to the specified `Admin URL` (if configured) in the format specific to {project_name} adapters. If even `Admin URL` is not configured, no logout request will be sent to the client. This option is applicable just if `Front channel logout` option is OFF.
-*Backchannel logout session required*:: Specifies whether a session ID Claim is included in the Logout Token when the *Backchannel Logout URL* is used.
-*Backchannel logout revoke offline sessions*:: Specifies whether a revoke_offline_access event is included in the Logout Token when the Backchannel Logout URL is used. {project_name} will revoke offline sessions when receiving a Logout Token with this event.
+*URL выхода из пропусков канала*:: URL, который приведет к выходу клиента из системы, когда он будет отправлен в этот реалм (через end_session_endpoint). Выход выполняется отправкой токена выхода, как указано в спецификации OIDC Backchannel. Если он пропущен, запрос на выход может быть отправлен на указанный `Admin URL` (если настроен) в формате, специфичном для {project_name} адаптеров. Если даже `Admin URL` не настроен, запрос на выход из системы не будет отправлен клиенту. Эта опция применима только в том случае, если опция 'Выход из фронтального канала' выключена.
+*Требуется сеанс выхода из бэкканала*:: Определяет, включена ли заявка на идентификатор сессии в токен выхода при использовании *Backchannel Logout URL*.
+*Выход из Backchannel отменяет сеансы в автономном режиме*:: Определяет, включено ли событие revoke_offline_access в токен выхода при использовании URL Backchannel. {project_name} отменит сеансы оффлайн при получении токена выхода с этим событием.
 
 [[_logout-confirmation]]
-*Logout confirmation*:: When enabled, {project_name} displays a confirmation page to the user after a successful logout that reads “You are logged out”. This setting primarily affects browser-based logouts, including xref:_oidc-logout[OIDC Logout] initiated by the client (RP-Initiated Logout). If a `post_logout_redirect_uri` is provided and validated for this client, the confirmation page includes a link (or button) to continue to that URL instead of redirecting automatically.
+*Подтверждение выхода из системы*:: Когда включено, {project_name} показывает страницу подтверждения для пользователя после успешного выхода из системы, которая гласит “Вы вышли из системы”. Эта настройка в первую очередь влияет на браузерные логины, включая xref:_oidc-logout[OIDC Logout], инициированные клиентом (RP-Initiated Logout). Если для этого клиента предоставляется и проверяется `post_logout_redirect_uri`, страница подтверждения включает ссылку (или кнопку), чтобы перейти к этому URL вместо автоматического перенаправления.
