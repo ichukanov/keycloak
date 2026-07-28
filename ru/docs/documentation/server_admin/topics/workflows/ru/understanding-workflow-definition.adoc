@@ -1,10 +1,10 @@
 [[_understanding_workflow_definition_]]
-= Understanding the workflow definition
+= Понимание определения рабочего процесса
 
-Workflows are defined in YAML format. This format allows for a clear and human-readable way to specify the automation process
+Рабочие процессы определяются в формате YAML. This format allows for a clear and human-readable way to specify the automation process
 represented by a workflow.
 
-In its simplest form, a workflow definition can be defined as follows:
+В упрощенной форме определение рабочего процесса можно определить следующим образом:
 
 ```yaml
 name: Onboarding new users
@@ -30,41 +30,41 @@ steps:
       position: 1
 ```
 
-The example above is very simple but illustrates the core structure and the flexibility of a workflow to automate administrative tasks.
-It is composed of three main sections:
+Приведенный выше пример очень прост, но иллюстрирует основную структуру и гибкость рабочего процесса для автоматизации административных задач.
+Она состоит из трех основных разделов:
 
-* `name`: A unique and user-friendly name to identify the workflow within the realm.
-* `on`: The event that will trigger the workflow. In this case, the workflow is triggered when a new user is added to the realm.
-* `steps`: A set of one or more steps to be executed when executing a workflow execution. In this example, three steps are defined:
-1. The first step uses the built-in `notify-user` action to send a welcome message to the new user.
-1. The second step uses the built-in `add-required-action` action to require the user to update their password after 30 days.
-1. The third step uses the built-in `restart` action to restart the workflow from the second step so that the user is forced to update their password every 30 days.
+* `name`: Уникальное и удобное для пользователя имя для определения рабочего процесса в этой области.
+* `on`: Событие, которое будет инициировать рабочий процесс. В этом случае рабочий процесс запускается при добавлении нового пользователя в реалм.
+* `steps`: Набор из одного или нескольких шагов, которые будут выполнены при выполнении рабочего процесса. В этом примере определены три шага:
+1. На первом шаге используется действие `notify-user` для отправки приветственного сообщения новому пользователю.
+1. Второй шаг использует встроенное действие «add-required-action», чтобы потребовать от пользователя обновить свой пароль через 30 дней.
+1. Третий шаг использует встроенное действие «restart» для перезапуска рабочего процесса со второго шага, чтобы пользователь был вынужден обновлять пароль каждые 30 дней.
 
-Here is a more detailed look at all settings available from the workflow definition:
+Более подробный обзор всех параметров, доступных в определении рабочего процесса:
 
-`name`:: A unique and user-friendly name to identify the workflow within the realm.
-This name is crucial for management and logging purposes.
-This setting is mandatory.
-`on`:: Define a condition that determines the event that will trigger the workflow.
-The condition is written using an expression language that supports a variety of checks on the event.
-See <<_workflow_events_>> for more details.
-This setting is optional.
-`schedule`:: Define a schedule that will trigger the workflow at defined intervals.
-See <<_scheduling_workflows_>> for more details.
-This setting is optional.
-`if`:: Define a condition that must be met for the workflow to be triggered.
-The condition is written using an expression language that supports a variety of checks on the realm resource
-associated with the event.
-A workflow execution is only created if the expression evaluates to `true`.
-If this setting is omitted, the event defined in the `on` setting will always create the workflow execution.
-See <<_workflow_conditions_>> for more details.
-This setting is optional.
-`steps`:: Define the step chain consisting of one or more steps to be sequentially executed during the lifetime of a workflow.
-See <<_workflow_steps_>> for more details.
-This setting is mandatory.
-`concurrency`:: This setting controls the behavior when multiple events that would trigger the same workflow occur for the same realm resource while a workflow execution is already active for that resource. This setting is optional.
-+ The available options are:
-* `restart-in-progress`: A new event causes the current workflow execution to restart from the beginning.
-* `cancel-in-progress`: A new event causes the current workflow execution to be canceled and disassociated from the realm resource.
-`enabled`:: This setting enables or disables the workflow. If set to `false`, new workflow executions will not be created for the workflow and any active workflow execution will be paused.
-This setting is optional and defaults to `true`.
+`name`:: Уникальное и удобное имя для идентификации рабочего процесса в этой области.
+Это название имеет решающее значение для управления и ведения лесозаготовительных работ.
+Этот параметр является обязательным.
+`в`:: Определить условие, которое определяет событие, которое вызовет рабочий процесс.
+Условие пишется с помощью языка выражения, поддерживающего различные проверки на событие.
+Подробнее см. <<_workflow_events_>> .
+Эта настройка необязательна.
+`расписание`:: Определите график, который будет запускать рабочий процесс с определенными интервалами.
+Смотрите <<_scheduling_workflows_>> для более подробной информации.
+Эта настройка необязательна.
+`if`:: Определите условие, которое должно быть выполнено для запуска рабочего процесса.
+Условие пишется с помощью языка выражения, поддерживающего различные проверки ресурсов Realm
+связанных с событием.
+Выполнение рабочего процесса создается только в том случае, если выражение вычисляет `true`.
+Если этот параметр опущен, событие, определенное в параметре `on`, всегда создаст выполнение рабочего процесса.
+Подробнее см. <<_workflow_conditions_>> .
+Эта настройка необязательна.
+`шаги`:: Определите цепочку шагов, состоящую из одного или нескольких шагов, последовательно выполняемых в течение срока существования рабочего процесса.
+Подробнее см. <<_workflow_steps_>> .
+Этот параметр является обязательным.
+«совпадение»:: Этот параметр контролирует поведение, когда происходит несколько событий, которые запускают один и тот же рабочий процесс для одного и того же ресурса Realm, в то время как выполнение рабочего процесса уже активно для этого ресурса. Эта настройка необязательна.
++ Доступные варианты:
+* `restart-in-progress`: новое событие вызывает текущее исполнение рабочего процесса для перезапуска с самого начала.
+* `cancel-in-progress`: Новое событие приводит к отмене текущего выполнения рабочего процесса и отключению от ресурса Realm.
+`включена`:: Этот параметр включает или отключает рабочий процесс. Если установлено значение `false`, то новые выполнения рабочего процесса не будут созданы для рабочего процесса, и любое активное выполнение рабочего процесса будет приостановлено.
+Этот параметр является необязательным, а по умолчанию — `true`.
