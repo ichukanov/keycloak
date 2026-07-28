@@ -5,13 +5,13 @@
 // server_admin/topics/users.adoc
 
 [id="proc-deleting-user_{context}"]
-= Deleting a user
+= Удаление пользователя
 
-You can delete a user, who no longer needs access to applications. If a user is deleted, the user profile and data is also deleted.
+Вы можете удалить пользователя, которому больше не нужен доступ к приложениям. При удалении пользователя, профиль пользователя и данные также удаляются.
 
-.Procedure
-. Click *Users* in the menu. The *Users* page is displayed.
-. Click *View all users* to find a user to delete.
+.Процедура
+. Нажмите *Пользователи* в меню. Страница *Пользователи* отображается.
+. Нажмите *Просмотреть всех пользователей*, чтобы найти пользователя для удаления.
 +
-NOTE: Alternatively, you can use the search bar to find a user.
-. Click *Delete* from the action menu next to the user you want to remove and confirm deletion.
+NOTE: Кроме того, вы можете использовать строку поиска для поиска пользователя.
+. Нажмите *Удалить* из меню действий рядом с пользователем, который вы хотите удалить и подтвердить удаление.
