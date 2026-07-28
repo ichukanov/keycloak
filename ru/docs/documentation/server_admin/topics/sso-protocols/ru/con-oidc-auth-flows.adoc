@@ -1,365 +1,365 @@
 [id="con-oidc-auth-flows_{context}"]
-==== OIDC auth flows
+==== Потоки авторизации OIDC
 
 [role="_abstract"]
-OIDC has several methods, or flows, that clients or applications can use to authenticate users and receive _identity_ and _access_ tokens. The method depends on the type of application or client requesting access.
+OIDC имеет несколько методов или потоков, которые клиенты или приложения могут использовать для аутентификации пользователей и получения фишек _identity_ и _access_tokens. Метод зависит от типа приложения или клиента, запрашивающего доступ.
 
-===== Authorization Code Flow
+===== Код авторизации
 
-The Authorization Code Flow is a browser-based protocol and suits authenticating and authorizing browser-based applications. It uses browser redirects to obtain _identity_ and _access_ tokens.
+Код авторизации - это браузерный протокол и подходит для аутентификации и авторизации браузерных приложений. Для получения токенов _identity_ и _access_ используется браузер.
 
-. A user connects to an application using a browser. The application detects the user is not logged into the application.
-. The application redirects the browser to {project_name} for authentication.
-. The application passes a callback URL as a query parameter in the browser redirect. {project_name} uses the parameter upon successful authentication.
-. {project_name} authenticates the user and creates a one-time, short-lived, temporary code.
-. {project_name} redirects to the application using the callback URL and adds the temporary code as a query parameter in the callback URL.
-. The application extracts the temporary code and makes a background REST invocation to {project_name}
-to exchange the code for an _identity_ and _access_ and _refresh_ token. To prevent replay attacks, the temporary code cannot be used more than once.
+. Пользователь подключается к приложению с помощью браузера. Приложение обнаруживает, что пользователь не вошел в приложение.
+. Приложение перенаправляет браузер на {project_name} для аутентификации.
+. Приложение передает обратный URL в качестве параметра запроса в браузере перенаправления. {project_name} использует параметр при успешной аутентификации.
+. {project_name} аутентифицирует пользователя и создает одноразовый временный код.
+. {project_name} перенаправляет на приложение, используя обратный URL и добавляет временный код в качестве параметра запроса в URL обратного вызова.
+. Приложение извлекает временный код и делает фоновое обращение REST к {project_name}
+для обмена кода на _identity_ и _access_ и _refresh_ токен. Чтобы предотвратить повторную атаку, временный код нельзя использовать более одного раза.
 
 [NOTE]
 ====
-A system is vulnerable to a stolen token for the lifetime of that token. For security and scalability reasons, access tokens are generally set to expire quickly so subsequent token requests fail. If a token expires, an application can obtain a new access token using the additional _refresh_ token sent by the login protocol.
+Система уязвима к похищенному токену на время жизни этого токена. По соображениям безопасности и масштабирования токены доступа, как правило, устанавливаются на быстрое прекращение, так что последующие токен-запросы не выполняются. Если срок действия токена истек, приложение может получить новый токен доступа, используя дополнительный токен, отправленный по протоколу входа.
 ====
 
 [[_confidential-clients]]
-_Confidential_ clients provide client secrets when they exchange the temporary codes for tokens. _Public_ clients are not required to provide client secrets.
-_Public_ clients are secure when HTTPS is strictly enforced and redirect URIs registered for the client are strictly controlled. HTML5/JavaScript clients have to be _public_ clients because there is no way to securely transmit the client secret to HTML5/JavaScript clients. For more details, see the xref:assembly-managing-clients_{context}[Managing Clients] chapter.
+Клиенты _Confidential_ предоставляют клиентские секреты при обмене временных кодов на токены. _Публичные_ клиенты не требуются для предоставления клиентских секретов.
+_Public_ clients are secure when HTTPS is strictly enforced and redirect URI, registered for the client are strictly controled. Клиенты HTML5/JavaScript должны быть _публичными_ клиентами, так как нет способа надежно передавать клиентскую тайну клиентам HTML5/JavaScript. Подробнее см. в разделе xref:assembly-managing-clients_{context}[Управление клиентами].
 
-{project_name} also supports the https://datatracker.ietf.org/doc/html/rfc7636[Proof Key for Code Exchange] specification.
+{project_name} также поддерживает спецификацию https://datatracker.ietf.org/doc/html/rfc7636[Proof Key for Code Exchange].
 
-===== Implicit Flow
+===== Неявный поток
 
-The Implicit Flow is a browser-based protocol. It is similar to the Authorization Code Flow but with fewer requests and no refresh tokens.
+Implicit Flow - это протокол, основанный на браузере. Он похож на код авторизации, но с меньшим количеством запросов и токенов обновления.
 
 [NOTE]
 ====
-The possibility exists of _access_ tokens leaking in the browser history when tokens are transmitted via redirect URIs (see below).
+Возможность утечки токенов в истории браузера, когда токены передаются через редиректные URI (см. ниже).
 
-Also, this flow does not provide clients with refresh tokens. Therefore, access tokens have to be long-lived or users have to re-authenticate when they expire.
+Кроме того, этот поток не предоставляет клиентам токены обновления. Поэтому токены доступа должны быть долгожительными или пользователи должны повторно авторизоваться по истечении срока их действия.
 
-We do not advise using this flow. This flow is supported because it is in the OIDC and OAuth 2.0 specification.
+Мы не рекомендуем использовать этот поток. Этот поток поддерживается, так как он находится в спецификации OIDC и OAuth 2.0.
 ====
 
-The protocol works as follows:
+Протокол работает следующим образом:
 
-. A user connects to an application using a browser. The application detects the user is not logged into the application.
-. The application redirects the browser to {project_name} for authentication.
-. The application passes a callback URL as a query parameter in the browser redirect. {project_name} uses the query parameter upon successful authentication.
-. {project_name} authenticates the user and creates an _identity_ and _access_ token. {project_name}
-redirects to the application using the callback URL and additionally adds the _identity_ and _access_ tokens as a query parameter in the callback URL.
-. The application extracts the _identity_ and _access_ tokens from the callback URL.
+. Пользователь подключается к приложению с помощью браузера. Приложение обнаруживает, что пользователь не вошел в приложение.
+. Приложение перенаправляет браузер на {project_name} для аутентификации.
+. Приложение передает обратный URL в качестве параметра запроса в браузере перенаправления. {project_name} использует параметр запроса при успешной аутентификации.
+. {project_name} аутентифицирует пользователя и создает _identity_ и _access_ токен. {project_name}
+перенаправляет на приложение, используя URL обратного вызова и дополнительно добавляет _identity_ и _access_ токены в качестве параметра запроса в URL обратного вызова.
+. Приложение извлекает ключи _identity_ и _access_ из URL обратного вызова.
 
-===== Resource owner password credentials grant (Direct Access Grants)
+===== Предоставление паролей владельца ресурсов (грантов прямого доступа)
 
-_Direct Access Grants_ are used by REST clients to obtain tokens on behalf of users. It is a HTTP POST request that contains:
+_Гранты прямого доступа_ используются клиентами REST для получения токенов от имени пользователей. Это HTTP-запрос POST, который содержит:
 
-* The credentials of the user. The credentials are sent within form parameters.
-* The id of the client.
-* The clients secret (if it is a confidential client).
+* Учетные данные пользователя. Учетные данные отправляются в пределах параметров формы.
+* Идентификатор клиента.
+* Секретный клиент (если он является конфиденциальным клиентом).
 
-The HTTP response contains the _identity_, _access_, and _refresh_ tokens.
+Ответ HTTP содержит _identity_, _access_, и _refresh_ маркеры.
 
 [[_client_credentials_grant]]
-===== Client credentials grant
+===== Предоставление учетных данных клиента
 
-The _Client Credentials Grant_ creates a token based on the metadata and permissions of a service account associated with the client instead of obtaining a token that works on behalf of an external user. _Client Credentials Grants_ are used by REST clients.
+_Учетные данные клиента Grant_ создают токен на основе метаданных и разрешений сервисной учетной записи, связанной с клиентом вместо получения токена, который работает от имени внешнего пользователя. _Учетные данные Грантов используются REST клиентами.
 
-See the <<_service_accounts,Service Accounts>> chapter for more information.
+Для получения дополнительной информации обратитесь к главе <<_service_accounts,Service Accounts>>.
 
 [[_refresh_token_grant]]
-===== Refresh token grant
+===== Разрешить обновление токена
 
-By default, {project_name} returns refresh tokens in the token responses from most of the flows. Some exceptions are implicit flow or client credentials grant described above.
+По умолчанию {project_name} возвращает обновление токенов в ответах на большинство потоков. Некоторые исключения являются неявным потоком или предоставлением учетных данных клиента, описанным выше.
 
-Refresh token is tied to the user session of the SSO browser session and can be valid for the lifetime of the user session. However, that client should send a refresh-token request at least once per
-specified interval. Otherwise, the session can be considered "idle" and can expire. See the <<_timeouts,timeouts section>> for more information.
+Обновленный токен привязан к сессии пользователя сеанса браузера SSO и может быть действителен в течение всего времени сеанса пользователя. Тем не менее, этот клиент должен отправить запрос refresh-token хотя бы один раз в течение
+указанного интервала. В противном случае сеанс может считаться "бездействием" и может закончиться. Смотрите <_timeouts,timeouts section>> для получения дополнительной информации.
 
-{project_name} supports <<_offline-access,offline tokens>>, which can be used typically when client needs to use refresh token even if corresponding browser SSO session is already expired.
+{project_name} поддерживает <<_offline-access,offline tokens>>, который может быть использован, как правило, когда клиенту нужно использовать токен обновления, даже если соответствующий сеанс SSO в браузере уже истек.
 
 [[_refresh_token_rotation]]
-====== Refresh token rotation
+====== Обновить поворот токена
 
-It is possible to specify that the refresh token is considered invalid once it is used. This means that client must always save the refresh token from the last refresh response because older refresh tokens,
-which were already used, would not be considered valid anymore by {project_name}. This is possible to set with the use of _Revoke Refresh token_ option as specified in the <<_timeouts,timeouts section>>.
+Можно указать, что токен обновления считается недействительным после его использования. Это означает, что клиент должен всегда сохранять токен обновления из последнего ответа обновления, потому что старые токены обновления,
+которые уже были использованы, не будут считаться действительными {project_name}. Это можно установить с помощью опции _Revoke Refresh token_ как указано в <_timeouts,timeouts section>.
 
-{project_name} also supports the situation that no refresh token rotation exists. In this case, a refresh token is returned during login, but subsequent responses from refresh-token requests will not
-return new refresh tokens. This practice is recommended for instance in the *FAPI 2 draft specification* and *FAPI 2 final specification* in the link:{securing_apps_link}[securing apps] section.
-In {project_name}, it is possible to skip refresh token rotation with the use of <<_client_policies,client policies>>. You can add executor `suppress-refresh-token-rotation` to some client
-profile and configure client policy to specify for which clients would be the profile triggered, which means that for those clients the refresh token rotation is going to be skipped.
+{project_name} также поддерживает ситуацию, при которой не существует вращения токена обновления. В этом случае токен обновления возвращается во время входа в систему, но последующие ответы от запросов refresh-token не
+возвращают новые токены обновления. Эта практика рекомендуется, например, в разделе *FAPI 2 черновой спецификации* и *FAPI 2 окончательной спецификации* по ссылке:{securing_apps_link}[защита приложений].
+В {project_name}можно пропустить поворот токена обновления с использованием <<_client_policies,client policies>>. Вы можете добавить исполнителя `suppress-refresh-token-rotation` к некоторому клиенту
+профилю и настроить клиентскую политику, чтобы указать, для каких клиентов запускался профиль, это означает, что для этих клиентов будет пропущен поворот токена обновления.
 
-===== Device authorization grant
+===== Разрешение на авторизацию устройства
 
-This is used by clients running on internet-connected devices that have limited input capabilities or lack a suitable browser. Here's a brief summary of the protocol:
+Это используется клиентами, работающими на устройствах, подключенных к Интернету, которые имеют ограниченные возможности ввода или не имеют подходящего браузера. Вот краткое описание протокола:
 
-. The application requests {project_name} a device code and a user code. {project_name} creates a device code and a user code. {project_name} returns a response including the device code and the user code to the application.
-. The application provides the user with the user code and the verification URI. The user accesses a verification URI to be authenticated by using another browser. You could define a short verification_uri that will be redirected to {project_name} verification URI (/realms/realm_name/device) outside {project_name} - for example in a proxy.
-. The application repeatedly polls {project_name} to find out if the user completed the user authorization. If user authentication is complete, the application exchanges the device code for an _identity_, _access_ and _refresh_ token.
+. The application requests {project_name} a device code and a user code. {project_name} создает код устройства и код пользователя. {project_name} возвращает приложению ответ, включая код устройства и код пользователя.
+. Приложение предоставляет пользователю код пользователя и верификационный URI. Пользователь получает доступ к URI проверки подлинности с помощью другого браузера. Вы можете указать короткую проверку подлинности_uri, которая будет перенаправлена на URI проверки {project_name} (/realms/realm_name/device) за пределами {project_name} - например в прокси.
+. Приложение неоднократно опрашивает {project_name} , чтобы выяснить, завершил ли пользователь авторизацию. Если аутентификация пользователя завершена, приложение заменяет код устройства для _identity_, _access_ и _refresh_ токена.
 
 [[_client_initiated_backchannel_authentication_grant]]
-===== Client initiated backchannel authentication grant
+===== Клиент инициировал бэкканальную аутентификацию
 
-This feature is used by clients who want to initiate the authentication flow by communicating with the OpenID Provider directly without redirect through the user's browser like OAuth 2.0's authorization code grant. Here's a brief summary of the protocol:
+Эта функция используется клиентами, которые хотят инициировать процесс аутентификации путем общения с поставщиком OpenID напрямую без перенаправления через браузер пользователя, например OAuth 2. выдан код авторизации. Вот краткое описание протокола:
 
-. The client requests {project_name} an auth_req_id that identifies the authentication request made by the client. {project_name} creates the auth_req_id.
-. After receiving this auth_req_id, this client repeatedly needs to poll {project_name} to obtain an Access Token, Refresh Token and ID Token from {project_name} in return for the auth_req_id until the user is authenticated.
+. Клиент запрашивает {project_name} auth_req_id, который идентифицирует запрос на аутентификацию, сделанный клиентом. {project_name} создает auth_req_id.
+. После получения этого auth_req_id, этому клиенту неоднократно нужно опросить {project_name} для получения токена доступа, Обновите токен и идентификационный токен от {project_name} в обмен на auth_req_id до тех пор, пока пользователь не будет аутентифицирован.
 
-An administrator can configure Client Initiated Backchannel Authentication (CIBA) related operations as `CIBA Policy` per realm.
+Администратор может настроить связанные с Клиентом Backchannel Authentication операции как «Политику CIBA» в каждом реалме.
 
-Also please refer to other places of {project_name} documentation like *Backchannel Authentication Endpoint* and *Client Initiated Backchannel Authentication Grant* in the link:{securing_apps_link}[securing apps] section.
+Также обратитесь к другим местам документации {project_name} , таким как *Backchannel Authentication Endpoint* и *Backchannel Authentication Grant* по ссылке:{securing_apps_link}[защита приложений].
 
-====== CIBA Policy
+====== Политика CIBA
 
-An administrator carries out the following operations on the `Admin Console` :
+Администратор осуществляет следующие операции в `Admin Console` :
 
-- Open the `Authentication -> CIBA Policy` tab.
-- Configure items and click `Save`.
+- Откройте вкладку `Authentication -> CIBA Policy`.
+- Настройте элементы и нажмите «Сохранить».
 
-The configurable items and their description follow.
+Элементы, настраиваемые и их описание, следуют.
 
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
-|Backchannel Token Delivery Mode
-|Specifying how the CD (Consumption Device) gets the authentication result and related tokens. There are three modes, "poll", "ping" and "push". {project_name} only supports "poll". The default setting is "poll". This configuration is required.
- For more details, see https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.5[CIBA Specification].
+|Способ доставки токенов канала
+|Укажите, как CD (Consumption Device) получает результат аутентификации и соответствующие токены. Существует три режима: "опрос", "пинг" и "push". {project_name} поддерживает только "опрос". Значение по умолчанию: "poll". Эта конфигурация обязательна.
+ Подробнее см. https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.5[CIBA Specification].
 
-|Expires In
-|The expiration time of the "auth_req_id" in seconds since the authentication request was received. The default setting is 120. This configuration is required.
- For more details, see https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#successful_authentication_request_acknowdlegment[CIBA Specification].
+|Истекает через
+|Время истечения "auth_req_id" в секундах с момента получения запроса аутентификации. Значение по умолчанию: 120. Эта конфигурация обязательна.
+ Подробнее см. https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#successful_authentication_request_acknowdlegment[CIBA Specification].
 
-|Interval
-|The interval in seconds the CD (Consumption Device) needs to wait for between polling requests to the token endpoint. The default setting is 5. This configuration is optional.
- For more details, see https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#successful_authentication_request_acknowdlegment[CIBA Specification].
+|Интервал
+|Интервал в секундах, в секундах CD (Consumption Device) должен подождать между запросами на опрос до конечной точки токена. Значение по умолчанию: 5. Эта конфигурация необязательна.
+ Подробнее см. https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#successful_authentication_request_acknowdlegment[CIBA Specification].
 
-|Authentication Requested User Hint
-|The way of identifying the end-user for whom authentication is being requested. The default setting is "login_hint". There are three modes, "login_hint", "login_hint_token" and "id_token_hint". {project_name} only supports "login_hint". This configuration is required.
- For more details, see https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.7.1[CIBA Specification].
+|Подсказка к запросу аутентификации
+|Способ идентификации конечного пользователя, для которого запрашивается аутентификация. По умолчанию: "login_hint". Существуют три режима: "login_hint", "login_hint_token" и "id_token_hint". {project_name} поддерживает только "login_hint". Эта конфигурация обязательна.
+ Подробнее см. https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#rfc.section.7.1[CIBA Specification].
 |===
 
-====== Provider Setting
+====== Настройки провайдера
 
-The CIBA grant uses the following two providers.
+В гранте CIBA используются следующие два провайдера.
 
-. Authentication Channel Provider: provides the communication between {project_name} and the entity that actually authenticates the user via AD (Authentication Device).
-. User Resolver Provider: get `UserModel` of {project_name} from the information provided by the client to identify the user.
+. Провайдер каналов аутентификации: обеспечивает связь между {project_name} и сущностью, которая фактически аутентифицирует пользователя через AD (устройство аутентификации).
+. Поставщик пользовательского решения: получите `UserModel` из {project_name} от информации, предоставленной клиентом для идентификации пользователя.
 
-{project_name} has both default providers. However, the administrator needs to set up Authentication Channel Provider like this:
+У {project_name} есть оба поставщика по умолчанию. Однако администратору необходимо настроить канал аутентификации следующим образом:
 
 [source,bash,subs="attributes+"]
 ----
 kc.[sh|bat] start --spi-ciba-auth-channel--ciba-http-auth-channel--http-authentication-channel-uri=https://backend.internal.example.com{kc_base_path}
 ----
 
-The configurable items and their description follow.
+Элементы, настраиваемые и их описание, следуют.
 
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
 |http-authentication-channel-uri
-|Specifying URI of the entity that actually authenticates the user via AD (Authentication Device).
+|Указанный URI сущности, которая фактически аутентифицирует пользователя через AD (устройство аутентификации).
 |===
 
-====== Authentication Channel Provider
+====== Поставщик канала аутентификации
 
-CIBA standard document does not specify how to authenticate the user by AD. Therefore, it might be implemented at the discretion of products. {project_name} delegates this authentication to an external authentication entity. To communicate with the authentication entity, {project_name} provides Authentication Channel Provider.
+В стандартном документе CIBA не указывается, как аутентифицировать пользователя AD. Поэтому он может быть реализован по усмотрению товаров. {project_name} делегатов эта аутентификация внешнему элементу аутентификации. Для связи с субъектом аутентификации, {project_name} предоставляет поставщика каналов аутентификации.
 
-Its implementation of {project_name} assumes that the authentication entity is under the control of the administrator of {project_name} so that {project_name} trusts the authentication entity. It is not recommended to use the authentication entity that the administrator of {project_name} cannot control.
+Его реализация {project_name} предполагает, что сущность аутентификации находится под контролем администратора {project_name} , чтобы {project_name} доверял сущности аутентификации. Не рекомендуется использовать элемент аутентификации, который администратор {project_name} не может контролировать.
 
-Authentication Channel Provider is provided as SPI provider so that users of {project_name} can implement their own provider in order to meet their environment. {project_name} provides its default provider called HTTP Authentication Channel Provider that uses HTTP to communicate with the authentication entity.
+Поставщик каналов аутентификации предоставляется как поставщик SPI, чтобы пользователи {project_name} могли реализовать своего провайдера для удовлетворения своих окружений. {project_name} предоставляет своего провайдера по умолчанию под названием HTTP Authentication Channel Provider, который использует HTTP для связи с сущностью аутентификации.
 
 If a user of {project_name} wants to use the HTTP Authentication Channel Provider, they need to know its contract between {project_name} and the authentication entity consisting of the following two parts.
 
-Authentication Delegation Request/Response:: {project_name} sends an authentication request to the authentication entity.
-Authentication Result Notification/ACK:: The authentication entity notifies the result of the authentication to {project_name}.
+Запрос/Ответ делегата аутентификации:: {project_name} отправляет запрос на аутентификацию сущности аутентификации.
+Результаты проверки подлинности уведомления/ACK:: Аутентификационная сущность уведомляет о результатах аутентификации {project_name}.
 
-Authentication Delegation Request/Response consists of the following messaging.
+Запрос/Ответ делегата аутентификации состоит из следующих сообщений.
 
-Authentication Delegation Request:: The request is sent from {project_name} to the authentication entity to ask it for user authentication by AD.
+Запрос на делегирование аутентификации:: Запрос отправлен от {project_name} сущности аутентификации для запроса аутентификации пользователя от AD.
 
 ----
 POST [delegation_reception]
 ----
 
-* Headers
+* Заголовки
 
 |===
-|Name |Value |Description
+|Наименование |Значение |Описание
 
-|Content-Type |application/json |The message body is json formatted.
+|Тип содержимого |приложение/json |Тело сообщения отформатировано.
 
-|Authorization |Bearer [token] |The [token] is used when the authentication entity notifies the result of the authentication to {project_name}.
+|Авторизация |носитель [token] |[token] используется, когда сущность аутентификации уведомляет о результатах аутентификации {project_name}.
 |===
 
-* Parameters
+* Параметры
 
 |===
-|Type |Name |Description
+|Тип |Наименование |Описание
 
-|Path
-|delegation_reception |The endpoint provided by the authentication entity to receive the delegation request
+|Путь
+|прием делегации_делегации |Конечный пункт, предоставленный субъектом проверки подлинности для получения запроса делегирования
 |===
 
-* Body
+* Тело
 
 |===
-|Name |Description
+|Наименование |Описание
 
-|login_hint |It tells the authentication entity who is authenticated by AD. +
-By default, it is the user's "username". +
-This field is required and was defined by CIBA standard document.
+|подсказка для входа |Он рассказывает сущность аутентификации, которая аутентифицирована AD. +
+По умолчанию, это "имя пользователя". +
+Это поле является обязательным и определено стандартным документом CIBA.
 
-|scope |It tells which scopes the authentication entity gets consent from the authenticated user. +
-This field is required and was defined by CIBA standard document.
+|объем |Он указывает, какие области аутентификации сущность получает согласие авторизованного пользователя. +
+Это поле является обязательным и определено стандартным документом CIBA.
 
-|is_consent_required |It shows whether the authentication entity needs to get consent from the authenticated user about the scope. +
- This field is required.
+|не требуется |Она показывает, должна ли сущность аутентификации получить от авторизованного пользователя согласие на область. +
+ Это поле является обязательным.
 
-|binding_message |Its value is intended to be shown in both CD and AD's UI to make the user recognize that the authentication by AD is triggered by CD. +
-This field is optional and was defined by CIBA standard document.
+|привязка сообщения |Его значение предназначено для отображения как на компакт-диске, так и в интерфейсе AD, с тем чтобы пользователь осознал, что аутентификация по AD вызывается на CD. +
+Это поле является необязательным и определено стандартным документом CIBA.
 
-|acr_values |It tells the requesting Authentication Context Class Reference from CD. +
-This field is optional and was defined by CIBA standard document.
+|acr_values |Он показывает запрошенную аутентификацию контекстного класса справочника с CD. +
+Это поле является необязательным и определено стандартным документом CIBA.
 |===
 
-Authentication Delegation Response:: The response is returned from the authentication entity to {project_name} to notify that the authentication entity received the authentication request from {project_name}.
-* Responses
+Ответ делегации аутентификации:: Ответ возвращается от сущности аутентификации {project_name} , чтобы уведомить, что сущность аутентификации получила запрос аутентификации от {project_name}.
+* Ответы
 
 |===
-|HTTP Status Code |Description
+|Код состояния HTTP |Описание
 
-|201 |It notifies {project_name} of receiving the authentication delegation request.
+|201 |Оно уведомляет {project_name} о получении запроса на делегирование аутентификации.
 |===
 
-Authentication Result Notification/ACK consists of the following messaging.
+Уведомление о результатах аутентификации/ACK состоит из следующих сообщений.
 
-Authentication Result Notification:: The authentication entity sends the result of the authentication request to {project_name}.
+Уведомление о результатах аутентификации:: Аутентификационная сущность посылает результат запроса аутентификации {project_name}.
 
 [source,subs=+attributes]
 ----
 POST {kc_realms_path}/[realm]/protocol/openid-connect/ext/ciba/auth/callback
 ----
 
-* Headers
+* Заголовки
 
 |===
-|Name |Value |Description
+|Наименование |Значение |Описание
 
-|Content-Type |application/json |The message body is json formatted.
+|Тип содержимого |приложение/json |Тело сообщения отформатировано.
 
-|Authorization |Bearer [token] |The [token] must be the one the authentication entity has received from {project_name} in Authentication Delegation Request.
+|Авторизация |носитель [token] |The [token] must be the one the authentication entity has received from {project_name} in Authentication Delegation Request.
 |===
 
-* Parameters
+* Параметры
 
 |===
-|Type |Name |Description
+|Тип |Наименование |Описание
 
-|Path
-|realm |The realm name
+|Путь
+|Область |Название области
 |===
 
-* Body
+* Тело
 
 |===
-|Name |Description
+|Наименование |Описание
 
-|status |It tells the result of user authentication by AD. +
-It must be one of the following status. +
-  SUCCEED : The authentication by AD has been successfully completed. +
-  UNAUTHORIZED : The authentication by AD has not been completed. +
-  CANCELLED : The authentication by AD has been cancelled by the user.
+|статус |Он показывает результат аутентификации пользователей AD. +
+Это должен быть один из следующих статусов. +
+  SUCCEED : Аутентификация по AD была успешно завершена. +
+  НЕАВТОРИЗАЦИЯ: Аутентификация по AD не была завершена. +
+  ОТМЕНА : Аутентификация по AD была отменена пользователем.
 |===
 
-Authentication Result ACK:: The response is returned from {project_name} to the authentication entity to notify {project_name} received the result of user authentication by AD from the authentication entity.
-* Responses
+Результат аутентификации ACK:: Ответ от {project_name} возвращается сущности аутентификации для уведомления {project_name} в результате аутентификации пользователя от элемента аутентификации.
+* Ответы
 
 |===
-|HTTP Status Code |Description
+|Код состояния HTTP |Описание
 
-|200 |It notifies the authentication entity of receiving the notification of the authentication result.
+|200 |Он уведомляет сущность аутентификации о получении уведомления о результатах аутентификации.
 |===
 
-====== User Resolver Provider
+====== Поставщик резолвера пользователей
 
-Even if the same user, its representation may differ in each CD, {project_name} and the authentication entity.
+Даже если один и тот же пользователь, его представление может отличаться на каждом CD, {project_name} и сущности аутентификации.
 
-For CD, {project_name} and the authentication entity to recognize the same user, this User Resolver Provider converts their own user representations among them.
+Для CD, {project_name} и аутентификации сущности, чтобы распознать одного и того же пользователя, этот поставщик резольвера преобразует среди них свои собственные представления пользователей.
 
-User Resolver Provider is provided as SPI provider so that users of {project_name} can implement their own provider in order to meet their environment. {project_name} provides its default provider called Default User Resolver Provider that has the following characteristics.
+User Resolver Provider предоставляется как SPI провайдер для того, чтобы пользователи {project_name} могли реализовать своего провайдера в соответствии со своим окружением. {project_name} предоставляет своего поставщика по умолчанию под названием Default User Resolver Provider, который имеет следующие характеристики.
 
-* Only support `login_hint` parameter and is used as default.
-* `username` of UserModel in {project_name} is used to represent the user on CD, {project_name} and the authentication entity.
+* Поддерживается только параметр `login_hint` и используется по умолчанию.
+* `username` UserModel {project_name} используется для представления пользователя на CD, {project_name} и аутентификации сущности.
 
-==== OIDC Logout
+==== OIDC выход
 
-OIDC has four specifications relevant to logout mechanisms:
+УИРК располагает четырьмя спецификациями, касающимися механизмов выхода:
 
-. https://openid.net/specs/openid-connect-session-1_0.html[Session Management]
-. https://openid.net/specs/openid-connect-rpinitiated-1_0.html[RP-Initiated Logout]
+. https://openid.net/specs/openid-connect-session-1_0.html[Управление сессиями]
+. https://openid.net/specs/openid-connect-rpinitiated-1_0.html[Выход, инициативный]
 . https://openid.net/specs/openid-connect-frontchannel-1_0.html[Front-Channel Logout]
 . https://openid.net/specs/openid-connect-backchannel-1_0.html[Back-Channel Logout]
 
-Again since all of this is described in the OIDC specification we will only give a brief overview here.
+Снова так как все это описано в OIDC спецификации, мы лишь дадим краткий обзор здесь.
 
 [[_oidc-logout-session-management]]
-===== Session Management
+===== Управление сессиями
 
-This is a browser-based logout. The application obtains session status information from {project_name} at a regular basis.
-When the session is terminated at {project_name} the application will notice and trigger its own logout.
+Это браузерный выход из системы. Приложение регулярно получает информацию о состоянии сеанса от {project_name}.
+Когда сеанс завершится на {project_name} , приложение заметит и запустит собственный выход из системы.
 
-This is useful especially for the browser-based applications, such as when the application is secured by the link:{securing_apps_javascript_adapter_link}[{securing_apps_javascript_adapter_name}]
-As a result, logout from one browser tab can trigger automatic logout from all other browser tabs with applications secured by the javascript adapter.
+Это особенно полезно для браузерных приложений, например, когда приложение защищено по ссылке:{securing_apps_javascript_adapter_link}[{securing_apps_javascript_adapter_name}]
+В результате, выход из одной вкладки браузера может вызвать автоматический выход из всех вкладок браузера с приложениями, защищенными адаптером javascript.
 
 [[]]
-===== RP-Initiated Logout
+===== Выход из RP
 
-This is also a browser-based logout where the logout starts by redirecting the user to a specific endpoint at {project_name}.
-This redirect usually happens when the user clicks the `Log Out` link on the page of some application, which previously used {project_name} to authenticate the user.
+Это также браузерный выход, в котором начинается выход с перенаправления пользователя на конкретную конечную точку {project_name}.
+Это перенаправление обычно происходит, когда пользователь нажимает ссылку «Выйти из системы» на странице некоторых приложений, который ранее использовал {project_name} для аутентификации пользователя.
 
 Once the user is redirected to the logout endpoint, {project_name} is going to send logout requests to
 clients attached to the current browser SSO session to let them invalidate their local user sessions, and potentially redirect the user to some URL
-once the logout process is finished. The user might be optionally requested to confirm the logout in case the `id_token_hint` parameter was not used.
-If the client has xref:_logout-confirmation[Logout confirmation] enabled, {project_name} renders a confirmation page after a successful logout informing the user that they are logged out. When a valid `post_logout_redirect_uri` is provided, this page includes an option to continue to that URL.
-After logout, the user is automatically redirected to the specified `post_logout_redirect_uri` as long as it is provided as a parameter.
-Note that you need to include either the `client_id` or `id_token_hint` parameter in case the `post_logout_redirect_uri` is included. Also the `post_logout_redirect_uri` parameter
-needs to match one of the `Valid Post Logout Redirect URIs` specified in the client configuration.
+once the logout process is finished. Пользователю может быть предложено подтвердить выход в системе, если параметр `id_token_hint` не используется.
+Если в клиенте включено подтверждение выхода xref:_logout-confirmation[Logout confirmation], то {project_name} переводит страницу подтверждения после успешного выхода из системы, информируя пользователя о том, что он вышёл из системы. Если указана допустимая опция `post_logout_redirect_uri`, эта страница содержит опцию для перехода на этот URL.
+После выхода пользователь автоматически перенаправляется на указанный `post_logout_redirect_uri` при условии, что он указан в качестве параметра.
+Обратите внимание, что при включении параметра `post_logout_redirect_uri` необходимо включить параметр `client_id_token_hint`. Также параметр `post_logout_redirect_uri`
+должен соответствовать одному из указанных в конфигурации клиента `Valid Post Logout Redirect URIs`.
 
-Depending on the client configuration, logout requests can be sent to clients through the front-channel or through the back-channel. For the frontend browser clients, which rely on the
-Session Management described in the previous section, {project_name} does not need to send any logout requests to them; these clients automatically detect that SSO session
-in the browser is logged out.
+В зависимости от конфигурации клиента, запросы на выход могут быть отправлены клиентам через фронт-канал или через бэк-канал. Для клиентов браузера интерфейса, которые полагаются на
+Управление сессиями, описанное в предыдущем разделе, {project_name} не нужно отправлять им запросы о выходе из системы; эти клиенты автоматически обнаруживают, что SSO сеанс
+в браузере выходит из системы.
 
-===== Front-channel Logout
+===== Выход из фронт-канала
 
-To configure clients to receive logout requests through the front-channel, look at the <<_front-channel-logout, Front-Channel Logout>> client setting. When using this method, consider the following:
+Чтобы настроить получение запросов на выход через фронт-канал, посмотрите на <<_front-channel-logout, Front-Channel Logout>>. При использовании этого метода рассмотрим следующее:
 
-* Logout requests sent by {project_name} to clients rely on the browser and on embedded `iframes` that are rendered for the logout page.
-* By being based on `iframes`, front-channel logout might be impacted by Content Security Policies (CSP) and logout requests might be blocked.
-* If the user closes the browser prior to rendering the logout page or before logout requests are actually sent to clients, their sessions at
-the client might not be invalidated.
+* Запросы на выход из системы, отправленные {project_name} клиентам полагаются на браузер и встроенные `iframes`, которые отображаются для страницы выхода из системы.
+* На том основании, что `iframes` выход на фронт-канал может повлиять политика безопасности контента (CSP) и запросы на выход из системы могут быть заблокированы.
+* Если пользователь закрывает браузер перед отображением страницы выхода или перед выходом из системы фактически отправляются клиентам, их сеансы на
+может не быть аннулированы.
 
 [NOTE]
 ====
-Consider using Back-Channel Logout as it provides a more reliable and secure approach to log out users and terminate their sessions
-on the clients.
+Рассмотрим возможность использования бэк-канала, поскольку он обеспечивает более надежный и безопасный подход к выходу пользователей и прекращает сеансы
+на клиентах.
 ====
 
-If the client is not enabled with front-channel logout, then {project_name} is going to try first to send logout requests through the back-channel
-using the <<_back-channel-logout-url, Back-Channel Logout URL>>. If not defined, the server is going to fall back to using the <<_admin-url, Admin URL>>.
+Если клиент не включен с выходом на фронт-канал, затем {project_name} попытается сначала отправить запросы выхода через бэк-канал
+с использованием <<_back-channel-logout-url, Back-Channel Logout URL>>. Если не определено, сервер собирается вернуться к использованию <_admin-url, Admin URL>>.
 
-If even the Admin URL is not specified, {project_name} will not propagate logout to the client. This action can be still sufficient for many client application deployments. For
+Если даже адрес администратора не указан, {project_name} не будет распространять его на клиент. Это действие может быть по-прежнему достаточно для многих клиентских приложений. For
 instance, when the client application is a frontend javascript application, it may rely on the <<_oidc-logout-session-management, Session Management>> and hence no need exists to send
-a dedicated logout request to the client application. Other client applications may just rely on the short <<_timeouts,Access token lifespan timeout>>. This situation means that the session on the application
-side remains valid for the short time after {project_name} SSO session logout. However, when the client application tries to refresh the access token, the token refresh request to {project_name}
-will fail because the {project_name} SSO session is already logged out.
+a dedicated logout request to the client application. Другие клиентские приложения могут полагаться только на короткий <_timeouts,timeout>>. Это означает, что сеанс приложения
+остается в силе в течение короткого времени после выхода SSO сеанса {project_name}. Однако, когда клиентское приложение пытается обновить маркер доступа, запрос обновления токена на {project_name}
+не будет выполнен, так как сеанс SSO {project_name} уже вышёл.
 
-===== Backchannel Logout
+===== Выход из бэк-канала
 
-This is a non-browser-based logout that uses direct backchannel communication between {project_name} and clients.
-{project_name} sends a HTTP POST request containing a logout token to all clients logged into {project_name}. These
-requests are sent to a registered backchannel logout URLs at {project_name} and are supposed to trigger a logout at client side.
+Это небраузерный выход из системы, который использует прямую связь между {project_name} и клиентами.
+{project_name} посылает HTTP POST запрос, содержащий токен выхода для всех клиентов, вошедших в {project_name}. Эти
+запросы отправляются по зарегистрированным URL-адресам выхода из пропусков на {project_name} и должны срабатывать выход на клиентской стороне.
 
-When the client application supports backchannel logout, that logout is usually a better alternative than the front-channel logout as communication happens directly between the client and {project_name} without a web browser
-involved, which is usually more reliable. Also, when the {project_name} logout of specified user is triggered by the administrator from the <<viewing-user-sessions,Admin console>> (or other use of admin REST API)
+Когда клиентское приложение поддерживает выход из бэкканала, что выход из системы, как правило, лучше, чем выход на фронт-канал, поскольку связь происходит непосредственно между клиентом и {project_name} без участия веб-браузера
+, что обычно является более надежным. Also, when the {project_name} logout of specified user is triggered by the administrator from the <<viewing-user-sessions,Admin console>> (or other use of admin REST API)
 or by the actual user from <<_account-service,the Account console>>, then {project_name} can propagate a backchannel logout request to the client applications attached to the session being
-logged out. This scenario is not supported in case of Front-Channel logout because {project_name} can propagate logout to the client by front-channel just when the logout is triggered in the same browser
-session, which is being logged out. That is not the case for example when session of the specific user is logged-out by the administrator from the admin console.
+logged out. Этот сценарий не поддерживается в случае выхода на фронт-канал, так как {project_name} может распространять его через фронт-канал только тогда, когда выход срабатывает в том же браузере
+сессии, который выходит из системы. Это не случается, например, когда сеанс конкретного пользователя выполнен администратором из консоли администратора.
