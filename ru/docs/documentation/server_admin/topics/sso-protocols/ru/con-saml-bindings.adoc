@@ -1,39 +1,39 @@
-==== SAML bindings
+==== Привязки SAML
 
 [role="_abstract"]
-{project_name} supports three binding types.
+{project_name} поддерживает три типа привязки.
 
-===== Redirect binding
+===== Привязка перенаправления
 
-_Redirect_ binding uses a series of browser redirect URIs to exchange information.
+_Redirect_ использует для обмена информацией серию URI браузера.
 
-. A user connects to an application using a browser. The application detects the user is not authenticated.
-. The application generates an XML authentication request document and encodes it as a query parameter in a URI. The URI is used to redirect to the {project_name} server. Depending on your settings, the application can also digitally sign the XML document and include the signature as a query parameter in the redirect URI to {project_name}.  This signature is used to validate the client that sends the request.
-. The browser redirects to {project_name}.
-. The server extracts the XML auth request document and verifies the digital signature, if required.
-. The user enters their authentication credentials.
-. After authentication, the server generates an XML authentication response document. The document contains a SAML assertion that holds metadata about the user, including name, address, email, and any role mappings the user has.  The document is usually digitally signed using XML signatures, and may also be encrypted.
-. The XML authentication response document is encoded as a query parameter in a redirect URI. The URI brings the browser back to the application.  The digital signature is also included as a query parameter.
-. The application receives the redirect URI and extracts the XML document.
-. The application verifies the realm's signature to ensure it is receiving a valid authentication response.  The information inside the SAML assertion is used to make access decisions or display user data.
+. Пользователь подключается к приложению с помощью браузера. Приложение обнаруживает, что пользователь не аутентифицирован.
+. Приложение генерирует XML-документ запроса аутентификации и кодирует его в качестве параметра запроса в URI. URI используется для перенаправления на сервер {project_name}. В зависимости от ваших настроек, приложение также может подписать XML-документ и включить подпись в качестве параметра запроса в редирект URI на {project_name}.  Эта подпись используется для проверки клиента, который отправляет запрос.
+. Браузер перенаправляет на {project_name}.
+. Сервер извлекает XML-документ запроса авторизации и при необходимости проверяет цифровую подпись.
+. Пользователь вводит свои учетные данные.
+. После аутентификации сервер генерирует документ с ответом на аутентификацию XML. Документ содержит SAML утверждение, содержащее метаданные о пользователе, включая имя, адрес, адрес электронной почты и любые сопоставления ролей, которыми обладает пользователь.  Этот документ обычно подписывается с использованием XML-подписей и также может быть зашифрован.
+. Документ проверки подлинности XML кодируется в качестве параметра запроса в URI перенаправления. URI возвращает браузер обратно в приложение.  Цифровая подпись также включена в параметр запроса.
+. Приложение получает редиректный URI и извлекает XML-документ.
+. Приложение проверяет подпись реалма, чтобы убедиться, что он получил действительный аутентификационный ответ.  Информация внутри SAML используется для принятия решений о доступе или отображения данных пользователя.
 
-===== POST binding
+===== Привязка POST
 
-_POST_ binding is similar to _Redirect_ binding but _POST_ binding exchanges XML documents using POST requests instead of using GET requests. _POST_ binding uses JavaScript to make the browser send a POST request to the {project_name} server or application when exchanging documents. HTTP responds with an HTML document which contains an HTML form containing embedded JavaScript.  When the page loads, the JavaScript automatically invokes the form.
+Привязка _POST_ похожа на привязку _Redirect_ но привязка _POST_ обменивается XML-документами с помощью POST запросов вместо использования GET запросов. Для того, чтобы браузер посылал POST запрос на сервер {project_name} или приложение при обмене документами, в привязке _POST_ используется JavaScript. HTTP отвечает HTML-документом, содержащим HTML-форму, содержащую встроенный JavaScript.  При загрузке страницы JavaScript автоматически запускает форму.
 
-_POST_ binding is recommended due to two restrictions:
+Рекомендуется привязать _POST_ к двум ограничениям:
 
-* *Security* -- With _Redirect_ binding, the SAML response is part of the URL. It is less secure as it is possible to capture the response in logs.
-* *Size* -- Sending the document in the HTTP payload provides more scope for large amounts of data than in a limited URL.
+* *Security* -- С _Redirect_ связыванием, SAML ответ является частью URL. Это менее безопасно, так как можно зафиксировать ответ в журналах.
+* *Размер* -- Отправка документа в HTTP полезной нагрузке предоставляет больше возможностей для больших объемов данных, чем в ограниченном URL.
 
-===== ECP
+===== ЭЦП
 
-Enhanced Client or Proxy (ECP) is a SAML v.2.0 profile which allows the exchange of SAML attributes outside the context of a web browser. It is often used by REST or SOAP-based clients.
+Enhanced Client или Proxy (ECP) - это профиль SAML v.2.0, который позволяет обмениваться атрибутами SAML вне контекста веб-браузера. Он часто используется клиентами REST или SOAP.
 
-==== {project_name} Server SAML URI Endpoints
+==== Конечные точки SAML URI сервера {project_name}
 
-{project_name} has one endpoint for all SAML requests.
+У {project_name} есть одна конечная точка для всех запросов SAML.
 
 `http(s)://authserver.host{kc_realms_path}/{realm-name}/protocol/saml`
 
-All bindings use this endpoint.
+Все привязки используют эту конечную точку.
