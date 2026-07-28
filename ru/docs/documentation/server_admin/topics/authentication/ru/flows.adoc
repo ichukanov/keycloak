@@ -1,318 +1,318 @@
-=== Authentication flows
+=== Потоки аутентификации
 
-An _authentication flow_ is a container of authentications, screens, and actions, during log in, registration, and other {project_name} workflows.
+_authentication flow_ - это контейнер аутентификации, экранов и действий во время входа, регистрации и других {project_name} рабочих процессов.
 
-==== Built-in flows
+==== Встроенные потоки
 
-{project_name} has several built-in flows. You cannot modify these flows, but you can alter the flow's requirements to suit your needs.
+{project_name} имеет несколько встроенных потоков. Вы не можете изменить эти потоки, но вы можете изменить требования потока в соответствии с вашими потребностями.
 
-.Procedure
-. Click *Authentication* in the menu.
-. Click on the _Browser_ item in the list to see the details.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Нажмите на _браузер_ элемента в списке, чтобы увидеть подробности.
 
-image:images/browser-flow.png[Browser Flow]
+image:images/browser-flow.png[Браузер Flow]
 
-===== Auth type
+===== Тип аутентификации
 
-The name of the authentication or the action to execute. If an authentication is indented, it is in a sub-flow. It may or may not be executed, depending on the behavior of its parent.
+Имя аутентификации или выполняемое действие. Если аутентификация отстутствуется, она находится в подпотоке. Он может выполняться или не выполняться в зависимости от поведения его родителя.
 
-. Cookie
+. Печенье
 +
-The first time a user logs in successfully, {project_name} sets a session cookie.  If the cookie is already set, this authentication type is successful. Since the cookie provider returned success and each execution at this level of the flow is _alternative_, {project_name} does not perform any other execution. This results in a successful login.
+При первом входе пользователя в систему {project_name} устанавливает сессионный cookie.  Если Cookie уже установлен, этот тип аутентификации успешен. Так как cookie провайдер вернул успех и каждое выполнение на этом уровне потока является _альтернативой_, {project_name} не выполняет другое выполнение. Это приводит к успешному входу.
 . Kerberos
 +
-This authenticator is disabled by default and is skipped during the Browser Flow.
-. Identity Provider Redirector
+Аутентификатор по умолчанию отключен и пропущен во время просмотра браузера.
+. Перенаправление идентификатора провайдера
 +
-This action is configured through the *Actions* > *Config* link. It redirects to another IdP for <<_identity_broker, identity brokering>>.
-. Forms
+Это действие настроено по ссылке *Действия* > *Конфигурация*. Он перенаправляется на другой IdP для <_identity_broker, идентификационный брокер>>.
+. Формы
 +
-Since this sub-flow is marked as _alternative_, it will not be executed if the *Cookie* authentication type passed. This sub-flow contains an additional authentication type that needs to be executed. {project_name} loads the executions for this sub-flow and processes them.
+Поскольку этот подпоток помечен как _alternative_, он не будет выполняться, если прошел тип аутентификации *Cookie*. Этот подпоток содержит дополнительный тип аутентификации, который необходимо выполнить. {project_name} загружает выполнение для этого подпотока и обрабатывает их.
 
-The first execution is the *Username Password Form*, an authentication type that renders the username and password page. It is marked as _required_, so the user must enter a valid username and password.
+Первое выполнение — *Форма пароля для имени пользователя*, тип аутентификации, которая отображает страницу с именем пользователя и паролем. Он помечен как _required_, поэтому пользователь должен ввести правильное имя пользователя и пароль.
 
-The second execution is the *Browser - Conditional 2FA* sub-flow. This sub-flow is _conditional_ and executes depending on the result of the *Condition - User Configured* and *Condition - credential* execution. If the result is true, {project_name} loads the executions for this sub-flow and processes them.
+Второе исполнение - это подпоток *Browser - Conditional 2FA*. Это подпоток _conditional_ и выполняется в зависимости от результатов выполнения *Condition - User Configured* и *Condition - credential*. Если результат истинный, {project_name} загружает выполнение для этого подпотока и обрабатывает их.
 
-The next execution is the *Condition - User Configured* authentication. This authentication checks if {project_name} has configured other executions in the flow for the user. The *Browser - Conditional 2FA* sub-flow executes only when the user has a configured OTP credential.
+Следующее выполнение — аутентификация *Условие - Настройка пользователя*. Эта аутентификация проверяет, настроен ли {project_name} на другие закачки для пользователя. Подпоток *Browser - Conditional 2FA* выполняется только тогда, когда пользователь имеет настроенные OTP учетные данные.
 
-The next execution is the *Condition - credential* authentication. The step checks if the authentication process has already authenticated the user with a passwordless WebAuthn credential (passkey), avoiding 2FA in that case.
+Следующее выполнение — это аутентификация *Условие - учетные данные*. Этот шаг проверяет, что процесс аутентификации уже аутентифицировал пользователя с учетными данными WebAuthn (passkey), избегая в этом случае 2FA.
 
-The final execution is the *OTP Form*. {project_name} marks this execution as _alternative_, but it runs only when the user has an OTP credential set up because of the setup in the _conditional_ sub-flow. If the OTP credential is not set up, the user does not see an OTP form.
+Окончательное исполнение — это *OTP формат*. {project_name} помечает это выполнение как _альтернатива_, но он запускается только тогда, когда пользователь имеет Учетные данные OTP из-за установки в подпотоке _conditional_ . Если учетные данные OTP не настроены, пользователь не видит OTP формы.
 
-The default *browser* flow contains two more executions inside the *Browser - Conditional 2FA*, *WebAuthn Authenticator* and *Recovery Authentication Code Form*. These executions are _Disabled_ by default and they are the other 2FA methods that can be added to the flow. Change the requirement from _Disabled_ to _Alternative_ to make them available if the respective credential has been configured for the user. If the user has configured all alternative credential types, the credential with the highest priority is displayed by default. However, the *Try Another Way* option will appear so that the user has the alternative methods to log in.
+Поток по умолчанию *browser* содержит еще два исполнения в *Browser - Conditional 2FA*, *WebAuthn Authenticator* и *Recovery Authentication Code Form*. По умолчанию эти команды _Disabled_ и являются другими 2FA методами, которые могут быть добавлены к потоку. Измените требование с _Disabled_ на _Alternative_ для того, чтобы сделать их доступными, если соответствующие учетные данные были настроены для пользователя. Если пользователь сконфигурировал все альтернативные типы учетных данных, то по умолчанию отображаются учетные данные с наивысшим приоритетом. Тем не менее, появится опция *Попробуйте еще один путь*, так что у пользователя есть альтернативные методы входа.
 
 [[_execution-requirements]]
-===== Requirement
+===== Требование
 
-A drop-down menu that controls the execution of an action.
+Выпадающее меню, контролирующее выполнение действия.
 
-Required:: All _Required_ elements in the flow must be successfully sequentially executed. The flow terminates if a required element fails.
-Alternative:: Only a single element must successfully execute for the flow to evaluate as successful. Because the _Required_ flow elements are sufficient to mark a flow as successful, any _Alternative_ flow element within a flow containing _Required_ flow elements will not execute.
-Disabled:: The element does not count to mark a flow as successful.
-Conditional:: This requirement type is only set on sub-flows.
-* A _Conditional_ sub-flow contains executions. These executions must evaluate to logical statements.
-* If all executions evaluate as _true_, the _Conditional_ sub-flow acts as _Required_.
-* If any executions evaluate as _false_, the _Conditional_ sub-flow acts as _Disabled_.
-* If you do not set an execution, the _Conditional_ sub-flow acts as _Disabled_.
-* If a flow contains executions and the flow is not set to _Conditional_, {project_name} does not evaluate the executions, and the executions are considered functionally _Disabled_.
+Требуется:: Все _Требуемые_ элементы в процессе должны быть успешно выполнены. Поток завершается, если требуемый элемент не работает.
+Альтернативный:: Только один элемент должен успешно выполняться для того, чтобы процесс оценивался успешно. Потому что _Требуемые_ элементов потока достаточно, чтобы отметить поток, как успешный, любой элемент _Alternative_ потока внутри потока, содержащий элементы потока _Required_, не будет выполняться.
+Отключено:: Элемент не считает поток успешным.
+Условный:: Этот тип требования устанавливается только для подпотоков.
+* _Условие_подпоток содержит выполнения. Эти заказы должны быть оценены в логических операциях.
+* Если все команды вычисляют как _true_, то _Conditional_ функционирует как _Required_.
+* Если какое-либо исполнение вычисляет как _false_, то подпоток _Conditional_ действует как _Disabled_.
+* Если вы не установили выполнение, то _Conditional_ функционирует как _Disabled_.
+* Если поток содержит выполнение и поток не установлен в _Conditional_, {project_name} не вычисляет выполнения, и выполнение считается функционально _Disabled_.
 
-==== Creating flows
+==== Создание потоков
 
-Important functionality and security considerations apply when you design a flow.
+Важные функциональные возможности и соображения безопасности применяются при проектировании потока.
 
-To create a flow, perform the following:
+Чтобы создать поток, выполните следующие действия:
 
-.Procedure
-. Click *Authentication* in the menu.
-. Click *Create flow*.
-
-[NOTE]
-====
-You can copy and then modify an existing flow. Click the "Action list" (the three dots at the end of the row), click *Duplicate*, and enter a name for the new flow.
-====
-
-When creating a new flow, you must create a top-level flow first with the following options:
-
-Name:: The name of the flow.
-Description:: The description you can set to the flow.
-Top-Level Flow Type:: The type of flow. The type *client* is used only for the authentication of clients (applications). For all other cases, choose *basic*.
-
-image:images/Create-top-level-flow.png[Top Level Flow]
-
-When {project_name} has created the flow, {project_name} displays the *Add step*, and *Add sub-flow* buttons.
-
-image:images/New-flow.png[New Flow]
-
-Three factors determine the behavior of flows and sub-flows.
-
-* The structure of the flow and sub-flows.
-* The executions within the flows
-* The requirements set within the sub-flows and the executions.
-
-Executions have a wide variety of actions, from sending a reset email to validating an OTP. Add executions with the *Add step* button.
-
-image:images/Create-authentication-execution.png[Adding an Authentication Execution]
-
-Authentication executions can optionally have a reference value configured. This can be utilized by the _Authentication Method Reference (AMR)_ protocol mapper to populate the _amr_ claim in OIDC access and ID tokens (for more information on the
-AMR claim, see https://www.rfc-editor.org/rfc/rfc8176.html[RFC-8176]). When the _Authentication Method Reference (AMR)_ protocol mapper is configured for a client, it will populate the _amr_ claim with the reference value for any authenticator execution the user successfully completes during the authentication flow.
-
-image:images/config-authenticator-reference.png[Configuring an Authenticator Reference Value]
-
-Two types of executions exist, _automatic executions_ and _interactive executions_. _Automatic executions_ are similar to the *Cookie* execution and will automatically
-perform their action in the flow. _Interactive executions_ halt the flow to get input. Executions executing successfully set their status to _success_.  For a flow to complete, it needs at least one execution with a status of _success_.
-
-You can add sub-flows to top-level flows with the *Add sub-flow* button. The *Add sub-flow* button displays the *Create Execution Flow* page. This page is similar to the *Create Top Level Form* page. The difference is that the *Flow Type* can be *basic* (default) or *form*. The *form* type constructs a sub-flow that generates a form for the user, similar to the built-in *Registration* flow.
-Sub-flows success depends on how their executions evaluate, including their contained sub-flows. See the <<_execution-requirements, execution requirements section>> for an in-depth explanation of how sub-flows work.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Нажмите *Создать поток*.
 
 [NOTE]
 ====
-After adding an execution, check the requirement has the correct value.
+Вы можете скопировать и затем изменить существующий поток. Нажмите кнопку «Список действий» (три точки в конце строки), нажмите *Дублировать* и введите имя для нового потока.
 ====
 
-All elements in a flow have a *Delete* option next to the element. Some executions have a *⚙️* menu item (the gear icon) to configure the execution. It is also possible to add executions and sub-flows to sub-flows with the *Add step* and *Add sub-flow* links.
+При создании нового потока, вы должны сначала создать потоки верхнего уровня со следующими параметрами:
 
-Since the order of execution is important, you can move executions and sub-flows up and down by dragging their names.
+Наименование:: Имя потока.
+Описание:: Описание, которое вы можете установить на поток.
+Тип потока верхнего уровня:: Тип потока. Тип *client* используется только для аутентификации клиентов (приложений). Для всех остальных случаев выберите *основное*.
+
+image:images/Create-top-level-flow.png[Высокий уровень]
+
+Когда {project_name} создал поток, {project_name} отображает кнопки *Добавить шаг*, и *Добавить подпоток*.
+
+image:images/New-flow.png[Новый Flow]
+
+Поведение потоков и подпотоков определяет три фактора.
+
+* Структура потока и подпотоков.
+* Выводы в рамках потоков ресурсов
+* Требования устанавливаются в рамках подпотоков и исполнений.
+
+Выполнения имеют множество действий, от отправки сброса письма до проверки OTP. Добавить выполнение с помощью кнопки *Добавить шаг*.
+
+image:images/Create-authentication-execution.png[Добавление выполнения аутентификации]
+
+Выполнение аутентификации может по желанию иметь настроенное значение ссылки. Это может быть использовано в карте протокола _Authentication (AMR)_ для заполнения _amr_ претензий в доступе к OIDC и токенах идентификатора (более подробная информация по претензии
+AMR claim, https://www. fc-editor.org/rfc/rfc8176.html[RFC-8176]). При настройке протокола _Authentication Reference (AMR)_ для клиента, он будет заполнять _amr_ претензией со значением ссылки для любого выполнения аутентификации, которое пользователь успешно завершает во время процесса аутентификации.
+
+image:images/config-authenticator-reference.png[Настройка значения ссылки на аутентификацию]
+
+Существуют два типа выполнений, _автоматические выполнения_ и _интерактивные выполнения_. _Автоматические выполнения_ похожи на выполнение *Cookie* и автоматически
+выполнит свое действие в потоке. _Интерактивные вызвания_ остановить поток, чтобы получить вход. Выполнение успешно присвоено статус _success_.  Для завершения процесса ему необходимо хотя бы одно выполнение со статусом _success_.
+
+Вы можете добавить подпотоки к потокам верхнего уровня с помощью кнопки *Добавить подпоток*. Кнопка *Добавить подпоток* отображает страницу *Создать объект исполнения*. Эта страница похожа на страницу *Создать форму верхнего уровня*. Разница в том, что *тип потока* может быть *основным* (по умолчанию) или *формы*. *Форма* создает подпоток, который генерирует форму для пользователя, аналогичную встроенному потоку *Регистрации*.
+Успех подпотоков зависит от того, как они оценивают их исполнители, включая их содержащие подпотоки. Смотрите <_execution-requirements, execution requirements section>> для подробного объяснения того, как работают подпотоки.
+
+[NOTE]
+====
+После добавления выполнения, проверьте, что требование имеет правильное значение.
+====
+
+Все элементы потока имеют опцию *Удалить* рядом с элементом. У некоторых выполнений есть пункт меню *⚙️* (значок передачи), чтобы настроить выполнение. Также можно добавить выполнение и вложенные потоки к вложенным потокам со ссылками *Добавить шаг* и *Добавить подпоток*.
+
+Так как порядок выполнения важен, вы можете перемещать исполнение и подпотоки вверх и вниз, перетаскивая их имена.
 
 [WARNING]
 ====
-Make sure to properly test your configuration when you configure the authentication flow to confirm that no security holes exist in your setup. We recommend that you test various
-corner cases. For example, consider testing the authentication behavior for a user when you remove various credentials from the user's account before authentication.
+Проверьте, правильно ли протестировать конфигурацию при настройке потока аутентификации для подтверждения того, что в вашей установке не существует отверстий безопасности. We recommend that you test various
+corner cases. Например, попробуйте протестировать поведение аутентификации для пользователя при удалении различных учетных данных из учетной записи пользователя до аутентификации.
 
-As an example, when 2nd-factor authenticators, such as OTP Form or WebAuthn Authenticator, are configured in the flow as REQUIRED and the user does not have credential of particular
-type, the user will be able to set up the particular credential during authentication itself. This situation means that the user does not authenticate with this credential as he set up
-it right during the authentication. So for browser authentication, make sure to configure your authentication flow with some 1st-factor credentials such as Password or WebAuthn
-Passwordless Authenticator.
+В качестве примера, когда 2nd-факторные аутентификаторы такие как OTP или WebAuthn Authenticator, настроены в потоке как НЕОБХОДИМО и у пользователя нет регистрационных данных для конкретного типа
+, пользователь сможет настроить определенные учетные данные во время самой аутентификации. Эта ситуация означает, что пользователь не аутентифицируется с этими учетными данными, поскольку он установил
+это право во время аутентификации. Для аутентификации в браузере убедитесь, что ваш поток аутентификации настроен с такими учетными данными 1st-factor как Пароль или WebAuthn
+Аутентификатор без паролей.
 ====
 
-==== Creating a password-less browser login flow
+==== Создание беспарольного логического процесса
 
-To illustrate the creation of flows, this section describes creating an advanced browser login flow. The purpose of this flow is to allow a user a choice between logging in using a password-less manner with xref:webauthn_{context}[WebAuthn], or two-factor authentication with a password and OTP.
+Чтобы проиллюстрировать создание потоков, этот раздел описывает создание расширенного потока входа в систему. Цель этого потока состоит в том, чтобы позволить пользователю выбрать между входом в систему с помощью xref:webauthn_{context}[WebAuthn], или двухфакторная аутентификация с помощью пароля и OTP.
 
-.Procedure
-. Click *Authentication* in the menu.
-. Click the *Flows* tab.
-. Click *Create flow*.
-. Enter `Browser Password-less` as a name.
-. Click *Create*.
-. Click *Add execution*.
-. Select *Cookie* from the list.
-. Click *Add*.
-. Select *Alternative* for the *Cookie* authentication type to set its requirement to alternative.
-. Click *Add step*.
-. Select *Kerberos* from the list.
-. Click *Add*.
-. Click *Add step*.
-. Select *Identity Provider Redirector* from the list.
-. Click *Add*.
-. Select *Alternative* for the *Identity Provider Redirector* authentication type to set its requirement to alternative.
-. Click *Add sub-flow*.
-. Enter *Forms* as a name.
-. Click *Add*.
-. Select *Alternative* for the *Forms* authentication type to set its requirement to alternative.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Нажмите на вкладку *Блокировки*.
+. Нажмите *Создать поток*.
+. Введите в имени `Browser Password-less`.
+. Нажмите *Создать*.
+. Нажмите *Добавить исполнение*.
+. Выберите из списка *Cookie*.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для типа аутентификации *Cookie*, чтобы установить требование альтернативы.
+. Нажмите *Добавить шаг*.
+. Выберите *Kerberos* из списка.
+. Нажмите *Добавить*.
+. Нажмите *Добавить шаг*.
+. Выберите из списка *Identity Provider Redirector*.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для типа аутентификации *Identity Provider Redirector*, чтобы установить его требование в качестве альтернативы.
+. Нажмите *Добавить подпоток*.
+. Введите *Формы* в качестве имени.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для аутентификации типа *Формы*, чтобы установить требование альтернативное.
 +
-image:images/Passwordless-browser-login-common.png[Passwordless browser login]
-. Click *+* menu of the *Forms* execution.
-. Select *Add step*.
-. Select *Username Form* from the list.
-. Click *Add*.
+image:images/Passwordless-browser-login-common.png[Логин браузера без пароля]
+. Нажмите на меню *+* при выполнении *Формы*.
+. Выберите *Добавить шаг*.
+. Выберите из списка *Username Form*.
+. Нажмите *Добавить*.
 
-At this stage, the form requires a username but no password. We must enable password authentication to avoid security risks.
+На данном этапе форма требует имя пользователя, но пароль не требуется. Мы должны разрешить аутентификацию паролей, чтобы избежать рисков безопасности.
 
-. Click *+* menu of the *Forms* sub-flow.
-. Click *Add sub-flow*.
-. Enter `Authentication` as name.
-. Click *Add*.
-. Select *Required* for the *Authentication* authentication type to set its requirement to required.
-. Click *+* menu of the *Authentication* sub-flow.
-. Click *Add step*.
-. Select *WebAuthn Passwordless Authenticator* from the list.
-. Click *Add*.
-. Select *Alternative* for the *Webauthn Passwordless Authenticator* authentication type to set its requirement to alternative.
-. Click *+* menu of the *Authentication* sub-flow.
-. Click *Add sub-flow*.
-. Enter `Password with OTP` as name.
-. Click *Add*.
-. Select *Alternative* for the *Password with OTP* authentication type to set its requirement to alternative.
-. Click *+* menu of the *Password with OTP* sub-flow.
-. Click *Add step*.
-. Select *Password Form* from the list.
-. Click *Add*.
-. Select *Required* for the *Password Form* authentication type to set its requirement to required.
-. Click *+* menu of the *Password with OTP* sub-flow.
-. Click *Add step*.
-. Select *OTP Form* from the list.
-. Click *Add*.
-. Click *Required* for the *OTP Form* authentication type to set its requirement to required.
+. Нажмите на меню *+* подпотока *Формы*.
+. Нажмите *Добавить подпоток*.
+. Введите `Authentication` в качестве имени.
+. Нажмите *Добавить*.
+. Выберите *Обязательный* для *аутентификации* типа аутентификации, чтобы установить требуемое требование.
+. Нажмите на меню *+* подпотока *Authentication*.
+. Нажмите *Добавить шаг*.
+. Выберите *WebAuthn Passwordless Authenticator* из списка.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для типа аутентификации *Webauthn Passwordless Authenticator*, чтобы установить его требование в качестве альтернативы.
+. Нажмите на меню *+* подпотока *Authentication*.
+. Нажмите *Добавить подпоток*.
+. Введите `Password with OTP` as name.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для типа аутентификации *Password with OTP*, чтобы установить требование в качестве альтернативы.
+. Нажмите кнопку *+* меню *Пароль с OTP* подпотоком.
+. Нажмите *Добавить шаг*.
+. Выберите из списка *Форма паролей*.
+. Нажмите *Добавить*.
+. Выберите *Обязательный* для того, чтобы тип аутентификации *Форма паролей*, устанавливал требование к нему.
+. Нажмите кнопку *+* меню *Пароль с OTP* подпотоком.
+. Нажмите *Добавить шаг*.
+. Выберите из списка *OTP Форма*.
+. Нажмите *Добавить*.
+. Нажмите *Обязательный* для того, чтобы установить требуемый тип аутентификации *OTP формы*.
 
-Finally, change the bindings.
+Наконец, измените привязки.
 
-. Click the *Action* menu at the top of the screen.
-. Select *Bind flow* from the menu.
-. Click the *Browser Flow* drop-down list.
-. Click *Save*.
+. Нажмите на меню *Action* в верхней части экрана.
+. Выберите *Bind flow* из меню.
+. Нажмите на выпадающий список *Browser Flow*.
+. Нажмите *Сохранить*.
 
-image:images/Passwordless-browser-login.png[Passwordless browser login]
+image:images/Passwordless-browser-login.png[Логин браузера без пароля]
 
-After entering the username, the flow works as follows:
+После ввода имени пользователя поток работает следующим образом:
 
-If users have WebAuthn passwordless credentials recorded, they can use these credentials to log in directly. This is the password-less login. The user can also select *Password with OTP* because the `WebAuthn Passwordless` execution and the `Password with OTP` flow are set to *Alternative*. If they are set to *Required*, the user has to enter WebAuthn, password, and OTP.
+Если пользователи имеют учетные данные WebAuthn без паролей, они могут использовать эти учетные данные для прямого входа. Это логин без паролей. Пользователь также может выбрать *Password with OTP*, потому что выполнение `WebAuthn Passwordless` и `Password with OTP` flow равны *Альтернатива*. Если у них установлен *Обязательный*, то пользователь должен ввести WebAuthn, пароль и OTP.
 
-If the user selects the *Try another way* link with `WebAuthn passwordless` authentication, the user can choose between `Password` and `Passkey` (WebAuthn passwordless). When selecting the password, the user will need to continue and log in with the assigned OTP. If the user has no WebAuthn credentials, the user must enter the password and then the OTP. If the user has no OTP credential, they will be asked to record one.
+Если пользователь выбирает ссылку *Попробуйте другой способ* с помощью аутентификации `WebAuthn passwordless`, пользователь может выбрать между `Password` и `Passkey` (WebAuthn passwordless). При выборе пароля пользователю необходимо будет продолжить вход с назначенным OTP. Если у пользователя нет учетных данных WebAuthn, то пользователь должен ввести пароль и затем OTP. Если у пользователя нет учётных данных OTP, ему будет предложено записать одну.
 
 [NOTE]
 ====
-Since the WebAuthn Passwordless execution is set to *Alternative* rather than  *Required*, this flow will never ask the user to register a WebAuthn credential. For a user to have a Webauthn credential, an administrator must add a required action to the user. Do this by:
+Так как выполнение WebAuthn без пароля установлено в *Альтернатива*, а не *Обязательно*, этот поток никогда не попросит пользователя зарегистрировать учетные данные WebAuthn. Для того чтобы пользователь имел учетные данные Webauthn, администратор должен добавить необходимое действие для пользователя. Сделать это:
 
-. Enabling the *Webauthn Register Passwordless* required action in the realm (see the xref:webauthn_{context}[WebAuthn] documentation).
-. Setting the required action using the *Credential Reset* part of a user's xref:ref-user-credentials_{context}[Credentials] management menu.
+. Включение *Webauthn Register Passwordless* required action in the realm (see the xref:webauthn_{context}[WebAuthn]).
+. Установка требуемого действия с помощью меню управления *Учетные Сбросы* пользователя xref:ref-user-credentials_{context}[Credentials].
 
-Creating an advanced flow such as this can have side effects. For example, if you enable the ability to reset the password for users, this would be accessible from the password form. In the default `Reset Credentials` flow, users must enter their username. Since the user has already entered a username earlier in the `Browser Password-less` flow, this action is unnecessary for {project_name} and suboptimal for user experience. To correct this problem, you can:
+Создание расширенного потока, такого как это может иметь побочные эффекты. Например, если вы включите возможность сброса пароля для пользователей, это будет доступно из формы пароля. В потоке `Сбросить учетные данные` пользователи должны ввести их имя пользователя. Поскольку пользователь уже ввел ранее имя пользователя в `Browser Password-less` потоке, это действие не является необходимым для {project_name} и является неоптимальным для пользователя. Чтобы исправить эту проблему, вы можете:
 
-* Duplicate the `Reset Credentials` flow. Set its name to `Reset Credentials for password-less`, for example.
-* Click *Delete* (trash icon) of the *Choose user* step.
-* In the *Action* menu, select *Bind flow* and select *Reset credentials flow* from the dropdown and click *Save*
+* Дублировать поток "Сбросить учетные данные". Установите его имя на «Сбросить учетные данные для пароля», например.
+* Нажмите *Удалить* (мусорный значок) шага *Выберите пользователя*.
+* В меню *Действия* выберите *Привязать поток* и выберите в раскрывающемся списке *Сброс учетных данных* и нажмите *Сохранить*
 ====
 
 [[_client-policy-auth-flow]]
-==== Using Client Policies to Select an Authentication Flow
+==== Использование политики клиента для выбора потока аутентификации
 
-<<_client_policies, Client Policies>> can be used to dynamically select an Authentication Flow based on specific conditions, such as requesting a particular scope or an ACR (Authentication Context Class Reference) using the `AuthenticationFlowSelectorExecutor` in combination with the condition you prefer.
+<<_client_Policies>> может использоваться для динамического выбора потока Аутентификации на основе конкретных условий, например, запрашивая определенную область действия или ACR (ссылка на класс аутентификации в контексте аутентификации), используя `AuthenticationFlowSelectorExecutor` в сочетании с желаемым состоянием.
 
-The `AuthenticationFlowSelectorExecutor` allows you to select an appropriate authentication flow and set the level of authentication to be applied once the selected flow is completed.
+`AuthenticationFlowSelectorExecutor` позволяет выбрать соответствующий поток аутентификации и установить уровень аутентификации после завершения выбранного потока.
 
-A possible configuration involves using the `ACRCondition` in combination with the `AuthenticationFlowSelectorExecutor`. This setup enables you to select an authentication flow based on the requested ACR and have the ACR value included in the token using <<_mapping-acr-to-loa-realm,ACR to LoA Mapping>>.
+Возможная конфигурация предполагает использование `ACRCondition` в комбинации с `AuthenticationFlowSelectorExecutor`. Эта настройка позволяет вам выбрать поток аутентификации на основе запрошенного ACR и включить ACR значение с помощью <_mapping-acr-to-loa-realm, CR to LoA Mapping>>.
 
-For more details, see <<_client_policies, Client Policies>>.
+Подробнее см. <<_client_policy, Client Policies>>.
 
 [[_step-up-flow]]
-==== Creating a browser login flow with step-up mechanism
+==== Создание браузерного процесса входа с механизмом ускорения
 
-This section describes how to create advanced browser login flow using the step-up mechanism. The purpose of step-up authentication is to allow access to clients or resources based on a specific authentication level of a user.
+В этом разделе описано, как создать расширенный поток входа в браузер, используя механизм ускорения. Целью ускорения аутентификации является предоставление доступа к клиентам или ресурсам на основе определенного уровня аутентификации пользователя.
 
-.Procedure
-. Click *Authentication* in the menu.
-. Click the *Flows* tab.
-. Click *Create flow*.
-. Enter `Browser Incl Step up Mechanism` as a name.
-. Click *Save*.
-. Click *Add execution*.
-. Select *Cookie* from the list.
-. Click *Add*.
-. Select *Alternative* for the *Cookie* authentication type to set its requirement to alternative.
-. Click *Add sub-flow*.
-. Enter *Auth Flow* as a name.
-. Click *Add*.
-. Click *Alternative* for the *Auth Flow* authentication type to set its requirement to alternative.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Нажмите на вкладку *Блокировки*.
+. Нажмите *Создать поток*.
+. Введите имя `Browser Incl Step up Mechanism`.
+. Нажмите *Сохранить*.
+. Нажмите *Добавить исполнение*.
+. Выберите из списка *Cookie*.
+. Нажмите *Добавить*.
+. Выберите *Альтернативу* для типа аутентификации *Cookie*, чтобы установить требование альтернативы.
+. Нажмите *Добавить подпоток*.
+. Введите *Auth Flow* в качестве имени.
+. Нажмите *Добавить*.
+. Нажмите *Альтернатива* для типа аутентификации *Auth Flow*, чтобы установить требование альтернативы.
 
-Now you configure the flow for the first authentication level.
+Теперь вы настраиваете поток для первого уровня аутентификации.
 
-. Click *+* menu of the *Auth Flow*.
-. Click *Add sub-flow*.
-. Enter `1st Condition Flow` as a name.
-. Click *Add*.
-. Click *Conditional* for the *1st Condition Flow* authentication type to set its requirement to conditional.
-. Click *+* menu of the *1st Condition Flow*.
-. Click *Add condition*.
-. Select *Conditional - Level Of Authentication* from the list.
-. Click *Add*.
-. Click *Required* for the *Conditional - Level Of Authentication* authentication type to set its requirement to required.
-. Click *⚙️* (gear icon).
-. Enter `Level 1` as an alias.
-. Enter `1` for the Level of Authentication (LoA).
-. Set Max Age to *36000*. This value is in seconds and it is equivalent to 10 hours, which is the default `SSO Session Max` timeout set in the realm.
-As a result, when a user authenticates with this level, subsequent SSO logins can reuse this level and the user does not need to authenticate
-with this level until the end of the user session, which is 10 hours by default.
-. Click *Save*
+. Нажмите кнопку *+* меню *Авторизации*.
+. Нажмите *Добавить подпоток*.
+. Введите `1-е Условие Flow` в качестве имени.
+. Нажмите *Добавить*.
+. Нажмите *Условие* для типа аутентификации *1-е Условие*, чтобы установить условие.
+. Нажмите *+* меню *1-го Обмена Условия*.
+. Нажмите *Добавить условие*.
+. Выберите *Conditional - Level Of Authentication* из списка.
+. Нажмите *Добавить*.
+. Нажмите *Требуется* для *Условного - уровня аутентификации*, чтобы установить требуемое требование.
+. Нажмите *⚙️* (иконка передачи).
+. Введите `Level 1` как псевдоним.
+. Введите `1` для уровня аутентификации (LoA).
+. Установите максимальный возраст на *36000*. Это значение находится в секундах, и это эквивалентно 10 часам, что означает по умолчанию тайм-аут `SSO Session Max` в реалме.
+В результате, когда пользователь аутентифицируется на этом уровне, последующие логины SSO могут повторно использовать этот уровень, и пользователю не нужно аутентифицировать
+с этим уровнем до конца пользовательской сессии, , который по умолчанию составляет 10 часов.
+. Нажмите *Сохранить*
 +
-image:images/authentication-step-up-condition-1.png[Authentication step up condition 1]
-. Click *+* menu of the *1st Condition Flow*.
-. Click *Add step*.
-. Select *Username Password Form* from the list.
-. Click *Add*.
+image:images/authentication-step-up-condition-1.png[Authentication condition 1]
+. Нажмите *+* меню *1-го Обмена Условия*.
+. Нажмите *Добавить шаг*.
+. Выберите из списка *Имя Пользователя Пароль Пользователя*.
+. Нажмите *Добавить*.
 
-Now you configure the flow for the second authentication level.
+Теперь вы настраиваете поток для второго уровня аутентификации.
 
-. Click *+* menu of the *Auth Flow*.
-. Click *Add sub-flow*.
-. Enter `2nd Condition Flow` as an alias.
-. Click *Add*.
-. Click *Conditional* for the *2nd Condition Flow* authentication type to set its requirement to conditional.
-. Click *+* menu of the *2nd Condition Flow*.
-. Click *Add condition*.
-. Select *Conditional - Level Of Authentication* from the item list.
-. Click *Add*.
-. Click *Required* for the *Conditional - Level Of Authentication* authentication type to set its requirement to required.
-. Click *⚙️* (gear icon).
-. Enter `Level 2` as an alias.
-. Enter `2` for the Level of Authentication (LoA).
-. Set Max Age to *0*. As a result, when a user authenticates, this level is valid just for the current authentication, but not any
-subsequent SSO authentications. So the user will always need to authenticate again with this level when this level is requested.
-. Click *Save*
+. Нажмите кнопку *+* меню *Авторизации*.
+. Нажмите *Добавить подпоток*.
+. Введите `2-е условие Flow` в качестве псевдонима.
+. Нажмите *Добавить*.
+. Нажмите *Условие* для *2-го условия типа аутентификации Flow*, чтобы установить условие.
+. Нажмите *+* меню *Второе Условие*.
+. Нажмите *Добавить условие*.
+. Выберите *Conditional - Level Of Authentication* из списка элементов.
+. Нажмите *Добавить*.
+. Нажмите *Требуется* для *Условного - уровня аутентификации*, чтобы установить требуемое требование.
+. Нажмите *⚙️* (иконка передачи).
+. Введите `Level 2` как псевдоним.
+. Введите `2` для уровня аутентификации (LoA).
+. Установить максимальный возраст на *0*. В результате, когда пользователь аутентифицируется, этот уровень действителен только для текущей аутентификации, но не для каких-либо
+последующих SSO аутентификаций. Таким образом, при запросе уровня пользователю необходимо будет снова авторизоваться на этом уровне.
+. Нажмите *Сохранить*
 +
-image:images/authentication-step-up-condition-2.png[Autehtnication step up condition 2]
-. Click *+* menu of the *2nd Condition Flow*.
-. Click *Add step*.
-. Select *OTP Form* from the list.
-. Click *Add*.
-. Click *Required* for the *OTP Form* authentication type to set its requirement to required.
+image:images/authentication-step-up-condition-2.png[Autehtnication step condition 2]
+. Нажмите *+* меню *Второе Условие*.
+. Нажмите *Добавить шаг*.
+. Выберите из списка *OTP Форма*.
+. Нажмите *Добавить*.
+. Нажмите *Обязательный* для того, чтобы установить требуемый тип аутентификации *OTP формы*.
 
-Finally, change the bindings.
+Наконец, измените привязки.
 
-. Click the *Action* menu at the top of the screen.
-. Select *Bind flow* from the list.
-. Select *Browser Flow* in the dropdown.
-. Click *Save*.
+. Нажмите на меню *Action* в верхней части экрана.
+. Выберите *Bind flow* из списка.
+. Выберите в раскрывающемся списке *Браузер Flow*.
+. Нажмите *Сохранить*.
 
-image:images/authentication-step-up-flow.png[Authentication step up flow]
+image:images/authentication-step-up-flow.png[Усиление аутентификации]
 
-To use the step-up mechanism, you specify a requested level of authentication (LoA) in your authentication request. The `claims` parameter is used for this purpose:
+Чтобы использовать ускоряющий механизм, в запросе аутентификации укажите запрошенный уровень аутентификации (LoA). Параметр "претензии" используется для этой цели:
 
 [source,subs=+attributes]
 ----
 https://{DOMAIN}{kc_realms_path}/{REALMNAME}/protocol/openid-connect/auth?client_id={CLIENT-ID}&redirect_uri={REDIRECT-URI}&scope=openid&response_type=code&response_mode=query&nonce=exg16fxdjcu&claims=%7B%22id_token%22%3A%7B%22acr%22%3A%7B%22essential%22%3Atrue%2C%22values%22%3A%5B%22gold%22%5D%7D%7D%7D
 ----
 
-The `claims` parameter is specified in a JSON representation:
+Параметр `claims` указан в представительстве JSON:
 
 [source]
 ----
@@ -326,83 +326,83 @@ claims= {
         }
 ----
 
-The {project_name} javascript adapter has support for easy construct of this JSON and sending it in the login request.
-See *Keycloak JavaScript adapter* in the link:{securing_apps_link}[securing apps] section for more details.
+Адаптер JavaScript {project_name} поддерживает легкое создание JSON и отправку его в запросе входа.
+Смотрите *Keycloak JavaScript адаптер* по ссылке:{securing_apps_link}[защита приложений] для получения более подробной информации.
 
-You can also use simpler parameter `acr_values` instead of `claims` parameter to request particular levels as non-essential. This is mentioned
-in the OIDC specification.
+Вы также можете использовать упрощенный параметр `acr_values` вместо параметра `claims`, чтобы запрашивать определенные уровни в качестве ненеобходимых. Это упомянуто
+в спецификации OIDC.
 
-You can also configure the default level for the particular client, which is used when the parameter `acr_values` or the parameter `claims` with the `acr` claim is not present.
-For further details, see <<_mapping-acr-to-loa-client,Client ACR configuration>>).
+Вы также можете настроить уровень по умолчанию для конкретного клиента, которая используется, когда отсутствует параметр `acr_values` или параметр `claims` с претензией `acr`.
+Подробнее см. <<_mapping-acr-to-loa-client,Client ACR configuration>).
 
-NOTE: To request the acr_values as text (such as `gold`) instead of a numeric value, you configure the mapping between the ACR and the LoA.
-It is possible to configure it at the realm level (recommended) or at the client level. For configuration see <<_mapping-acr-to-loa-realm,ACR to LoA Mapping>>.
+NOTE: Запрашивать acr_values как текст (например `gold`) вместо числового значения, вы настраиваете сопоставление между ACR и LoA.
+Можно настроить его на уровне Realm (рекомендуется) или на уровне клиента. Для настройки смотрите <<_mapping-acr-to-loa-realm,ACR to LoA Mapping>.
 
-For more details see the https://openid.net/specs/openid-connect-core-1_0.html#acrSemantics[official OIDC specification].
+Подробнее читайте на https://openid.net/specs/openid-connect-core-1_0.html#acrSemantics[official OIDC specification].
 
-*Flow logic*
+*Логика потока*
 
-The logic for the previous configured authentication flow is as follows: +
-If a client request a high authentication level, meaning Level of Authentication 2 (LoA 2), a user has to perform full 2-factor authentication: Username/Password + OTP.
-However, if a user already has a session in {project_name}, that was logged in with username and password (LoA 1), the user is only asked for the second authentication factor (OTP).
+Логика предыдущего настроенного потока аутентификации выглядит следующим образом: +
+Если клиент запрашивает высокий уровень аутентификации, значение уровень аутентификации 2 (LoA 2), пользователь должен выполнить полную двухфакторную аутентификацию: Имя пользователя/Пароль + OTP.
+Однако, если у пользователя уже есть сеанс в {project_name}, который был зарегистрирован с логином и паролем (LoA 1), запрашивается только второй коэффициент аутентификации (OTP).
 
-The option *Max Age* in the condition determines how long (how much seconds) the subsequent authentication level is valid. This setting helps to decide
+Параметр *Max Age* в условии определяет, сколько секунд (максимум) является допустимым. This setting helps to decide
 whether the user will be asked to present the authentication factor again during a subsequent authentication. If the particular level X is requested
 by the `claims` or `acr_values` parameter and user already authenticated with level X, but it is expired (for example max age is configured to 300 and user authenticated before 310 seconds)
-then the user will be asked to re-authenticate again with the particular level. However if the level is not yet expired, the user will be automatically
-considered as authenticated with that level.
+then the user will be asked to re-authenticate again with the particular level. Однако, если уровень еще не истек, пользователь будет автоматически
+считаться аутентифицированным на этом уровне.
 
-Using *Max Age* with the value 0 means, that particular level is valid just for this single authentication. Hence every re-authentication requesting that level
-will need to authenticate again with that level. This is useful for operations that require higher security in the application (e.g. send payment) and always require authentication
-with the specific level.
+*Макс. Возраст* со значением 0 означает, что данный уровень действителен только для одной аутентификации. Следовательно, каждый повторный запрос на этот уровень
+должен пройти повторную аутентификацию на этом уровне. Это полезно для операций, которые требуют повышенной безопасности приложения (например, отправить платеж) и всегда требуют аутентификации
+на конкретном уровне.
 
-WARNING: Note that parameters such as `claims` or `acr_values` might be changed by the user in the URL when the login request is sent from the client to the {project_name} via the user's browser.
-This situation can be mitigated if client uses PAR (Pushed authorization request), a request object, or other mechanisms that prevents the user from rewrite the parameters in the URL.
-Hence after the authentication, clients are encouraged to check the ID Token to double-check that `acr` in the token corresponds to the expected level.
+WARNING: Обратите внимание, что такие параметры, как `claims` или `acr_values` могут быть изменены пользователем в URL-адресе, когда запрос логина отправлен от клиента к {project_name} через браузер пользователя.
+Эта ситуация может быть смягчена, если клиент использует PAR ((Pushed authorization request), объект запроса, или другие механизмы, препятствующие пользователю переписать параметры в URL.
+Следовательно, после аутентификации клиентам рекомендуется проверить идентификационный токен, чтобы дважды проверить, соответствует ли 'acr' ожидаемому уровню.
 
-If no explicit level is requested by parameters, the {project_name} will require the authentication with the first LoA
-condition found in the authentication flow, such as the Username/Password in the preceding example. When a user was already authenticated with that level
-and that level expired, the user is not required to re-authenticate, but `acr` in the token will have the value 0. This result is considered as authentication
-based solely on `long-lived browser cookie` as mentioned in the section 2 of OIDC Core 1.0 specification.
+Если явный уровень не запрашивается параметрами, {project_name} будет требовать аутентификации с первым условием LoA
+в процессе аутентификации, например Имя Пользователя/Пароль в предыдущем примере. Когда пользователь уже был аутентифицирован на этом уровне
+и на этом уровне истек, для повторной аутентификации пользователя не требуется, но значение «acr» в токене будет иметь значение 0. Этот результат рассматривается как аутентификация
+на основе `Долгосрочного cookie браузера`, как указано в разделе 2 спецификации OIDC Core 1.0.
 
-NOTE: During the first authentication of the user, the first configured subflow with the *Conditional - Level Of Authentication* is always executed (regardless of the requested level) as
-the user does not yet have any level. Therefore, we recommend that the first level subflow contains the minimal required authenticators for user authentication. In addition, ensure that the subflows with different values of *Conditional - Level Of Authentication* are ordered starting with the lowest as shown
-in the example above. For example, if you configure a subflow with level 2 and then add another subflow with level 1, the level 2 subflow will be always asked during the first authentication, which may
+NOTE: Во время первой аутентификации пользователя, первый настроенный подпоток с *Условным - уровень аутентификации* всегда выполняется (независимо от запрашиваемого уровня), так как
+пользователь еще не имеет никакого уровня. Поэтому мы рекомендуем, чтобы подпоток первого уровня содержал минимальные необходимые аутентификаторы для аутентификации пользователей. Кроме того, убедитесь, что подпотоки с разными значениями *Conditional - Level Authentication* упорядочиваются начиная с наименьшего из описанных
+в примере выше. For example, if you configure a subflow with level 2 and then add another subflow with level 1, the level 2 subflow will be always asked during the first authentication, which may
 not be the desired behavior.
 
-NOTE: A conflict situation may arise when an admin specifies several flows, sets different LoA levels to each, and assigns the flows to different clients. However, the rule is always the same: if a user has a certain level, it needs only have that level to connect to a client. It's up to the admin to make sure that the LoA is coherent.
+NOTE: Конфликтующая ситуация может возникать, когда администратор задает несколько потоков, устанавливает разные уровни LoA для каждого и назначает потоки различным клиентам. Однако, правило всегда то же самое: если пользователь имеет определенный уровень, он должен иметь только такой уровень, чтобы подключиться к клиенту. Это зависит от администратора, чтобы убедиться, что LoA является последовательным.
 
-NOTE: Step-up authentication with Level of Authentication conditions is intended for use cases where each level
-requires all authentication methods from the preceding levels.
-For instance, level X must always include all authentication methods required by level X-1.
-For use cases where a specific level, such as level 3, requires a different authentication method from the previous levels,
-it may be more appropriate to use mapping of ACR to a specific flow.
-For more details, see <<_client-policy-auth-flow, Using Client Policies to Select an Authentication Flow>>.
+NOTE: Авторизация с уровнем аутентификации предназначена для вариантов использования, когда на каждом уровне
+требуется все методы аутентификации с предыдущих уровней.
+Например, уровень X должен всегда включать все методы аутентификации, требуемые уровнем X-1.
+Для вариантов использования, где конкретный уровень, такой как уровень 3, требует другой метод аутентификации по сравнению с предыдущими уровнями
+может быть более целесообразно использовать сопоставление ACR с определенным потоком.
+Подробнее см. <<_client-policy-auth-flow, Использование политики клиента для выбора аутентификации Flow>>.
 
-*Example scenario*
+*Пример сценария*
 
-. Max Age is configured as 300 seconds for level 1 condition.
-. Login request is sent without requesting any acr. Level 1 will be used and the user needs to authenticate with username and password. The token will have `acr=1`.
-. Another login request is sent after 100 seconds. The user is automatically authenticated due to the SSO and the token will return `acr=1`.
-. Another login request is sent after another 201 seconds (301 seconds since authentication in point 2). The user is automatically authenticated due to the SSO, but the token will return `acr=0` due the level 1 is considered expired.
-. Another login request is sent, but now it will explicitly request ACR of level 1 in the `claims` parameter. User will be asked to re-authenticate with username/password
+. Max Age настроен как 300 секунд для условия уровня.
+. Запрос на вход отправлен без запроса какого-либо акра. Уровень 1 будет использоваться, и пользователю необходимо авторизоваться с помощью имени пользователя и пароля. У токена будет `acr=1`.
+. Другой запрос на вход отправляется через 100 секунд. Пользователь автоматически аутентифицирован из-за SSO, и токен вернёт `acr=1`.
+. Другой запрос на вход отправлен через еще 201 секунду (301 секунду с момента аутентификации в точке 2). Пользователь автоматически аутентифицирован из-за SSO, но токен возвращает `acr=0` из-за уровня 1 считается просроченным.
+. Другой запрос на вход отправлен, но теперь он явно запросит ACR уровня 1 в параметре `claims`. User will be asked to re-authenticate with username/password
 and then `acr=1` will be returned in the token.
 
-*ACR claim in the token*
+*Претензия ACR в токен*
 
-ACR claim is added to the token by the `acr loa level` protocol mapper defined in the `acr` client scope. This client scope is the realm default client scope
+ACR претензия добавляется в токен с помощью карты протокола `acr loa level` протокола, определенного в области области клиента `acr`. This client scope is the realm default client scope
 and hence will be added to all newly created clients in the realm.
 
-In case you do not want `acr` claim inside tokens or you need some custom logic for adding it, you can remove the client scope from your client.
+Если вы не хотите, чтобы `acr` востребовал внутри токенов, или вам нужна пользовательская логика для его добавления, Вы можете удалить область деятельности клиента из вашего клиента.
 
-Note when the login request initiates a request with the `claims` parameter requesting `acr` as `essential` claim, then {project_name} will always return
-one of the specified levels. If it is not able to return one of the specified levels (For example if the requested level is unknown or bigger than configured conditions
-in the authentication flow), then {project_name} will throw an error.
+Обратите внимание, когда запрос на вход инициирует запрос с параметром `claims`, запросив `acr` как претензию `essential`, а {project_name} всегда возвращает
+один из указанных уровней. Если он не может возвращать один из указанных уровней (например, если запрашиваемый уровень неизвестен или больше настроенных условий
+в потоке аутентификации), тогда {project_name} выбросит ошибку.
 
 [[_step-up-authentication-saml]]
-==== Step-up authentication for SAML
+==== Расширенная аутентификация для SAML
 
-For the SAML protocol, the step-up authentication uses the `<AuthnContextClassRef>` element (Authentication Context Class Reference or ACR) to map the Level of Authentication (LoA). This element is a URI reference that identifies an authentication context declaration. The LoA is requested by the client in the SAML request via the `<RequestedAuthnContext>` element.
+Для протокола SAML, постепенная аутентификация использует элемент `<AuthnContextClassRef>` (аутентификация в контексте класса или ACR) для сопоставления уровня аутентификации (LoA). Этот элемент представляет собой URI ссылку, которая идентифицирует контекстное объявление аутентификации. Запрос LoA запрошен клиентом в запросе SAML через элемент `<RequestedAuthnContext>`.
 
 [source,xml,subs=+attributes]
 ----
@@ -416,7 +416,7 @@ For the SAML protocol, the step-up authentication uses the `<AuthnContextClassRe
 </samlp:AuthnRequest>
 ----
 
-The request asks for a set of authentication contexts that will be evaluated in order by {project_name} until one of them can be satisfied. This means that {project_name} knows that URI declaration and there is a level defined in the mapping that is sufficient for the request. If none of the specified contexts can be satisfied, then {project_name} returns a `<Response>` message with a second-level `<StatusCode>` of `urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext`.
+Запрос запрашивает набор контекстов аутентификации, которые будут оцениваться {project_name} в порядке до тех пор, пока один из них не сможет быть удовлетворен. Это означает, что {project_name} знает, что URI объявление и есть уровень, который достаточно для запроса. Если ни один из указанных контекстов не может быть удовлетворен, то {project_name} возвращает сообщение `<Response>`, используя второй уровень `<StatusCode>` из `urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext`.
 
 [source,xml,subs=+attributes]
 ----
@@ -430,7 +430,7 @@ The request asks for a set of authentication contexts that will be evaluated in 
 </samlp:Response>
 ----
 
-If {project_name} can satisfy the request, the step-up authentication flow is called to authenticate the user with the mapped level. The SAML response, using the `<AuthnStatement>` element inside the successful response, will contain again the `<AuthnContextClassRef>` with the context finally applied.
+Если {project_name} может выполнить запрос, вызывается ускоренный поток аутентификации, чтобы аутентифицировать пользователя на указанном уровне. SAML ответ, используя `<AuthnStatement>` элемент в успешном ответе, будет содержать `<AuthnContextClassRef>с контекстом, наконец.
 
 [source,xml,subs=+attributes]
 ----
@@ -461,92 +461,92 @@ If {project_name} can satisfy the request, the step-up authentication flow is ca
 </samlp:Response>
 ----
 
-For more information about the processing rules defined in the SAML standard for the `<RequestedAuthnContext>` element, see Section 3.3.2.2.1 Element `<RequestedAuthnContext>` of the *Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0* (`saml-core-2.0-os.pdf` document). The complete SAML v2.0 OASIS Standard set (PDF format) and schema files are available in the link:https://www.oasis-open.org/standard/saml/[Security Assertion Markup Language (SAML) v2.0] page. Note that the spec also defines a comparison (exact, minimum, better and maximum), that complicates what Level of Authentication will be finally selected in {project_name}.
+Более подробную информацию о правилах обработки данных, определенных в стандарте SAML для элемента `<RequestedAuthnContext>, см. в разделе 3.3.2.2. Элемент `<RequestedAuthnContext>*Установки и протоколы для языка разметки Assertion OASIS (SAML) V2.0* (`saml-core-2.0-os.pdf`). Полный набор стандартов SAML v2.0 OASIS (формат PDF) и файлы схемы доступны на странице link:https://www.oasis-open.org/standard/saml/[Язык безопасности Assertion Markup Markup Language (SAML) v2.0]. Обратите внимание, что спецификация также определяет сравнение (точное, минимальное, лучше и максимальное), что усложняет какой уровень аутентификации наконец будет выбран в {project_name}.
 
-When the `step-up-authentication-saml` feature is enabled, the <<_mapping-acr-to-loa-realm,ACR to Level of Authentication (LoA) Mapping>> is a table with three values: the OpenID Connect ACR, the SAML URI context and the Level of Authentication (LoA). The mapping can be defined for both client types. It can also be overridden at client level, but, in this case, only the URI and the LoA are present. The minimum ACR value which is allowed for the client can also be defined in the configuration. The step-up authentication options for SAML clients are placed in the **Advanced** tab, section **Advanced Settings**. See chapter <<_client-saml-configuration,Creating a SAML client>> for details.
+Когда функция `step-up-authentication-saml` включена, <_mapping-acr-to-loa-realm, CR до уровня аутентификации (LoA) Mapping>> представляет собой таблицу с тремя значениями: OpenID Connect ACR, контекст SAML URI и уровень аутентификации (LoA). Сопоставление может быть определено для обоих типов клиентов. Она также может быть переопределена на уровне клиента, но в данном случае присутствуют только URI и LoA. Минимальное ACR значение, которое разрешено для клиента, также может быть определено в конфигурации. Опции дополнительной аутентификации для клиентов SAML находятся во вкладке **Дополнительные** **Дополнительные настройки**. Смотрите главу <<_client-saml-configuration,Создание SAML-клиента>> .
 
-In summary, when the step-up authentication is configured for SAML, {project_name} will process the specified context level in the SAML request and the minimum ACR allowed for the client (if they are present) to obtain the LoA (integer level) that should be reached in the authentication. If there is no available level that satisfies the request, the error is returned per specification. If the URI/LoA mapping returns a level that satisfies the request, the authentication flow is started, enforcing that Level of Authentication to be reached.
+Итак, когда расширенная аутентификация настроена для SAML, {project_name} обрабатывает указанный уровень контекста в SAML запросе, и минимальный ACR, разрешенный для клиента (если он присутствует), чтобы получить LoA (целочисленный уровень), который должен быть достигнут при аутентификации. Если нет доступного уровня, удовлетворяющего запросу, то ошибка возвращается за спецификацию. Если отображение URI/LoA возвращает уровень, удовлетворяющий запросу, то начинается поток аутентификации, требующий достижения уровня аутентификации.
 
-In order to maintain backwards compatibility, {project_name} does not return an error and continues adding the previous ACR `urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified` to the response in the following situations:
+Для поддержания обратной совместимости, {project_name} не возвращает ошибку и продолжает добавлять предыдущий ACR `urn:oasis:names:tc:SAML:2. :ac:classes:unspecified` ответ в следующих ситуациях:
 
-* The feature `step-up-authentication-saml` is not enabled in {project_name}.
-* The SAML client does not define any mapping between context URI and LoA. Use the client mapping instead of the general realm mapping when you just need to apply the step-up for some specific SAML clients.
-* The `AuthnContextClassRef mapper` is not executed. This mapper is provided by a new default client scope `AuthnContextClassRef` which is now added to SAML clients by default. It is in charge of adding the resulting `<AuthnContextClassRef>` to the response.
+* Функция `step-up-authentication-saml` не включена в {project_name}.
+* SAML клиент не определяет никакие сопоставления между контекстным URI и LoA. Используйте клиентское сопоставление вместо общей картины реалмов, когда вам просто нужно применить пополнение для определенных клиентов SAML.
+* `AuthnContextClassRef mapper` не выполняется. Это сопоставление предоставляется новой моделью клиента `AuthnContextClassRef`, которая по умолчанию добавлена к SAML клиентам. Он отвечает за добавление получаемого `<AuthnContextClassRef>` к ответу.
 +
-NOTE: The mapper and the client scope `AuthnContextClassRef` are automatically created and assigned to SAML clients when the `step-up-authentication-saml` feature is enabled (for new and migrated realms). If the feature was disabled at creation or migration time and want to be used afterwards, the client scope with the mapper should be created and assigned to the client manually.
-* The LoA calculated at request time is not achieved by the authentication flow. For example, if the authentication flow used for authentication is not a step-up flow, or there is a misconfiguration between the URI/LoA mapping and the final level reached in the step-up authentication flow.
+NOTE: Карта и клиентская область «AuthnContextClassRef» автоматически создаются и назначаются SAML клиентам, когда включена функция «step-up-authentication-saml» (для новых и мигрированных миров). Если функция была отключена при создании или миграции и затем хотите использовать ее клиентская область с картографом должна быть создана и назначена клиенту вручную.
+* Поставка, рассчитываемая в момент запроса, не достигается в результате процесса аутентификации. Например, если поток аутентификации для аутентификации не является ускоренным процессом, или есть неправильная конфигурация между отображением URI/LoA и окончательным уровнем, достигнутым в ускоренном процессе аутентификации.
 
 [[_registration-rc-client-flows]]
-==== Registration or Reset credentials requested by client
+==== Регистрация или сброс учетных данных, запрашиваемых клиентом
 
-Usually when the user is redirected to the {project_name} from client application, the `browser` flow is triggered. This flow may allow the user to <<con-user-registration_{context}, register>> in case
-that realm registration is enabled and the user clicks `Register` on the login screen. Also, if <<enabling-forgot-password,Forget password>> is enabled for the realm, the user can
-click `Forget password` on the login screen, which triggers the `Reset credentials` flow where users can reset credentials after email address confirmation.
+Обычно при перенаправлении пользователя на {project_name} из клиентского приложения, запускается `browser`. Этот поток может позволить пользователю <<con-user-registration_{context}, register>> в случае, если
+включена регистрация, а пользователь нажимает `Register` на экране входа. Также, если <<enabling-forgot-password,Forget password>> включено для реалма, пользователь может
+нажмите `Забыли пароль` на экране входа, которая запускает поток «Сброс учетных данных», в котором пользователи могут сбросить учетные данные после подтверждения адреса электронной почты.
 
-Sometimes it can be useful for the client application to directly redirect the user to the *Registration* screen or to the *Reset credentials* flow. The resulting action will match the action of when the
-user clicks *Register* or *Forget password* on the normal login screen. Automatic redirect to the registration or reset-credentials screen can be done as follows:
+Иногда клиентское приложение может быть полезно напрямую перенаправлять пользователя на экран *Регистрации* или *Сброс учетных данных*. The resulting action will match the action of when the
+user clicks *Register* or *Forget password* on the normal login screen. Автоматическое перенаправление на экран регистрации или сброса регистрационных данных может быть сделано следующим образом:
 
-* When the client wants the user to be redirected directly to the registration, the OIDC client should add parameter `prompt=create` to the login request. As a deprecated alternative, clients can replace the very last
-snippet from the OIDC login URL path (`/auth`) with `/registrations` . So the full URL might be similar to the following: `https://keycloak.example.com/realms/your_realm/protocol/openid-connect/registrations`.
-The `prompt=create` is recommended as it is https://openid.net/specs/openid-connect-prompt-create-1_0.html[a specification standard].
-* When the client wants a user to be redirected directly to the `Reset credentials` flow, the OIDC client should replace the very last snippet from the OIDC login URL path (`/auth`) with `/forgot-credentials` .
+* Когда клиент хочет, чтобы пользователь был перенаправлен непосредственно на регистрацию, OIDC клиент должен добавить параметр `prompt=create` к запросу входа. As a deprecated alternative, clients can replace the very last
+snippet from the OIDC login URL path (`/auth`) with `/registrations` . Таким образом, полный URL может быть похож на следующее: `https://keycloak.example.com/realms/your_realm/protocol/openid-connect/registrations`.
+Рекомендуется `prompt=create` как https://openid.net/specs/openid-connect-prompt-create-1_0.html[стандарт спецификации].
+* Когда клиент хочет, чтобы пользователь был перенаправлен непосредственно на поток «Сбросить учетные данные», OIDC клиент должен заменить последний snippet с пути OIDC входа (`/auth`) на `/forgot-credentials` .
 
-WARNING: The preceding steps are the only supported method for a client to directly request a registration or reset-credentials flow. For security
-purposes, it is not supported and recommended for client applications to bypass OIDC/SAML flows and directly redirect to other {project_name} endpoints (such as for instance endpoints under
-`/realms/realm_name/login-actions` or `/realms/realm_name/broker`).
+WARNING: Предыдущие шаги являются единственным поддерживаемым методом для того, чтобы клиент напрямую запросил поток регистрационных данных или сбросов. В целях безопасности
+он не поддерживается и не рекомендуется для клиентских приложений для обхода потоков OIDC/SAML и прямого перенаправления на другие конечные точки {project_name} (например, конечные точки в
+`/realms/realm_name/login-actions` или `/realms/realm_name/broker`).
 
 [[_user_session_limits]]
-=== User session limits
+=== Ограничения сессий пользователя
 
-Limits on the number of session that a user can have can be configured. Sessions can be limited per realm or per client.
+Ограничение количества сеансов, которое может иметь пользователь. Сессии могут быть ограничены в одном мире или на одном клиенте.
 
-To add session limits to a flow, perform the following steps.
+Чтобы добавить лимиты сессий к потоку, выполните следующие действия.
 
-. Click *Add step* for the flow.
-. Select *User session count limiter* from the item list.
-. Click *Add*.
-. Click *Required* for the *User Session Count Limiter* authentication type to set its requirement to required.
-. Click *⚙️* (gear icon) for the *User Session Count Limiter*.
-. Enter an alias for this config.
-. Enter the required maximum number of sessions that a user can have in this realm. For example, if 2 is the value, 2 SSO sessions is the maximum that each user can have in this realm. If 0 is the value, this check is disabled.
-. Enter the required maximum number of sessions a user can have for the client. For example, if 2 is the value, then 2 SSO sessions is the maximum in this realm for each client. So when a user is trying to authenticate to client `foo`, but that user has already authenticated in 2 SSO sessions to client `foo`, either the authentication will be denied or an existing sessions will be killed based on the behavior configured. If a value of 0 is used, this check is disabled.
-If both session limits and client session limits are enabled, it makes sense to have client session limits to be always lower than session limits. The limit per client can never exceed the limit of all SSO sessions of this user.
-. Select the behavior that is required when the user tries to create a session after the limit is reached. Available behaviors are:
-- *Deny new session* - when a new session is requested and the session limit is reached, no new sessions can be created.
-- *Terminate oldest session* - when a new session is requested and the session limit has been reached, the oldest session will be removed and the new session created.
-. Optionally, add a custom error message to be displayed when the limit is reached.
+. Нажмите *Добавить шаг* для потока.
+. Выберите *Ограничение количества сессий пользователей* из списка.
+. Нажмите *Добавить*.
+. Нажмите *Обязательно* для того, чтобы установить требуемый тип аутентификации *Ограничение количества пользователей*.
+. Нажмите *⚙️* (иконка передачи) для *Ограничения количества сессий пользователей*.
+. Введите псевдоним для этой конфигурации.
+. Введите требуемое максимальное количество сеансов, которое может иметь пользователь в этом реалме. Например, если 2 значения являются значениями, то в этом мире максимальное число сессий SSO составляет 2 сеанса. Если значение равно 0, то флажок отключен.
+. Введите требуемое максимальное количество сессий, которое пользователь может иметь для клиента. Например, если 2 - это значение, то для каждого клиента максимальное число сессий SSO - 2 сеанса. Таким образом, когда пользователь пытается аутентифицироваться в клиентском `foo`, но этот пользователь уже авторизовался в 2 SSO сеансах для клиента `foo`, либо аутентификация будет запрещена, либо уже существующие сессии будут убиты на основании настроенного поведения. Если используется значение 0, этот флажок отключен.
+Если разрешены лимиты сеансов и лимиты сеансов клиента, то имеет смысл иметь ограничения на сеансы работы с клиентом всегда ниже, чем лимиты сессий. Лимит на один клиент никогда не может превышать лимит всех SSO сеансов данного пользователя.
+. Выберите поведение, необходимое при попытке пользователя создать сессию после достижения лимита. Доступные поведения:
+- *Отклонить новую сессию* - при запросе нового сеанса и лимит сеанса не может быть создан.
+- *Прекращение старой сессии* - при запросе нового сеанса и достижении лимита сеанса, старейшая сессия будет удалена и создана новая сессия.
+. При необходимости добавьте пользовательское сообщение об ошибке, которое будет отображаться при достижении лимита.
 
-Note that the user session limits should be added to your bound *Browser flow*, *Direct grant flow*, *Reset credentials* and also to any *Post broker login flow*.
-The authenticator should be added at the point when the user is already known during authentication (usually at the end of the authentication flow) and should be typically REQUIRED. Note that it is not possible to have
+Обратите внимание, что лимиты сессий пользователя должны быть добавлены к связанному потоку *браузера*, *Прямое предоставление потока*, *Сброс учетных данных*, а также *Почтовый поток*.
+Авторизатор должен быть добавлен в точку, когда пользователь уже известен во время аутентификации (обычно в конце процесса аутентификации) и должен быть стандартно НЕОБХОДИМЫм. Note that it is not possible to have
 ALTERNATIVE and REQUIRED executions at the same level.
 
-For most of authenticators like `Direct grant flow`, `Reset credentials` or `Post broker login flow`, it is recommended to add the authenticator as REQUIRED at the end of the authentication flow.
-Here is an example for the `Reset credentials` flow:
+Для большинства аутентификаторов, таких как `Direct grant flow`, `Reset credentials` или `Post broker login flow`, в конце процесса аутентификации рекомендуется добавить аутентификатор в качестве НЕОБХОДИМЫ.
+Вот пример потока «Сброс учетных данных»:
 
-image:images/authentication-user-session-limits-resetcred.png[Authentication User Session Limits Reset Credentials Flow]
+image:images/authentication-user-session-limits-resetcred.png[Ограничения сессий аутентификации пользователя по сбросу учетных данных]
 
-For `Browser` flow, consider not adding the Session Limits authenticator at the top level flow. This recommendation is due to the `Cookie` authenticator, which automatically re-authenticates users based
-on SSO cookie. It is at the top level and it is better to not check session limits during SSO re-authentication because a user session already exists. So instead, consider adding a separate ALTERNATIVE
-subflow, such as the following `authenticate-user-with-session-limit` example at the same level like `Cookie`. Then you can add a REQUIRED subflow, in the following `real-authentication-subflow`example, as a nested subflow of `authenticate-user-with-session-limit` and add a `User Session Limit` at the same level as well. Inside the `real-authentication-subflow`,
-you can add real authenticators in a similar fashion to the default browser flow. The following example flow allows to users to authenticate with an identity provider or
-with password and OTP:
+Для потока `Browser` попробуйте не добавить идентификатор сессии при потоке верхнего уровня. Эта рекомендация связана с аутентификатором `Cookie`, который автоматически повторно аутентифицирует пользователей на основе
+на SSO cookie. Это на верхнем уровне и лучше не проверять лимиты сеансов во время повторной аутентификации SSO из-за уже существующей сессии пользователя. Итак, вместо этого стоит добавить отдельный подпоток ALTERNATIVE
+, такой как следующий пример `authenticate-user-with-session-limit` на том же уровне, как `Cookie`. Затем вы можете добавить ПОТРЕБУЕТСЯ подпоток, в следующем разделе `real-authentication-subflow`example, как вложенный поток `authenticate-user-with-session-limit` и добавьте `User Session Limit` на том же уровне. Внутри `реальный поток аутентификации`,
+вы можете добавить реальных аутентификаторов подобным образом к потоку браузера по умолчанию. Следующий пример потока позволяет пользователям аутентифицироваться с провайдером идентификации или
+с паролем и OTP:
 
-image:images/authentication-user-session-limits-browser.png[Authentication User Session Limits Browser Flow]
+image:images/authentication-user-session-limits-browser.png[Ограничения на сеанс аутентификации пользователя]
 
-Regarding `Post Broker login flow`,  you can add the `User Session Limits` as the only authenticator in the authentication flow  as long as you have no other authenticators that you  trigger after authentication with your identity provider.  However, make sure that this flow is configured as `Post Broker Flow` at your identity providers. This requirement exists needed so that
-the authentication with Identity providers also participates in the session limits.
+Что касается `Post Broker login flow`, вы можете добавить `User Session Limits` в качестве единственного аутентификатора в процессе аутентификации до тех пор, пока у вас нет других аутентификаторов, которые вы запускаете после аутентификации с вашим провайдером.  Тем не менее, убедитесь, что этот поток настроен как `Post Broker Flow` на вашем поставщике удостоверений. Это требование необходимо для того, чтобы
+аутентификация с идентификационными провайдерами также принимала участие в лимитах сеансов.
 
-NOTE: Currently, the administrator is responsible for maintaining consistency between the different configurations. So make sure that all your flows use same the configuration
-of `User Session Limits`.
+NOTE: В настоящее время администратор отвечает за поддержание согласованности между различными конфигурациями. Так что убедитесь, что все ваши потоки используют одинаковую конфигурацию
+из `User Session Limits`.
 
-NOTE: User session limit feature is not available for CIBA.
+NOTE: Функция лимита сессий для CIBA недоступна.
 
 ifeval::[{project_community}==true]
 
-=== Script Authenticator
+=== Аутентификатор скрипта
 
-Ability to upload scripts through the Admin Console and REST endpoints is deprecated.
+Возможность загружать скрипты через консоль администратора и REST устарела.
 
-For more details see link:{developerguide_jsproviders_link}[{developerguide_jsproviders_name}].
+Дополнительную информацию см. по ссылке:{developerguide_jsproviders_link}[{developerguide_jsproviders_name}].
 
 endif::[]
