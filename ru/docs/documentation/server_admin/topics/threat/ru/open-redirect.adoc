@@ -1,9 +1,9 @@
-=== Open redirectors
+=== Открытые редиректы
 
-An open redirector is an endpoint using a parameter to automatically redirect a user agent to the location specified by the parameter value without validation. An attacker can use the end-user authorization endpoint and the redirect URI parameter to use the authorization server as an open redirector, using a user's trust in an authorization server to launch a phishing attack.
+Открытый редиректор - это конечная точка, использующая параметр для автоматического перенаправления пользовательского агента на место, указанное значением параметра без проверки. Нападающий может использовать конечную точку авторизации конечную точку авторизации конечную и параметр URI перенаправления для использования сервера авторизации в качестве открытого редиректа, использование доверия пользователя к серверу авторизации для запуска фишинговой атаки.
 
-{project_name} requires that all registered applications and clients register at least one redirection URI pattern. When a client requests that {project_name} performs a redirect, {project_name} checks the redirect URI against the list of valid registered URI patterns. Clients and applications must register as specific a URI pattern as possible to mitigate open redirector attacks.
+{project_name} требует, чтобы все зарегистрированные приложения и клиенты регистрировали по крайней мере один шаблон перенаправления URI. Когда клиент просит {project_name} выполнить переадресацию, {project_name} проверяет редирект URI на соответствие списку зарегистрированных шаблонов URI. Клиенты и приложения должны зарегистрировать как можно более конкретный шаблон URI для предотвращения открытых атак редиректа.
 
-If an application requires a non http(s) custom scheme, it should be an explicit part of the validation pattern (for example `custom:/app/\*`). For security reasons a general pattern like `*` does not cover non http(s) schemes.
+Если приложение требует пользовательскую схему не http(s), она должна быть явной частью шаблона проверки (например, `custom:/app/\*`). По соображениям безопасности общий шаблон типа `*` не охватывает схемы не http(s).
 
-By using <<_client_policies, Client Policies>>, an administrator can make sure that clients cannot register open redirect URLs such as `*`.
+Используя <<_client_policy, Client Policies>, администратор может убедиться, что клиенты не могут зарегистрировать открытые URL перенаправления, такие как `*`.
