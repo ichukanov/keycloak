@@ -1,19 +1,19 @@
 ==== PayPal
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *PayPal*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *PayPal*.
 +
-image:images/paypal-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, open the https://developer.paypal.com/developer/applications[PayPal Developer applications area].
-.. Click *Create App* to create a PayPal app.
-.. Note the *Client ID* and *Client Secret*. Click the *Show* link to view the secret.
-.. Ensure *Log in with PayPal* is checked.
-.. Under Log in with PayPal click on *Advanced Settings*.
-.. Set the value of the *Return URL* field to the value of *Redirect URI* from {project_name}. Note that the URL can not contain `localhost`. If you want to use {project_name} locally, replace the `localhost` in the *Return URL* by `127.0.0.1` and then access {project_name} using `127.0.0.1` in the browser instead of `localhost`.
-.. Ensure *Full Name* and *Email* fields are checked.
-.. Click *Save* and then *Save Changes*.
-. In {project_name}, paste the value of the `Client ID` into the *Client ID* field.
-. In {project_name}, paste the value of the `Secret key 1` into the *Client Secret* field.
-. Click *Add*.
+image:images/paypal-add-identity-provider.png[Добавить поставщика идентификации]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера откройте https://developer.paypal.com/developer/applications[PayPal Developer area].
+.. Нажмите *Создать приложение* для создания приложения PayPal.
+.. Обратите внимание на *ID клиента* и *Секретарь Клиента*. Нажмите на ссылку *Показать*, чтобы просмотреть секрет.
+.. Убедитесь, что установлен *Войти с помощью PayPal*.
+.. В разделе Войти через PayPal нажмите *Дополнительные настройки*.
+.. Установите значение поля *Возвращать URL* в значение *Redirect URI* из {project_name}. Обратите внимание, что URL-адрес не может содержать `localhost`. Если вы хотите использовать {project_name} локально, замените `localhost` в *Return URL* на `127. .0.1` и затем получить доступ к {project_name} , используя `127.0.0.1` в браузере вместо `localhost`.
+.. Убедитесь, что отмечены поля *Полное имя* и *E-mail*.
+.. Нажмите *Сохранить* и затем *Сохранить изменения*.
+. В {project_name}вставьте значение `Client ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Secret key 1` в поле *Client Secret*.
+. Нажмите *Добавить*.
