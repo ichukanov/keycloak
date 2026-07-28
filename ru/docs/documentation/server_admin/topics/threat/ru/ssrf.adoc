@@ -1,73 +1,73 @@
 [[ssrf]]
-=== Mitigating Server-Side Request Forgery (SSRF)
+=== Смягчение подделки серверных запросов (SSRF)
 
-**Server-Side Request Forgery (SSRF)** is a security vulnerability where an attacker induces the server ({project_name}, in this case) to make requests to an unintended destination. In {project_name}, this risk is primarily associated with client fields that trigger requests from the server, such as the **JWKS URI**.
+**Server-Side Request Forgery (SSRF)** — уязвимость, связанная с безопасностью, когда злоумышленник вводит сервер ({project_name}, в этом случае), чтобы обратиться к незапланированному месту назначения. В {project_name}, этот риск прежде всего связан с полями клиента, вызывающими запросы с сервера, такими как **JWKS URI**.
 
-If these fields are not strictly validated, a malicious administrator, a compromised account or a Dynamic Client Registration could point them toward internal network resources or loopback interfaces (e.g., `http://localhost:8080/any`), allowing the attacker to probe or attack the internal infrastructure from the {project_name} server itself.
+Если эти поля не проверяются, вредоносный администратор, скомпрометированный аккаунт или Динамическая Регистрация Клиента могут указать на внутренние сетевые ресурсы или интерфейсы (e. ., `http://localhost:8080/any`), позволяя нападающему зондировать или атаковать внутреннюю инфраструктуру с самого сервера {project_name}.
 
-To mitigate this threat, {project_name} provides a solution using <<_client_policies, Client Policies>> with some executors like *Secure Client Uris* to provide baseline protection for transport security and wildcards, but especially with the **Secure Client URIs Pattern** executor.
+Чтобы смягчить эту угрозу, {project_name} предоставляет решение, используя <_client_policies Клиентские Политики>> с некоторыми исполнителями, такими как *Безопасный Клиентский Урис*, обеспечить базовую защиту для безопасности транспорта и подстановочных знаков, Но особенно с **Secure Client URIs Pattern**.
 
-See also <<dns-rebinding>> for an attack vector that can bypass URI-based validation.
+См. также <<dns-rebinding>> для вектора атаки, которые могут обойти проверку на основе URI.
 
-==== Secure Client URIs Pattern Executor
+==== Защищенный шаблон URI клиента
 
-This executor enforces a strict security policy by validating client URIs against an **allowlist of patterns**. If a URI does not match at least one of the configured patterns, the client creation or update is rejected.
+Этот исполнитель вводит строгую политику безопасности, проверяя URI клиента на соответствие **allowlist of patterns**. Если URI не совпадает по крайней мере с одним из настроенных шаблонов, то создание или обновление клиента отклоняется.
 
-It can be used not only for `JWKS URI` but to validate all available uri fields of the client like including `rootUrl`, `adminUrl`, `redirectUris`, `webOrigins` and others.
+Он может быть использован не только для `JWKS URI`, но и для проверки всех доступных uri полей клиента, включая `rootUrl`, `adminUrl`, `redirectUris`, `webOrigins` и другие.
 
-.Configuration Properties
+.Параметры конфигурации
 [cols="1,3", options="header"]
 |===
-|Configuration
-|Description
+|Конфигурация
+|Описание
 
-|Allowed URI Patterns
-|A list of Regular Expressions. A client URI is considered valid **only** if it matches at least one of these patterns. If this list is empty or invalid, the executor blocks **all** URIs.
+|Разрешенные шаблоны URI
+|Список регулярных выражений. URI клиента считается корректным **только**, если он совпадает по крайней мере с одним из этих шаблонов. Если этот список пуст или недействителен, то исполнитель блокирует **все** URI.
 
-|Client URI Fields to validate
-|A list of specific client fields to validate (e.g., `jwksUri`, `adminUrl`). If left empty, **all** supported URI fields are validated by default. The list is available in the configuration.
+|Поля URI клиента для проверки
+|Список конкретных полей клиента (например, jwksUri, `adminUrl`). Если оставить пустым, **все** поддерживаемые поля URI проверяются по умолчанию. Список доступен в конфигурации.
 |===
 
-==== Anti-SSRF Pattern Examples
+==== Примеры анти-SSRF шаблонов
 
-To effectively prevent SSRF, Regular Expressions should be designed to exclude IP addresses and local hostnames.
+Для эффективного предотвращения SSRF регулярные выражения должны быть разработаны для исключения IP адресов и локальных имен хостов.
 
-**1. Restricting to Trusted Domains**
+**1. Ограничение доверенных доменов**
 
-This pattern ensures that the {project_name} server only communicates with official domains, preventing the use of `localhost` or numerical IP addresses.
+Этот шаблон гарантирует, что сервер {project_name} взаимодействует только с официальными доменами, предотвращая использование `localhost` или числовых IP-адресов.
 
-* **Pattern:** `^https://([a-zA-Z0-9-]+\.)?mycompany\.com(/.*)?$`
-* **Effect:** Blocks attempts to use loopback addresses (e.g., `http://localhost:8080`) or cloud metadata endpoints.
+* **Текст:** `^https://([a-zA-Z0-9-]+\.)?mycompany\.com(/.*)?$`
+* **Эффект:** Блоки пытаются использовать адреса циклов (например, `http://localhost:8080`) или конечные точки метаданных облака.
 
-**2. Enforcing HTTPS**
+**2. Принудительное HTTPS**
 
-SSRF often exploits unencrypted protocols to bypass internal security controls. Enforcing HTTPS via patterns reduces the attack surface.
+SSRF часто использует незашифрованные протоколы для обхода внутренних контролей безопасности. Обеспечение HTTPS по шаблонам уменьшает поверхность атаки.
 
-* **Pattern:** `^https://[a-zA-Z0-9.-]+(/.*)?$`
-* **Result:** Rejects the use of the `http://` scheme, which is frequently used to probe internal services.
+* **Шаблон:** `^https://[a-zA-Z0-9.-]+(/.*)?$`
+* **Результат:** Отклоняет использование схемы «http://», которая часто используется для проверки внутренних сервисов.
 
-NOTE: https can be enforced also with the *Secure Client Uris* executor but only together with wildcards and for all the client URIs
+NOTE: https может быть применен также с исполнителем *Secure Client Uris*, но только с подстановочными знаками и для всех URI клиента
 
-**3. Specific Provider Allowlisting**
+**3. Разрешенный конкретный поставщик**
 
-If your clients use JWKS URI from third-party providers, only add the specific domains belonging to those providers.
+Если ваши клиенты используют JWKS URI от сторонних провайдеров, то добавьте только те домены, которые принадлежат этим провайдерам.
 
-* **Pattern:** `^https://trusted-provider\.io/.*`
-* **Result:** All other domains will be rejected for JWKS requests.
+* **Контент:** `^https://trusted-provider\.io/.*`
+* **Результат:** Все остальные домены будут отклонены для запросов JWKS.
 
 [WARNING]
-.Regular Expression Syntax
+.Синтаксис регулярного выражения
 ====
-This executor uses Java Regular Expressions. Ensure you correctly escape special characters (for example, use `\.` to indicate a literal dot). An incorrect pattern could prevent legitimate updates to clients. It is recommended to test regexes in a non-production environment.
+Этот исполнитель использует регулярные выражения Java. Убедитесь, что вы правильно экранировали специальные символы (например, `\.`, чтобы указать точку). Некорректный шаблон может помешать законным обновлениям клиентов. Рекомендуется тестировать регулярные выражения в нерабочей среде.
 ====
 
 [[dns-rebinding]]
-==== DNS Rebinding
+==== Перепривязка DNS
 
-An attacker can use DNS rebinding to resolve a public hostname to an internal IP address, bypassing URI-based allowlists that validate only the hostname at request time.
+Нападающий может использовать DNS перепривязку для разрешения публичного имени хоста на внутренний IP адрес, обход разрешенных списков на основе URI, которые проверяют только имя хоста в момент запроса.
 
-This allows an attacker to make {project_name} connect to internal services, including endpoints on the same host, enabling SSRF or internal network scanning depending on authentication and network controls.
+Это позволяет злоумышленнику подключаться к {project_name} внутренним службам, включая конечные точки на одном узле, включение сканирования SSRF или внутренней сети в зависимости от параметров аутентификации и сетевого управления.
 
-To mitigate DNS rebinding attacks, configure the DNS resolver used by {project_name} to reject resolutions of public domain names to non-public/internal IP address ranges.
+Для уменьшения атаки на репривязку DNS, настройте DNS резолвер, используемый {project_name} , чтобы отклонить разрешение публичных доменных имен непубличных/внутренних IP адресов.
 
-NOTE: This is an infrastructure-level mitigation applied in the DNS resolver, not a setting within {project_name} itself.
+NOTE: Это снижение уровня инфраструктуры, применяемое в DNS резолвере, а не в самом {project_name}.
