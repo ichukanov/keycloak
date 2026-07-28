@@ -1,14 +1,14 @@
 [id="proc-setting-required-actions_{context}"]
-= Setting required actions for one user
+= Настройка необходимых действий для одного пользователя
 
-You can set the actions that are required for any user.
+Вы можете установить необходимые для любого пользователя действия.
 
-.Procedure
-. Click *Users* in the menu.
-. Select a user from the list.
-. Navigate to the *Required User Actions* list.
+.Процедура
+. Нажмите *Пользователи* в меню.
+. Выберите пользователя из списка.
+. Перейдите в список *Required User Action*.
 +
 image:images/user-required-action.png[]
-. Select all the actions you want to add to the account.
-. Click the *X* next to the action name to remove it.
-. Click *Save* after you select which actions to add.
+. Выберите все действия, которые вы хотите добавить в аккаунт.
+. Нажмите *X* рядом с названием действия, чтобы удалить его.
+. Нажмите на кнопку *Сохранить* после того, как вы выберете действия для добавления.
