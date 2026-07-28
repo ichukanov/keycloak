@@ -1,8 +1,8 @@
 [[_accessing_scim_service_provider_config_]]
-= Accessing the SCIM service provider configuration
+= Доступ к конфигурации провайдера сервиса SCIM
 
-As per the SCIM specification, the Service Provider Configuration endpoint (`/ServiceProviderConfig`) provides metadata
-about the capabilities available from the SCIM API.
+Согласно спецификации SCIM, конечная точка конфигурации провайдера сервиса (`/ServiceProviderConfig`) предоставляет метаданные
+о возможностях, доступных из SCIM API.
 
 [source,bash]
 ----
@@ -11,8 +11,8 @@ curl http://localhost:8080/realms/myrealm/scim/v2/ServiceProviderConfig \
   -H "Accept: application/scim+json"
 ----
 
-A successful response returns the capabilities of the SCIM API, including supported operations such as
-`patch`, `filter`, and the authentication schemes:
+Успешный ответ возвращает возможности SCIM API, включая поддерживаемые операции, такие как
+`patch`, `filter` и схемы аутентификации:
 
 [source,json]
 ----
@@ -49,7 +49,7 @@ A successful response returns the capabilities of the SCIM API, including suppor
 }
 ----
 
-At the moment, the Service Provider Configuration is read-only and cannot be modified.
+В настоящее время конфигурация поставщика услуг доступна только для чтения и не может быть изменена.
 
-Future releases may allow customization of certain capabilities, such as supported authentication schemes or maximum filter results.
-For now, the configuration reflects the default capabilities of the SCIM API as implemented in {project_name}.
+В будущих версиях могут быть настроены определенные возможности, такие как поддерживаемые схемы аутентификации или максимальные результаты фильтра.
+На данный момент конфигурация отражает стандартные возможности SCIM API, реализованные в {project_name}.
