@@ -1,146 +1,146 @@
 [[password-guess-brute-force-attacks]]
-=== Brute force attacks
+=== Жестокая сила атаки
 
-A brute force attack attempts to guess a user's password by trying to log in multiple times. {project_name} has brute force detection capabilities and can permanently or temporarily disable a user account if the number of login failures exceeds a specified threshold.
+Атака грубой силы пытается угадать пароль пользователя, пытаясь многократно войти в систему. {project_name} имеет возможности обнаружения грубой силы и может навсегда или временно отключить учетную запись пользователя, если количество неудач входа превышает заданный порог.
 
-The protection is applied only to authentication mechanisms prone to the brute force attacks. {project_name} applies it only to password, OTP and recovery codes.
+Защита применяется только к механизмам аутентификации, подверженным атакам с принудительной силой. {project_name} применяет его только для паролей, OTP и кодов восстановления.
 
 [NOTE]
 ====
-When a user is locked and attempts to log in, {project_name} displays the default `Invalid username or password` error message. This message is the same error message as the message displayed for an invalid username or invalid password to ensure the attacker is unaware the account is disabled.
+Когда пользователь заблокирован и пытается войти в систему, {project_name} отображает по умолчанию сообщение об ошибке `Неверное имя пользователя или пароль`. Это сообщение является тем же сообщением об ошибке, что и сообщение, отображаемое для неверного имени пользователя или неверного пароля, чтобы убедиться, что злоумышленник не знает, что учетная запись отключена.
 ====
 
 [WARNING]
 ====
-Brute force detection is disabled by default. Enable this feature to protect against brute force attacks.
+По умолчанию обнаружение грубой силы отключено. Включите эту функцию, чтобы защитить от атак грубой силы.
 ====
 
-To enable this protection:
+Чтобы включить защиту:
 
-. Click *Realm Settings* in the menu
-. Click the *Security Defenses* tab.
-. Click the *Brute Force Detection* tab.
-. Choose the *Brute Force Mode* which best fit to your requirements.
+. Нажмите *Настройки реалма* в меню
+. Нажмите на вкладку *Security Defenses*.
+. Нажмите на вкладку *Brute Force Detection*.
+. Выберите *Режим грубой силы*, который наилучшим образом соответствует Вашим требованиям.
 +
 image:images/brute-force.png[]
 
-==== Lockout permanently
+==== Блокировка навсегда
 
-{project_name} disables a user account (blocking log in attempts) until an administrator re-enables it.
+{project_name} отключает учетную запись пользователя (блокировка авторизации) до тех пор, пока администратор не включит ее.
 
 image:images/brute-force-permanently.png[]
 
-*Permanent Lockout Parameters*
+*Параметры постоянной блокировки*
 
 |===
-|Name |Description |Default
+|Наименование |Описание |По умолчанию
 
-|Max Login Failures
-|The maximum number of login failures.
-|30 failures
+|Макс. число сбоев входа
+|Максимальное количество неудачных попыток входа.
+|30 неудач
 
-|Quick Login Check Milliseconds
-|The minimum time between login attempts.
-|1000 milliseconds
+|Проверить быстрый вход в миллисекунды
+|Минимальное время между попытками входа.
+|1000 миллисекунд
 
-|Minimum Quick Login Wait
-|The minimum time the user is disabled when login attempts are quicker than _Quick Login Check Milliseconds_.
-|1 minute
+|Минимальная быстрая ожидание входа
+|Минимальное время отключения пользователя при попытках входа быстрее, чем _Quick Login Check Milliseconds_.
+|1 минута
 |===
 
-*Permanent Lockout Algorithm*
+*Алгоритм Блокировки*
 
 ====
-. On successful login
-.. Reset `count`
-.. call <<_secondary-authn-check, `secondary authentication check (success)`>>
-. On failed login
-.. Increment `count`
-.. If `count` is greater than or equals to `Max login failures`
-... locks the user
-.. Else if the time between this failure and the last failure is less than _Quick Login Check Milliseconds_
-... Locks the user for the time specified at _Minimum Quick Login Wait_
-.. call <<_secondary-authn-check, `secondary authentication check (fail)`>>
+. При успешном входе
+.. Сбросить `count`
+.. звонить <_secondary-authn-check, `secondary authentication check (success)`>>
+. При неудачном входе
+.. Увеличение `count`
+.. Если `count` больше или равно `Max login failures`
+... блокирует пользователя
+.. Иначе, если время между этой ошибкой и последней ошибкой меньше _Quick Login Check Milliseconds_
+... Заблокирует пользователя на время, указанное в _Minimum Quick Login Wait_
+.. звонить <_secondary-authn-check, `secondary authentication check (fail)`>>
 ====
 
 [NOTE]
 ====
-Enabling an user account resets the `count`.
+Включение учетной записи сбрасывает счет.
 ====
 
-==== Lockout temporarily
+==== Временная блокировка
 
-{project_name} disables a user account for a specific period of time. The time period that the account is disabled increases as the attack continues.
+{project_name} отключает учетную запись пользователя на определенный период времени. Период времени отключения учетной записи увеличивается по мере продолжения атаки.
 
 image:images/brute-force-temporarily.png[]
 
-*Temporary Lockout Parameters*
+*Параметры временного блокировки*
 
 |===
-|Name |Description |Default
+|Наименование |Описание |По умолчанию
 
-|Max Login Failures
-|The maximum number of login failures.
-|30 failures
+|Макс. число сбоев входа
+|Максимальное количество неудачных попыток входа.
+|30 неудач
 
-|Strategy to increase wait time
-|Strategy to increase the time a user will be temporarily disabled when the user's login attempts exceed _Max Login Failures_
-|Multiple
+|Стратегия увеличения времени ожидания
+|Стратегия увеличения времени, которое пользователь будет временно отключен, когда попытки входа пользователя превышают _Макс Логин сбои_
+|Множество
 
-|Wait Increment
-|The time added to the time a user is temporarily disabled when the user's login attempts exceed _Max Login Failures_.
-|1 minute
+|Ожидание увеличения
+|Время, добавленное к временному отключению пользователя при попытках входа в систему, превышает _Макс Логин Failures_.
+|1 минута
 
-|Max Wait
-|The maximum time a user is temporarily disabled.
-|15 minutes
+|Макс. ожидание
+|Максимальное время, когда пользователь временно отключен.
+|15 минут
 
-|Failure Reset Time
-|The time when the failure count resets. The timer runs from the last failed login. Make sure this number is always greater than `Max wait`; otherwise the effective
-wait time will never reach the value you have set to `Max wait`.
-|12 hours
+|Сбой сброса времени
+|Время, когда количество сбоев сбрасывается. Таймер запускается с последнего неудачного входа. Убедитесь, что этот номер всегда больше `Max wait`; иначе эффективное время ожидания
+никогда не достигнет значения, которое вы установили в `Max wait`.
+|12 часов
 
-|Quick Login Check Milliseconds
-|The minimum time between login attempts.
-|1000 milliseconds
+|Проверить быстрый вход в миллисекунды
+|Минимальное время между попытками входа.
+|1000 миллисекунд
 
-|Minimum Quick Login Wait
-|The minimum time the user is disabled when login attempts are quicker than _Quick Login Check Milliseconds_.
-|1 minute
+|Минимальная быстрая ожидание входа
+|Минимальное время отключения пользователя при попытках входа быстрее, чем _Quick Login Check Milliseconds_.
+|1 минута
 |===
 
-*Temporary Lockout Algorithm*
+*Алгоритм временного блокировки
 
 ====
-. On successful login
-.. Reset `count`
-.. call <<_secondary-authn-check, `secondary authentication check (success)`>>
-. On failed login
-.. If the time between this failure and the last failure is greater than _Failure Reset Time_
-... Reset `count`
-.. Increment `count`
-.. Calculate `wait` according the brute force strategy defined (see below Strategies to set Wait Time).
-.. If `wait` is less than or equals to 0 and the time between this failure and the last failure is less than _Quick Login Check Milliseconds_
-... set `wait` to _Minimum Quick Login Wait_
-.. if `wait` is greater than 0
-... Temporarily disable the user for the smallest of `wait` and _Max Wait_ seconds
-.. call <<_secondary-authn-check, `secondary authentication check (fail)`>>
+. При успешном входе
+.. Сбросить `count`
+.. звонить <_secondary-authn-check, `secondary authentication check (success)`>>
+. При неудачном входе
+.. Если время между этим сбоем и последним сбоем больше чем _Failure Reset Time_
+... Сбросить `count`
+.. Увеличение `count`
+.. Вычислите `wait` в соответствии со стратегией скорой силы, определенной (см. ниже Стратегии, чтобы установить время ожидания).
+.. Если `wait` меньше или равно 0 и время между этой ошибкой и последней ошибкой меньше _Quick Login Check Milliseconds_
+... установить _Minimum Quick Login Wait_
+.. если `wait` больше 0
+... Временно отключить пользователя на самый маленький из `wait` и _Max Wait_ секунд
+.. звонить <_secondary-authn-check, `secondary authentication check (fail)`>>
 ====
 
 [NOTE]
 ====
-`count` does not increment when a temporarily disabled account commits a login failure.
+`count` не увеличивается, когда учетная запись временно отключена для выполнения неудачного входа.
 ====
 
-*Strategies to set Wait Time*
+*Стратегии для установки времени ожидания*
 
-{project_name} provides two strategies to calculate wait time: By multiples or Linear. By multiples is the first strategy introduced by {project_name}, so that is the default one.
+{project_name} предоставляет две стратегии для вычисления времени ожидания: через кратные или Linear. Множество — это первая стратегия, предложенная {project_name}, так что она является стандартной по умолчанию.
 
-By multiples strategy, wait time is incremented when the number (or count) of failures are multiples of `Max Login Failure`. For instance, if you set `Max Login Failures` to `5` and a `Wait Increment` to `30` seconds, the effective time that an account is disabled after several failed authentication attempts will be:
+По стратегии множественных чисел, время ожидания увеличивается, когда число (или количество) неудач кратные `Max Login Failure`. Например, если вы установите `Max Login Failures` на `5` и `Wait Increment` на `30` секунд, эффективное время отключения учетной записи после нескольких неудачных попыток аутентификации будет:
 
 [cols="1,1,1,1"]
 |===
-|`Number of Failures` |`Wait Increment` |`Max Login Failures` |`Effective Wait Time`
+|«Количество сбоев» |`Подождите` |`Макс. число сбоев входа в систему` |«Эффективное время ожидания»
 
 |1 |30 |5 |0
 
@@ -163,15 +163,15 @@ By multiples strategy, wait time is incremented when the number (or count) of fa
 |**10** |**30** |5 |**60**
 |===
 
-At the fifth failed attempt, the account is disabled for `30` seconds. After reaching the next multiple of `Max Login Failures`, in this case `10`, the time increases from `30` to `60` seconds.
+При пятой неудачной попытке учетная запись отключена на `30` секунд. После достижения следующего кратного числа `Max Login Failures` в данном случае `10` время увеличивается с `30` до `60` секунд.
 
-The By multiple strategy uses the following formula to calculate wait time: _Wait Increment in Seconds_ * (`count` / _Max Login Failures_). The division is an integer division rounded down to a whole number.
+По нескольким стратегиям для вычисления времени ожидания: _Wait Increment in Seconds_ * (`count` / _Max Login Failures_). Деление представляет собой целое дело, округленное до целого числа.
 
-For linear strategy, wait time is incremented when the `count` (or number) of failures is greater than or equals to `Max Login Failure`. For instance, if you have set `Max Login Failures` to `5` and a `Wait Increment` to`30` seconds, the effective time that an account is disabled after several failed authentication attempts will be:
+Для линейной стратегии, время ожидания увеличивается, когда «count» (или число) сбоев больше или равно «Max Login Failure». Например, если вы установили `Max Login Failures` на `5` и `Wait Increment` на `30` секунд, эффективное время отключения учетной записи после нескольких неудачных попыток аутентификации будет:
 
 [cols="1,1,1,1"]
 |===
-|`Number of Failures` |`Wait Increment` |`Max Login Failures` |`Effective Wait Time`
+|«Количество сбоев» |`Подождите` |`Макс. число сбоев входа в систему` |«Эффективное время ожидания»
 
 |1 |30 |5 |0
 
@@ -194,110 +194,110 @@ For linear strategy, wait time is incremented when the `count` (or number) of fa
 |**10** |**30** |5 |**180**
 |===
 
-At the fifth failed attempt, the account is disabled for `30` seconds. Each new failure increases wait time according value specified at `wait increment`.
+При пятой неудачной попытке учетная запись отключена на `30` секунд. Каждая новая ошибка увеличивает время ожидания в соответствии с значением, указанным при приращении ожидания.
 
-The linear strategy uses the following formula to calculate wait time: _Wait Increment in Seconds_ * (1 + `count` - _Max Login Failures_).
+Стратегия линейки использует следующую формулу для вычисления времени ожидания: _Wait Increment in Seconds_ * (1 + `count` - _Max Login Failures_).
 
-==== Lockout permanently after temporary lockout
+==== Блокировка навсегда после временной блокировки
 
-Mixed mode. Locks user temporarily for specified number of times and then locks user permanently.
+Смешанный режим Заблокирует пользователя на время заданного количества раз, а затем навсегда блокирует пользователя.
 
 image:images/brute-force-mixed.png[]
 
-*Permanent lockout after temporary lockouts Parameters*
+*Постоянная блокировка после использования параметров блокировки*
 
 |===
-|Name |Description |Default
+|Наименование |Описание |По умолчанию
 
-|Max Login Failures
-|The maximum number of login failures.
-|30 failures
+|Макс. число сбоев входа
+|Максимальное количество неудачных попыток входа.
+|30 неудач
 
-|Maximum temporary Lockouts
-|The maximum number of temporary lockouts permitted before permanent lockout occurs.
+|Максимальное количество временных блокировок
+|Максимальное количество временных блокировок, разрешенное до возникновения постоянной блокировки.
 |1
 
-|Strategy to increase wait time
-|Strategy to increase the time a user will be temporarily disabled when the user's login attempts exceed _Max Login Failures_
-|Multiple
+|Стратегия увеличения времени ожидания
+|Стратегия увеличения времени, которое пользователь будет временно отключен, когда попытки входа пользователя превышают _Макс Логин сбои_
+|Множество
 
-|Wait Increment
-|The time added to the time a user is temporarily disabled when the user's login attempts exceed _Max Login Failures_.
-|1 minute
+|Ожидание увеличения
+|Время, добавленное к временному отключению пользователя при попытках входа в систему, превышает _Макс Логин Failures_.
+|1 минута
 
-|Max Wait
-|The maximum time a user is temporarily disabled.
-|15 minutes
+|Макс. ожидание
+|Максимальное время, когда пользователь временно отключен.
+|15 минут
 
-|Failure Reset Time
-|The time when the failure count resets. The timer runs from the last failed login. Make sure this number is always greater than `Max wait`; otherwise the effective
-wait time will never reach the value you have set to `Max wait`.
-|12 hours
+|Сбой сброса времени
+|Время, когда количество сбоев сбрасывается. Таймер запускается с последнего неудачного входа. Убедитесь, что этот номер всегда больше `Max wait`; иначе эффективное время ожидания
+никогда не достигнет значения, которое вы установили в `Max wait`.
+|12 часов
 
-|Quick Login Check Milliseconds
-|The minimum time between login attempts.
-|1000 milliseconds
+|Проверить быстрый вход в миллисекунды
+|Минимальное время между попытками входа.
+|1000 миллисекунд
 
-|Minimum Quick Login Wait
-|The minimum time the user is disabled when login attempts are quicker than _Quick Login Check Milliseconds_.
-|1 minute
+|Минимальная быстрая ожидание входа
+|Минимальное время отключения пользователя при попытках входа быстрее, чем _Quick Login Check Milliseconds_.
+|1 минута
 |===
 
-*Permanent lockout after temporary lockouts Algorithm*
+*Постоянная блокировка после использования алгоритма временного блокирования*
 
 ====
-. On successful login
-.. Reset `count`
-.. Reset `temporary lockout` counter
-.. call <<_secondary-authn-check, `secondary authentication check (success)`>>
-. On failed login
-.. If the time between this failure and the last failure is greater than _Failure Reset Time_
-... Reset `count`
-... Reset `temporary lockout` counter
-.. Increment `count`
-.. Calculate `wait` according the brute force strategy defined (see below Strategies to set Wait Time).
-.. If `wait` is less than or equals to 0 and the time between this failure and the last failure is less than _Quick Login Check Milliseconds_
-... set `wait` to _Minimum Quick Login Wait_
-... set `quick login failure` to `true``
-.. if `wait` and `Maximum temporary Lockouts` is greater than 0
-... set `wait` to the smallest of `wait` and _Max Wait_ seconds
-.. if `quick login failure` is `false`
-... Increment `temporary lockout` counter
-.. call <<_secondary-authn-check, `secondary authentication check (fail)`>>
-.. If `temporary lockout` counter exceeds `Maximum temporary lockouts`
-... Permanently locks the user
-.. Else
-... Temporarily blocks the user according `wait` value
+. При успешном входе
+.. Сбросить `count`
+.. Сбросить счетчик `temporary lockout`
+.. звонить <_secondary-authn-check, `secondary authentication check (success)`>>
+. При неудачном входе
+.. Если время между этим сбоем и последним сбоем больше чем _Failure Reset Time_
+... Сбросить `count`
+... Сбросить счетчик `temporary lockout`
+.. Увеличение `count`
+.. Вычислите `wait` в соответствии со стратегией скорой силы, определенной (см. ниже Стратегии, чтобы установить время ожидания).
+.. Если `wait` меньше или равно 0 и время между этой ошибкой и последней ошибкой меньше _Quick Login Check Milliseconds_
+... установить _Minimum Quick Login Wait_
+... установите `quick login failure` в `true``
+.. если `wait` и `Maximum temporary Lockouts` больше 0
+... установите `wait` на самый маленький из `wait` и _Max Wait_ секунд
+.. если `quick login failure` `false`
+... Увеличить счетчик `temporary lockout`
+.. звонить <_secondary-authn-check, `secondary authentication check (fail)`>>
+.. Если счетчик `temporary lockout` превышает `Maximum temporary lockouts`
+... Постоянно блокирует пользователя
+.. Иначе
+... Временно блокирует пользователя в соответствии со значением `wait`
 ====
 
 [NOTE]
 ====
-`count` does not increment when a temporarily disabled account commits a login failure.
+`count` не увеличивается, когда учетная запись временно отключена для выполнения неудачного входа.
 ====
 
-==== Secondary Authentication Failures Lockout
+==== Вторичная блокировка Аутентификации
 
-When this lockout mechanism is enabled it is valid for all brute force modes.
-The mechanism is enabled when non zero value is set for `Maximum Secondary Authentication Failures`. It is disabled by default (`0`).
+Когда этот механизм блокировки включен, он действителен для всех режимов перебора.
+Механизм включен, когда для «Максимально допустимых отказов вторичной аутентификации» установлено значение не нулево. По умолчанию он отключен (`0`).
 
-If the maximum number secondary authentication failures is exceeded the account is permanently locked. This behavior prevents attacks on second factor authenticators that can actually be brute forced (currently only OTP), when attacker already guessed the password. The reasonable value might be set for `100`.
+Если превышено максимальное количество неудачных попыток авторизации, аккаунт заблокирован навсегда. Это поведение предотвращает атак на вторичные аутентификаторы, которые на самом деле могут быть принудительно (в настоящее время только OTP), когда злоумышленник уже угадал пароль. Разумное значение может быть установлено для «100».
 
 [[_secondary-authn-check]]
-*Secondary Authentication Check Algorithm*
+*Алгоритм проверки вторичной аутентификации
 
 ====
-. If not OTP auth mechanism is used or secondary authentication check is disabled
-.. return
-. If called with `success` argument
-.. reset `Maximum Secondary Authentication Failures`
-. If called with `failure` argument
-.. Increment `Maximum Secondary Authentication Failures` counter
-.. If `Maximum Secondary Authentication Failures` exceeds desired number (100)
-... Permanently locks the user
+. Если не используется механизм авторизации OTP или проверка вторичной аутентификации отключена
+.. возврат
+. При вызове с аргументом `success`
+.. сбросить `Максимальная ошибка вторичной аутентификации
+. При вызове с аргументом `failure`
+.. Увеличить счетчик «Максимальная вторичная аутентификация»
+.. Если `Maximum Secondary Authentication Failures` превышает желаемое число (100)
+... Постоянно блокирует пользователя
 ====
 
-==== Downside of {project_name} brute force detection
+==== Внизу по обнаружению грубой силы {project_name}
 
-The downside of {project_name} brute force detection is that the server becomes vulnerable to denial of service attacks. When implementing a denial of service attack, an attacker can attempt to log in by guessing passwords for any accounts it knows and eventually causing {project_name} to disable the accounts.
+Недостатком определения аббревиатуры {project_name} является то, что сервер становится уязвимым для атак отказа в обслуживании. При осуществлении атаки на отказ в обслуживании, злоумышленник может попытаться войти в систему, угадывая пароли для любых учетных записей, которые он знает, и в конечном итоге вынуждая {project_name} отключить аккаунты.
 
-Consider using intrusion prevention software (IPS). {project_name} logs every login failure and client IP address failure. You can point the IPS to the {project_name} server's log file, and the IPS can modify firewalls to block connections from these IP addresses.
+Рассмотреть использование программного обеспечения для предотвращения вторжений (IPS). {project_name} регистрирует каждую ошибку входа и IP адрес клиента не удалось. Вы можете указать IPS на лог файл сервера {project_name} , а IPS может модифицировать брандмауэры, чтобы блокировать соединения с этих IP адресов.
