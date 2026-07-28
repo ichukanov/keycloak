@@ -1,0 +1,15 @@
+[[_mapping-acr-to-loa-realm]]
+== Сопоставление ACR до уровня аутентификации (LoA)
+
+В общих настройках области можно определить, какое значение "Authentication Context Class Reference (ACR)" сопоставлено с каким значением "Level of Authentication (LoA)". ACR может быть любым значением, в то время как LoA должен быть числовым.
+acr claim can be requested in the `claims` or `acr_values` parameter sent in the OIDC request and it is also included in the access token and ID token. Сопоставленный номер используется в условиях потока аутентификации.
+
+Сопоставление может быть также указано на уровне клиента в случае, если конкретному клиенту необходимо использовать значения, отличные от Realm. Тем не менее, наилучшая практика заключается в том, чтобы придерживаться карт реалмов.
+
+image:images/realm-oidc-map-acr-to-loa.png[alt="ACR to LoA mapping"]
+
+Подробнее см. <_step-up-flow,Step-up Authentication>> и https://openid.net/specs/openid-connect-core-1_0.html#acrSemantics[официальные спецификации OIDC].
+
+Если функция для <<_step-up-authentication-saml,Step-up аутентификация для SAML>> включена, ACR для LoA отображение - это таблица с тремя значениями. Новый столбец URI - это URI, который сопоставит ссылку на код контекста SAML аутентификации на числовое значение LoA. Этот новый столбец необходим, если вы хотите ускорить аутентификацию по протоколу SAML.
+
+image:images/realm-oidc-map-acr-uri-to-loa.png[alt="ACR/URI to LoA mapping"]

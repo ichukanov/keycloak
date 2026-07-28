@@ -1,0 +1,21 @@
+[role="_abstract"]
+When integrating with a third party like a customer or business partner, you might want to manage their identities
+separately from others and build a unified and secure experience throughout your business ecosystem when they interact
+with a realm.
+
+In a realm, an *organization* represents these third parties so that a realm or an organization administrator can manage
+the entire lifecycle of its members and how they authenticate and authorize to a realm, on a per-organization basis.
+
+Организация является отправной точкой для начала использования возможностей IAM {project_name} для рассмотрения вариантов использования Business-to-Business (B2B).
+It enables multi-tenancy within a realm so that users can have access to protected resources from a realm but with a more restricted
+and controlled context, that context being the organization to which they belong.
+
+{project_name} Организации - это функция, которая позволяет поддерживать организации в {project_name}. For now, it provides
+some of the core capabilities needed to manage organizations such as:
+
+* Управление участниками
+* Организовать членов в группы с иерархическими структурами
+* Участники бортовых организаций, используя приглашения ссылки
+* Члены бортовых организаций путем объединения их личных данных через посредство посредничества
+* Идентификация первого логина и специфические шаги организации при аутентификации в рамках организации
+* Распространение претензий организаций к приложениям через токены в целях авторизации

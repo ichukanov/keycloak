@@ -1,0 +1,20 @@
+==== Переполнение стека
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Stack Overflow*.
++
+image:images/stack-overflow-add-identity-provider.png[Add Identity Provider]
+. На отдельной вкладке браузера войдите в https://stackapps.com/apps/oauth/register[зарегистрировать ваше приложение в Stack Apps].
++
+image:images/stack-overflow-app-register.png[Register Application]
+.. Введите ваше имя приложения в поле *Имя приложения*.
+.. Введите домен OAuth в поле *OAuth Domain*.
+.. Нажмите *Зарегистрировать вашу заявку*.
++
+image:images/stack-overflow-app-settings.png[Settings]
+. Обратите внимание на *ID клиента*, *Клиент*, и *Ключ*.
+. В {project_name}вставьте значение `Client Id` в поле *Client ID*.
+. В {project_name}вставьте значение `Client Secret` в поле *Client Secret*.
+. В {project_name}вставьте значение `Key` в поле *Key*.
+. Нажмите *Добавить*.

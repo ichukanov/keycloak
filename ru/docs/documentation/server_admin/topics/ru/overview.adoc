@@ -1,0 +1,9 @@
+== Функции и концепции {project_name}
+
+{project_name} - это единый вход на решение для веб-приложений и RESTful веб-сервисов.  The goal of {project_name}
+is to make security simple so that it is easy for application developers to secure the apps and services they have deployed
+in their organization.  Функции безопасности, которые разработчики обычно должны писать сами по себе, предоставляются из коробки
+и легко настраиваются под индивидуальные требования вашей организации.  {project_name} предоставляет настраиваемые
+интерфейсы для логина, регистрации, администрирования и управления учетной записью.  Вы также можете использовать {project_name} как платформу интеграции
+для привязки его к существующим серверам LDAP и Active Directory.  You can also delegate authentication to third
+party identity providers like Facebook and Google.

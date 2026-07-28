@@ -1,0 +1,14 @@
+[[_admin_permissions]]
+== Управление доступом к ресурсам области
+
+Каждый реалм, созданный в {project_name} , имеет специальную консоль администратора, из которой можно управлять этим реалмом.
+«master» — это особый мир, позволяющий администраторам управлять несколькими мирами в системе.
+
+ifeval::[{project_community}==true]
+
+You can also
+define fine-grained access to users in different realms to manage the server.
+
+endif::[]
+
+Эта глава охватывает все сценарии для этого.

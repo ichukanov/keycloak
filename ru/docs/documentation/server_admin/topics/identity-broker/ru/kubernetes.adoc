@@ -1,0 +1,103 @@
+[[_identity_broker_kubernetes]]
+=== Поставщики идентификации Kubernetes
+
+Идентификационный провайдер Kubernetes поддерживает аутентификацию клиентов с токенами сервисного аккаунта Kubernetes.
+
+Эта функция может быть включена и отключена с помощью функции `kubernetes-service-accounts`, которая включена по умолчанию. Это зависит от функции `client-auth-federated`, которая также включена по умолчанию.
+
+URL-адрес эмитента Kubernetes по умолчанию: `\https://kubernetes.default.svc.cluster.local`. You can discover
+this value by decoding a service account token to retrieve the value of the `iss` claim.
+
+Keycloak должен быть способен вызывать конечную точку `<ISSUER>/.well-known/openid-configuration` и дополнительно
+endpoint JWKS, возвращаемый в хорошо известной конфигурации. По умолчанию для этих конечных точек требуется проверка подлинности с помощью токена учетной записи
+. {project_name} будет автоматически использовать токен из `/var/run/secrets/kubernetes.io/serviceaccount/token`
+, если он будет доступен, а создатель токена соответствует настроенному эмитенту.
+
+У каждого поставщика удостоверений личности должен быть уникальный эмитент. Each client must also have a unique subject identifier for each
+issuer. Как идентификатор темы строится из пространства имён и имени учетной записи сервиса каждый клиент должен иметь свою учетную запись службы
+, если несколько клиентов имеют пространство имён.
+
+В качестве лучшей практики в области безопасности не используйте учетную запись сервиса `default` в пространстве имён, поскольку она используется совместно со всеми Pods в пространстве имён.
+Вместо этого создайте индивидуальный счет обслуживания для каждого клиента.
+
+Токены сервисного аккаунта Kubernetes можно использовать несколько раз. As a security best practice, reduce the expiration time
+and make sure tokens can not be intercepted in communication between the client and {project_name}.
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка `Добавить провайдера` выберите `Kubernetes`.
+. Введите начальные параметры конфигурации или продолжайте использовать значения по умолчанию.
++
+.Настройки Kubernetes
+|===
+|Конфигурация |Описание
+
+|Alias
+|Псевдоним для идентификационного провайдера используется для связи клиента с провайдером
+
+|URL-адрес эмитента Kubernetes
+|URL маркеров учетной записи эмитента. URL `<ISSUER>.well-known/openid-configuration` должен быть доступен {project_name})
+|===
+. При создании нового реалма с помощью функции предварительного просмотра `client-auth-federated` поток аутентификации клиента уже настроен правильно. Для существующих миров, добавьте в поток аутентификации клиента выполнение *Подписанного JWT - Federated* в качестве альтернативного шага. Так как встроенные потоки не могут быть обновлены, и если по умолчанию идет поток, вам нужно сначала дублировать существующие клиенты
+. Для каждого конфиденциального клиента OpenID Connect, который должен аутентифицироваться через этого провайдера:
+.. Измените вкладку *Учетные данные* *Аутентификатор Клиента* на *Выписанный JWT - Federated*.
+.. Как *Идентификатор провайдера*, введите псевдоним идентификационного провайдера Kubernetes в шаг 3.
+.. *Federated Subject*, введите тематический идентификатор, выданный Kubernetes. Обычно это `system:serviceaccount:<namespace>:<serviceaccount>`.
+. Для Pod в Kubernetes добавьте сервис аккаунт:
++
+--
+[source]
+----
+apiVersion: v1
+kind: Pod
+...
+spec:
+  serviceAccountName: <serviceaccount>
+  ...
+  volumes:
+  - name: aud-token
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          audience: https://example.com:8443/realms/test <1>
+          expirationSeconds: 600 <2>
+          path: my-aud-token
+----
+
+. Issuer URL of the {project_name} realm.
+. Максимальное время, разрешенное Kubernetes и {project_name} составляет 3600 секунд
+--
++
+Чтобы проверить вашу установку, предполагая, что у клиента настроен аккаунт сервиса:
+. В Pod, извлечь токен
++
+[source]
+----
+cat /var/run/secrets/tokens/my-aud-token
+----
+. Использовать токен как учетные данные клиента
++
+[source]
+----
+curl -k https://example.com:8443/realms/<realm>/protocol/openid-connect/token \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode grant_type=client_credentials \
+  --data-urlencode client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer \
+  --data-urlencode client_assertion=<token>
+----
+. Проверить ответ
++
+[source,json]
+----
+{
+  "access_token": "ey...bw",
+  "expires_in": 300,
+  "refresh_expires_in": 0,
+  "token_type": "Bearer",
+  "not-before-policy": 0,
+  "scope": "profile email"
+}
+----
+
+NOTE: Хотя функциональность сервисной учетной записи полезна для проверки работоспособности установки, отключает эту функцию после теста, если клиент не должен следовать наименьшей степени привилегиям по безопасности.

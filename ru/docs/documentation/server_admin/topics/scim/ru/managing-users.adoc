@@ -1,0 +1,390 @@
+[[_scim_managing_users_]]
+= Управление пользователями
+
+Конечная точка SCIM `/Users` позволяет создавать, читать, обновлять и удалять пользовательские ресурсы в {project_name}. User resources
+conform to the `urn:ietf:params:scim:schemas:core:2.0:User` schema as defined in RFC 7643.
+
+== Основные атрибуты пользователя
+
+В следующей таблице показаны основные атрибуты пользователя SCIM, а также то, как они соотносятся с атрибутами {project_name}:
+
+[cols="1,1,2", options="header"]
+|===
+|Атрибут SCIM
+|Атрибут {project_name}
+|Описание
+
+|`userName`
+|`username`
+|Уникальный идентификатор пользователя. Обязательно.
+
+|`name.givenName`
+|`имя`
+|Имя (имя).
+
+|`name.familyName`
+|`lastName`
+|Фамилия (фамилия).
+
+|`emails`
+|`email`
+|Адрес электронной почты пользователя. Even though the attribute is multi-valued, {project_name} does not support mutiple emails for a
+given user account. При использовании нескольких значений электронной почты сохраняется только первое значение. В ответах SCIM сохраненный адрес возвращается как одна запись "рабочий" электронной почты, помеченная как "основная".
+
+|«активный»
+|`включена`
+|Включена ли учетная запись пользователя.
+
+|`locale`
+|`locale`
+|Локаль пользователя. Доступно только при возможности интернационализации.
+
+|`externalId`
+|(пользовательский атрибут)
+|Идентификатор внешней системы. Требуется настройка профиля пользователя. См. <<_scim_mapping_attributes_,Mapping attributes>>.
+|===
+
+Additional name sub-attributes (`name.middleName`, `name.honorificPrefix`, `name.honorificSuffix`) can be mapped
+by configuring user profile attributes. Смотрите <<_scim_mapping_attributes_,Mapping attributes>> для деталей.
+
+== Создание пользователя
+
+Чтобы создать пользователя, отправьте запрос `POST` в конечную точку `/Users`. Минимум вы должны указать имя пользователя:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "jdoe",
+    "name": {
+      "givenName": "John",
+      "familyName": "Doe"
+    },
+    "emails": [
+      {
+        "value": "jdoe@example.com",
+        "type": "work",
+        "primary": true
+      }
+    ],
+    "active": true
+  }'
+----
+
+Успешный ответ возвращает созданного пользователя со статусом «201 Создано»:
+
+[source,json]
+----
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "userName": "jdoe",
+  "name": {
+    "givenName": "John",
+    "familyName": "Doe",
+    "formatted": "John Doe"
+  },
+  "emails": [
+    {
+      "value": "jdoe@example.com",
+      "type": "work",
+      "primary": true
+    }
+  ],
+  "active": true,
+  "meta": {
+    "resourceType": "User",
+    "created": "2025-01-15T10:30:00Z",
+    "lastModified": "2025-01-15T10:30:00Z",
+    "location": "http://localhost:8080/realms/myrealm/scim/v2/Users/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  }
+}
+----
+
+NOTE: При создании пользователей через SCIM API действуют правила проверки профиля пользователя. If a required attribute
+is missing or a value does not match the expected format, the API returns a `400 Bad Request` response with a
+description of the validation error.
+
+Если пользователь с таким же именем `userName` уже существует, API возвращает ответ `409 Conflict` с
+`scimType: "uniqueness"`.
+
+== Получение пользователя
+
+Для получения пользователя по ID:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+== Список пользователей
+
+Список всех пользователей в мире:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/Users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Ответ использует формат списка SCIM:
+
+[source,json]
+----
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+  "totalResults": 2,
+  "itemsPerPage": 2,
+  "startIndex": 1,
+  "Resources": [...]
+}
+----
+
+Фильтрация и пагинация результатов смотрите <<_scim_filtering_resources,Filtering resources>.
+
+== Выбор атрибутов
+
+You can control which attributes are included in the response for both single-resource and list requests
+by using the `attributes` query parameter:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=userName,emails" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Или исключить некоторые атрибуты из ответа:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?excludedAttributes=name" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+При запросе родительского атрибута (например, `name`) возвращаются все его податрибуты. When requesting
+a sub-attribute (for example, `name.familyName`), only that specific sub-attribute is included.
+
+NOTE: Имена атрибутов в параметрах запроса не зависят от регистра, как указано в RFC 7644. The `id` and `schemas`
+attributes are always included and cannot be excluded.
+
+== Обновление пользователя
+
+Чтобы полностью заменить пользовательский ресурс, отправьте запрос «PUT»:
+
+[source,bash]
+----
+curl -X PUT http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "id": "{id}",
+    "userName": "jdoe",
+    "name": {
+      "givenName": "John",
+      "familyName": "Smith"
+    },
+    "emails": [
+      {
+        "value": "john.smith@example.com",
+        "type": "work",
+        "primary": true
+      }
+    ],
+    "active": true
+  }'
+----
+
+`id` в теле запроса должен совпадать с `id` в пути URL, иначе API возвращает ошибку `400 Bad Request`.
+
+== Частичное обновление пользователя
+
+Метод `PATCH` позволяет изменять специфические атрибуты без замены всего ресурса. Запрос патчей
+содержит одну или несколько операций, каждая из которых указывает действие (`add`, `replace` или `remove`), необязательный путь к
+атрибуту и значение.
+
+NOTE: Один запрос PATCH может содержать не более 100 операций. Запросы, превышающие этот лимит, отвергнуты при помощи
+ответ `400 Bad Request` и `scimType: "tooMany"`.
+
+=== Добавление или замена атрибутов
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "name.givenName",
+        "value": "Jane"
+      },
+      {
+        "op": "replace",
+        "path": "active",
+        "value": false
+      },
+      {
+        "op": "add",
+        "path": "emails",
+        "value": {
+          "value": "jane@example.com",
+          "type": "work",
+          "primary": true
+        }
+      }
+    ]
+  }'
+----
+
+Вы также можете предоставить несколько атрибутов в одну операцию без указания пути. В этом случае пути
+производятся из структуры JSON:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "value": {
+          "name": {"givenName": "Jane"},
+          "active": false
+        }
+      }
+    ]
+  }'
+----
+
+=== Удаление атрибутов
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "remove",
+        "path": "name.honorificPrefix"
+      }
+    ]
+  }'
+----
+
+Для многозначных атрибутов вы можете использовать фильтр в пути для удаления конкретных значений:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "remove",
+        "path": "emails[type eq \"work\"]"
+      }
+    ]
+  }'
+----
+
+== Управление членством в группе
+
+Вы можете управлять членством в группах пользователей непосредственно через пользовательский ресурс. Членство в группах также может управляться
+с стороны группы, используя конечную точку `/Groups`. Смотрите <<_scim_managing_groups_,Managing groups>>.
+
+=== Добавление пользователя в группы при создании
+
+При создании пользователя вы можете указать группы, к которым должен принадлежать:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "jdoe",
+    "groups": [
+      {"value": "{groupId}"}
+    ]
+  }'
+----
+
+=== Изменение членства в группе через PATCH
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "add",
+        "path": "groups",
+        "value": "{groupId}"
+      }
+    ]
+  }'
+----
+
+Чтобы удалить пользователя из группы:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "remove",
+        "path": "groups[value eq \"{groupId}\"]"
+      }
+    ]
+  }'
+----
+
+=== Запрос членства в группе
+
+Чтобы получить группы пользователей, включите `groups` в параметр `attributes`:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=groups" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+В состав каждой группы входят `value` (ID), `display` (имя) и `type` (`direct` или `indirect` для
+унаследованные членства из родительских групп).
+
+== Удаление пользователя
+
+[source,bash]
+----
+curl -X DELETE http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+----
+
+Успешное удаление возвращает ответ «204 Без содержимого» без тела.

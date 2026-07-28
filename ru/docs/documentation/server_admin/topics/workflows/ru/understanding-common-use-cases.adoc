@@ -1,0 +1,65 @@
+[[_understanding_common_use_cases_]]
+= Понимание общих вариантов использования
+
+Рабочие потоки могут быть использованы для автоматизации широкого круга административных задач в сфере. Ниже приведены некоторые общие варианты использования, в которых рабочие процессы могут быть особенно полезными:
+
+== Регистрация пользователя
+
+При создании нового пользователя рабочий процесс может автоматически отправлять приветственное письмо и назначать начальные роли или группы пользователю. Это гарантирует, что новые пользователи имеют необходимый доступ и информацию с момента их подключения.
+
+```yaml
+name: Onboarding gold members
+on: user-created
+if: has-user-attribute(membership=gold)
+steps:
+  - uses: notify-user
+    with:
+      message: "Welcome to the Gold Membership program!"
+  - uses: grant-role
+    with:
+      role: gold-member
+```
+
+== Запуск пользователя
+
+Когда пользователь удаляется из конкретной группы, рабочий процесс может автоматически отозвать определенные роли или разрешения, связанные с этой группой.
+
+```yaml
+name: Offboarding sales members
+on: user-group-membership-removed(/Sales)
+steps:
+  - uses: revoke-role
+    with:
+      role:
+        - sales-rep
+        - manager
+        - sales-intern
+```
+
+== Отслеживание активности пользователя и принятие действий по бездействию
+
+Когда пользователь был неактивен в течение определенного периода, рабочий процесс может отправлять напоминания и деактивировать учетную запись.
+
+```yaml
+name: Track inactive users
+on: user-authenticated
+schedule:
+  after: 5s
+  batch-size: 2
+concurrency:
+  restart-in-progress: true
+steps:
+  - uses: notify-user
+    after: 180d
+    with:
+      message: It has been a while since your last login. We miss you!
+  - uses: notify-user
+    after: 60d
+    with:
+      message: Your account will be disabled in ${workflow.daysUntilNextStep} days!
+  - uses: disable-user
+    after: 7d
+  - uses: notify-user
+    with:
+      message: Your account was disabled. Sorry to see you go.
+```

@@ -1,0 +1,27 @@
+// Module included in the following assemblies:
+
+//
+
+// con-user-registration.adoc
+
+[id="proc-requiring-tac-agreement-at-registration_{context}"]
+= Требование согласия пользователя с правилами и условиями при регистрации
+
+[role="_abstract"]
+Для регистрации пользователь может потребовать согласие с вашими условиями и условиями.
+
+image:images/registration-form-with-required-tac.png[]
+
+.Необходимые предпосылки
+* Регистрация пользователей включена.
+* Правила и условия обязательного действия включены.
+
+//-
+
+.Процедура
+. Нажмите *Authentication* в меню.
+Нажмите на вкладку *Блокировки*.
+. Нажмите на *поток регистрации*.
+. Выберите *Обязательные* в строке *Условия и Положения*.
++
+image:images/require-tac-agreement-at-registration.png[]

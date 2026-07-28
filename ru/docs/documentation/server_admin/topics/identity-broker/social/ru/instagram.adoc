@@ -1,0 +1,48 @@
+==== Инстаграмма
+
+IMPORTANT: Instagram Identity Broker устарел для удаления. Предпочитайте вместо этого использовать Facebook Identity Broker.
+Чтобы включить его, запустите сервер с помощью `--features=instagram-broker`.
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Instagram*.
++
+image:images/instagram-add-identity-provider.png[Добавить поставщика идентификации]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера откройте https://developers.facebook.com/[Meta for Developers].
+.. Нажмите *Мои приложения*.
+.. Выберите *Создать приложение*.
++
+image:images/meta-add-use-case.png[Добавить вариант использования]
+.. Выберите *Другое*.
++
+image:images/meta-select-app-type.png[Выберите тип приложения]
+.. Выберите *потребитель*.
++
+image:images/meta-create-app.png[Создать приложение]
+.. Заполните все обязательные поля.
+.. Нажмите *Создать приложение*. Мета затем перенесет вас на панель управления.
+.. На панели навигации выберите *Настройки Приложения* - *Основное*.
+.. Выберите *+ Добавить платформу* внизу страницы.
+.. Click *[Website]*.
+.. Введите URL для вашего сайта.
++
+image:images/meta-add-product.png[Добавить продукт]
+.. Выберите из меню *Панель управления*.
+.. Нажмите *Установить вверх* в поле *Instagram Basic Display*.
+.. Нажмите *Создать новое приложение*.
++
+image:images/instagram-create-instagram-app-id.png[Создать новый Instagram App ID]
+.. Введите значение в поле *Отображаемое имя*.
++
+image:images/instagram-app-settings.png[Настройка приложения]
+.. Вставьте *Redirect URL* из {project_name} в поле *Valid OAuth Redirect URIs*.
+.. Вставьте *Перенаправление URL* от {project_name} в поле *Деавторизовать URL обратной связи.
+.. Вставьте *Перенаправление URL* из {project_name} в поле *URL запроса удаления данных*.
+.. Нажмите *Показать* в поле *Instagram App Secret*.
+.. Обратите внимание на *Instagram App ID* и *Instagram App Secret*.
+.. Нажмите *Обзор приложений* - *Запросы*.
+.. Следуйте инструкциям на экране.
+. В {project_name}вставьте значение `Instagram App ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Instagram App Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.

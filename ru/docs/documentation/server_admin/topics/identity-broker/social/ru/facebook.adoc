@@ -1,0 +1,35 @@
+[[_facebook]]
+==== Facebook
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Facebook*.
++
+image:images/facebook-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера откройте https://developers.facebook.com/[Meta for Developers].
+.. Нажмите *Мои приложения*.
+.. Выберите *Создать приложение*.
++
+image:images/meta-add-use-case.png[Добавить вариант использования]
+.. Выберите *Другое*.
++
+image:images/meta-select-app-type.png[Выберите тип приложения]
+.. Выберите *потребитель*.
++
+image:images/meta-create-app.png[Создать приложение]
+.. Заполните все обязательные поля.
+.. Нажмите *Создать приложение*. Мета затем перенесет вас на панель управления.
++
+image:images/meta-add-product.png[Добавить продукт]
+.. Нажмите *Установить вверх* в окне *Вход в Facebook.
+.. Выберите *Web*.
+.. Введите значение *Redirect URI * в поле *URL сайта* и нажмите *Сохранить*.
+.. На панели навигации выберите *Настройки Приложения* - *Основное*.
+.. Нажмите *Показать* в поле *App Secret*.
+.. Обратите внимание на *App ID* и *App Secret*.
+. Введите значения https://developers.facebook.com/documentation/facebook-login/guides/access-tokens[`App ID` и `App Secret`] из вашего Facebook приложения в поля *Client ID* и *Client Secret* в {project_name}.
+. Нажмите *Добавить*
+. Введите требуемые области в поле *По умолчанию*. По умолчанию {project_name} использует область *email*. Смотрите https://developers.facebook.com/docs/graph-api[Graph API] для получения дополнительной информации о рамках Facebook.
+
+{project_name} отправляет запросы профиля на `graph.facebook.com/me?fields=id,name,email,first_name,last_name` по умолчанию. Ответ содержит только идентификатор, имя, email, имя, имя, и фамилию. Чтобы получить дополнительные поля из Facebook профиля, добавьте соответствующие области и добавьте имя поля в поле конфигурации `Дополнительный пользовательский профиль`.

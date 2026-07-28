@@ -1,0 +1,18 @@
+== Протоколы SSO
+
+[role="_abstract"]
+В этом разделе рассматриваются протоколы аутентификации, сервер аутентификации {project_name} и как приложения, защищенные сервером аутентификации {project_name} , взаимодействуют с этими протоколами.
+
+include::sso-protocols/con-oidc.adoc[]
+
+include::sso-protocols/con-oidc-auth-flows.adoc[]
+
+include::sso-protocols/con-server-oidc-uri-endpoints.adoc[]
+
+include::sso-protocols/con-saml.adoc[]
+
+include::sso-protocols/con-saml-bindings.adoc[]
+
+include::sso-protocols/ref-saml-vs-oidc.adoc[]
+
+include::sso-protocols/con-sso-dist-reg.adoc[]

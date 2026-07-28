@@ -1,0 +1,24 @@
+[[_managing_scim]]
+== Управление пользователями и группами через SCIM
+
+включить::scim/intro.adoc[leveloffset=+2]
+
+include::scim/enabling-scim.adoc[leveloffset=+2]
+
+include::scim/accessing-endpoints.adoc[leveloffset=+2]
+
+include::scim/admin-resource-protection.adoc[leveloffset=+2]
+
+include::scim/understanding-scim-endpoints.adoc[leveloffset=+2]
+
+include::scim/accessing-service-config.adoc[leveloffset=+2]
+
+include::scim/managing-users.adoc[leveloffset=+2]
+
+include::scim/managing-groups.adoc[leveloffset=+2]
+
+include::scim/filtering-resources.adoc[leveloffset=+2]
+
+include::scim/mapping-attributes.adoc[leveloffset=+2]
+
+include::scim/managing-schema-extensions.adoc[leveloffset=+2]

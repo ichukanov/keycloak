@@ -1,0 +1,4 @@
+=== Ограничить аудиторию токена
+
+В средах с низким уровнем доверия между службами ограничивают аудиторию на токене. См. https://datatracker.ietf.org/doc/html/rfc6819#section-5.1.5[OAuth2 Threat Model] и раздел
+<<audience-support, Audience Support>> для получения дополнительной информации.

@@ -1,0 +1,30 @@
+[#_configuring-realms]
+== Настройка областей
+
+После того, как у вас есть административная учетная запись для консоли администратора, вы можете настроить реалмы. Область — это пространство, в котором вы управляете объектами, включая пользователей, приложения, роли и группы.  Пользователь принадлежит и вписывается в реалм.   Одно развертывание {project_name} может определять, хранить и управлять таким количеством миров, которое есть в базе данных.
+
+include::realms/proc-using-admin-console.adoc[leveloffset=1]
+
+include::realms/master.adoc[leveloffset=2]
+
+include::realms/proc-creating-a-realm.adoc[leveloffset=2]
+
+include::realms/ssl.adoc[leveloffset=2][]
+
+include::realms/email.adoc[leveloffset=2]
+
+include::realms/themes.adoc[leveloffset=2]
+
+include::realms/proc-configuring-internationalization.adoc[leveloffset=2]
+
+include::login-settings.adoc[leveloffset=2]
+
+include::login-settings/forgot-password.adoc[leveloffset=2]
+
+include::login-settings/remember-me.adoc[leveloffset=2]
+
+include::login-settings/acr-to-loa-mapping.adoc[leveloffset=2]
+
+include::login-settings/update-email-workflow.adoc[leveloffset=2]
+
+include::realms/keys.adoc[]

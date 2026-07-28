@@ -1,0 +1,14 @@
+==== GitLab
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *GitLab*.
++
+image:images/gitlab-add-identity-provider.png[Добавить поставщика идентификации]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера https://docs.gitlab.com/integration/oauth_provider/[добавьте новое GitLab приложение].
+.. Используйте *Redirect URI* в буфере обмена в качестве *Redirect URI*.
+.. Обратите внимание на *Application ID* и *Secret*, когда вы сохраните приложение.
+. В {project_name}вставьте значение `Application ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.

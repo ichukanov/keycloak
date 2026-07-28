@@ -1,0 +1,315 @@
+[[_scim_managing_schema_extensions_]]
+= Управление расширениями схемы
+
+Помимо основных пользовательских и групповых схем SCIM, {project_name} поддерживает расширения схем, которые позволяют выявлять
+дополнительных атрибутов через SCIM API. Схемы расширений настроены с использованием того же атрибута профиля пользователя SCIM
+сопоставление описано в <<_scim_mapping_attributes_, добавление пользовательских атрибутов к схемам SCIM>>, но с значениями URN-префикса
+, которые определяют к какой схеме расширения принадлежит атрибут. Все настроенные схемы расширений автоматически видны через конечную точку `/Schemas`.
+
+== Расширение корпоративного пользователя
+
+The Enterprise User extension (`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User`) is defined in
+https://datatracker.ietf.org/doc/html/rfc7643#section-4.3[RFC 7643, Section 4.3] and provides attributes commonly
+used in enterprise environments.
+
+=== Доступные атрибуты
+
+[cols="1,2", options="header"]
+|===
+|Атрибут
+|Описание
+
+|`сотрудник`
+|Номер сотрудника или его идентификатор.
+
+|«стоимостной центр»
+|Центру стоимости, к которому принадлежит пользователь.
+
+|«Организация»
+|Название организации.
+
+|«Раздел»
+|Название подразделения.
+
+|«Отдел»
+|Название отделения.
+
+|`менеджер`
+|Менеджер пользователя, с податрибутами `value` (manager identifier) и `displayName`.
+|===
+
+=== Включение расширения предприятия
+
+Для использования расширения Enterprise User необходимо настроить атрибуты пользовательского профиля для каждого предприятия
+вы хотите показать. Каждый атрибут должен иметь отображение атрибутов SCIM, указывающее на атрибут схемы предприятия.
+
+В консоли администратора, при создании или редактировании атрибута профиля пользователя, раздел *SCIM* предоставляет свойствам схемы Enterprise
+Пользователя в качестве выборочных параметров. Кроме того, вы можете ввести полное значение префикса URN вручную.
+
+Например, чтобы включить атрибуты `employeeNumber` и `department`, создайте два атрибута профиля пользователя:
+
+[cols="1,1", options="header"]
+|===
+|Атрибут пользователя
+|Значение атрибута SCIM
+
+|`сотрудник`
+|`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:employeeNumber`
+
+|«Отдел»
+|`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department`
+|===
+
+Для сложных атрибутов, таких как `manager`, вы соотносите отдельные субатрибуты:
+
+[cols="1,1", options="header"]
+|===
+|Атрибут пользователя
+|Значение атрибута SCIM
+
+|`менеджер`
+|`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.value`
+
+|`managerName`
+|`urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.displayName`
+|===
+
+=== Создание пользователя предприятия
+
+После настройки атрибутов профиля пользователя, вы можете создавать пользователей с данными расширения предприятия:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": [
+      "urn:ietf:params:scim:schemas:core:2.0:User",
+      "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
+    ],
+    "userName": "jdoe",
+    "name": {
+      "givenName": "John",
+      "familyName": "Doe"
+    },
+    "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
+      "employeeNumber": "E12345",
+      "department": "Engineering",
+      "division": "R&D",
+      "organization": "ACME Corp",
+      "costCenter": "AMER-4015",
+      "manager": {
+        "value": "manager-user-id",
+        "displayName": "Jane Smith"
+      }
+    }
+  }'
+----
+
+=== Патч атрибутов предприятия
+
+Вы можете обновить атрибуты расширения предприятия, используя операции PATCH. There are several ways to reference
+extension attributes in the path:
+
+Использование полного URN с двоеточием разделителя:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:employeeNumber",
+        "value": "E54321"
+      }
+    ]
+  }'
+----
+
+Использование URN в качестве пути с объектом JSON:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
+        "value": {"employeeNumber": "E54321", "department": "QE"}
+      }
+    ]
+  }'
+----
+
+Или без пути, включая полный URN в объекте значения:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "value": {
+          "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
+            "employeeNumber": "E54321"
+          }
+        }
+      }
+    ]
+  }'
+----
+
+=== Фильтрация по атрибутам предприятия
+
+Вы можете искать пользователей по атрибутам расширения предприятия, используя полный префикс URN в фильтре:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department+eq+\"Engineering\"" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+== Пользовательские расширения схемы
+
+Помимо стандартного расширения Enterprise User extension, {project_name} позволяет вам определить пользовательские расширения схемы с использованием
+любого идентификатора схемы, основанного на URN. Это полезно для раскрытия специфических атрибутов организации через SCIM.
+
+=== Определение пользовательского расширения
+
+Чтобы создать пользовательскую схему расширения, настройте атрибуты профиля пользователя с сопоставлением атрибутов SCIM
+указывая на пользовательскую схему URN:
+
+[cols="1,1", options="header"]
+|===
+|Атрибут пользователя
+|Значение атрибута SCIM
+
+|`keycloak.team`
+|`urn:my:params:scim:schemas:extension:custom:1.0:User:memberOf`
+
+|`keycloak.area`
+|`urn:my:params:scim:schemas:extension:custom:1.0:User:area`
+|===
+
+NOTE: Имя атрибута профиля пользователя не должно совпадать с именем атрибута SCIM. Значение атрибута SCIM
+определяет отображение схемы. Вы можете использовать любое допустимое имя атрибута в профиле пользователя.
+
+=== Использование пользовательских расширений
+
+После настройки, пользовательские атрибуты расширения могут использоваться в операциях SCIM, так же, как и расширение предприятия:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": [
+      "urn:ietf:params:scim:schemas:core:2.0:User",
+      "urn:my:params:scim:schemas:extension:custom:1.0:User"
+    ],
+    "userName": "jdoe",
+    "urn:my:params:scim:schemas:extension:custom:1.0:User": {
+      "memberOf": "core-iam",
+      "area": "identity"
+    }
+  }'
+----
+
+Пользовательские расширенные атрибуты также могут быть изменены и отфильтрованы:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Users/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "urn:my:params:scim:schemas:extension:custom:1.0:User:memberOf",
+        "value": "platform-engineering"
+      }
+    ]
+  }'
+----
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=urn:my:params:scim:schemas:extension:custom:1.0:User:memberOf+eq+\"core-iam\"" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+=== Несколько пользовательских расширений
+
+Вы можете определить несколько пользовательских расширений схемы одновременно. Каждое расширение идентифицируется по уникальному URN
+и может содержать различные атрибуты. Пользователи могут иметь данные из нескольких схем расширений одновременно, и
+каждая схема отображается в пользовательском массиве `schemas`, когда расширение имеет данные.
+
+== Расширение области клавиатуры
+
+{project_name} включает встроенную схему расширений (`urn:keycloak:params:scim:schemas:extension:realm:1.0:User`)
+, которая может быть использована как схема удобства для специфичных Realm-атрибутов. Он работает так же, как и любое другое пользовательское расширение
+, но не требует, чтобы вы определили свой URN. If you need to expose attributes to
+multiple external systems that each expect their own schema URN, use custom extensions with distinct URNs instead.
+
+== Обнаружение схемы
+
+Все сконфигурированные схемы расширения автоматически рекламируются через конечные точки обнаружения схем SCIM.
+
+Смотреть все доступные схемы, включая расширения:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/Schemas \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Просматривать типы ресурсов и связанные с ними схемы:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/ResourceTypes \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+На конечной точке ресурсов перечислены расширения схемы для каждого типа ресурса, указывающие, какие расширения
+доступны и нужны ли они для них.
+
+=== Запрос атрибутов расширения
+
+Вы можете запрашивать только атрибуты расширения, включив URN схемы в параметр `attributes`:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?attributes=urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Аналогичным образом вы можете исключить атрибуты расширения:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Users/{id}?excludedAttributes=urn:ietf:params:scim:schemas:extension:enterprise:2.0:User" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----

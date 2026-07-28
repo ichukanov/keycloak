@@ -1,0 +1,205 @@
+=== Kerberos
+
+{project_name} поддерживает вход с помощью билета Kerberos через Простой и Защищенный GSSAPI механизм ведения переговоров (SPNEGO). SPNEGO аутентифицирует прозрачно через веб-браузер после аутентификации пользователя. Для невеб-случаев, или когда заявка недоступна во время входа, {project_name} поддерживает вход с помощью имени пользователя и пароля Kerberos.
+
+Типичным вариантом использования веб-аутентификации является следующее:
+
+. Пользователь входит в рабочий стол.
+. Пользователь получает доступ к веб-приложению, защищенному {project_name} , с помощью браузера.
+. Приложение перенаправляет на {project_name} логин.
+. {project_name} отображает окно входа в HTML со статусом 401 и заголовком HTTP `WWW-Authenticate: Negotiate`
+. Если в браузере есть запрос Kerberos с входа на ПК, браузер передает информацию о сигнале рабочего стола в {project_name} в заголовке `Authorization: Negotiate 'spnego-token'`. В противном случае отображается экран стандартного входа в систему, а пользователь вводит данные для входа.
+. {project_name} проверяет токен из браузера и аутентифицирует пользователя.
+. При использовании LDAPFederationProvider с поддержкой аутентификации Kerberos, пользовательские данные {project_name} положены из LDAP. При использовании KerberosFederationProvider, {project_name} позволяет пользователю обновить профиль и предварительно заполнить регистрационные данные.
+. {project_name} возвращается в приложение. {project_name} и приложение общаются через OpenID Connect или сообщения SAML. {project_name} выступает в качестве брокера в системе Kerberos/SPNEGO. Поэтому {project_name} аутентификация через Kerberos скрыта из приложения.
+
+[WARNING]
+====
+https://www.ietf.org/rfc/rfc4559.txt[Negotiate] www-authenticate позволяет NTLM в качестве резервного варианта к Kerberos и к некоторым веб-браузерам Windows NTLM по умолчанию поддерживается.  Если вызов www-authenticate происходит от сервера за пределами списка разрешенных браузеров, пользователи могут столкнуться с диалоговым окном NTLM.  Пользователь должен нажать кнопку отмены в диалоговом окне, чтобы продолжить, так как {project_name} не поддерживает этот механизм.  Такая ситуация может произойти, если веб-браузеры Intranet настроены не строго или если {project_name} обслуживает пользователей как в Intranet, так и в Интернете.  https://github.com/keycloak/keycloak/issues/8989[custom authenticator] может быть использовано для ограничения переговоров испытаний для белого списка узлов.
+====
+
+Выполните следующие шаги для настройки аутентификации Kerberos:
+
+. Установка и настройка сервера Kerberos (KDC).
+. Настройка и настройка сервера {project_name}.
+. Настройка и настройка клиентских машин.
+
+==== Настройка сервера Kerberos
+
+Шаги по настройке сервера Kerberos зависят от операционной системы (ОС) и поставщика Kerberos. Проконсультируйтесь с Windows Active Directory, MIT Kerberos, документацией по ОС и инструкциями по установке и настройке сервера Kerberos.
+
+В процессе установки выполните следующие шаги:
+
+. Добавьте некоторых директоров пользователей в базу данных Kerberos.
+Вы также можете интегрировать ваш Kerberos с LDAP, так что предоставление пользовательских учетных записей с LDAP сервера.
+. Добавьте сервис руководителя для сервиса "HTTP".
+Например, если сервер {project_name} работает на сайте `www.mydomain.org`, добавьте его `HTTP/www.mydomain.org@<kerberos realm>`.
++
+На MIT Kerberos вы запускаете сессию "kadmin". На машине с MIT Kerberos, вы можете использовать команду:
+
+[source]
+----
+sudo kadmin.local
+----
+
+Затем добавьте HTTP principal и экспортируйте его ключ в ключевой файл с командами, такими как:
+
+[source]
+----
+addprinc -randkey HTTP/www.mydomain.org@MYDOMAIN.ORG
+ktadd -k /tmp/http.keytab HTTP/www.mydomain.org@MYDOMAIN.ORG
+----
+
+Убедитесь, что `/tmp/http.keytab` доступен на том хосте, на котором запущена {project_name}.
+
+==== Настройка и настройка сервера {project_name}
+
+Настройте Kerberos клиент на вашей машине.
+
+.Процедура
+. При необходимости установить клиент Kerberos. Если ваша машина запускает Fedora, Ubuntu, или RHEL, установите link:https://www.freeipa.org/page/Downloads[freeipa-client] пакет, содержащий клиент Kerberos и другие утилиты. Установка этого пакета предоставит вам инструменты и разумные значения по умолчанию, но для работы JGSS Kerberos внутри {project_name} он не требуется.
+. Настройте клиент Kerberos (на Linux, настройки находятся в link:https://web.mit.edu/kerberos/krb5-1.21/doc/admin/conf_files/krb5_conf.html[/etc/krb5.conf] ).
++
+Добавьте область Kerberos в конфигурацию и настройте домены HTTP, на которые работает сервер.
++
+Например, для мира MYDOMAIN.ORG можно настроить раздел `domain_realm`:
++
+[source]
+----
+[domain_realm]
+  .mydomain.org = MYDOMAIN.ORG
+  mydomain.org = MYDOMAIN.ORG
+----
+. Экспорт ключевого файла с HTTP-директорией и обеспечение доступности файла для процесса запуска сервера {project_name}. Для производительности, убедитесь, что файл доступен только для чтения этим процессом.
++
+Для приведенного выше примера MIT Kerberos мы экспортировали горячую клавишу в файл `/tmp/http.keytab`. Если ваш _Key Distribution Centre (KDC)_ и {project_name} запущены на том же узле, файл уже доступен.
+
+===== Включить обработку SPNEGO
+
+По умолчанию {project_name} отключает поддержку протокола SPNEGO. Чтобы включить его, перейдите на <<_authentication-flows, браузер flow>> и включите *Kerberos*.
+
+image:images/browser-flow.png[Браузер Flow]
+
+Установите *Kerberos* требование от _disabled_ в _alternative_ (Kerberos не обязательно) или _required_ (браузер должен иметь включенную Kerberos). Если вы не настроили браузер на работу с SPNEGO или Kerberos, то {project_name} вернется к обычному экрану входа.
+
+===== Настройка хранилища пользователей Kerberos
+
+Теперь вы должны использовать <<_user-storage-federation,User Storage Federation>>> для настройки того, как {project_name} интерпретирует заявки Kerberos. Два различных провайдера федерации существуют с поддержкой аутентификации Kerberos.
+
+Для аутентификации с помощью Kerberos, поддерживаемого LDAP сервером, настройте <<_ldap, LDAP Federation Provider>>.
+
+.Процедура
+. Перейдите на страницу конфигурации вашего поставщика LDAP.
++
+image:images/ldap-kerberos.png[LDAP Kerberos Integration]
+. Вкл/Выкл *Разрешить Kerberos аутентификацию* *ВКЛЮЧЕНИЕ*
+
+*Разрешить Kerberos аутентификацию* заставляет {project_name} использовать основной доступ к информации пользователя Kerberos, чтобы информация могла импортироваться в среду {project_name}.
+
+Если сервер LDAP не выполняет резервное копирование вашего решения Kerberos, используйте поставщика *Kerberos* хранилища пользователей.
+
+.Процедура
+. Нажмите *User Federation* в меню.
+. Выберите *Kerberos* из окна *Add provider*.
++
+image:images/kerberos-provider.png[поставщик хранилища пользователей Kerberos]
+
+Провайдер *Kerberos* анализирует запрос Kerberos для получения простой основной информации и импортирует информацию в локальную базу данных {project_name}.
+Данные профиля пользователя, такие как имя, фамилия и адрес электронной почты, не предоставлены.
+
+==== Настройка и настройка клиентских машин
+
+У клиентских машин должен быть клиент Kerberos и установить `krb5.conf` как описано <<_server_setup, above>>. Компьютеры клиента также должны включить поддержку входа SPNEGO в своем браузере. См. link:https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/system-level_authentication_guide/configuring_applications_for_sso[Настройка для Kerberos] в браузере Firefox.
+
+URI `.mydomain.org` должен быть в конфигурации `network.negotiate-auth.trusted-uris`.
+
+В доменах Windows клиентам не нужно настраивать конфигурацию. Internet Explorer и Edge уже могут участвовать в авторизации SPNEGO.
+
+ifeval::[{project_community}==true]
+
+==== Примеры настроек
+
+===== Изображение докер {Project_name} и FreeIPA
+
+При установке https://www.docker.com/[docker]запустите образ докер с установленным сервером FreeIPA. FreeIPA предоставляет интегрированное решение по безопасности с MIT Kerberos и сервером 389 LDAP. Изображение также содержит сервер {project_name} , настроенный с провайдером LDAP Federation и включенный SPNEGO/Kerberos аутентификацию на сервере FreeIPA. Подробнее https://github.com/mposolda/keycloak-freeipa-docker/blob/master/README.md[here].
+
+===== Сервер ApacheDS тестирования Kerberos
+
+Для быстрого тестирования и модульных тестов используйте простой https://directory.apache.org/apacheds/[ApacheDS] Kerberos сервер. Вы должны собрать {project_name} из исходного кода, а затем запустить сервер Kerberos с помощью плагина maven-exec-plugin из нашего тестового набора. See details
+https://github.com/keycloak/keycloak/blob/main/docs/tests.md#kerberos-server[here].
+
+endif::[]
+
+==== Делегирование полномочий
+
+Kerberos поддерживает делегирование учетных данных. Приложениям может потребоваться доступ к заявке Kerberos, чтобы они могли повторно использовать ее для взаимодействия с другими службами, защищенными Kerberos. Потому что {project_name} сервер обработал протокол SPNEGO, вы должны распространить в вашем приложении учетные данные GSS в рамках требования токена подключения OpenID или атрибута утверждения SAML. {project_name} передает это в вашу заявку с сервера {project_name}. Для того чтобы вставить эту претензию в токен или утверждение, каждое приложение должно включить встроенный протокол mapper `gss delegation credential`. Карта доступна на вкладке *Mappers* на клиентской странице приложения.  Смотрите <<_protocol-mappers, Protocol Mappers>> глава для более подробной информации.
+
+Приложения должны десериализовать те претензии, которые они получают от {project_name} , прежде чем использовать для совершения GSS звонков против других сервисов. Когда вы десериализуете учетные данные из токена доступа к объекту GSSCredential создайте GSSContext с этим учетными данными, передаваемые методу `GSSManager.createContext`. Например:
+
+[source,java]
+----
+// Obtain accessToken in your application.
+KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) servletReq.getUserPrincipal();
+AccessToken accessToken = keycloakPrincipal.getKeycloakSecurityContext().getToken();
+
+// Retrieve Kerberos credential from accessToken and deserialize it
+String serializedGssCredential = (String) accessToken.getOtherClaims().
+    get(org.keycloak.common.constants.KerberosConstants.GSS_DELEGATION_CREDENTIAL);
+
+GSSCredential deserializedGssCredential = org.keycloak.common.util.KerberosSerializationUtils.
+    deserializeCredential(serializedGssCredential);
+
+// Create GSSContext to call other Kerberos-secured services
+GSSContext context = gssManager.createContext(serviceName, krb5Oid,
+    deserializedGssCredential, GSSContext.DEFAULT_LIFETIME);
+----
+
+[NOTE]
+====
+Настройте `forwardable` Заявки Kerberos в файле `krb5.conf` и добавьте поддержку делегированных учетных данных в вашем браузере.
+====
+
+[WARNING]
+====
+Делегирование полномочий имеет последствия для безопасности, поэтому используйте его только в случае необходимости и только с HTTPS. Смотрите https://docs.redhat.com/ru/documentation/red_hat_enterprise_linux/7/html/system-level_authentication_guide/configuring_applications_for_sso[этой статьи] для получения более подробной информации и примера.
+====
+
+==== Доверие к кросс-миру
+
+В Kerberos протоколе `realm` это набор принципов Kerberos. Определение этих директоров существует в базе данных Kerberos, которая обычно является LDAP сервером.
+
+Протокол Kerberos позволяет доверять кросс-миру. Например, если существует 2 Kerberos мира, A и B, то кросс-миром доверие позволит пользователям из Realm A получить доступ к ресурсам Realm B. Realm B доверяет царству A.
+
+image:images/kerberos-trust-basic.png[]
+
+Сервер {project_name} поддерживает кросс-миром доверия. Для выполнения этого выполните следующие действия:
+
+* Настройте серверы Kerberos для доверия кросс-царства. Реализация этого шага зависит от реализации сервера Kerberos. Этот шаг необходим для добавления директора «krbtgt/B@A» в базы данных Kerberos realm A и B. Этот участник должен иметь одинаковые ключи в обоих игровых мирах Kerberos. Участники должны иметь один и тот же пароль, номера версий ключей и шифры в обоих мирах. Обратитесь к документации сервера Kerberos за более подробной информацией.
+
+[NOTE]
+====
+Доверие кросс-мира по умолчанию является однонаправленным. Вы должны добавить директора `krbtgt/A@B` в обе базы данных Kerberos для двунаправленного доверия между миром A и миром B. Однако, по умолчанию доверие является переходным. Если Realm B доверяет царству А и царю C доверит царство В, то царь C доверяет царю А без принципа, доступному `krbtgt/C@A`. Дополнительная конфигурация (например, `capaths`) может потребоваться на стороне Kerberos, чтобы клиенты могли найти путь доверия. Обратитесь к документации Kerberos за более подробной информацией.
+====
+
+* Настроить {project_name} сервер
+** При использовании LDAP провайдера хранения с поддержкой Kerberos настройте принципала сервера для Realm B, как и в данном примере: `HTTP/mydomain.com@B`. Сервер LDAP должен найти пользователей из Realm A, если пользователи из Realm A должны успешно аутентифицироваться в {project_name}, потому что {project_name} должен выполнять поток SPNEGO, а затем найти пользователей.
+
+Поиск пользователей основан на опции `Kerberos principal attribute` хранилища LDAP. Когда это настроено для копии со значением `userPrincipalName`, то
+после аутентификации пользователя `john@A`, {project_name} попытается найти пользователя LDAP с атрибутом `userPrincipalName` эквивалент `john@A`. Если `Kerberos principal attribute` остаётся пустым
+тогда {project_name} найдет пользователя LDAP на основе префикса его основного ядра с пропущенным реалмом.
+Например, главный пользователь «john@A» Kerberos должен быть доступен в LDAP под именем пользователя `john`, поэтому, как правило, в LDAP DN, например `uid=john,ou=People,dc=example,dc=com`. Если вы хотите, чтобы пользователи из реалма A и B аутентифицировались, убедитесь, что LDAP может находить пользователей из обеих реалмов A и B.
+
+** При использовании хранилища пользователей Kerberos (обычно Kerberos без LDAP интеграции) настройте директора сервера как «HTTP/mydomain. Пользователь из Kerberos миров A и B должен иметь возможность аутентифицироваться.
+
+Пользователям из нескольких областей Kerberos разрешено аутентифицироваться, так как каждый пользователь имеет атрибут `KERBEROS_PRINCIPAL`, относящийся к директору ядра, используемому для аутентификации, и это используется
+для дальнейших запросов этого пользователя. Во избежание конфликтов при наличии пользователя `john` в обеих сферах kerberos `A` и `B`, имя пользователя {project_name} может содержать нижний регистр kerberos
+. Имя пользователя может быть `john@a`. В том случае, если Realm совпадает с настроенным `Kerberos realm`, суффикс Realm может быть опущен из сгенерированного имени пользователя. Для экземпляра
+имя пользователя будет `john` для директора Kerberos `john@A` до тех пор, пока `Kerberos realm` настроен на Kerberos provider это `A`.
+
+==== Устранение проблем
+
+Если у вас возникли проблемы, включите дополнительную регистрацию для отладки проблемы:
+
+* Включить флаг `Debug` в консоли администратора для Kerberos или LDAP federation провайдеров
+* Включите логи TRACE для `org.keycloak`, чтобы получить больше информации в логах сервера
+* Добавьте системные свойства `-Dsun.security.krb5.debug=true` и `-Dsun.security.spnego.debug=true`

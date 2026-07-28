@@ -1,0 +1,16 @@
+==== LinkedIn
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *LinkedIn*.
++
+image:images/linked-in-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера https://developer.linkedin.com[создать приложение] на портале разработчика LinkedIn.
+.. После создания приложения нажмите на вкладку *Auth*.
+.. Введите значение *Redirect URI* в *Authorized redirect URL для вашего приложения.
+.. Обратите внимание на *Ваш идентификатор клиента* и *Ваш секрет клиента*.
+.. Нажмите на вкладку *Продукты* и *Запросить доступ* к *Войти с помощью LinkedIn с помощью OpenID Connect* продукта.
+. В {project_name}вставьте значение `Client ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Client Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.

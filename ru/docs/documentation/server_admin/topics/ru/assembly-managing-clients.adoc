@@ -1,0 +1,27 @@
+[id="assembly-managing-clients_{context}"]
+== Управление OpenID Connect и SAML клиентами
+
+[role="_abstract"]
+Клиенты - это объекты, которые могут запрашивать аутентификацию пользователя.  Клиенты приходят в двух формах.
+The first type of client is an application that wants
+to participate in single sign-on.  Эти клиенты просто хотят, чтобы {project_name} обеспечил их безопасность.  Другой тип
+клиента, который запрашивает токен доступа, чтобы он мог вызвать другие сервисы от имени аутентифицированного пользователя.
+В этом разделе обсуждаются различные аспекты, связанные с настройкой клиентов и различными способами.
+
+include::clients/assembly-client-oidc.adoc[leveloffset=+2]
+
+include::clients/saml/proc-creating-saml-client.adoc[leveloffset=+2]
+
+include::clients/saml/idp-initiated-login.adoc[leveloffset=+3]
+
+include::clients/saml/proc-using-an-entity-descriptor.adoc[leveloffset=+3]
+
+include::clients/con-client-links.adoc[leveloffset=+2]
+
+include::clients/con-protocol-mappers.adoc[leveloffset=+2]
+
+include::clients/proc-generating-client-adapter-config.adoc[leveloffset=+2]
+
+include::clients/con-client-scopes.adoc[leveloffset=+2]
+
+include::clients/client-policies.adoc[leveloffset=+2]

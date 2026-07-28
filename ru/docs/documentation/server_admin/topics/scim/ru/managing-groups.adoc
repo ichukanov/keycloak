@@ -1,0 +1,233 @@
+[[_scim_managing_groups_]]
+= Управление группами
+
+Конечная точка SCIM `/Groups` позволяет создавать, читать, обновлять и удалять ресурсы группы в {project_name}. Group resources
+conform to the `urn:ietf:params:scim:schemas:core:2.0:Group` schema as defined in RFC 7643.
+
+== Атрибуты группы
+
+[cols="1,1,2", options="header"]
+|===
+|Атрибут SCIM
+|Атрибут {project_name}
+|Описание
+
+|`displayName`
+|`name`
+|Название группы. Обязательно.
+
+|`externalId`
+|(пользовательский атрибут)
+|Идентификатор внешней системы.
+
+|«члены»
+|(членство в группах)
+|Список пользователей, входящих в эту группу. Только чтение на GET; управляется через PATCH.
+|===
+
+== Создание группы
+
+Чтобы создать группу, отправьте запрос `POST` в конечную точку `/Groups`:
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Groups \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "displayName": "Engineering Team",
+    "externalId": "eng-team-001"
+  }'
+----
+
+Успешный ответ возвращает созданную группу со статусом '201 Создана'.
+
+IMPORTANT: Нельзя указать участников группы при создании группы. Попытка включить участников в запрос `POST`
+приводит к ошибке `400 Bad Request`. Используйте метод `PATCH`, чтобы добавить участников после создания группы.
+
+Если группа с таким же `displayName` уже существует, API возвращает ответ `409 Conflict` с
+`scimType: "uniqueness"`.
+
+== Получение группы
+
+Чтобы получить группу по ID:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+== Список групп
+
+Список всех групп в мире:
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/Groups \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Фильтрация и пагинация результатов смотрите <<_scim_filtering_resources,Filtering resources>.
+
+== Обновление группы
+
+Чтобы заменить атрибуты группы, отправьте запрос «PUT»:
+
+[source,bash]
+----
+curl -X PUT http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "id": "{id}",
+    "displayName": "Platform Engineering",
+    "externalId": "eng-team-002"
+  }'
+----
+
+IMPORTANT: Участники группы не могут быть изменены через `PUT` запросы. Попытка включить участников в запрос `PUT`
+привела к ошибке `400 Bad Request`. Используйте метод `PATCH` для управления участниками группы.
+
+== Частичное обновление группы
+
+Чтобы изменить атрибуты группы, используйте запрос `PATCH`.
+
+NOTE: Один запрос PATCH может содержать не более 100 операций. Запросы, превышающие этот лимит, отвергнуты при помощи
+ответ `400 Bad Request` и `scimType: "tooMany"`.
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "replace",
+        "path": "displayName",
+        "value": "Platform Engineering"
+      }
+    ]
+  }'
+----
+
+== Управление участниками группы
+
+Членство в группе управляется исключительно при помощи операций `PATCH` на ресурсе группы. Group membership can also
+be managed from the user side through the `/Users` endpoint. Смотрите <<_scim_managing_users_,Управление пользователями>> для деталей.
+
+=== Добавление участников
+
+Добавлять пользователей в группу:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "add",
+        "path": "members",
+        "value": "{userId1}"
+      },
+      {
+        "op": "add",
+        "path": "members",
+        "value": "{userId2}"
+      }
+    ]
+  }'
+----
+
+=== Удаление участников
+
+Чтобы удалить отдельных участников из группы, используйте фильтр пути значений:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "remove",
+        "path": "members[value eq \"{userId}\"]"
+      }
+    ]
+  }'
+----
+
+Вы можете удалить несколько участников из одной операции с помощью оператора `or`:
+
+[source,bash]
+----
+curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {
+        "op": "remove",
+        "path": "members[value eq \"{userId1}\" or value eq \"{userId2}\"]"
+      }
+    ]
+  }'
+----
+
+=== Запрос участников
+
+Чтобы получить членов группы, добавьте `members` в параметр `attributes`:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId}?attributes=members" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Каждая запись члена включает:
+
+* `value`: ID пользователя.
+* `display`: Имя пользователя.
+* `type`: Всегда `Пользователь`.
+
+=== Двунаправленное членство
+
+Членство в группах является двунаправленным. When a user is added to a group, the user's `groups` attribute also reflects
+the membership. Similarly, when a user is assigned to a group through the User resource, the group's `members`
+list is updated accordingly.
+
+Вы также можете найти группы по участникам:
+
+[source,bash]
+----
+curl "http://localhost:8080/realms/myrealm/scim/v2/Groups?filter=members.value+eq+\"{userId}\"" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+NOTE: Группы организаций, связанные с Организацией, не могут иметь своих членов, управляемых через SCIM API. Попытка добавить или
+удалить членов из группы организации возвращает ошибку `400 Bad Request`. Используйте API организации для управления членством в группах
+организации.
+
+== Удаление группы
+
+[source,bash]
+----
+curl -X DELETE http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+----
+
+Успешное удаление возвращает ответ «204 Без содержимого».

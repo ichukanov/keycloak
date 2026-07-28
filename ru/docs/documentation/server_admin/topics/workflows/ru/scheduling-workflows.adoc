@@ -1,0 +1,29 @@
+[[_scheduling_workflows_]]
+= Планирование рабочих процессов
+
+Рабочие процессы могут планироваться на периодический запуск по определенному интервалу. Это делается с помощью параметра `schedule`
+в определении рабочего процесса.
+
+A key difference between event-based triggering and scheduled workflows is that scheduled workflows follows a passive execution model
+where the workflow engine periodically checks for realm resources that meet the defined condition.
+
+```yaml
+name: Track inactive users
+schedule:
+  after: 5s
+  batch-size: 100
+```
+
+This method of scheduling is useful for automating tasks that need to be performed regularly, such as cleaning up inactive
+users or enforcing specific policies on realm resources. It is an alternative to event-based triggering, but it can also
+be used in combination with it. При совместном использовании рабочий процесс будет срабатывать либо по определенному событию, либо по графику.
+
+Когда рабочий процесс запланирован, он будет запускаться автоматически при заданном интервале. При каждом запуске движок рабочих процессов
+будет запрашивать ресурсы реалма, соответствующие условиям рабочего процесса, и создавать исполнение рабочего процесса для каждого из них,
+до определенного размера партии. If no condition is defined, the workflow will be executed for all realm resources of the type associated
+with the workflow. В приведенном выше примере рабочий процесс будет запускаться каждые 5 секунд и будет обрабатывать до 100 ресурсов реалма при каждом запуске.
+
+Параметр `schedule` поддерживает следующие параметры:
+
+* `after`: Определяет интервал между каждым запуском рабочего процесса.
+* `batch-size`: Определяет максимальное количество ресурсов реалма для обработки при каждом запуске.

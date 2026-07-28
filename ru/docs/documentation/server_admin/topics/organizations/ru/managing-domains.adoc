@@ -1,0 +1,58 @@
+= Домены организации
+
+Домен, связанный с организацией играет важную роль в том, как
+члены организации аутентифицируются в области и как проверяются их профили.
+
+Одна из ключевых ролей домена заключается в том, чтобы помочь выявить организации, в которых участвует пользователь. By looking at their
+email address, {project_name} will match a corresponding organization using the same domain and eventually change the
+authentication flow based on the organization requirements.
+
+Домен также позволяет организациям убедиться в том, что пользователям не разрешено использовать домен в своих письмах
+отличных от тех, которые связаны с организацией. This restriction is especially useful when users, and their identities,
+are federated from identity providers associated with an organization and you want to force a specific email domain for their email addresses.
+
+== Присвоение доменов
+
+Домены назначаются через параметр *Домены* при создании или редактировании организации. An organization can have
+zero, one, or multiple domains.
+
+When no domain is assigned, members are not validated against domain restrictions and email-based redirection to
+identity providers is unavailable.
+
+== Типы доменов
+
+Точно:: Соответствует только указанному значению. `example.com` соответствует `user@example.com`, но не `user@sub.example.com`.
+Подстановочный знак:: Префикс базового домена с именем `*.`, чтобы он соответствовал базовому домену и всем его субдоменам.
+`*.example.com` соответствует `user@example.com`, `user@sub.example.com`, и `user@deep.sub.example.com`.
+
+== Сопоставление адресов электронной почты организациям
+
+{project_name} extracts the domain from the email address, normalizes it to lowercase, and selects the best-matching
+organization using the following rules:
+
+. Сопоставление не чувствительно к регистру.
+. Лучше всего побеждает матч, измеряемый количеством доменных частей. Например, при разрешении `user@deep.sub.example.com`:
+* `deep.sub.example.com` (4 parts, exact) победы над `*.sub.example.com` (4 части, wildcard) и `*.example.com` (3 части, wildcard).
+* `*.sub.example.com` (4 части) выигрывает над `*.example.com` (3 части).
+. Когда два домена имеют одинаковое количество частей, точное совпадение побеждает над звездочкой.
+
+The same rules determine which domain is reported in token claims such as the `domain` claim from the
+organization membership mapper.
+
+== Правила проверки
+
+* Домен не может быть передан организациям в одной и той же сфере.
+* Домены хранятся и сравниваются в нижнем регистре.
+* Домен должен иметь по крайней мере 2 части (например, `example.com`). Домены с несколькими частями, такие как `com`, `org`, или `*.com` отвергаются.
+* Домен не может иметь более 10 частей.
+* Префикс шаблона `*.` может появиться только один раз и только в начале значения (например, `sub.*.example.com` отвергнут).
+
+== Соображения
+
+Предпочитать наиболее конкретное значение:: Используйте точный домен для одного известного адреса. Use a wildcard when new subdomains may appear over time and should
+all map to the same organization.
+Разрешены перекрывающиеся области между организациями, но детерминировано:: Организация может владеть `*.example.com`, а другая владеет `sub.example.com`. Only one organization is returned per lookup,
+always the most specific match, with exact winning over wildcard at equal specificity. Verify the intended mapping
+before relying on overlapping configurations.
+Использовать точные домены для моделирования исключений:: Организация может удерживать и `*.example.com` и `vip.example.com`. Addresses under `vip.example.com` resolve to the
+exact entry; all other subdomains fall back to the wildcard.

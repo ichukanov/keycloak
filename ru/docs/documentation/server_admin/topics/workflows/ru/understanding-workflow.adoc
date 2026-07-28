@@ -1,0 +1,33 @@
+[[_understanding_workflows_]]
+= Понимание рабочих процессов
+
+Рабочий процесс - это действие или процесс внутри {project_name} , выполняющий серию предопределенных шагов в
+конкретного ресурса области в ответ на конкретные события и исходя из определенных условий.
+
+В {project_name}есть два основных типа событий:
+
+* **Пользовательские события**: Эти события инициируются пользователями, такими как логин или регистрация новой учетной записи.
+* **События администратора**: Эти события инициируются администраторами через консоль администратора и API, например создание или обновление пользователя или любого другого ресурса реалма.
+
+Workflows are designed to respond to these events by automating tasks and processes that need to be performed and executed on the
+realm resources associated with these events.
+
+После того, как событие запущено, движок рабочего процесса вычисляет все определенные рабочие процессы в области, чтобы определить, должно ли быть
+быть вызвано на основе типа события и указанных условий. Если событие соответствует условиям, определенным в рабочем процессе,
+выполнение рабочего процесса создается и назначается идентификатором. The workflow execution
+is bound to the realm resource associated with the event, and only a single instance of a workflow can be active for that
+realm resource at any given time.
+
+Ресурсом области может быть любая сущность в мире, такая как пользователь, клиент, группа или роль.
+На данный момент рабочие процессы могут быть определены для следующих ресурсов:
+
+* Пользователи
+
+Как только рабочий процесс активен для ресурса Realm, его цепочка шагов обрабатывается. The steps run sequentially, and they will
+run immediately or be scheduled to execute later in time, depending on each step configuration.
+Once all the steps are executed, the workflow execution is completed and the realm resource
+is no longer bound to that workflow.
+
+Это главный герой рабочих процессов {project_name}. Есть больше деталей и настроек, которые могут быть
+настроены для настройки поведения и жизненного цикла рабочего процесса, как их экземпляры создаются, управляются,
+и привязаны к ресурсам Realm, а также к тому, как выполняются их шаги.

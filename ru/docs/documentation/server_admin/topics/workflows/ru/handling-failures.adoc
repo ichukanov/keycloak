@@ -1,0 +1,21 @@
+[[_handling_failures_]]
+= Сбой обработки
+
+Движок рабочих потоков следит за процессом выполнения, сохраняя шаг, который должен выполняться в таблице состояний. Если
+шаг не выполняется, либо из-за ошибки в выполнении шага или из-за таймаута, ошибка регистрируется, запускается событие
+и таблица состояний остается неизменной. This effectively means that the step will be retried the next time the workflow
+execution task runs.
+
+В этой первоначальной версии нет ограничений на количество просмотров, так что выполнение рабочего процесса может застрять, пока администратор
+не вмешается и либо устраняет проблему, которая препятствует успешному запуску шага или использует API для отмены выполнения рабочего процесса
+или для переноса ресурса на другой рабочий процесс/шаг. Таким образом, важно, чтобы администраторы контролировали процесс выполнения
+журналов и проверяли на наличие ошибок, которые могут повторяться неоднократно.
+
+NOTE: Таблица состояний используется даже для незамедлительных шагов (например, шаги, которые должны выполняться сразу после предыдущего шага).
+This means that if an immediate step fails, the workflow execution will be retried later, and the failed step will be retried as well,
+behaving as if it were a scheduled step. Это должно удостовериться, что процесс выполнения рабочего процесса является последовательным и что все шаги
+повторен таким же образом, независимо от их конфигурации. Это также обеспечивает возобновление рабочего процесса в случае перезапуска сервера или сбоев.
+
+Future versions of the workflows engine will include more features to handle failures, such as the ability to configure a maximum number
+of retries for each step, as well as the ability to define custom error handling logic for specific steps, like skip the step or cancel
+the workflow execution.

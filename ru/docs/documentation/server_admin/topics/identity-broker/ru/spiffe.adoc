@@ -1,0 +1,35 @@
+[[_identity_broker_spiffe]]
+=== SPIFFE идентификационные провайдеры
+
+:tech_feature_name: SPIFFE
+:tech_feature_id: spiffe
+
+include::../../topics/templates/techpreview.adoc[]
+
+Идентификационный провайдер SPIFFE поддерживает аутентификацию клиентов при помощи SPIFFE JWT SVID.
+
+Каждый клиент должен иметь уникальный идентификатор темы (SPIFFE ID) для каждого реалма.
+
+SPIFFE JWT SVID-ов можно использовать несколько раз. As a security best practice, reduce the expiration time
+and make sure tokens can not be intercepted in communication between the client and Keycloak.
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Выберите `SPIFFE` из списка `Add provider`.
++
+image:images/spiffe-add-identity-provider.png[Добавить поставщика SPIFFE]
+. Введите начальные параметры конфигурации.
++
+.Настройки SPIFFE
+|===
+|Конфигурация |Описание
+
+|Alias
+|Псевдоним для идентификационного провайдера используется для связи клиента с провайдером
+
+|Домен доверия SPIFFE
+|Домен доверия SPIFFE (например, `spiffe://my-trust-domain`)
+
+|Набор SPIFFE конечной точки
+|URL-адрес `https` для SPIFFE пакета Endpoint или OpenID Connect JWKS, где выставлены публичные ключи SPIFFE серверов
+|===

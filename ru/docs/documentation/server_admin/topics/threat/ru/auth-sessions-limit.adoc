@@ -1,0 +1,39 @@
+[[_limit-authentication-sessions]]
+=== Ограничить сеансы аутентификации
+
+<<_authentication-sessions, Authentication sessions>> отслеживает состояние аутентификации. Приводимый ниже текст применим независимо от потока источника.
+
+NOTE: Этот раздел описывает развертывания, использующие {jdgserver_name} провайдер для сеансов аутентификации.
+
+Сеанс аутентификации хранится как `RootAuthenticationSessionEntity`. Каждый `RootAuthenticationSessionEntity` может иметь несколько субсессий, хранящихся в пределах
+`RootAuthenticationSessionEntity` как набор объектов `AuthenticationSessionEntity`. {project_name} хранит сессии аутентификации в выделенном кэше {jdgserver_name}.
+Число «AuthenticationSessionEntity» на каждый «RootAuthenticationSessionEntity» увеличивает размер каждого элемента кэша. Total memory footprint of authentication session cache is determined by
+the number of stored `RootAuthenticationSessionEntity` and by the number of `AuthenticationSessionEntity` within each `RootAuthenticationSessionEntity`.
+
+Число поддерживаемых объектов «RootAuthenticationSessionEntity» соответствует количеству незавершенных потоков входа из браузера. Чтобы сохранить количество `RootAuthenticationSessionEntity`
+под контролем, используйте расширенный брандмауэр для ограничения трафика ingress.
+
+Более широкое использование памяти может произойти при развертывании, где много активных `RootAuthenticationSessionEntity` с большим количеством `AuthenticationSessionEntity`.
+If the load balancer does not support or is not configured for session stickiness, the load over network in a cluster can
+increase significantly. The reason for this load is that each request that lands on a node that does not own the appropriate authentication session needs to retrieve
+and update the authentication session record in the owner node which involves a separate network transmission for both the retrieval and the storage.
+
+Максимальное количество `AuthenticationSessionEntity` для `RootAuthenticationSessionEntity` можно настроить в SPI `authenticationSessions`, установив свойство `authSessionsLimit`. Значение по умолчанию равно 300 `AuthenticationSessionEntity` для `RootAuthenticationSessionEntity`. Когда этот лимит достигнут, старая подсессия аутентификации будет удалена после нового запроса сессии аутентификации.
+
+Следующий пример показывает, как ограничить число активных `AuthenticationSessionEntity` на `RootAuthenticationSessionEntity` до 100.
+
+[source,bash]
+----
+bin/kc.[sh|bat] start --spi-authentication-sessions--infinispan--auth-sessions-limit=100
+----
+
+ifeval::[{project_community}==true]
+
+Эквивалентная команда для нового хранилища карты:
+
+[source,bash]
+----
+bin/kc.[sh|bat] start --spi-authentication-sessions--map--auth-sessions-limit=100
+----
+
+endif::[]

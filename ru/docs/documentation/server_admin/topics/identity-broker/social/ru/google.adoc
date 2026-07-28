@@ -1,0 +1,24 @@
+[[_google]]
+==== Google
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Google*.
++
+image:images/google-add-identity-provider.png[Добавить поставщика идентификации]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера откройте https://console.cloud.google.com/[консоль Google Cloud Platform console].
+. В панели инструментов Google для приложения Google, в меню Навигация с левой стороны, наведите курсор на *APIs & Services*, затем нажмите на кнопку *Разрешение OAuth*. Создайте экран согласия, убедитесь, что пользователь имеет тип экрана согласия *Внешний*.
+. На панели Google:
+.. Нажмите на меню *Учетные данные*.
+.. Нажмите *CREATE CREDENTIALS* - *OAuth ID Клиента*.
+.. Из списка *типов приложений* выберите *Веб-приложение*.
+.. Используйте *Redirect URI* в буфере обмена в качестве *Authorized redirect URI*
+.. Нажмите *Создать*.
+.. Примечание *Ваш ID клиента* и *Ваш секретный ключ клиента*.
+. В {project_name}вставьте значение `Your Client ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Your Client secret` в поле *Client Secret*.
+. Нажмите *Добавить*
+. Введите требуемые области в поле *По умолчанию*. По умолчанию, {project_name} использует следующие скобки: *openid* *profile* *email*. Список областей Google смотрите на https://developers.google.com/oauthplayground/[OAuth Playground].
+. Чтобы ограничить доступ только к членам вашей организации GSuite, введите домен G Suite в поле *Hosted Domain*.
+. Нажмите *Сохранить*.

@@ -1,0 +1,17 @@
+==== Bitbucket
+
+Чтобы войти в Bitbucket, выполните следующую процедуру.
+
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Bitbucket*.
++
+image:images/bitbucket-add-identity-provider.png[Добавить Identity Provider]
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера выполните https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud/[OAuth в облаке Bitbucket]. При нажатии *Добавить потребителя*:
+.. Вставьте значение *Redirect URI* в поле *Callback URL*.
+.. Убедитесь, что вы выбрали *Email* и *Читаете* в разделе *Аккаунт*, чтобы ваше приложение могло читать электронную почту.
+. Обратите внимание на *Ключ* и *Secret* значения Bitbucket отображаются при создании потребителя.
+. В {project_name}вставьте значение `Key` в поле *Client ID*.
+. В {project_name}вставьте значение `Secret` в поле *Client Secret*.
+. Нажмите *Добавить*.

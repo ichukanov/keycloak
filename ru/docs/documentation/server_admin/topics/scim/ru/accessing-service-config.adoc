@@ -1,0 +1,55 @@
+[[_accessing_scim_service_provider_config_]]
+= Доступ к конфигурации провайдера сервиса SCIM
+
+Согласно спецификации SCIM, конечная точка конфигурации провайдера сервиса (`/ServiceProviderConfig`) предоставляет метаданные
+о возможностях, доступных из SCIM API.
+
+[source,bash]
+----
+curl http://localhost:8080/realms/myrealm/scim/v2/ServiceProviderConfig \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Accept: application/scim+json"
+----
+
+Успешный ответ возвращает возможности SCIM API, включая поддерживаемые операции, такие как
+`patch`, `filter` и схемы аутентификации:
+
+[source,json]
+----
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+  "patch": {
+    "supported": true
+  },
+  "bulk": {
+    "supported": false,
+    "maxOperations": 0,
+    "maxPayloadSize": 0
+  },
+  "filter": {
+    "supported": true,
+    "maxResults": 100
+  },
+  "changePassword": {
+    "supported": false
+  },
+  "sort": {
+    "supported": false
+  },
+  "etag": {
+    "supported": false
+  },
+  "authenticationSchemes": [
+    {
+      "type": "oauthbearertoken",
+      "name": "OAuth Bearer Token",
+      "description": "Authentication scheme using the OAuth Bearer Token standard"
+    }
+  ]
+}
+----
+
+В настоящее время конфигурация поставщика услуг доступна только для чтения и не может быть изменена.
+
+В будущих версиях могут быть настроены определенные возможности, такие как поддерживаемые схемы аутентификации или максимальные результаты фильтра.
+На данный момент конфигурация отражает стандартные возможности SCIM API, реализованные в {project_name}.

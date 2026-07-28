@@ -1,0 +1,176 @@
+[[_workflow_provider_events_]]
+= Прослушивание событий поставщика рабочих процессов
+
+В течение жизненного цикла выполнения рабочего процесса, {project_name} запускает серию событий провайдера, представляющих ключевые моменты
+, такие как активация, выполнение шагов, ошибки и завершение. SPI developers can listen to these events by implementing
+the `ProviderEventListener` interface and registering the listener with the `KeycloakSessionFactory`.
+
+[NOTE]
+====
+{project_name} не сохраняет историю выполнения рабочего процесса. По умолчанию, только журнал сообщений записывает то, что произошло во время
+запуска рабочего процесса (см. <_troubleshooting_workflows_>). Provider events allow you to capture and store workflow lifecycle
+data externally — for example, in an audit database or monitoring system — providing a complete execution trail beyond
+what the standard log messages offer.
+====
+
+== Общие поля событий
+
+Все события поставщика рабочих процессов расширяют интерфейс «WorkflowProviderEvent», который предоставляет следующие общие поля:
+
+[cols="2*", options="header"]
+|===
+|Метод
+|Описание
+
+|`getKeycloakSession()` |`KeycloakSession` связанный с этим событием.
+
+|`getRealm()` |Область, в которой произошло событие рабочего процесса.
+
+|`getWorkflowId()` |Идентификатор рабочего процесса.
+
+|`getWorkflowName()` |Имя рабочего процесса.
+
+|`getResourceId()` |ID ресурса, связанного с рабочим процессом.
+
+|`getResourceType()` |Тип ресурса — либо «USERS», либо «CLIENTS».
+
+|`getExecutionId()` |Уникальный ID для этого процесса выполнения.
+|===
+
+[[_workflow_provider_event_types_]]
+== Типы событий
+
+Доступны следующие типы событий:
+
+[cols="3*", options="header"]
+|===
+|Тип события
+|Описание
+|Дополнительные поля
+
+|`WorkflowActivatedEvent`
+|Уголен, когда рабочий процесс активируется для ресурса — либо через инициирующее событие, расписание, либо через ручный вызов API.
+a|* `getTriggerEventType()`: ID провайдера событий, который вызвал активацию (например, `user-created`, `scheduled`, `AD_HOC` для ручной активации).
+
+|`WorkflowDeactivatedEvent`
+|Вызывается, когда выполнение рабочего процесса деактивируется для ресурса — например, с помощью ручного вызова API, триггер отмены, или потому, что ресурс больше не соответствует условиям рабочего процесса.
+a|* `getReason()`: Причина деактивации.
+
+|`WorkflowRestartedEvent`
+|Уголен при перезапуске рабочего процесса с самого начала для ресурса.
+|Нет — использует только общие поля.
+
+|`WorkflowStepScheduledEvent`
+|Ужас, когда запланирован шаг рабочего процесса для будущего выполнения (то есть у шага есть задержка `after`).
+a|* `getStepId()`: ID запланированного шага.
+* `getStepProviderId()`: ID провайдера шага (например, `disable-user`).
+* `getScheduledTime()`: Время выполнения шага в миллисекундах с эпохи.
+* `getDelay()`: Строка длительности (например, `PT5M` на 5 минут).
+
+|`WorkflowStepExecutedEvent`
+|Увеличение, когда рабочий процесс успешно завершается.
+a|* `getStepId()`: ID выполненного шага.
+* `getStepProviderId()`: ID провайдера шага.
+
+|`WorkflowStepFailedEvent`
+|Ужас, когда не удалось выполнить шаг выполнения рабочего процесса.
+a|* `getStepId()`: ID неудачного шага.
+* `getStepProviderId()`: ID провайдера шага.
+* `getErrorMessage()`: Сообщение об ошибке.
+
+|`WorkflowResourceMigratedEvent`
+|Указывается, когда ресурсы мигрируются из одного рабочего процесса (или шага) на другой, используя API миграции.
+a|* `getSourceWorkflowId()` / `getSourceWorkflowName()`: Исходный рабочий процесс.
+* `getDestinationWorkflowId()` / `getDestinationWorkflowName()`: целевой рабочий процесс.
+* `getSourceStepId()` / `getSourceStepProviderId()`: шаг источника.
+* `getDestinationStepId()` / `getDestinationStepProviderId()`: целевой шаг.
+* `getOldExecutionId()` / `getNewExecutionId()`: идентификаторы исполнения из исходного и целевого рабочих потоков.
+
+|`WorkflowCompletedEvent`
+|Вызывается, когда все шаги рабочего процесса были успешно выполнены и выполнение рабочего процесса завершено.
+|Нет — использует только общие поля.
+|===
+
+== Жизненный цикл события
+
+Во время выполнения типичного рабочего процесса, события провайдера запускаются в следующем порядке:
+
+. `WorkflowActivatedEvent` — рабочий процесс активирован для ресурса.
+. Для каждого шага в цепочке шагов:
+.. `WorkflowStepScheduledEvent` — если у шага задержка `after`.
+.. `WorkflowStepExecutedEvent` — когда шаг успешно завершится.
+.. `WorkflowStepFailedEvent` — если шаг завершится с ошибкой (замените `WorkflowStepExecutedEvent`).
+. `WorkflowCompletedEvent` — все шаги успешно завершены.
+
+`WorkflowDeactivatedEvent` может заменить `WorkflowCompletedEvent`, если рабочий процесс отменен или ресурс больше не
+соответствует условиям рабочего процесса. `WorkflowRestartedEvent` может произойти в любой точке, если рабочий процесс перезапускается с начала
+при помощи перезапускаемого триггера.
+
+== Реализация слушателя
+
+Чтобы прослушать прослушивание событий поставщика рабочих процессов, создайте пользовательский `EventListenerProviderFactory` `ProviderEventListener`
+с `KeycloakSessionFactory` во время инициализации. Слушатель упакован в JAR и развернут в папку `providers/`,
+затем включен в консоли администратора в *Настройках реалма* -> *События* -> *Случаи слушателей событий*.
+
+Следующий пример показывает фабрику, которая регистрирует слушателя для захвата событий рабочего процесса:
+
+[source,java]
+----
+import org.keycloak.events.EventListenerProvider;
+import org.keycloak.events.EventListenerProviderFactory;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.KeycloakSessionFactory;
+import org.keycloak.models.workflow.WorkflowProviderEvent;
+import org.keycloak.models.workflow.WorkflowProviderEvent.WorkflowStepFailedEvent;
+
+public class WorkflowAuditListenerFactory implements EventListenerProviderFactory {
+
+    @Override
+    public EventListenerProvider create(KeycloakSession session) {
+        return new WorkflowAuditListener(session);
+    }
+
+    @Override
+    public void postInit(KeycloakSessionFactory factory) {
+        factory.register(event -> {
+            if (event instanceof WorkflowStepFailedEvent failedEvent) {
+                // handle step failure — e.g., send a notification or store in an audit log
+                String workflowName = failedEvent.getWorkflowName();
+                String stepId = failedEvent.getStepId();
+                String error = failedEvent.getErrorMessage();
+                // ...
+            } else if (event instanceof WorkflowProviderEvent workflowEvent) {
+                // handle other workflow events
+                String workflowName = workflowEvent.getWorkflowName();
+                String resourceId = workflowEvent.getResourceId();
+                // ...
+            }
+        });
+    }
+
+    @Override
+    public void init(org.keycloak.Config.Scope config) {
+    }
+
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public String getId() {
+        return "workflow-audit";
+    }
+}
+----
+
+Завод должен быть зарегистрирован как поставщик услуг в `META-INF/services/org.keycloak.events.EventListenerProviderFactory`
+чтобы {project_name} обнаружил его при развертывании JAR.
+
+== Варианты использования
+
+Поскольку {project_name} не сохраняет историю выполнения рабочего процесса, события провайдера являются основным механизмом для построения
+полного аудита активности рабочего процесса. Общие варианты использования включают:
+
+* **Аудитория и соответствие**: Хранить события рабочего процесса во внешней базе данных, чтобы вести полную запись о выполнении рабочего процесса, промежуточных результатах и сбоях.
+* **Внешние уведомления**: Отправлять оповещения (например, через электронную почту или систему обмена сообщениями), когда возникают конкретные события, такие как пошаговые сбои или завершение рабочего процесса.
+* **Мониторинг и метрика**: данные событий рабочего процесса в системе мониторинга для отслеживания скорости выполнения и продолжительности шагов.
