@@ -1,11 +1,11 @@
 [[managing-user-sessions]]
-== Managing user sessions
+== Управление сессиями пользователей
 
-When users log into realms, {project_name} maintains a user session for each user and remembers each client visited by the user within the session. Realm administrators can perform multiple actions on each user session:
+При входе пользователей в миры {project_name} поддерживает сеанс пользователя для каждого пользователя и запоминает каждый клиент, посещенный пользователем в ходе сессии. Администраторы Realm могут выполнять несколько действий при каждом сеансе пользователя:
 
-* View login statistics for the realm.
-* View active users and where they logged in.
-* Log a user out of their session.
-* Revoke tokens.
-* Set up token timeouts.
-* Set up session timeouts.
+* Просмотр статистики входа в реалм.
+* Просмотреть активных пользователей и где они вошли в систему.
+* Выход пользователя из сессии.
+* Отозвать токены.
+* Таймауты токенов.
+* Настройка таймаутов сессий.
