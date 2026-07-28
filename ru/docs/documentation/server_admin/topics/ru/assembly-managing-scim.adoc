@@ -1,7 +1,7 @@
 [[_managing_scim]]
-== Managing users and groups through SCIM
+== Управление пользователями и группами через SCIM
 
-include::scim/intro.adoc[leveloffset=+2]
+включить::scim/intro.adoc[leveloffset=+2]
 
 include::scim/enabling-scim.adoc[leveloffset=+2]
 
