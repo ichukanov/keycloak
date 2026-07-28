@@ -1,27 +1,27 @@
 [[_mappers]]
-=== Mapping claims and assertions
+=== Сопоставление претензий и утверждений
 
-You can import the SAML and OpenID Connect metadata, provided by the external IDP you are authenticating with, into the realm. After importing, you can extract user profile metadata and other information, so you can make it available to your applications.
+Вы можете импортировать метаданные SAML и OpenID Connect из внешнего IDP, с которым вы аутентифицируетесь. После импорта вы можете извлечь метаданные профиля пользователя и другую информацию, чтобы сделать их доступными для ваших приложений.
 
-Each user logging into your realm using an external identity provider has an entry in the local {project_name} database, based on the metadata from the SAML or OIDC assertions and claims.
+Каждый пользователь вошел в свою область с помощью внешнего поставщика идентификаторов имеет запись в локальной базе данных {project_name} , На основе метаданных из утверждений и претензий SAML или OIDC.
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. Select one of the identity providers in the list.
-. Click the *Mappers* tab.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Выберите одного из поставщиков идентификации в списке.
+. Нажмите на вкладку *Mappers*.
 +
-image:images/identity-provider-mappers.png[identity provider mappers]
-. Click *Add mapper*.
+image:images/identity-provider-mappers.png[mappers]
+. Нажмите *Добавить карт*.
 +
 image:images/identity-provider-mapper.png[identity provider mapper]
-. Select a value for *Sync Mode Override*. The mapper updates user information when users log in repeatedly according to this setting.
-.. Select *legacy* to use the behavior of the previous {project_name} version.
-.. Select *import* to import data from when the user was first created in {project_name} during the first login to {project_name} with a particular identity provider.
-.. Select *force* to update user data at each user login.
-.. Select *inherit* to use the sync mode configured in the identity provider. All other options will override this sync mode.
-. Select a mapper from the *Mapper Type* list. Hover over the *Mapper Type* for a description of the mapper and configuration to enter for the mapper.
-. Click *Save*.
+. Выберите значение для *Переопределения режима синхронизации*. Карта обновляет информацию о пользователе, когда пользователи неоднократно регистрируются в соответствии с этой настройкой.
+.. Выберите *legacy*, чтобы использовать предыдущую версию {project_name}.
+.. Выберите *Импорт* для импорта данных, из которых пользователь был впервые создан в {project_name} во время первого входа в {project_name} с определенным провайдером идентификации.
+.. Выберите *force* для обновления данных пользователя при каждом входе пользователя.
+.. Выберите *Наследование*, чтобы использовать режим синхронизации, настроенный в поставщике данных. Все остальные опции перезапишут этот режим синхронизации.
+. Выберите карту из списка *Тип карты*. Наведите курсор на *Тип карты* для описания карты и конфигурации, чтобы войти для карта.
+. Нажмите *Сохранить*.
 
-For JSON-based claims, you can use dot notation for nesting and square brackets to access array fields by index. For example, `contact.address[0].country`.
+Для утверждений на основе JSON, вы можете использовать точечную нотацию для вложения, и квадратные скобки для доступа к полей массива по индексу. Например, `contact.address[0].country`.
 
-To investigate the structure of user profile JSON data provided by social providers, you can enable the `DEBUG` level logger `org.keycloak.social.user_profile_dump` when starting the server.
+Чтобы исследовать структуру данных пользовательского профиля JSON, предоставленных социальными провайдерами, вы можете включить `DEBUG` уровня logger `org.keycloak.social.user_profile_dump` при запуске сервера.
