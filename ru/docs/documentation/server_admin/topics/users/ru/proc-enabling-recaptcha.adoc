@@ -5,80 +5,80 @@
 // server_admin/topics/users.adoc
 
 [id="proc-enabling-recaptcha_{context}"]
-= Enabling reCAPTCHA
+= Включение reCAPTCHA
 
 [role="_abstract"]
-To safeguard registration against bots, {project_name} has integration with Google reCAPTCHA (see <<procedure_recaptcha>>) and reCAPTCHA Enterprise (see <<procedure_recaptcha_enterprise>>).
-The default theme (`register.ftl`) supports both v2 (visible, checkbox-based) and v3 (score-based, invisible) reCAPTCHA (see https://docs.cloud.google.com/recaptcha/docs/choose-key-type[Choose the appropriate reCAPTCHA key type]).
+Для защиты регистрации от ботов {project_name} имеет интеграцию с Google reCAPTCHA (см. <<procedure_recaptcha>>) и reCAPTCHA Enterprise (см. <<procedure_recaptcha_enterprise>>).
+Тема по умолчанию (`register.ftl`) поддерживает как v2 (visible, checkbox-based) и v3 (score-based, invisible) reCAPTCHA (см. https://docs.cloud.google.com/recaptcha/docs/choose-key-type[Выберите соответствующий тип ключа reCAPTCHA]).
 
 [[procedure_recaptcha]]
-== Setting up Google reCAPTCHA
+== Настройка Google reCAPTCHA
 
-. Enter the following URL in a browser:
+. Введите следующий URL в браузере:
 +
 [source,bash,subs=+attributes]
 ----
 https://www.google.com/recaptcha/admin/create
 ----
-. Create a reCAPTCHA and choose between Challenge v2 (visible checkbox) or Score-based, v3 (invisible) to get your reCAPTCHA site key and secret. Note them down for future use in this procedure.
+. Создайте reCAPTCHA и выберите между Challenge v2 (видимый флажок) или Score-based, v3 (невидимый) чтобы получить ключ reCAPTCHA сайта и секрет. Заметьте их для будущего использования в этой процедуре.
 +
-NOTE: localhost domains are not supported by default. If you wish to continue supporting them for development you can add them to the list of supported domains for your site key.
-. Navigate to the {project_name} admin console.
-. Click *Authentication* in the menu.
-. Click the *Flows* tab.
-. Select *Registration* from the list.
-. Set the *reCAPTCHA* requirement to *Required*. This enables
+NOTE: домены localhost не поддерживаются по умолчанию. Если вы хотите и дальше поддерживать их на разработку, вы можете добавить их в список поддерживаемых доменов для ключа вашего сайта.
+. Перейдите в консоль администратора {project_name}.
+. Нажмите *Authentication* в меню.
+. Нажмите на вкладку *Блокировки*.
+. Выберите *Регистрация* из списка.
+. Установите *reCAPTCHA* требование *Обязательно*. This enables
 reCAPTCHA.
-. Click the *gear icon* ⚙️ on the *reCAPTCHA* row.
+. Нажмите на иконку *передача* ⚙️ на строке *reCAPTCHA*.
 +
 image:images/recaptcha-config.png[]
-.. Enter the *reCAPTCHA Site Key* generated from the Google reCAPTCHA website.
-.. Enter the *reCAPTCHA Secret* generated from the Google reCAPTCHA website.
-.. Toggle **reCAPTCHA v3** according to your Site Key type: on for score-based reCAPTCHA (v3), off for challenge reCAPTCHA (v2).
-.. (Optional) Toggle *Use recaptcha.net* to use `www.recaptcha.net` instead of `www.google.com` domain for cookies. See https://developers.google.com/recaptcha/docs/faq[reCAPTCHA faq] for more information.
-. Authorize Google to use the registration page as an iframe.
+.. Введите *reCAPTCHA Site Key*, созданный с сайта Google reCAPTCHA.
+.. Введите *reCAPTCHA секрет*, созданный на веб-сайте Google reCAPTCHA.
+.. Вкл/Выкл **reCAPTCHA v3** в соответствии с вашим типом ключа сайта: для reCAPTCHA на основе баллов (v3), выкл для вызова reCAPTCHA (v2).
+.. (Необязательно) Переключить *Используйте recaptcha.net*, чтобы использовать `www.recaptcha.net` вместо домена `www.google.com` для cookies. Дополнительную информацию см. https://developers.google.com/recaptcha/docs/faq[reCAPTCHA faq].
+. Авторизовать Google использовать страницу регистрации в качестве iframe.
 +
-NOTE: In {project_name}, websites cannot include a login page dialog in an iframe. This restriction is to prevent clickjacking attacks. You need to change the default HTTP response headers that is set in {project_name}.
-.. Click *Realm Settings* in the menu.
-.. Click the *Security Defenses* tab.
-.. Enter `https://www.google.com` in the field for the *X-Frame-Options* header (or `https//www.recaptcha.net` if you enabled *Use recaptcha.net*).
-.. Enter `https://www.google.com` in the field for the *Content-Security-Policy* header (or `https//www.recaptcha.net` if you enabled *Use recaptcha.net*).
+NOTE: В {project_name}веб-сайты не могут включать в iframe диалог страницы входа. Это ограничение состоит в том, чтобы предотвратить атаку кликов. Необходимо изменить заголовки ответов HTTP по умолчанию, установленные в {project_name}.
+.. Нажмите *Настройки реалма* в меню.
+.. Нажмите на вкладку *Security Defenses*.
+.. Введите `https://www.google.com` в поле заголовка *X-Frame-Options* (или `https//www.recaptcha.net`, если вы включите *Используйте recaptcha.net*).
+.. Введите `https://www.google.com` в поле для заголовка *Content-Security-Policy* (или `https//www.recaptcha.net`, если вы включите *Используйте recaptcha.net*).
 
 [[procedure_recaptcha_enterprise]]
-== Setting up Google reCAPTCHA Enterprise
+== Настройка предприятия Google reCAPTCHA
 
-. Enter the following URL in a browser:
+. Введите следующий URL в браузере:
 +
 [source,bash,subs=+attributes]
 ----
 https://developers.google.com/recaptcha/
 ----
-. Create a key for a "Website" platform, and choose the desired key type. Leave the defaults for v3 reCAPTCHA (invisible), or toggle *Use checkbox challenge* for a v2 reCAPTCHA (visible). Note the site key for future use in this procedure.
+. Создайте ключ для платформы «Website» и выберите нужный тип ключа. Оставьте значение по умолчанию для v3 reCAPTCHA (невидимый), или переключите *Используйте флажок вызова* для v2 reCAPTCHA (видимый). Обратите внимание на ключ сайта для будущего использования в этой процедуре.
 +
-NOTE: The localhost works by default. You do not have to specify a domain.
-. On your Google Cloud Project, go to *Credentials* and create an API key.
+NOTE: Локальный хост по умолчанию работает. Вам не нужно указывать домен.
+. В вашем Google Cloud Project, перейдите на *Учетные данные* и создайте API ключ.
 +
-NOTE: For better security, click on *edit api key* and add an API restriction to restrict the key to the *reCAPTCHA Enterprise API* only.
-. Navigate to the {project_name} Admin Console.
-. Click *Authentication* in the menu.
-. Click the *Flows* tab.
-. Duplicate the "registration" flow.
-. Bind the new flow to the *Registration flow*.
-. Edit the new flow:
-.. Delete the *reCAPTCHA* step.
-.. Add the step *reCAPTCHA Enterprise* as a sub-step of "registration form" (first step of the flow).
-. Set the *reCAPTCHA Enterprise* requirement to *Required*.
-. Click the *gear icon* ⚙️ on the *reCAPTCHA Enterprise* row.
+NOTE: Для большей безопасности нажмите на *отредактируйте ключ API* и добавьте ограничение API, чтобы ограничить ключ только *reCAPTCHA Enterprise API*.
+. Перейдите в консоль администратора {project_name}.
+. Нажмите *Authentication* в меню.
+. Нажмите на вкладку *Блокировки*.
+. Дублировать поток "регистрация".
+. Привязка нового потока к *Регистрационному потоку*.
+. Редактировать новый поток:
+.. Удалите шаг *reCAPTCHA*.
+.. Добавить шаг *reCAPTCHA Enterprise* в качестве подшага "регистрационной формы" (первый шаг потока).
+. Установите требование *reCAPTCHA Enterprise* на *Required*.
+. Нажмите на иконку *передача* ⚙️ на строке *reCAPTCHA Enterprise*.
 +
 image:images/recaptcha-enterprise-config.png[]
-.. Enter the *Recaptcha Project ID* of your Google Cloud console project.
-.. Enter the *Recaptcha Site Key* generated at the beginning of the procedure.
-.. Enter the *Recaptcha API Key* generated at the beginning of the procedure.
-.. Toggle **reCAPTCHA v3** according to your Site Key type: on for score-based reCAPTCHA (v3), off for challenge reCAPTCHA (v2).
-.. (Optional) Customize the *Min. Score Threshold* as you see fit. Set it to the minimum score, between 0.0 and 1.0, that a user should achieve on reCAPTCHA to be allowed to register. See https://docs.cloud.google.com/recaptcha/docs/interpret-assessment-website#interpret_scores[interpret scores].
-.. (Optional) Toggle *Use recaptcha.net* to use `www.recaptcha.net` instead of `www.google.com` domain for cookies. See https://developers.google.com/recaptcha/docs/faq[reCAPTCHA faq] for more information.
-. Authorize Google to use the registration page as an iframe. See the last steps of <<procedure_recaptcha>> for a detailed procedure.
+.. Введите *ID проекта Recaptcha* вашего проекта на Google Cloud.
+.. Введите *Recaptcha Site Key*, созданный в начале процедуры.
+.. Введите *Recaptcha API Key*, созданный в начале процедуры.
+.. Вкл/Выкл **reCAPTCHA v3** в соответствии с вашим типом ключа сайта: для reCAPTCHA на основе баллов (v3), выкл для вызова reCAPTCHA (v2).
+.. (Необязательно) Настройте *Min. Оценка порога* по своему усмотрению. Установите минимальный балл, между 0.0 и 1.0, чтобы пользователь мог зарегистрироваться на reCAPTCHA. См. https://docs.cloud.google.com/recaptcha/docs/interpret-assessment-website#interpret_scores[interpret scores].
+.. (Необязательно) Переключить *Используйте recaptcha.net*, чтобы использовать `www.recaptcha.net` вместо домена `www.google.com` для cookies. Дополнительную информацию см. https://developers.google.com/recaptcha/docs/faq[reCAPTCHA faq].
+. Авторизовать Google использовать страницу регистрации в качестве iframe. Смотрите последние шаги <<procedure_recaptcha>> для подробной процедуры.
 
 [role="_additional-resources"]
-.Additional resources
-* For more information on extending and creating themes, see the link:{developerguide_link}[{developerguide_name}].
+.Дополнительные ресурсы
+* Дополнительную информацию о расширении и создании тем см. в ссылке:{developerguide_link}[{developerguide_name}].
