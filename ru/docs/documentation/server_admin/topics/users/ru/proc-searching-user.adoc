@@ -5,47 +5,47 @@
 // server_admin/topics/users.adoc
 
 [id="proc-searching-user_{context}"]
-= Searching for a user
+= Поиск пользователя
 
-Search for a user to view detailed information about the user, such as the user's groups and roles.
+Поиск пользователя для просмотра подробной информации о пользователе, такой как группы и роли пользователя.
 
-.Prerequisite
-* You are in the realm where the user exists.
+.Необходимые предпосылки
+* Вы находитесь в области, где существует пользователь.
 
-== Default search
+== Поиск по умолчанию
 
-.Procedure
-. Click *Users* in the main menu. This *Users* page is displayed.
-. Type the full name, last name, first name, or email address of the user you want to search for in the search box. The search returns all users that match your criteria.
+.Процедура
+. Нажмите *Users* в главном меню. Эта страница *Пользователи* отображается.
+. Введите полное имя, фамилию, имя или адрес электронной почты пользователя, который вы хотите искать в поле поиска. Поиск возвращает всех пользователей, которые соответствуют вашим критериям.
 +
-The criteria used to match users depends on the syntax used on the search box:
-.. `"somevalue"` -> performs exact search of the string `"somevalue"`;
-.. `\*somevalue*` -> performs infix search, akin to a `LIKE '%somevalue%'` DB query;
-.. `somevalue*` or `somevalue` -> performs prefix search, akin to a `LIKE 'somevalue%'` DB query.
+Критерии, используемые для соответствия пользователям зависят от синтаксиса, используемого в поле поиска:
+.. `"somevalue"` -> выполняет точный поиск строки `"somevalue"`;
+.. `\*somevalue*` -> выполняет поиск с ошибками, как `LIKE '%somevalue%'` DB запрос;
+.. `somevalue*` или `somevalue` -> выполняет префиксный поиск, как в `LIKE 'somevalue%'` DB запрос.
 
-== Search by fields
+== Поиск по полям
 
-{project_name} supports direct user lookups for selected fields by prefixing the search term in the search box:
+{project_name} поддерживает прямой поиск пользователей для выбранных полей путем префикса поискового запроса в поле поиска:
 
-* `id:myUUID` -> performs an exact user lookup by id for `"myUUID"`;
-* `username:myuser` -> performs an exact user lookup by username for `"myuser"`;
-* `email:myuser@domain.org` -> performs an exact user lookup by email for `"myuser@domain.org"`.
+* `id:myUUID` -> выполняет точный поиск пользователя по идентификатору для `"myUUID";
+* `username:myuser` -> выполняет точный поиск пользователя по имени пользователя `"myuser"`;
+* `email:myuser@domain.org` -> выполняет точный поиск пользователя по электронной почте `"myuser@domain.org"`.
 
-Multiple values can be supplied separated by whitespace (for example `id:uuid1 uuid2`) to look up several users in a single request.
+Несколько значений могут быть разделены пробелами (например, `id:uuid1 uuid2`) для поиска нескольких пользователей в одном запросе.
 
-== Attribute search
+== Поиск атрибутов
 
-.Procedure
-. Click *Users* in the main menu. This *Users* page is displayed.
-. Click *Default search* button and switch it to *Attribute search*.
-. Click *Select attributes* button and specify the attributes to search by.
-. Check *Exact search* checkbox to perform exact match or keep it unchecked to use an infix search for attribute values.
-. Click *Search* button to perform the search. It returns all users that match the criteria.
+.Процедура
+. Нажмите *Users* в главном меню. Эта страница *Пользователи* отображается.
+. Нажмите кнопку *Поиск по умолчанию* и переключитесь на *Поиск атрибутов*.
+. Нажмите *Выберите атрибуты* и укажите атрибуты для поиска.
+. Установите флажок *Точный поиск* для точного соответствия или оставьте флажком для использования поиска фиксации значений атрибутов.
+. Нажмите кнопку *Поиск* для выполнения поиска. Он возвращает всех пользователей, удовлетворяющих критериям.
 
 [NOTE]
 ====
-Searches performed in the *Users* page encompass both {project_name}'s database and configured user federation backends, such as LDAP. Users found in federated backends will be imported into {project_name}'s database if they don't already exist there.
+Поиски, выполняемые на странице *Пользователи* охватывают базу данных {project_name}и настроенные бэкэнды федерации пользователей, такие как LDAP. Пользователи, найденные в федеративных бэкэндах будут импортированы в базу данных {project_name}, если они там не существуют.
 ====
 
-.Additional Resources
-* For more information on user federation, see <<_user-storage-federation,User Federation>>.
+.Дополнительные ресурсы
+* Дополнительную информацию об федерации пользователей см. <_user-storage-federation,User Federation>>.
