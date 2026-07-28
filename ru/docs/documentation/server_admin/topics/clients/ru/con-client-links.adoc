@@ -1,13 +1,13 @@
 [id="con-client-links_{context}"]
-= Client links
+= Ссылки клиента
 
-If a client accesses this endpoint using a `HTTP GET` request, {project_name} returns the configured base URL for the provided Client and Realm in the form of an `HTTP 307` (Temporary Redirect) in the response's `Location` header. As a result of this, a client needs only to know the Realm name and the Client ID to link to them. This indirection avoids hard-coding client base URLs.
+Если клиент получает доступ к этой конечной точке, используя запрос HTTP GET`, {project_name} возвращает настроенный базовый URL-адрес для предоставленного клиента и реалма в виде `HTTP 307` (Временное перенаправление) в заголовке `Location`. В результате клиент должен знать только имя реалма и идентификатор Клиента для связи с ним. Это ненаправление позволяет избежать жесткого кодирования адресов на основе клиента.
 
-As an example, given the realm `master` and the client-id `account`:
+В качестве примера можно привести "master" области и client-id "account":
 
 [source,subs=+attributes]
 ----
 http://host:port{kc_realms_path}/master/clients/account/redirect
 ----
 
-This URL temporarily redirects to: http://host:port{kc_realms_path}/master/account
+Этот URL временно перенаправляется на: http://host:port{kc_realms_path}/master/account
