@@ -1,120 +1,120 @@
 [[_account-service]]
-== Account Console
+== Консоль аккаунта
 
-{project_name} users can manage their accounts through the Account Console. They can configure their profiles, add two-factor authentication, include identity provider accounts, and oversee device activity.
+{project_name} пользователи могут управлять своими аккаунтами через консоль аккаунта. Они могут настраивать свои профили, добавлять двухфакторную аутентификацию, включать учетные записи провайдера и следить за активностью устройства.
 
 [role="_additional-resources"]
-.Additional resources
-* The Account Console can be configured in terms of appearance and language preferences. An example is adding additional attributes to the *Personal info* page. For more information, see the {developerguide_link}[{developerguide_name}].
+.Дополнительные ресурсы
+* Консоль учетной записи может быть настроена с точки зрения внешнего вида и языка. Примером является добавление дополнительных атрибутов на странице *Персональная информация*. Дополнительную информацию см. в {developerguide_link}[{developerguide_name}].
 
-=== Accessing the Account Console
+=== Доступ к консоли аккаунта
 
-.Procedure
-. Make note of the realm name and IP address for the {project_name} server where your account exists.
-. In a web browser, enter a URL in this format: _server-root_{kc_realms_path}/{realm-name}/account.
-. Enter your login name and password.
+.Процедура
+. Обратите внимание на имя области и IP-адрес сервера {project_name} , где существует ваша учетная запись.
+. В веб-браузере введите URL в этом формате: _server-root_{kc_realms_path}/{realm-name}/account.
+. Введите логин и пароль.
 
-image:images/account-console-intro.png[Account Console]
+image:images/account-console-intro.png[Console]
 
-You can also ask for additional scopes when calling the account console URL by setting the `scope` parameter in this format: _server-root_{kc_realms_path}/{realm-name}/account?scope=phone.
+Вы также можете спросить о дополнительных возможностях вызова URL консоли учетной записи, установив параметр `scope` в этом формате: _server-root_{kc_realms_path}/{realm-name}/account? cope=телефон.
 
-=== Configuring ways to sign in
+=== Настройка входа в систему
 
-You can sign in to this console using basic authentication (a login name and password) or two-factor authentication. For two-factor authentication, use one of the following procedures.
+Вы можете войти в эту консоль, используя базовую аутентификацию (логин и пароль) или двухфакторную аутентификацию. Для двухфакторной аутентификации используйте одну из следующих процедур.
 
-==== Two-factor authentication with OTP
+==== Двухфакторная аутентификация с OTP
 
-.Prerequisites
-* OTP is a valid authentication mechanism for your realm.
-
-//-
-
-.Procedure
-. Click *Account security* in the menu.
-. Click *Signing in*.
-. Click *Set up Authenticator application*.
-+
-image:images/account-console-signing-in.png[Signing in]
-. Follow the directions that appear on the screen to use your mobile device as your OTP generator.
-. Scan the QR code in the screen shot into the OTP generator on your mobile device.
-. Log out and log in again.
-. Respond to the prompt by entering an OTP that is provided on your mobile device.
-
-==== Two-factor authentication with WebAuthn
-
-.Prerequisites
-* WebAuthn is a valid two-factor authentication mechanism for your realm. Please follow the xref:webauthn_{context}[WebAuthn] section for more details.
+.Предпосылки
+* OTP является валидным механизмом аутентификации для вашего реалма.
 
 //-
 
-.Procedure
-. Click *Account Security* in the menu.
-. Click *Signing In*.
-. Click *Set up a Passkey*.
+.Процедура
+. Нажмите *Безопасность счета* в меню.
+. Нажмите *Авторизация в*.
+. Нажмите *Настроить приложение для аутентификации*.
 +
-image:images/account-console-signing-in-webauthn-2factor.png[Signing in with a Passkey]
-. Prepare your Passkey. How you prepare this key depends on the type of Passkey you use. For example, for a USB based Yubikey, you may need to put your key into the USB port on your laptop.
-. Click *Register* to register your Passkey.
-. Log out and log in again.
-. Assuming authentication flow was correctly set, a message appears asking you to authenticate with your Passkey as second factor.
+image:images/account-console-signing-in.png[Вход]
+. Следуйте указаниям, которые появляются на экране, чтобы использовать мобильное устройство в качестве генератора OTP.
+. Отсканируйте QR-код на экране в генератор OTP на вашем мобильном устройстве.
+. Выйти и снова войти в систему.
+. Ответьте на запрос, введя OTP, предоставленный на вашем мобильном устройстве.
 
-==== Passwordless authentication with WebAuthn
+==== Двухфакторная аутентификация с WebAuthn
 
-.Prerequisites
-* WebAuthn is a valid passwordless authentication mechanism for your realm. Please follow the <<_webauthn_passwordless,Passwordless WebAuthn section>> for more details.
+.Предпосылки
+* WebAuthn является валидным механизмом двухфакторной аутентификации для вашего реалма. Пожалуйста, следуйте за разделом xref:webauthn_{context}[WebAuthn] для получения дополнительной информации.
 
 //-
 
-.Procedure
-. Click *Account Security* in the menu.
-. Click *Signing In*.
-. Click *Set up a Passkey* in the *Passwordless* section.
+.Процедура
+. Нажмите *Безопасность аккаунта* в меню.
+. Нажмите *Подписаться в*.
+. Нажмите *Настроить пароль *.
 +
-image:images/account-console-signing-in-webauthn-passwordless.png[Signing in with a Passkey]
-. Prepare your Passkey. How you prepare this key depends on the type of Passkey you use. For example, for a USB based Yubikey, you may need to put your key into the USB port on your laptop.
-. Click *Register* to register your Passkey.
-. Log out and log in again.
-. Assuming authentication flow was correctly set, a message appears asking you to authenticate with your Passkey as second factor. You no longer need to provide your password to log in.
+image:images/account-console-signing-in-webauthn-2factor.png[Вход с Passkey]
+. Подготовить пароль. Как вы готовите этот ключ зависит от типа Passkey который вы используете. Например, для Yubikey, основанного на USB, может потребоваться поместить ключ в USB-порт на ноутбук.
+. Нажмите *Зарегистрировать*, чтобы зарегистрировать свой пароль.
+. Выйти и снова войти в систему.
+. Предположим, что процесс аутентификации был правильно установлен, появляется сообщение с просьбой аутентифицировать ваш пароль как второй фактор.
 
-=== Viewing device activity
+==== Аутентификация без пароля с WebAuthn
 
-You can view the devices that are logged in to your account.
+.Предпосылки
+* WebAuthn является правильным механизмом аутентификации без пароля для вашего реалма. Пожалуйста, следуйте <<_webauthn_passwordless,раздел без пароля WebAuthn>> для получения более подробной информации.
 
-.Procedure
-. Click *Account security* in the menu.
-. Click *Device activity*.
-. Log out a device if it looks suspicious.
+//-
+
+.Процедура
+. Нажмите *Безопасность аккаунта* в меню.
+. Нажмите *Подписаться в*.
+. Нажмите *Настроить пароль* в разделе *Пароль*.
++
+image:images/account-console-signing-in-webauthn-passwordless.png[Войти с помощью Passkey]
+. Подготовить пароль. Как вы готовите этот ключ зависит от типа Passkey который вы используете. Например, для Yubikey, основанного на USB, может потребоваться поместить ключ в USB-порт на ноутбук.
+. Нажмите *Зарегистрировать*, чтобы зарегистрировать свой пароль.
+. Выйти и снова войти в систему.
+. Предположим, что процесс аутентификации был правильно установлен, появляется сообщение с просьбой аутентифицировать ваш пароль как второй фактор. Вам больше не нужно вводить пароль для входа.
+
+=== Просмотр активности устройства
+
+Вы можете просмотреть устройства, которые вошли в свою учетную запись.
+
+.Процедура
+. Нажмите *Безопасность счета* в меню.
+. Нажмите *Активность устройства*.
+. Выйдите из устройства, если оно выглядит подозрительным.
 
 image:images/account-console-device.png[Devices]
 
-=== Adding an identity provider account
+=== Добавление учетной записи поставщика идентификации
 
-You can link your account with an <<_identity_broker, identity broker>>. This option is often used to link social provider accounts.
+Вы можете связать ваш аккаунт с <_identity_broker, идентификационным брокером>>. Эта опция часто используется для привязки аккаунтов социальных провайдеров.
 
-.Procedure
-. Log into the Admin Console.
-. Click *Identity providers* in the menu.
-. Select a provider and complete the fields.
-. Return to the Account Console.
-. Click *Account security* in the menu.
-. Click *Linked accounts*.
+.Процедура
+. Войти в консоль администратора.
+. Нажмите на *Identity providers* в меню.
+. Выберите поставщика и заполните поля.
+. Вернуться в консоль аккаунта.
+. Нажмите *Безопасность счета* в меню.
+. Нажмите *Привязанные аккаунты*.
 
-The identity provider you added appears in this page.
+На этой странице появится идентификатор поставщика.
 
-image:images/account-console-linked.png[Linked Accounts]
+image:images/account-console-linked.png[Связанные аккаунты]
 
-=== Accessing other applications
+=== Доступ к другим приложениям
 
-The *Applications* menu item shows users which applications you can access. In this case, only the Account Console is available.
+Пункт меню *Приложения* показывает пользователям, к которым вы можете получить доступ. В этом случае доступна только Консоль Аккаунтов.
 
 image:images/account-console-applications.png[Applications]
 
-=== Viewing group memberships
+=== Просмотр членства в группах
 
-You can view the groups you are associated with by clicking the *Groups* menu.
-If you select *Direct membership* checkbox, you will see only the groups you are direct associated with.
+Вы можете просмотреть группы, с которыми вы связаны, нажав на меню *Группы*.
+Если вы выберете флажок *Прямое членство*, вы увидите только те группы, с которыми вы связаны.
 
-.Prerequisites
-* You need to have the *view-groups* account role for being able to view *Groups* menu.
+.Предпосылки
+* Вам нужно иметь роль учетной записи *view-groups*, чтобы иметь возможность просматривать меню *Groups*.
 
-image:images/account-console-groups.png[View group memberships]
+image:images/account-console-groups.png[Просмотр членства в группах]
