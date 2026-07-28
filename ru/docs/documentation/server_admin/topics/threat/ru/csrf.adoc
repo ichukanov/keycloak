@@ -1,9 +1,9 @@
-=== CSRF attacks
+=== Атаки CSRF
 
-A Cross-site request forgery (CSRF) attack uses HTTP requests from users that websites have already authenticated. Any site using cookie-based authentication is vulnerable to CSRF attacks. You can mitigate these attacks by matching a state cookie against a posted form or query parameter.
+Подделка межсайтовых запросов (CSRF) использует HTTP-запросы пользователей, которые уже аутентифицированы. Любой сайт, использующий аутентификацию на основе cookie, уязвим для атак CSRF. Вы можете смягчить эти атаки, сопоставляя файлы cookie состояния с размещенной формой или параметром запроса.
 
-The OAuth 2.0 login specification requires that a state cookie matches against a transmitted state parameter. {project_name} fully implements this part of the specification, so all logins are protected.
+Спецификация входа в OAuth 2.0 требует, чтобы cookie состояния совпадали с параметром передаваемого состояния. {project_name} полностью реализует эту часть спецификации, так что все логины защищены.
 
-The {project_name} Admin Console is a JavaScript/HTML5 application that makes REST calls to the backend {project_name} admin REST API. These calls all require bearer token authentication and consist of JavaScript Ajax calls, so CSRF is impossible. You can configure the admin REST API to validate the CORS origins.
+Консоль администратора {project_name} - это JavaScript/HTML5 приложение, которое делает REST звонки к бэкэнду {project_name} администратора REST API. Все эти вызовы требуют аутентификации токена предъявителя и состоят из вызовов JavaScript Ajax, поэтому CSRF невозможен. Вы можете настроить API администратора REST для проверки CORS оригиналов.
 
-The Account Console in {project_name} can be vulnerable to CSRF. To prevent CSRF attacks, {project_name} sets a state cookie and embeds the value of this cookie in hidden form fields or query parameters within action links. {project_name} checks the query/form parameter against the state cookie to verify that the same user made the call.
+Консоль аккаунта в {project_name} может быть уязвима для CSRF. Для предотвращения атак CSRF, {project_name} устанавливает cookie состояния и встраивает значение этого cookie в поля скрытой формы или параметры запроса в ссылках действия. {project_name} проверяет параметр запроса/формы на соответствие cookie состояния, чтобы убедиться, что тот же пользователь совершил вызов.
