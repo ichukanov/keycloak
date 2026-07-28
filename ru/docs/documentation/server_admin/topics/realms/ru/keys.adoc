@@ -1,73 +1,73 @@
 [[realm_keys]]
-=== Configuring realm keys
+=== Настройка ключей реалма
 
-The authentication protocols that are used by {project_name} require cryptographic signatures and sometimes
-encryption.  {project_name} uses asymmetric key pairs, a private and public key, to accomplish this.
+Протоколы аутентификации, используемые {project_name} , требуют шифрования криптографических подписей, а иногда и
+.  Для этого {project_name} использует асимметричные пары ключей, приватный и открытый ключ.
 
-{project_name} has a single active key pair at a time, but can have several passive keys as well. The active key pair
+У {project_name} одновременно есть одна активная пара ключей, но также может иметь несколько пассивных ключей. The active key pair
 is used to create new signatures, while the passive key pair can be used to verify previous signatures. This makes it
 possible to regularly rotate the keys without any downtime or interruption to users.
 
-When a realm is created, a key pair and a self-signed certificate is automatically generated.
+При создании реалма автоматически создается ключевая пара и самоподписанный сертификат.
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click *Keys*.
-. Select *Passive keys* from the filter dropdown to view passive keys.
-. Select *Disabled keys* from the filter dropdown to view disabled keys.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите *Ключи*.
+. Выберите *Пассивные ключи* из выпадающего списка для просмотра пассивных ключей.
+. Выберите *Отключенные клавиши* из выпадающего списка фильтра для просмотра отключенных клавиш.
 
-A key pair can have the status `Active`, but still not be selected as the currently active key pair for the realm.
+Пара ключей может иметь статус `Active`, но до сих пор не выбрана как пара активных ключей для этой сферы.
 The selected active pair which is used for signatures is selected based on the first key provider sorted by priority
 that is able to provide an active key pair.
 
-==== Rotating keys
+==== Поворот клавиш
 
-We recommend that you regularly rotate keys. Start by creating new keys with a higher priority than the existing active keys. You can instead create new keys with the same priority and making the previous keys passive.
+Мы рекомендуем регулярно вращать ключи. Начните с создания новых ключей с более высоким приоритетом, чем существующие активные ключи. Вместо этого вы можете создать новые ключи с одинаковым приоритетом и сделать предыдущие ключи пассивными.
 
-Once new keys are available, all new tokens and cookies will be signed with the new keys. When a user authenticates to an
-application, the SSO cookie is updated with the new signature. When OpenID Connect tokens are refreshed new tokens are
-signed with the new keys. Eventually, all cookies and tokens use the new keys and after a while the old keys can be removed.
+Как только новые ключи будут доступны, все новые токены и куки будут подписаны с новыми ключами. Когда пользователь аутентифицируется с помощью
+приложения, cookie SSO обновляется с помощью новой подписи. When OpenID Connect tokens are refreshed new tokens are
+signed with the new keys. В конце концов, все Cookies и токены используют новые ключи и после того как старые ключи могут быть удалены.
 
-The frequency of deleting old keys is a tradeoff between security and making sure all cookies and tokens are updated. Consider creating new keys every three to six months and deleting old keys one to two months after you create the new keys. If a user was inactive in the period between the new keys being added and the old keys being removed, that user will have to re-authenticate.
+Частота удаления старых ключей представляет собой компромисс между безопасностью и убедитесь, что все cookies и токены обновляются. Подумайте о создании новых ключей каждые три-шесть месяцев и удалите старые ключи от одного до двух месяцев после создания новых ключей. Если пользователь не был активен в период между добавляемыми новыми ключами и удаляемыми старыми ключами, этому пользователю придется пройти повторную аутентификацию.
 
-Rotating keys also applies to offline tokens. To make sure they are updated, the applications need to refresh the tokens before the old keys are removed.
+Поворот клавиш также применяется к автономным токенам. Чтобы убедиться, что они обновляются, приложениям необходимо обновить токены перед удалением старых ключей.
 
-==== Adding a generated key pair
+==== Добавление сгенерированной пары ключей
 
-Use this procedure to generate a key pair including a self-signed certificate.
+Используйте эту процедуру для создания пары ключей, включая самоподписанный сертификат.
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm settings* in the menu.
-. Click the *Keys* tab.
-. Click the *Providers* tab.
-. Click *Add provider* and select *rsa-generated*.
-. Enter a number in the *Priority* field. This number determines if the new key pair becomes the active key pair. The highest number makes the key pair active.
-. Select a value for *AES Key size*.
-. Click *Save*.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Ключи*.
+. Нажмите на вкладку *Поставщики*.
+. Нажмите *Добавить провайдера* и выберите *rsa-generated*.
+. Введите число в поле *Приоритет*. Это число определяет, станет ли новая пара ключей активной парой ключей. Наибольшее число делает пару ключей активным.
+. Выберите значение для *AES Key size*.
+. Нажмите *Сохранить*.
 
 Changing the priority for a provider will not cause the keys to be re-generated, but if you want to change the keysize
 you can edit the provider and new keys will be generated.
 
-==== Rotating keys by extracting a certificate
+==== Поворот ключей извлечением сертификата
 
-You can rotate keys by extracting a certificate from an RSA generated key pair and using that certificate in a new keystore.
+Вы можете поворачивать ключи извлекая сертификат из созданной RSA пары ключей и используя этот сертификат в новом хранилище.
 
-.Prerequisites
-* A generated key pair
+.Предпосылки
+* Сгенерированная пара ключей
 
 //-
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm Settings*.
-. Click the *Keys* tab.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма*.
+. Нажмите на вкладку *Ключи*.
 +
-A list of *Active* keys appears.
-. On a row with an RSA key, click *Certificate* under *Public Keys*.
+Появится список *Активных* ключей.
+. В строке с ключом RSA щелкните *Сертификат* под *Публичными ключами*.
 +
-The certificate appears in text form.
-. Save the certificate to a file and enclose it in these lines.
+Сертификат появляется в текстовой форме.
+. Сохраните сертификат в файл и вложите его в эти строки.
 +
 [source,bash,subs=+attributes]
 ----
@@ -75,126 +75,126 @@ The certificate appears in text form.
 <Output>
 ----End Certificate----
 ----
-. Use the *keytool* command to convert the key file to PEM Format.
-. Remove the current RSA public key certificate from the keystore.
+. Используйте команду *keytool* для преобразования ключевого файла в формат PEM.
+. Удалить текущий сертификат публичного ключа RSA из хранилища ключей.
 +
 [source,bash,subs=+attributes]
 ----
 keytool -delete -keystore <keystore>.jks -storepass <password> -alias <key>
 ----
-. Import the new certificate into the keystore
+. Импорт нового сертификата в ключевое хранилище
 +
 [source,bash,subs=+attributes]
 ----
 keytool -importcert -file domain.crt -keystore <keystore>.jks -storepass <password>  -alias <key>
 ----
-. Rebuild the application.
+. Пересобрать приложение.
 +
 [source,bash,subs=+attributes]
 ----
 mvn clean install wildfly:deploy
 ----
 
-==== Adding an existing key pair and certificate
+==== Добавление существующей пары ключей и сертификата
 
-To add a key pair and certificate obtained elsewhere select `Providers` and choose `rsa` from the dropdown. You can change
-the priority to make sure the new key pair becomes the active key pair.
+Чтобы добавить полученную в другом месте пару ключей и сертификат, выберите `Providers` и выберите `rsa` из выпадающего списка. Вы можете изменить
+приоритетом, чтобы убедиться, что новая пара ключей станет активной парой ключей.
 
-.Prerequisites
-* A private key file. The file must be PEM formatted.
+.Предпосылки
+* Файл закрытого ключа. Файл должен быть в формате PEM.
 
 //-
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm settings*.
-. Click the *Keys* tab.
-. Click the *Providers* tab.
-. Click *Add provider* and select *rsa*.
-. Enter a number in the *Priority* field. This number determines if the new key pair becomes the active key pair.
-. Click *Browse...* beside *Private RSA Key* to upload the private key file.
-. If you have a signed certificate for your private key,  click *Browse...* beside *X509 Certificate* to upload the certificate file. {project_name} automatically generates a self-signed certificate if you do not upload a certificate.
-. Click *Save*.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма*.
+. Нажмите на вкладку *Ключи*.
+. Нажмите на вкладку *Поставщики*.
+. Нажмите *Добавить провайдера* и выберите *rsa*.
+. Введите число в поле *Приоритет*. Это число определяет, станет ли новая пара ключей активной парой ключей.
+. Нажмите *Обзор...* рядом с *Private RSA Key*, чтобы загрузить файл закрытого ключа.
+. Если у вас есть подписанный сертификат на ваш закрытый ключ, нажмите *Обзор...* рядом с *X509 Сертификат*, чтобы загрузить файл сертификата. {project_name} автоматически генерирует самоподписанный сертификат, если вы не загружаете сертификат.
+. Нажмите *Сохранить*.
 
-==== Loading keys from a Java Keystore
+==== Загрузка ключей из Java Keystore
 
-To add a key pair and certificate stored in a Java Keystore file on the host select `Providers` and choose `java-keystore`
-from the dropdown. You can change the priority to make sure the new key pair becomes the active key pair.
+Чтобы добавить пару ключей и сертификат, хранящийся в файле Java Keystore на хосте, выберите `Providers` и выберите `java-keystore`
+из выпадающего списка. Вы можете изменить приоритет, чтобы убедиться, что новая пара ключей станет активной парой ключей.
 
-For the associated certificate chain to be loaded it must be imported to the Java Keystore file with the same `Key Alias` used to load the key pair.
+Для загрузки соответствующей цепочки сертификатов необходимо импортировать ее в файл Java Keystore с тем же псевдонимом `Key Alias`, который используется для загрузки ключевой пары.
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm settings* in the menu.
-. Click the *Keys* tab.
-. Click the *Providers* tab.
-. Click *Add provider* and select *java-keystore*.
-. Enter a number in the *Priority* field. This number determines if the new key pair becomes the active key pair.
-. Enter the desired *Algorithm*. Note that the algorithm should match the key type (for example `RS256` requires a RSA private key, `ES256` a EC private key or `AES` an AES secret key).
-. Enter a value for *Keystore*. Path to the keystore file. The keystore should be located inside a folder named like the realm name inside the main keystores directory (by default `data` directory under {project_name}'s installation folder). For a realm called `test` the keystore file should located inside `${kc.home.dir}/data/test`. This way the keystore file is isolated between realms. If the path is relative, the file will be located from that folder.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Ключи*.
+. Нажмите на вкладку *Поставщики*.
+. Нажмите *Добавить провайдера* и выберите *java-keystore*.
+. Введите число в поле *Приоритет*. Это число определяет, станет ли новая пара ключей активной парой ключей.
+. Введите желаемый *Алгоритм*. Обратите внимание, что алгоритм должен соответствовать типу ключа (например, `RS256` требует закрытого ключа RSA, `ES256` закрытый ключ ЕС или `AES` секретный ключ AES).
+. Введите значение для *Keystore*. Путь к ключевому файлу. Ключевое хранилище должно быть расположено в папке с именем Realm в основном каталоге ключей (по умолчанию `data` в каталоге {project_name}с установочной папкой). Для области `test` ключевой файл должен находиться внутри `${kc.home.dir}/data/test`. Таким образом, файл ключевого хранилища изолирован между мирами. Если путь относительный, то файл будет расположен из этой папки.
 +
 [NOTE]
 ====
-The keystores directory can be customized using the startup option `$$spi-keys--java-keystore--keystores-path$$`. For example:
+Каталог ключей может быть настроен с помощью опции `$$spi-keys--java-keystore--keystores-path$$`. Например:
 
 ```
 kc.[sh|bat] start --spi-keys--java-keystore--keystores-path /path/to/keystores
 ```
 ====
-. Enter the *Keystore Password*. The option can refer a value from an external <<_vault-administration,vault>>.
-. Enter a value for *Keystore Type* (`JKS`, `PKCS12` or `BCFKS`).
-. Enter a value for the *Key Alias* to load from the keystore.
-. Enter the *Key Password*. The option can refer a value from an external <<_vault-administration,vault>>.
-. Enter a value for *Key Use* (`sig` for signing or `enc` for encryption). Note that the use should match the algorithm type (for example `RS256` is `sig` but `RSA-OAEP` is `enc`)
-. Click *Save*.
+. Введите *Keystore Password*. Параметр может ссылаться на значение из внешнего <_vault-administration,vault>>.
+. Введите значение *Keystore Type* (`JKS`, `PKCS12` или `BCFKS`).
+. Введите значение *псевдонима ключа* для загрузки из хранилища ключей.
+. Введите *Ключевой пароль*. Параметр может ссылаться на значение из внешнего <_vault-administration,vault>>.
+. Введите значение *Использование ключа* (`sig` для подписания или `enc` для шифрования). Обратите внимание, что использование должно соответствовать типу алгоритма (например, `RS256` это `sig`, но `RSA-OAEP` это `enc`)
+. Нажмите *Сохранить*.
 
 [WARNING]
 ====
-Not all the keystore types support all types of keys. For example, `JKS` in all modes and `PKCS12` in fips mode (`BCFIPS` provider) cannot store secret key entries.
+Не все типы ключей поддерживают все типы ключей. Например, `JKS` во всех режимах и `PKCS12` в режиме fips (`BCFIPS` провайдер) не может хранить записи с секретным ключом.
 ====
 
-==== Making keys passive
+==== Делать пассивные ключи
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm settings* in the menu.
-. Click the *Keys* tab.
-. Click the *Providers* tab.
-. Click the provider of the key you want to make passive.
-. Toggle *Active* to *Off*.
-. Click *Save*.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Ключи*.
+. Нажмите на вкладку *Поставщики*.
+. Нажмите на поставщика ключа который вы хотите сделать пассивным.
+. Включите *Активность* в *Выкл*.
+. Нажмите *Сохранить*.
 
-==== Disabling keys
+==== Отключение клавиш
 
-.Procedure
-. Select the realm in the Admin Console.
-. Click *Realm settings* in the menu.
-. Click the *Keys* tab.
-. Click the *Providers* tab.
-. Click the provider of the key you want to make passive.
-. Toggle *Enabled* to *Off*.
-. Click *Save*.
+.Процедура
+. Выберите область в консоли администратора.
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Ключи*.
+. Нажмите на вкладку *Поставщики*.
+. Нажмите на поставщика ключа который вы хотите сделать пассивным.
+. *Включено* в *Выкл*.
+. Нажмите *Сохранить*.
 
-==== Compromised keys
+==== Собираемые ключи
 
-{project_name} has the signing keys stored just locally and they are never shared with the client applications, users or other
-entities. However, if you think that your realm signing key was compromised, you should first generate new key pair as described above and
-then immediately remove the compromised key pair.
+У {project_name} есть ключи подписи, хранящиеся только локально, и они никогда не передаются клиентским приложениям, пользователям или другим объектам
+. Однако, если вы думаете, что ваш ключ подписания области был скомпрометирован, сначала нужно создать новую пару ключей, как описано выше, и
+а затем немедленно удалить скомпрометированную пару ключей.
 
-Alternatively, you can delete the provider from the `Providers` table.
+В качестве альтернативы, вы можете удалить провайдера из таблицы «Поставщики».
 
-.Procedure
-. Click *Clients* in the menu.
-. Click *security-admin-console*.
-. Scroll down to the *Access settings* section.
-. Fill in the *Admin URL* field.
-. Click the *Advanced* tab.
-. Click *Set to now* in the *Revocation* section.
-. Click *Push*.
+.Процедура
+. Нажмите *Клиент* в меню.
+. Щелкните *security-admin-console*.
+. Прокрутите вниз до раздела *Настройки доступа*.
+. Заполните поле *Админ URL*.
+. Нажмите на вкладку *Расширенные*.
+. Нажмите *Установить* сейчас в разделе *Аннулирование*.
+. Нажмите *Отправить*.
 
-Pushing the not-before policy ensures that client applications do not accept the existing tokens signed by the compromised key. The client application is forced to download new key pairs from {project_name} also so the tokens signed by the compromised key will be invalid.
+Отправка политики не до того, что клиентские приложения не принимают существующие токены, подписанные скомпрометированным ключом. Клиентское приложение вынуждено загружать новые пары ключей из {project_name} , так что токены, подписанные скомпрометированным ключом, будут недействительными.
 
 [NOTE]
 ====
-REST and confidential clients must set *Admin URL* so {project_name} can send clients the pushed not-before policy request.
+REST и конфиденциальные клиенты должны задать *Админ URL*, чтобы {project_name} мог отправлять клиентам pushed не перед запросом политики.
 ====
