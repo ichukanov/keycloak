@@ -1,18 +1,18 @@
 ==== GitHub
 
-To log in with GitHub, perform the following procedure.
+Чтобы войти в GitHub, выполните следующую процедуру.
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the *Add provider* list, select *Github*.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка *Добавить провайдера* выберите *Github*.
 +
 image:images/github-add-identity-provider.png[Add Identity Provider]
-. Copy the value of *Redirect URI* to your clipboard.
-. In a separate browser tab, https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app[create an OAuth app] or https://docs.github.com/en/apps/creating-github-apps/about-creating-github-apps/about-creating-github-apps[create an GitHub app]. Note that only GitHub apps can refresh tokens, while OAuth apps cannot refresh tokens.
-.. Enter the value of *Redirect URI* into the *Authorization callback URL* field when creating the app.
-.. Note the *Client ID* and *Client secret* on the management page of your OAUTH app.
-. In {project_name}, paste the value of the `Client ID` into the *Client ID* field.
-. In {project_name}, paste the value of the `Client secret` into the *Client Secret* field.
-. Enable *JSON Format* to retrieve the external IDP Tokens in JSON format.
-Note that this is also required for tokens to be refreshed.
-. Click *Add*.
+. Скопируйте значение *Redirect URI* в буфер обмена.
+. В отдельной вкладке браузера https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app[создать OAuth app] или https://docs.github.com/en/apps/creating-github-apps/about-creating-github-apps/about-creating-github-apps[создать GitHub app]. Обратите внимание, что только GitHub приложения могут обновлять токены, в то время как OAuth приложения не могут обновлять токены.
+.. Введите значение *Redirect URI* в поле *URL обратного вызова авторизации* при создании приложения.
+.. Обратите внимание на *ID клиента* и *Секрет клиента* на странице управления вашего OAUTH приложения.
+. В {project_name}вставьте значение `Client ID` в поле *Client ID*.
+. В {project_name}вставьте значение `Client secret` в поле *Client Secret*.
+. Включите *JSON Format* для извлечения внешних IDP токенов в формате JSON.
+Обратите внимание, что это также необходимо для обновления токенов.
+. Нажмите *Добавить*.
