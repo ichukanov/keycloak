@@ -1,6 +1,6 @@
 [id="unspecific-redirect-uris_{context}"]
-=== Unspecific redirect URIs
+=== Неопределённая редирекция URI
 
-Make your registered redirect URIs as specific as feasible. Registering vague redirect URIs for xref:con-oidc-auth-flows_{context}[Authorization Code Flows] can allow malicious clients to impersonate another client with broader access. Impersonation can happen if two clients live under the same domain, for example.
+Сделайте зарегистрированные редиректы Унифицированных Идентификаторов Ресурсов, как это осуществимо. Регистрация расплывчатых URI перенаправления для xref:con-oidc-auth-flows_{context}[Код авторизации] может позволить злоумышленникам олицетворить другого клиента с более широким доступом. Имперсование может произойти, если два клиента живут под одним доменом, например.
 
-You can use secure redirect uris enforcer executor for your realm. The result makes sure that client administrators are able to register only clients with specific redirect-uris matching various requirements such as requiring that a URL cannot have wildcards in the context path or can be limited to specified permitted domains. See <<_client_policies, Client Policies>> for details about how to configure client policies with a specific executor.
+Вы можете использовать безопасное перенаправление uris для вашего реалма. Результат удостоверяется в том, что администраторы могут регистрировать только клиентов с определенным redirect-uris соответствующим различным требованиям, таким как требование о том, что URL-адрес не может иметь шаблоны в контекстном пути или может быть ограничен указанными разрешенными доменами. Смотрите <<_client_policies, Client Policies>> для получения подробной информации о том, как настраивать политику клиента с конкретным исполнителем.
