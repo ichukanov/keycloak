@@ -1,27 +1,27 @@
 [[_managing_groups_]]
-= Managing groups
+= Управление группами
 
-Organization groups let you organize members into logical teams, departments, or any hierarchical structure that makes sense for your organization. Think of them as folders for your users—simple, flexible, and powerful.
+Организационные группы позволяют организовать членов в логические команды, департаменты или любую иерархическую структуру, которая имеет смысл для вашей организации. Подумайте о них как папках для ваших пользователей — простой, гибкий и мощный.
 
-Unlike realm groups that are shared across your entire realm, organization groups belong exclusively to one organization. This means `orgA` and `orgB` can each have a `/Engineering/Backend` group without any conflict—each is a completely separate group with its own unique identifier.
+В отличие от групп миров, которые являются общими для всего вашего мира, организации принадлежат исключительно одной организации. Это означает, что `orgA` и `orgB` могут иметь группу `/Engineering/Backend` без конфликтов - каждая группа является полностью отдельной группой со своим уникальным идентификатором.
 
-== Creating groups
+== Создание групп
 
-Navigate to your organization and click the *Groups* tab.
+Перейдите в свою организацию и нажмите на вкладку *Группы*.
 
-image:images/organizations-manage-groups.png[alt="Managing organization groups"]
+image:images/organizations-manage-groups.png[alt="Управление организационными группами"]
 
-.Procedure
-. Click *Create group*.
-. Provide a *Name* for the group.
-. Click *Create*.
-. Optionally, before creating the group, navigate to *Parent group* to create nested structures.
+.Процедура
+. Нажмите *Создать группу*.
+. Предоставьте *Название* для группы.
+. Нажмите *Создать*.
+. При необходимости перед созданием группы перейдите к *Родительской группе* для создания вложенных структур.
 
-Your group is ready. You can now add members, nest more groups under it, or set attributes.
+Ваша группа готова. Теперь вы можете добавлять участников, больше групп под ним или устанавливать атрибуты.
 
-=== Building hierarchies
+=== Строительство иерархий
 
-Groups can be nested to create organizational structures that mirror your real-world teams:
+Группы могут быть вложены для создания организационных структур, отражающих ваши команды реального мира:
 
 [source]
 ----
@@ -35,96 +35,96 @@ Groups can be nested to create organizational structures that mirror your real-w
   /Sales/NA
 ----
 
-Create a child group by selecting its parent before creation, or move groups, by clicking *Move to* in the UI to reorganize them.
+Создайте дочернюю группу, выбрав её родительскую группу перед ее созданием, или переместите группы, нажав *Переместить* в пользовательском интерфейсе, чтобы реорганизовать их.
 
-== Adding members to groups
+== Добавление участников в группы
 
-Members join groups the same way they join realm groups.
+Члены группы присоединяются к группам так же, как они присоединяются к группам реалмов.
 
-.Procedure
-. Select the group.
-. Click the *Members* tab.
-. Click *Add member*.
-. Select one or more organization members.
-. Click *Add*.
+.Процедура
+. Выберите группу.
+. Нажмите на вкладку *Участники*.
+. Нажмите *Добавить участника*.
+. Выберите одного или нескольких участников организации.
+. Нажмите *Добавить*.
 
-NOTE: To automatically assign members to these groups when they authenticate via an Identity Provider, see <<_managing_identity_provider_,Mapping federated users to organization groups>>.
+NOTE: Чтобы автоматически назначить членов этим группам, когда они аутентифицируются через поставщика идентификации, смотрите <<_managing_identity_provider_,Mapping федеративных пользователей для групп организаций>>.
 
-TIP: To view which organization groups a specific member belongs to, use the kebab menu (⋮) next to the member and select *Show group memberships*. For details, see <<viewing-organization-group-memberships,Viewing organization group memberships>>.
+TIP: Чтобы просмотреть группы, принадлежащие определённому участнику, используйте меню кебаб (<unk> ) рядом с членом и выберите *Показать членство в группах*. Подробнее см. <<viewing-organization-group-memberships,Viewing organization group memberships>>.
 
-== Understanding group paths
+== Понимание групповых путей
 
-Every group has a path that describes its location in the hierarchy. Paths are *relative to the organization*, not the realm.
+У каждой группы есть путь, который описывает ее расположение в иерархии. Пути *по отношению к организации*, а не к сфере.
 
-For example:
+Например:
 
-- Organization A has `/Engineering/Backend`
-- Organization B has `/Engineering/Backend`
-- The realm also has `/Engineering/Backend`
+- Организация A имеет `/Engineering/Backend`
+- Организация B имеет `/Engineering/Backend`
+- В мире также есть `/Engineering/Backend`
 
-These are three completely separate groups. When you reference `/Engineering/Backend` in the context of Organization A, you're talking about Organization A's group—period.
+Это три совершенно отдельные группы. Когда вы ссылаетесь на `/Engineering/Backend` в контексте организации A, вы говорите о группе организации A – период.
 
-This isolation is intentional. Your organizations remain independent, and you can structure each one however you need without worrying about naming conflicts.
+Эта изоляция является преднамеренной. Ваши организации остаются независимыми, и вы можете структурировать каждый из них, не беспокоясь о конфликтах имен.
 
-== Mapping groups to tokens
+== Сопоставление групп в токены
 
-Organization group membership can appear in tokens for both OIDC and SAML protocols. The setup differs between protocols.
+Членство в группах организаций может отображаться в токенах как для протоколов OIDC, так и для SAML. Настройка отличается между протоколами.
 
-=== OIDC: Organization groups in tokens
+=== OIDC: Группы организаций в токенах
 
-Organization groups are added to the `organization` claim alongside other organization data. To include groups in OIDC tokens, you must configure the mapper AND request the appropriate scope.
+Группы организации добавляются в претензию «организация» наряду с другими данными организации. Чтобы включить группы в токены OIDC, вы должны настроить соответствующую область поиска карты AND запроса.
 
-IMPORTANT: The *Organization Group Membership* mapper alone is NOT sufficient. It only works when combined with the *Organization Membership* mapper in the same scope.
+IMPORTANT: Только картограф *Членство в Группа* не является достаточным. Это работает только тогда, когда в сочетании с картографом *Организация* в одном и том же охвате.
 
-==== Option 1: Add mapper to built-in organization scope (Recommended)
+==== Вариант 1: Добавить мэппер во встроенную организационную область (рекомендуется)
 
-The built-in `organization` scope already has the Organization Membership mapper. Simply add the group mapper to it.
+Встроенная область «организации» уже имеет карту членства Организации. Просто добавьте к нему карту групп.
 
-.Procedure
-. Click *Client scopes* in the menu.
-. Select the *organization* scope.
-. Click the *Mappers* tab.
-. Click *Add mapper* → *By configuration*.
-. Select *Organization Group Membership*.
-. Configure the mapper:
-Add to ID token:: Include groups in ID tokens.
-Add to access token:: Include groups in access tokens.
-Add to lightweight access token:: Include groups in lightweight access tokens.
-Add to userinfo:: Include groups in the UserInfo endpoint response.
-Add to introspection:: Include groups in the Introspection endpoint response.
-Add group role mappings:: When enabled, realm and client roles assigned to the user's organization groups are included in the token for each organization. See <<oidc-token-with-roles,Token structure with roles>> for the output format.
-. Click *Save*.
+.Процедура
+. Щелкните *Область клиента* в меню.
+. Выберите область *организации.
+. Нажмите на вкладку *Mappers*.
+. Нажмите *Add mapper* → *By configuration*.
+. Выберите *Членство в Группе Организации*.
+. Настройка карты:
+Добавить в ID токена:: Включать группы в токены ID.
+Добавить в маркер доступа:: Включить группы в токены доступа.
+Добавить в легкий токен доступа:: Включать группы в легкие токены доступа.
+Добавить в пользовательскую информацию:: Включить группы в ответ UserInfo конечной точки.
+Добавить в интроспективность:: Включить группы в ответ конечной точки зрения.
+Добавить сопоставления ролей группы:: Когда включено, область и роли клиента, назначенные группам организации пользователя включаются в токен для каждой организации. Смотрите <<oidc-token-with-roles,Token structure with roles>> для формата вывода.
+. Нажмите *Сохранить*.
 
-The `organization` scope is added as an optional scope to all clients by default. Applications request it using `scope=organization` (or `scope=organization:alias` for a specific organization, or multiple specific organizations like `scope=organization:org-a organization:org-b`).
+Область `organization` добавляется как опциональная область для всех клиентов по умолчанию. Приложения предлагают использовать `scope=organization` (или `scope=organization:alias` для конкретной организации, или для нескольких конкретных организаций, таких как `scope=organization:org-a organization:org-b`).
 
-==== Option 2: Create custom scope with both mappers
+==== Вариант 2: Создание пользовательской области с обоих карточек
 
-If you need a dedicated scope for organization data, create one with BOTH required mappers.
+Если вам нужна специальная область для данных организации, создайте одну с BOTH нужные карты карт.
 
-.Procedure
-. Click *Client scopes* in the menu.
-. Click *Create client scope*.
-. Provide a *Name* (for example, `my-org-scope`).
-. Set *Protocol* to *OpenID Connect*.
-. Click *Save*.
-. Click the *Mappers* tab.
-. Add BOTH mappers:
-.. Click *Configure a new mapper* → *Organization Membership*
-.. Configure and save
-.. Click *Add mapper* → *By configuration* → *Organization Group Membership*
-.. Configure and save
-. Go to your client.
-. Click *Client scopes* tab.
-. Click *Add client scope*.
-. Select your custom scope.
-. Click *Add*.
-. Choose *Default* or *Optional*.
+.Процедура
+. Щелкните *Область клиента* в меню.
+. Нажмите *Создать клиентскую границу*.
+. Предоставьте *Название* (например, `my-org-scope`).
+. Установите *Protocol* на *OpenID Connect*.
+. Нажмите *Сохранить*.
+. Нажмите на вкладку *Mappers*.
+. Добавить BOTH мэпперы:
+.. Нажмите *Настройка нового мэппер* → *Организация Членства*
+.. Настроить и сохранить
+.. Нажмите *Добавить Mapper* → *По конфигурации* → *Членство в Группе Организации*
+.. Настроить и сохранить
+. Перейти к клиенту.
+. Нажмите на вкладку *Области клиентов*.
+. Нажмите *Добавить клиентскую границу*.
+. Выберите свой пользовательский охват.
+. Нажмите *Добавить*.
+. Выберите *По умолчанию* или *Необязательно*.
 
-Applications request it using `scope=my-org-scope`.
+Приложения запрашивают его с помощью `scope=my-org-scope`.
 
-==== Token structure
+==== Структура токена
 
-When a user from Organization A's `/Engineering/Backend` group authenticates and requests the organization scope, the token includes:
+Когда пользователь из группы `/Engineering/Backend` организации аутентифицирует и запрашивает область организации, токен включает:
 
 [source,json]
 ----
@@ -138,17 +138,17 @@ When a user from Organization A's `/Engineering/Backend` group authenticates and
 }
 ----
 
-Notice:
+Уведомление:
 
-- Groups appear within the organization claim, not as a separate top-level claim
-- Group paths are relative to the organization
-- Make sure you have a single `organization-membership` mapper so that groups are included in the same claim as the organization data
-- Multiple organizations can be included if the user is a member of multiple organizations and uses `scope=organization:*` or multiple specific scopes like `scope=organization:org-a organization:org-b`
+- Группы появляются внутри организационной претензии, а не в отдельной претензии верхнего уровня
+- Пути группы относятся к организации
+- Убедитесь, что у вас есть единая карта «членства в организации», чтобы группы были включены в ту же претензию, что и данные организации
+- Несколько организаций можно включить, если пользователь является членом нескольких организаций и использует `scope=organization:*` или несколько конкретных областей деятельности, таких как `scope=organization:org-a organization:org-b`
 
 [[oidc-token-with-roles]]
-==== Token structure with roles
+==== Структура токена с ролями
 
-When *Add group role mappings* is enabled on the mapper, realm and client roles assigned to the user's organization groups are included under `realm_access` and `resource_access` keys, following the same structure as standard Keycloak token role claims:
+Когда на карте включена *Добавить сопоставления ролей группы*, и роли клиентов, назначенные группам организаций пользователя в разделах `realm_access` и `resource_access`, следуя той же структуре, что и стандартная роль токена Keycloak:
 
 [source,json]
 ----
@@ -170,58 +170,58 @@ When *Add group role mappings* is enabled on the mapper, realm and client roles 
 }
 ----
 
-Composite roles are automatically expanded—if a group has a composite role, all its child roles are included.
+Составные роли автоматически расширяются - если группа имеет сводную роль, то включаются все ее роли потомка.
 
-NOTE: These roles are specific to the organization context and appear inside the `organization` claim. Standard `realm_access` and `resource_access` claims already include roles from all groups (including organization groups) regardless of this mapper setting.
+NOTE: Эти роли специфичны для контекста организации и появляются в претензии "организации". Стандартные претензии `realm_access` и `resource_access` уже включают роли всех групп (включая организационные группы), независимо от этого параметра карты.
 
-=== SAML: Organization groups in assertions
+=== SAML: Организационные группы в утверждениях
 
-SAML automatically includes groups for all organizations the user is a member of. Like OIDC, the group mapper requires the organization membership mapper to be present in the same scope.
+SAML автоматически включает группы для всех организаций, членом которых является пользователь. Как и в OIDC, групповой картоппер требует наличия карты членства в организации в одном и том же масштабе.
 
-==== Option 1: Add mapper to built-in saml_organization scope (Recommended)
+==== Вариант 1: Добавление карты в область использования saml_organization (рекомендуется)
 
-The built-in `saml_organization` scope already has the Organization Membership mapper and is added as a default scope to all SAML clients. Simply add the group mapper to it.
+Встроенная область `saml_organization` уже имеет карту членства Организации и добавляется в качестве области по умолчанию для всех клиентов SAML. Просто добавьте к нему карту групп.
 
-.Procedure
-. Click *Client scopes* in the menu.
-. Select the *saml_organization* scope.
-. Click the *Mappers* tab.
-. Click *Add mapper* → *By configuration*.
-. Select *Organization Group Membership*.
-. Click *Save*.
+.Процедура
+. Щелкните *Область клиента* в меню.
+. Выберите область *saml_organization*.
+. Нажмите на вкладку *Mappers*.
+. Нажмите *Add mapper* → *By configuration*.
+. Выберите *Членство в Группе Организации*.
+. Нажмите *Сохранить*.
 
-The mapper has one optional configuration:
+У карты есть одна необязательная конфигурация:
 
-Add group role mappings:: When enabled, realm and client roles assigned to the user's organization groups are included as additional SAML attributes. See <<saml-assertion-with-roles,SAML assertion structure with roles>> for the output format.
+Добавить сопоставления ролей группы:: Когда включено, Realm и роли клиента, назначенные группам организаций пользователя, включаются в качестве дополнительных атрибутов SAML. Смотрите <<saml-assertion-with-roles,SAML assertion structure with roles>> для формата вывода.
 
-Groups are automatically included for all SAML clients.
+Группы автоматически включаются для всех клиентов SAML.
 
-==== Option 2: Create custom SAML scope with both mappers
+==== Вариант 2: Создание пользовательской области SAML с обоими картографами
 
-If you need a dedicated scope, create one with both the membership and group mappers.
+Если вам нужен выделенный охват, создайте его с как членством, так и группировочными картами.
 
-.Procedure
-. Click *Client scopes* in the menu.
-. Click *Create client scope*.
-. Provide a *Name* (for example, `my-saml-org-scope`).
+.Процедура
+. Щелкните *Область клиента* в меню.
+. Нажмите *Создать клиентскую границу*.
+. Предоставьте *Имя* (например, `my-saml-org-scope`).
 . Set *Protocol* to *SAML*.
-. Click *Save*.
-. Click the *Mappers* tab.
-. Add BOTH mappers:
-.. Click *Configure a new mapper* → *Organization Membership*
-.. Click *Save*
-.. Click *Add mapper* → *By configuration* → *Organization Group Membership*
-.. Click *Save*
-. Go to your SAML client.
-. Click *Client scopes* tab.
-. Click *Add client scope*.
-. Select your custom scope.
-. Click *Add*.
-. Choose *Default* or *Optional*.
+. Нажмите *Сохранить*.
+. Нажмите на вкладку *Mappers*.
+. Добавить BOTH мэпперы:
+.. Нажмите *Настройка нового мэппер* → *Организация Членства*
+.. Нажмите *Сохранить*
+.. Нажмите *Добавить Mapper* → *По конфигурации* → *Членство в Группе Организации*
+.. Нажмите *Сохранить*
+. Перейдите в ваш SAML клиент.
+. Нажмите на вкладку *Области клиентов*.
+. Нажмите *Добавить клиентскую границу*.
+. Выберите свой пользовательский охват.
+. Нажмите *Добавить*.
+. Выберите *По умолчанию* или *Необязательно*.
 
-==== SAML assertion structure
+==== Структура Утверждения SAML
 
-When a user from Organization A's `/Engineering/Backend` group authenticates, the assertion includes attributes for each organization they belong to:
+Когда пользователь из группы '/Engineering/Backend' организации аутентифицирован, утверждение включает атрибуты для каждой организации, к которым относятся:
 
 [source,xml]
 ----
@@ -230,12 +230,12 @@ When a user from Organization A's `/Engineering/Backend` group authenticates, th
 </Attribute>
 ----
 
-Each organization gets its own attribute named `+organization.{alias}.groups+` with group paths as values, where `alias` is the organization alias.
+Каждая организация получает свой атрибут `+organization.{alias}.groups+` с путями групп в качестве значений, где `alias` является псевдонимом организации.
 
 [[saml-assertion-with-roles]]
-==== SAML assertion structure with roles
+==== Структура SAML с ролями
 
-When *Add group role mappings* is enabled on the mapper, realm and client roles assigned to the user's organization groups are included as additional attributes:
+Когда включена *Добавить сопоставления ролей группы* в списке мэппер, области области и роли клиента, назначенные организационным группам пользователя в качестве дополнительных атрибутов:
 
 [source,xml]
 ----
@@ -251,78 +251,78 @@ When *Add group role mappings* is enabled on the mapper, realm and client roles 
 </Attribute>
 ----
 
-Composite roles are automatically expanded. Each role type uses a separate attribute:
+Составные роли автоматически расширяются. Каждый тип роли использует отдельный атрибут:
 
-- `+organization.{alias}.realm_access.roles+` — realm roles from the user's organization groups
-- `+organization.{alias}.resource_access.{clientId}.roles+` — client roles, with one attribute per client
+- `+организация.{alias}.realm_access.roles+` — области ролей от групп организаций пользователя
+- `+организация.{alias}.resource_access.{clientId}.roles+` — роли клиента с одним атрибутом на клиента
 
-NOTE: Unlike OIDC, SAML clients don't need to request a scope at runtime. The `saml_organization` scope is added as a default scope, so groups are automatically included in assertions for all organizations the user is a member of.
+NOTE: В отличие от OIDC, SAML клиентам не нужно запрашивать область работы во времени. Область `saml_organization` добавляется в качестве области по умолчанию, поэтому группы автоматически включаются в утверждения всех организаций, членом которых является пользователь.
 
-== Managing group attributes
+== Управление атрибутами группы
 
-Groups can carry attributes—key/value metadata stored at the group level.
+Группы могут иметь атрибуты - метаданные ключ/значение, хранящиеся на уровне групп.
 
-.Procedure
-. Select a group.
-. Click the *Attributes* tab.
-. Add attributes with keys and values.
-. Click *Save*.
+.Процедура
+. Выберите группу.
+. Нажмите на вкладку *Атрибуты*.
+. Добавить атрибуты с ключами и значениями.
+. Нажмите *Сохранить*.
 
-Group attributes are stored separately from user attributes. To include group attributes in tokens, configure a *User Attribute* mapper with the *Aggregate attributes* option enabled. The mapper will then combine matching attributes from both the user and all their groups.
+Атрибуты группы хранятся отдельно от атрибутов пользователя. Чтобы включить групповые атрибуты в токены, настройте сопоставление *Атрибутов* пользователя с опцией *Агрегировать атрибуты*. Карта будет объединять совпадающие атрибуты как от пользователя, так и от всех его групп.
 
-== Assigning roles to groups
+== Назначение ролей группам
 
-Organization groups support realm and client role mappings, just like realm groups. This lets you define role-based access that applies to all members of a group.
+Группы организаций поддерживают сопоставления сфер и ролей клиентов, точно так же, как группы реалмов. Это позволит вам определить доступ, основанный на ролях, применимый ко всем членам группы.
 
-.Procedure
-. Select an organization group.
-. Click the *Role mapping* tab.
-. Click *Assign role*.
-. Select one or more realm or client roles.
-. Click *Assign*.
+.Процедура
+. Выберите группу организаций.
+. Нажмите на вкладку *Сопоставление ролей*.
+. Нажмите *Назначить роль*.
+. Выберите одну или несколько ролей Realm или клиента.
+. Нажмите *Назначать*.
 
-Roles assigned to organization groups are automatically included in `realm_access` and `resource_access` token claims for members of those groups—no additional mapper configuration is required.
+Роли, назначенные группам, автоматически включаются в претензии 'realm_access' и 'resource_access' для членов этих групп - дополнительная конфигурация сопоставления не требуется.
 
-To also include these roles within the `organization` claim (organized per organization), enable the *Add group role mappings* option on the *Organization Group Membership* mapper. See <<oidc-token-with-roles,Token structure with roles>> and <<saml-assertion-with-roles,SAML assertion structure with roles>> for details.
+Чтобы также включить эти роли в претензию «Организация» (организуется в каждой организации), разрешите опцию *Добавить сопоставления ролей группы* на карте *Членство в группах*. Смотрите <<oidc-token-with-roles,Token structure with roles>> и <<saml-assertion-with-roles,SAML assertion structure with roles>> для деталей.
 
-NOTE: Assigning roles to organization groups requires the `manage-organizations` realm admin role (or equivalent Fine-Grained Admin Permission on the organization) and the `map-role` permission on the specific role being assigned.
+NOTE: Назначение ролей для групп организации требует роли администратора области управления (или эквивалентного мелкого разрешения администратора в организации) и права на `map-роль` на определенную роль, назначенную.
 
-== Important distinctions
+== Важные различия
 
-=== Organization groups vs realm groups
+=== Организационные группы и группы мира
 
 [cols="1,2", options="header"]
 |===
-|Feature
-|Organization groups
+|Функция
+|Группы организации
 
-|Scope
-|Belong to a single organization
+|Сфера охвата
+|Принадлежит одной организации
 
-|Isolation
-|Fully isolated—same paths can exist across organizations
+|Изоляция
+|Полностью изолированно - одинаковые пути могут существовать в организациях
 
-|Role assignment
-|Supported—realm and client roles can be assigned to organization groups via the Admin API and Admin Console
+|Назначение роли
+|Поддерживаемые — Realm и роли клиента могут быть назначены группам организации через консоль Admin API и Admin
 
-|Authorization policies
-|Cannot be used in authorization policies—use realm groups instead
+|Политики авторизации
+|Нельзя использовать в политике авторизации — вместо этого используйте группы реалмов
 
-|Token mapping
-|Appear in tokens when using organization context
+|Сопоставление токенов
+|Появляются в токенах при использовании контекста организации
 |===
 
-=== Authorization policies restriction
+=== Ограничение политик авторизации
 
-Organization groups *cannot* be used in Keycloak authorization policies. Only realm groups are supported for fine-grained authorization.
+Группы организации *не могут* использоваться в политике авторизации Keycloak. Для получения более точной авторизации поддерживаются только группы реалмов.
 
-If you try to select an organization group when configuring a group-based policy, you'll receive an error. This is intentional—authorization policies operate at the realm level, not the organization level.
+Если вы пытаетесь выбрать группу организации при настройке групповой политики, вы получите ошибку. Это преднамеренная политика авторизации действует на уровне реалмов, а не на уровне организации.
 
-== Deleting groups
+== Удаление групп
 
-Deleting a group removes it and all its child groups. Members are *not* deleted—they simply lose their group membership.
+Удаление группы удаляет ее и все ее дочерние группы. Участники *не* удаляются, они просто теряют свое членство в группе.
 
-.Procedure
-. Select the group.
-. Click *Delete group*.
-. Confirm the deletion.
+.Процедура
+. Выберите группу.
+. Нажмите *Удалить группу*.
+. Подтвердите удаление.
