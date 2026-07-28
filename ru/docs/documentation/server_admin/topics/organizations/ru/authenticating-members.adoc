@@ -1,117 +1,117 @@
-= Authenticating members
+= Аутентификация участников
 
-authenticating in the context of an organization, the authentication flow changes on a per-organization basis.
+аутентификации в контексте организации, изменение потока аутентификации на основе отдельной организации.
 
-When a realm is created, the authentication flows are automatically updated to enable specific steps to authenticate and onboard organization members. The authentication flows updated are:
+При создании реалма аутентификационные потоки автоматически обновляются, чтобы включить определенные шаги для аутентификации участников организации и доступа к ней. Потоки аутентификации обновляются:
 
-* *browser*
-* *first broker login*
+* *браузер*
+* *первый логин брокера*
 
-The main change to the *browser* flow is that it defaults to an identity-first login so that users are identified before prompting for their credentials.
-Concerning the first broker login flow, the main change is automatically adding the users as organization members once they authenticate through the identity provider associated with an organization and successfully complete the flow.
+Основное изменение потока *браузер* состоит в том, что по умолчанию используется идентификатор пользователя, так чтобы пользователи были идентифицированы перед запросом их учетных данных.
+Относительно первого потока входа брокера, главное изменение автоматически добавляет пользователей в качестве членов организации после того, как они аутентифицируются через поставщика идентификации, связанного с организацией и успешно завершают поток.
 
-The choice to use an identity-first login or not depends on the existence of an organization in a realm.
+Выбор использования идентификатора первого логина или не зависит от существования организации в реалме.
 If no organizations exist, the user follows the usual steps to authenticate using the username and password,
-or any other step configured in the browser flow. Otherwise, the user is asked first for a username or email to continue authenticating to a realm.
+or any other step configured in the browser flow. В противном случае пользователю сначала требуется имя пользователя или электронная почта для продолжения аутентификации в реалме.
 
-The identity-first login main goal is to identify the user:
+Главная цель - идентифицировать пользователя:
 
-* Is the user an existing or a new user?
-* Is the user a member of any organization within a realm?
-* If an organization member, is the user linked to any identity provider associated with the organization?
+* Является ли пользователь существующим или новым пользователем?
+* Является ли пользователь членом какой-либо организации в мире?
+* Если участник организации, связан ли пользователь с любым идентификационным провайдером, связанным с организацией?
 
 Depending on the outcome when identifying the user, the authentication flow changes to either proceed with authentication
 by asking for the user's credentials or eventually redirect the user automatically to authenticate within the organization security
 boundaries through an identity provider.
 
-== Understanding the identity-first login
+== Понимание личности первого входа
 
-In addition to identifying the user once the username is provided, the identity-first login is also responsible for:
+В дополнение к идентификации пользователя после ввода имени пользователя на имя пользователя также лежит ответственность за:
 
-* Matching an email domain to an organization.
-* Deciding if the authentication flow should continue or not if an account already exists for the username provided
-* Deciding how the user should be authenticated depending on how the domains and the identity providers are configured to an organization
-and the set of credentials configured to the user account.
-* Seamlessly authenticating users through an identity provider associated with an organization if the email domain matches the domain set to the identity provider
+* Подключение домена электронной почты к организации.
+* Определяет, должен ли поток аутентификации продолжать или нет, если учетная запись уже существует для указанного имени пользователя
+* Принимая решение о том, как пользователь должен быть аутентифицирован в зависимости от того, как домены и поставщики идентификации настроены на организацию
+и набор учетных данных, настроенных на учетную запись пользователя.
+* Аутентификация пользователей через идентификационный провайдер, связанный с организацией, если домен электронной почты совпадает с доменом, установленным поставщику идентификации
 
 The identity-first login provides the same capabilities that are provided by the usual login page with the username and
-password fields. Users can still self-register by clicking the register link or choose any identity or social
-broker that is not linked to an organization in that realm.
+password fields. Пользователи все еще могут самостоятельно зарегистрироваться, нажав на ссылку регистрации или выбрав любой идентификатор или социальный
+брокер, который не связан с организацией в этой области.
 
 image:images/organizations-identity-first-login.png[alt="Identity-first login page"]
 
 In the case of a user that does not exist, if that user tries to authenticate using an email domain that matches an organization domain,
 the identity-first login page appears again with a message that the username provided is not valid.
-At this point, no need exists to ask the user for credentials.
+На данный момент нет необходимости запрашивать у пользователя учетные данные.
 
-image:images/organizations-identity-first-error.png[alt="Identity-first login error"]
+image:images/organizations-identity-first-error.png[alt="Ошибка входа в систему"]
 
-Several options exist to register the user allowing that user to authenticate to the realm and join an organization.
+Существует несколько опций для регистрации пользователя, позволяющего пользователю аутентифицироваться в области и присоединиться к организации.
 
-If the realm has the self-registration setting enabled, the user can click the *Register* link at the identity-first login page
-and create an account at the realm.
-After that, the administrator can send an invitation link to the user or manually add the user as a member of an organization.
-For more details, see <<_managing_members_,Managing members>>.
+Если в области включена настройка саморегистрации, пользователь может нажать на ссылку *Зарегистрироваться* на первой странице входа в систему
+и создать учетную запись в реалме.
+После этого администратор может отправить пригласительную ссылку пользователю или вручную добавить пользователя в состав организации.
+Подробнее см. <<_managing_members_,Managing members>>.
 
-If the organization has an identity provider without a domain and the *Hide on login page* setting is *OFF*, users can also click
-the identity provider link at the identity-first login page to automatically create an account and join an organization
-once they authenticate through the identity provider.
-For more details, see <<_managing_identity_provider_,Managing identity providers>>.
+Если у организации есть идентификатор провайдера без домена и настройка *Скрыть на странице входа в систему* *OFF*, пользователи также могут щелкнуть по ссылке
+поставщика идентификации на странице идентификации для автоматического создания учетной записи и присоединения к организации
+после аутентификации через поставщика идентификационных данных.
+Подробнее см. <<_managing_identity_provider_,Managing identity providers>.
 
-In a similar situation to the previous section, the organization may have an identity provider set with one of the organization domains.
-In this situation, the user is redirected to the identity provider if that user's email matches a specific domain from the organization.
-Once the flow completes, an account is created and the user joins the organization. In case the user has any first-factor credentials
+В аналогичной ситуации с предыдущим разделом организации может быть установлен провайдер идентификации с одним из доменов организации.
+В этой ситуации пользователь перенаправляется на провайдера идентификации, если электронная почта этого пользователя соответствует определенному домену организации.
+По завершению процесса создается учетная запись и пользователь присоединяется к организации. In case the user has any first-factor credentials
 configured (e.g.: password, passwordless, kerberos) to the account, the user is not automatically redirected to the identity provider but asked to authenticate using their
 credentials.
 
-== Configuring existing authentication flows
+== Настройка существующих потоков аутентификации
 
-As previously mentioned for new realms, authentication flows are automatically updated with the necessary steps
-to support organizations and authenticate their members. For existing realms, in addition to enabling organizations to the
+Как уже упоминалось выше, потоки аутентификации автоматически обновляются с необходимыми шагами
+для поддержки организаций и аутентификации их участников. For existing realms, in addition to enabling organizations to the
 realm, you also need to manually update your existing (custom) authenticating flows.
 
-Change the *browser* flow by following these steps:
+Измените поток *браузера*, выполнив следующие шаги:
 
-.Procedure
-. Duplicate the current flow bound to the *Browser flow* binding type to avoid breaking the flow you are currently using
-. Click *Add sub-flow* and give it a name such as *My Organization*
-. Move the newly added *My Organization* sub-flow to execute right after the *Identity Provider Redirector* execution step.
+.Процедура
+. Дублировать текущий поток, связанный с типом привязки *Browser flow*, во избежание разрыва потока, который вы используете
+. Нажмите *Добавить подпоток* и присвойте ему имя *Моя Организация*
+. Переместите новый подпоток *Моя Организация* для выполнения сразу после шага запуска *Identity Provider Redirector*.
 The main point here is that the sub-flow should happen before any other sub-flow or execution step that authenticates the
-user using whatever credentials you support in your realm. Once added, change the *Requirement* to *Alternative*.
-. Click *Add sub-flow* in the *My Organization* sub-flow and give it a name such as *My Organization - Conditional*. Once added, change the *Requirement* to *Conditional*.
-. Click *Add condition* in the *My Organization - Conditional* sub-flow and select *Condition - user configured*. Once added, change the *Requirement* to *Required*.
-. Click *Add step* in the *My Organization - Conditional* sub-flow and select the *Organization Identity-First Login
-* execution step. Once added, change the *Requirement* to *Alternative*.
-. Bind the authentication flow to the *Browser* binding type.
+user using whatever credentials you support in your realm. После добавления измените *Требования* на *Альтернатива*.
+. Нажмите *Добавить подпоток* в подпотоке *Моя Организация* и введите его имя, например, *Моя организация - Условия*. После добавления измените *Требования* на *Условие*.
+. Нажмите *Добавить условие* в подпотоке *Моя организация - Условие* и выберите *Условие - настроенный пользователь*. После добавления измените *Требования* на *Обязательные*.
+. Нажмите *Добавить шаг* в подпотоке *Моя организация - Условия* и выберите *Организация Идентификатор Первого Входа
+* шаг выполнения. После добавления измените *Требования* на *Альтернатива*.
+. Привязка потока аутентификации к типу привязки *браузер*.
 
-image:images/organizations-browser-flow.png[alt="Organizations browser flow"]
+image:images/organizations-browser-flow.png[alt="Браузер организаций"]
 
-Once you enable the <<_enabling_organization_,Organizations>> setting to the realm and create
-at least a single organization, you should be able to see the identity-first login page and start using organizations
-in your realm.
+После включения параметра <_enabling_organization_,Organizations>> в область и создания
+по крайней мере одной организации, вы можете видеть страницу идентификации и начать использовать организации
+в своем реалме.
 
-Change the *first broker login* flow by following these steps:
+Измените *первый логин брокера*, следуя следующим шагам:
 
-.Procedure
-. Duplicate the current flow bound to the *First broker login flow* bind type to avoid breaking the flow you are currently using
-. Click *Add sub-flow* and give it a name such as `Organization Member - Conditional`. Once added, change the *Requirement* to *Conditional*.
-. Click *Add condition* in the *Organization Member - Conditional* sub-flow and select *Condition - user configured*. Once added, change the *Requirement* to *Required*.
-. Click *Add step* in the *Organization Member - Conditional* sub-flow and select the *Organization Member Onboard* execution step. Once added, change the *Requirement* to *Required*.
-. Bind the authentication flow to the *First broker login* binding type.
+.Процедура
+. Дублируйте текущий поток, связанный с *первым брокером входного потока*, чтобы избежать разрыва потока, который вы используете
+. Нажмите *Добавить подпоток* и введите его имя, например, `Член организации - Условие`. После добавления измените *Требования* на *Условие*.
+. Нажмите *Добавить условие* в подпотоке *Член организации - Условие* и выберите *Условие - настроенный пользователь*. После добавления измените *Требования* на *Обязательные*.
+. Щелкните *Добавить шаг* в суб-потоке *Член Организации - Условие* и выберите шаг выполнения *Член Организации*. После добавления измените *Требования* на *Обязательные*.
+. Привязка потока аутентификации к привязке *First broker login*.
 
-image:images/organizations-first-broker-flow.png[alt="Organizations first broker flow"]
+image:images/organizations-first-broker-flow.png[alt="Первые брокерские потоки организаций"]
 
-You should now be able to authenticate using any identity provider associated with an organization
-and have the user joining the organization as a member as soon as they complete the first browser login flow.
+Теперь вы должны иметь возможность аутентифицироваться с помощью любого поставщика идентификации, связанного с организацией
+и зарегистрироваться пользователем, присоединившимся к организации в качестве участника, как только он завершит первый поток входа в браузер.
 
-== Configuring how users authenticate
+== Настройка аутентификации пользователей
 
-If the flow supports organizations, you can configure some of the steps to change how users authenticate to the realm.
+Если поток поддерживает организации, вы можете настроить некоторые шаги для изменения аутентификации пользователей в реалме.
 
-For example, some use cases will require users to authenticate to a realm only if they are a member of any or a specific organization in the realm.
+Например, некоторые варианты использования требуют от пользователей аутентификации в Realm только в том случае, если они являются членами какой-либо организации или конкретной организации в реалме.
 
-To enable this behavior, you need to enable the `Requires user membership` setting on the `Organization Identity-First Login` execution step by clicking on its settings.
+Чтобы включить это поведение, вам нужно включить опцию «Требует членства пользователя» на шаге выполнения «Идентификатор организации - первый вход», нажав на его настройки.
 
 If enabled, and after the user provides the username or email in the identity-first login page, the server will
 try to resolve a organization where the user is a member by looking at any existing membership or based on the semantics of the <<_mapping_organization_claims_,organization>> scope,
-if requested by the client. If not a member of an organization, an error page will be shown.
+if requested by the client. Если не является членом организации, будет показана страница с ошибкой.
