@@ -1,224 +1,224 @@
 [[_managing_members_]]
-= Managing members
+= Управление участниками
 
-An organization member is basically a realm user but with a link to one or more organizations. They are logically separated
+Член организации является пользователем области с ссылкой на одну или несколько организаций. They are logically separated
 from other users in a realm so that you know exactly which users belong to an organization.
 
-There are different ways to add, or onboard, a member to an organization:
+Есть различные способы добавить члена организации или совета директоров в организацию:
 
-* Adding an existing realm user as a member
-* Through an identity provider associated with an organization
-* Sending an invitation to create a new account
-* Sending an invitation to an existing user to join an organization
+* Добавление существующего пользователя в реалм как участника
+* Через идентификационный провайдер, связанный с организацией
+* Отправка приглашения для создания новой учетной записи
+* Отправка приглашения существующему пользователю присоединиться к организации
 
-Once a member of an organization, that user's account can be managed just like any regular account in a realm by accessing the *Users* section in the menu.
+Один член организации, Учетная запись этого пользователя может управляться так же, как и любой обычный аккаунт в реалме, зайдя в раздел *Пользователи* в меню.
 
-However, you can narrow the users to only those associated with an organization by accessing the *Members* tab when managing an organization. In this tab, you have a list of all the organization members and actions to add new members and to edit and remove existing ones.
+Однако при управлении организацией вы можете сужать пользователей только теми пользователями, которые связаны с этой организацией. На этой вкладке у вас есть список всех членов организации и действий для добавления новых членов и редактирования и удаления существующих членов.
 
-image:images/organizations-manage-members.png[alt="Managing organization members"]
+image:images/organizations-manage-members.png[alt="Управление участниками организации"]
 
-You are also able to manage the membership of a user in an organization from the *Users* section. When you select a user, you can see the list of organizations that the user belongs to and manage those memberships.
+Вы также можете управлять членством пользователя в организации из раздела *Пользователи*. Когда вы выбираете пользователя, вы можете увидеть список организаций, к которым принадлежит пользователь, и управлять этими членами.
 
-image:images/organizations-users-section.png[alt="Managing organization members from the Users section"]
+image:images/organizations-users-section.png[alt="Управление членами организации из раздела "]
 
 [[_managed_unmanaged_members_]]
-== Managed and unmanaged members
+== Управляемые и неуправляемые участники
 
-When managing members, consider how their relationship with an organization affects the lifecycle of their accounts.
-Members can join an organization through different flows and each flow indicates the strength of the link between their accounts and the organization.
+При управлении членами, учитывайте, как их отношения с организацией влияют на жизненный цикл их счетов.
+Участники могут присоединиться к организации через различные потоки, и каждый поток указывает на силу связи между своими счетами и организацией.
 
-There are two types of members:
+Существует два типа участников:
 
-* *Managed*
-* *Unmanaged*
+* *Управляется*
+* *Неуправляемый*
 
-Managed members are those managed by the organization, and they cannot exist outside of their organization. For instance, consider
-an account created through an identity provider associated with an organization. That account does not belong to a realm as it was federated from the organization.
+Управляемые члены - это участники, управляемые организацией, и они не могут существовать за пределами своей организации. Например, рассмотрите
+учетную запись, созданную через идентификационный провайдер, связанный с организацией. Этот счет не принадлежит к сфере, которая была объединена в организацию.
 In this case, the single source of truth for the identity is the organization and its lifecycle is controlled
 by the organization.
-If you remove the organization or the member, the account is also removed from the realm.
+Если вы удалите организацию или участника, аккаунт также удаляется из реалма.
 
-On the other hand, unmanaged members are those that can exist without the organization. For instance, when adding an existing
-realm user to an organization, the account belongs to the realm first and foremost and eventually linked to an organization. In this case,
-removing an organization or a member will not remove the account from the realm; the realm is
-the single-source of truth for the identity.
+С другой стороны, неуправляемые члены являются членами, которые могут существовать без организации. For instance, when adding an existing
+realm user to an organization, the account belongs to the realm first and foremost and eventually linked to an organization. В этом случае
+удаление организации или участника не приведет к удалению учетной записи из реалма; миром является
+единственным источником истины за самобытность.
 
-== Adding an existing realm user as a member
+== Добавление существующего пользователя в реалм как участника
 
-An existing realm user can join an organization by selecting that user from a list and adding the user to the organization.
+Существующий пользователь области может присоединиться к организации, выбрав этого пользователя из списка и добавив пользователя в организацию.
 
-.Procedure
-. Click *Add member*.
-. Click *Add realm user*.
-. Select one or more users and click *Add* to add them to the organization.
+.Процедура
+. Нажмите *Добавить участника*.
+. Нажмите *Добавить пользователя Realm*.
+. Выберите одного или нескольких пользователей и нажмите *Добавить*, чтобы добавить их в организацию.
 
-image:images/organizations-add-realm-user.png[alt="Adding a realm user"]
+image:images/organizations-add-realm-user.png[alt="Добавление пользователя реалма"]
 
-Once a user is a member of the organization, that user is able to authenticate to the realm just like a regular user and using
-any credential supported by the realm.
+После того, как пользователь является членом организации, этот пользователь может аутентифицироваться в реалме так же, как и обычный пользователь и использовать
+любые учетные данные, поддерживаемые реалмом.
 
-== Inviting users
+== Приглашение пользователей
 
-An administrator can email users to join an organization.
+Администратор может отправлять по электронной почте пользователей для вступления в организацию.
 
-.Procedure
-. Click *Add member*.
-. Click *Invite member*.
-. Provide an email address
-. Click *Send*
+.Процедура
+. Нажмите *Добавить участника*.
+. Нажмите *Пригласить участника*.
+. Укажите адрес электронной почты
+. Нажмите *Отправить*
 
-image:images/organizations-invite-member.png[alt="Inviting members"]
+image:images/organizations-invite-member.png[alt="Приглашение членов"]
 
-Optionally, you can also provide a value for the *First name* and *Last name* fields for a more personalized email
-message using a greeting message with the first and last names of the person receiving the email.
+По желанию, вы также можете ввести значение поля *Имя* и *Фамилия* для более персонального сообщения электронной почты
+используя приветствие с именем и фамилией получателя письма.
 
-An invitation is basically an email sent with a link that the person should click to perform the necessary steps to join
-an organization. These steps depend on whether the person already has an account in the realm or if a new account should
+Приглашение - это по существу письмо, отправленное со ссылкой, на которую человек должен нажать для выполнения необходимых шагов для присоединения к
+организации. These steps depend on whether the person already has an account in the realm or if a new account should
 be created before joining the organization.
 
 If the email maps to an existing user in a realm, the steps the user will follow are basically about confirming the
 intention to join the organization.
 
-On the other hand, if no user is associated with the given email address, the steps
-will involve creating a new account through the realm's self-registration flow. In this case, the user is forced
+С другой стороны, если ни один пользователь не связан с данным адресом электронной почты, шаги
+будут включать создание новой учетной записи с помощью саморегистрации. In this case, the user is forced
 to provide the same email address used to send the invitation.
 
-== Managing invitations
+== Управление приглашениями
 
 {project_name} provides comprehensive invitation management capabilities that allow administrators to track, manage, and control
 organization invitations throughout their lifecycle.
 
-=== Viewing invitations
+=== Просмотр приглашений
 
-To view and manage all invitations for an organization:
+Смотреть и управлять всеми приглашениями для организации:
 
-.Procedure
-. Select the organization you want to manage.
-. Click the *Invitations* tab.
+.Процедура
+. Выберите организацию, которой вы хотите управлять.
+. Нажмите на вкладку *Приглашения*.
 
-The invitations list displays all sent invitations with the following information:
+В списке приглашений отображаются все отправленные приглашения со следующей информацией:
 
-* *Email* - The email address of the invited user
-* *Status* - Current status of the invitation (Pending, Expired)
-* *Created* - When the invitation was sent
-* *Expires* - When the invitation will expire (if applicable)
+* *Email* - Адрес электронной почты приглашенного пользователя
+* *Статус* - Текущий статус приглашения (Отложение, Истекло)
+* *Создано* - Когда приглашение было отправлено
+* *Истекает срок действия приглашения (если это применимо)
 
-You can filter invitations by status to easily find pending or expired invitations.
+Вы можете фильтровать приглашения по статусу, чтобы легко найти ожидающие или просроченные приглашения.
 
-=== Managing invitation lifecycle
+=== Управление приглашением на жизненный цикл
 
-Administrators can perform various actions on invitations:
+Администраторы могут выполнять различные действия по приглашениям:
 
-==== Resending invitations
+==== Повторно отправленные приглашения
 
-To resend a pending invitation:
+Для повторной отправки приглашения:
 
-.Procedure
-. From the invitations list, locate the invitation you want to resend.
-. Click the action menu next to the invitation.
-. Select *Resend*.
+.Процедура
+. Из списка приглашений найдите приглашение, которое вы хотите повторить.
+. Нажмите на меню действий рядом с приглашением.
+. Выберите *Отправить*.
 
-A new invitation email will be sent to the recipient with a fresh expiration time.
+Новое письмо с приглашением будет отправлено получателю с истечением срока действия.
 
-==== Deleting invitations
+==== Удаление приглашений
 
-To permanently delete an invitation record:
+Чтобы удалить запись приглашения навсегда:
 
-.Procedure
-. From the invitations list, locate the invitation you want to delete.
-. Click the action menu next to the invitation.
-. Select *Delete*.
-. Confirm the deletion.
+.Процедура
+. Из списка приглашений найдите приглашение, которое вы хотите удалить.
+. Нажмите на меню действий рядом с приглашением.
+. Выберите *Удалить*.
+. Подтвердите удаление.
 
-This permanently removes the invitation from the system. This action cannot be undone.
+Это окончательно удаляет приглашение из системы. Это действие нельзя отменить.
 
-=== Invitation states and lifecycle
+=== Состояние приглашений и жизненный цикл
 
-Invitations go through several states during their lifecycle:
+Приглашения проходят через несколько состояний в течение их жизни:
 
-* *Pending* - The invitation has been sent and is waiting for the recipient to accept
-* *Expired* - The invitation has passed its expiration time
+* *В ожидании* - приглашение было отправлено и ожидает подтверждения получателем
+* *Истекло* - Время окончания действия приглашения истекло
 
-NOTE: When a user successfully accepts an invitation, the invitation is automatically deleted from the system.
+NOTE: Когда пользователь успешно принимает приглашение, приглашение автоматически удаляется из системы.
 
-=== API access
+=== Доступ к API
 
-Organization invitations can also be managed programmatically through the Admin REST API:
+Приглашения организации также можно управлять программно через API администратора REST API:
 
-* `GET /admin/realms/{realm}/orgs/{orgId}/invitations` - List all invitations
-* `GET /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}` - Get specific invitation
-* `POST /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}/resend` - Resend invitation
-* `DELETE /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}` - Delete invitation
+* `GET /admin/realms/{realm}/orgs/{orgId}/invitations` - Список всех приглашений
+* `GET /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}` - Получить специальное приглашение
+* `POST /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}/resend` - Отправить приглашение повторно
+* `УДАЛИТЬ /admin/realms/{realm}/orgs/{orgId}/invitations/{invitationId}` - Удалить приглашение
 
-For detailed API documentation, refer to the {project_name} Admin REST API documentation.
+Подробную документацию по API см. в документации {project_name} администратора REST API.
 
 [[_onboard_member_identity_provider_]]
-== Onboarding members using an Identity Provider
+== Участники-пользователи с помощью идентификатора провайдера
 
-An organization might have its own identity provider as the single source of truth for their identities. In this case,
+Организация может иметь своего собственного самоидентификационного провайдера в качестве единого источника истины для своей самобытности. In this case,
 users federated from the identity provider are automatically added as a member of the organization.
 
 When users join an organization through an identity provider associated with an organization, they are automatically marked
-as managed members. In this case, they will go through the broker login flows configured in the realm and join the organization
-automatically once they successfully authenticate.
+as managed members. В этом случае они будут проходить через логин брокера, настроенные в области и присоединяться к организации
+автоматически, как только они успешно аутентифицируются.
 
 Onboarding new members through an identity provider can be done by either automatically redirecting the user to an organization's
 identity provider or by selecting the identity provider when at the login page.
 
-In both cases, once the user provides the email, {project_name} will try to match an organization based on the email domain. In case
-the email domain matches the organization, and an identity provider is associated with the same domain and the *Redirect when email domain matches*
-setting is enabled, the user is automatically redirected to the identity provider. Once the user authenticates at the identity provider
+В обоих случаях, когда пользователь предоставит письмо, {project_name} будет пытаться сопоставить организацию на основе домена электронной почты. В случае, если
+домена электронной почты соответствует организации, и идентификационный провайдер связан с одним и тем же доменом и настройка *перенаправление при совпадении домена электронной почты*
+, пользователь автоматически перенаправляется на поставщика идентификационных данных. Once the user authenticates at the identity provider
 and completes the first broker login flow, the user is automatically added as an organization member.
 
 On the other hand, if *Redirect when email domain matches* is not enabled, but the identity provider is configured not to
 *Hide on login page*, the user can select the identity provider and then be redirected to the identity provider to continue
 the onboarding process.
 
-For more details, see <<_managing_identity_provider_,Managing Identity Providers>>.
+Подробнее см. <<_managing_identity_provider_,Managing Identity Providers>.
 
-== Removing a member
+== Удаление участника
 
-You can remove a member from an organization.
+Вы можете удалить участника из организации.
 
-From the action menu next to the member you want to remove, click *Remove*.
+В меню действий рядом с членом вы хотите удалить, нажмите *Удалить*.
 
 When removing a member from an organization, remember that the user may or may not be removed from a realm depending on if
 that user is managed or unmanaged member, respectively.
 
-For more details, see <<_managed_unmanaged_members_,Managed and unmanaged members>>.
+Подробнее см. <<_managed_unmanaged_members_,Managed and unmanaged members>.
 
 [[viewing-organization-group-memberships]]
-== Viewing organization group memberships
+== Просмотр членства в группах организации
 
-You can view which organization groups a member belongs to directly from the member's context menu.
+Вы можете посмотреть какие группы организации принадлежит участнику непосредственно из контекстного меню участника.
 
-.Procedure
-. To view group memberships from the *Members* tab:
-.. Navigate to your organization.
-.. Click the *Members* tab.
-.. Locate the member.
-.. Click the kebab menu (⋮) next to the member.
-.. Select *Show organization group memberships*.
-. To view group memberships from a specific group:
-.. Navigate to your organization.
-.. Click the *Groups* tab.
-.. Select the group.
-.. Click the *Members* tab.
-.. Locate the member.
-.. Click the kebab menu (⋮) next to the member.
-.. Select *Show memberships*.
-. To view group memberships from the user's detail page:
-.. Click *Users* in the menu.
-.. Select the user.
-.. Click the *Organizations* tab.
-.. Locate the organization.
-.. Click the kebab menu (⋮) next to the organization.
-.. Select *Show organization group memberships*.
+.Процедура
+. Для просмотра членства в группах из вкладки *Члены*:
+.. Перейдите в вашу организацию.
+.. Нажмите на вкладку *Участники*.
+.. Найдите участника.
+.. Нажмите на меню kebab (<unk> ) рядом с участником.
+.. Выберите *Показать членство в группах организаций*.
+. Для просмотра членства в группе из конкретной группы:
+.. Перейдите в вашу организацию.
+.. Нажмите на вкладку *Группы*.
+.. Выберите группу.
+.. Нажмите на вкладку *Участники*.
+.. Найдите участника.
+.. Нажмите на меню kebab (<unk> ) рядом с участником.
+.. Выберите *Показать членство*.
+. Для просмотра членства в группах с подробной страницы пользователя:
+.. Нажмите *Пользователи* в меню.
+.. Выберите пользователя.
+.. Нажмите на вкладку *Организации*.
+.. Найдите организацию.
+.. Нажмите на меню kebab (<unk> ) рядом с организацией.
+.. Выберите *Показать членство в группах организаций*.
 
-This displays all groups from the specific organization the member is currently assigned to.
+Отображает все группы из конкретной организации, к которым в настоящее время назначен участник.
 
-== Support for federated members
+== Поддержка федеративных членов
 
-Users coming from federated providers can also be added as members of an organization. The only exceptions are the users from LDAP providers with *import mode disabled*. Organization members are added to an internal group that is not synchronized with external providers, so even if the LDAP provider has a group mapper with mode LDAP_ONLY it won't be possible for the non-imported users to be added as members of an organization because that membership won't be synced with the LDAP server.
+Пользователи, пришедшие от федеративных провайдеров, также могут быть добавлены в качестве членов организации. Исключениями являются пользователи провайдеров LDAP с отключенным режимом *импорта*. Члены организации добавляются во внутреннюю группу, которая не синхронизирована с внешними провайдерами, , даже если провайдер LDAP имеет сопоставление групп с режимом LDAP_ONLY, для неимпортированных пользователей будет невозможно добавить как членов организации, так как такое членство не будет синхронизироваться с сервером LDAP.
 
-In other words, LDAP users that are not imported can't join an organization because the membership is not stored in the local DB nor in the LDAP server. So if you want to have LDAP users joining organizations, ensure that the import mode of the LDAP provider is enabled.
+Другими словами, LDAP пользователи, которые не импортированы не могут присоединиться к организации, так как членство не хранится в локальной базе данных или на сервере LDAP. Таким образом, если вы хотите, чтобы пользователи LDAP присоединились к организациям, убедитесь, что режим импорта LDAP провайдера включен.
