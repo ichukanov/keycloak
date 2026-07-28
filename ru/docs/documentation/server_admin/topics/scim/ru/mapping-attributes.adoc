@@ -1,19 +1,19 @@
 [[_scim_mapping_attributes_]]
-= Mapping user attributes to SCIM schemas
+= Сопоставление атрибутов пользователей в схемах SCIM
 
-{project_name} uses the User Profile configuration to define how user attributes are mapped to SCIM schema attributes.
+{project_name} использует конфигурацию профиля пользователя для определения того, как атрибуты пользователя сопоставляются с атрибутами схемы SCIM.
 A set of core attributes are mapped by default, and additional attributes can be mapped by configuring user profile
 attributes with a SCIM schema attribute mapping.
 
-== Default attribute mappings
+== Сопоставления атрибутов по умолчанию
 
-The following attributes are automatically mapped to the SCIM core user schema (`urn:ietf:params:scim:schemas:core:2.0:User`)
-without any additional configuration:
+Следующие атрибуты автоматически сопоставляются с схемой пользователя ядра SCIM (`urn:ietf:params:scim:schemas:core:2.0:User`)
+без какой-либо дополнительной конфигурации:
 
 [cols="1,1", options="header"]
 |===
-|{project_name} Attribute
-|SCIM Attribute
+|Атрибут {project_name}
+|Атрибут SCIM
 
 |`username`
 |`userName`
@@ -21,52 +21,52 @@ without any additional configuration:
 |`email`
 |`emails`
 
-|`firstName`
+|`имя`
 |`name.givenName`
 
 |`lastName`
 |`name.familyName`
 
-|`enabled`
-|`active`
+|`включена`
+|«активный»
 
 |`createdTimestamp`
 |`meta.created`
 
 |`locale`
-|`locale` (only when internationalization is enabled)
+|`locale` (только при включенной интернационализации)
 |===
 
-== Adding custom attribute mappings
+== Добавление пользовательских сопоставлений атрибутов
 
-To map additional user attributes to SCIM schema attributes, you need to create a user profile attribute and
-configure its SCIM schema attribute mapping, setting the value to the SCIM attribute path that the user profile
-attribute should be mapped to.
+Чтобы сопоставить дополнительные атрибуты пользователя с атрибутами схемы SCIM, необходимо создать атрибут профиля пользователя и
+настроить его схему отображения атрибутов SCIM, установка значения пути атрибута SCIM, к которому должен быть сопоставлен атрибут профиля
+.
 
-=== Using the Admin Console
+=== Использование консоли администратора
 
-.Procedure
-. Click *Realm settings* in the menu, then select the *User profile* tab.
-. Click *Create attribute*.
-. Enter the *Name* for the attribute (for example, `middleName`).
-. In the *SCIM* section, select or enter the *SCIM attribute* to map to (for example, `name.middleName`). Attributes
-from the core User and Enterprise User schemas are available for selection. You can also enter custom values
+.Процедура
+. Нажмите *Настройки реалма* в меню, затем выберите вкладку *Профиль пользователя*.
+. Нажмите *Создать атрибут*.
+. Введите *Название* для атрибута (например, `middleName`).
+. В разделе *SCIM* выберите или введите атрибут *SCIM* для карты (например, `name.middleName`). Атрибуты
+из схем основного пользователя и Enterprise User доступны для выбора. You can also enter custom values
 for attributes from other schemas by typing the full URN-prefixed value (for example,
 `urn:my:params:scim:schemas:extension:custom:1.0:User:memberOf`).
-See <<_scim_managing_schema_extensions_,Managing schema extensions>> for more details on custom schemas.
-. Configure the attribute permissions as needed (at minimum, grant *admin* read and write access).
-. Click *Save*.
+Смотрите <<_scim_managing_schema_extensions_,Управление расширениями schema >> для получения более подробной информации о пользовательских схемах.
+. Настройте разрешения атрибутов при необходимости (минимум, предоставьте *admin* права на чтение и запись).
+. Нажмите *Сохранить*.
 
-image:images/scim-user-profile-mapping.png[alt="Configuring a SCIM attribute mapping"]
+image:images/scim-user-profile-mapping.png[alt="Настройка отображения атрибута SCIM"]
 
-== Mapping additional name attributes
+== Сопоставление дополнительных атрибутов имени
 
-To support the full SCIM name attributes, you can map:
+Для поддержки полных атрибутов названия SCIM, вы можете карта:
 
 [cols="1,1", options="header"]
 |===
-|User Profile Attribute Name
-|SCIM Attribute Value
+|Атрибут пользователя
+|Значение атрибута SCIM
 
 |`middleName`
 |`name.middleName`
@@ -78,7 +78,7 @@ To support the full SCIM name attributes, you can map:
 |`name.honorificSuffix`
 |===
 
-Once configured, creating a user with these attributes via SCIM works as expected:
+После настройки, создание пользователя с этими атрибутами через SCIM будет работать так, как ожидается:
 
 [source,bash]
 ----
@@ -98,16 +98,16 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-The `name.formatted` attribute is automatically generated from the name components and is read-only.
+Атрибут `name.formatted` автоматически генерируется из компонентов имен и только для чтения.
 
-== Mapping the externalId attribute
+== Сопоставление внешнего атрибута
 
-To support the SCIM `externalId` attribute, which allows external systems to store their own identifier for a user:
+Чтобы поддерживать атрибут SCIM `externalId`, который позволяет внешним системам хранить свой идентификатор для пользователя:
 
-* User Profile attribute name: `myExternalId` (or any name of your choice)
-* SCIM attribute value: `externalId`
+* Имя атрибута профиля пользователя: «myExternalId» (или любое имя по вашему выбору)
+* Значение атрибута SCIM: `externalId`
 
-Once configured, you can set the external ID when creating or updating users:
+После настройки вы можете задать внешний ID при создании или обновлении пользователей:
 
 [source,bash]
 ----
@@ -121,8 +121,8 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users \
   }'
 ----
 
-== Schema discovery
+== Обнаружение схемы
 
-Any attribute configured with a SCIM attribute mapping is automatically reflected in the schema
-discovery endpoints (`/Schemas` and `/ResourceTypes`). For more details on schema discovery, including how to
+Любой атрибут, сконфигурированный с отображением атрибутов SCIM, автоматически отражается в схеме
+обнаружения конечных точек (`/Schemas` и `/ResourceTypes`). For more details on schema discovery, including how to
 use extension schemas beyond the core User schema, see <<_scim_managing_schema_extensions_,Managing schema extensions>>.
