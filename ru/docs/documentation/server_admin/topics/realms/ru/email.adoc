@@ -1,90 +1,90 @@
-= Configuring email for a realm
+= Настройка электронной почты для области
 
-{project_name} sends emails to users to verify their email addresses, when they forget their passwords, or when an administrator needs to receive notifications about a server event. To enable {project_name} to send emails, you provide {project_name} with your SMTP server settings.
+{project_name} отправляет письма пользователям для проверки их адреса электронной почты, когда они забудут свои пароли, или когда администратору необходимо получать уведомления о событии сервера. Чтобы включить {project_name} для отправки писем, вы предоставляете {project_name} настройки SMTP-сервера.
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click the *Email* tab.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Email*.
 +
 image:images/email-tab.png[Email Tab]
-. Fill in the fields and toggle the switches as needed.
+. Заполните поля и переключатели по мере необходимости.
 
-From:: *From* denotes the address used for the *From* SMTP-Header for the emails sent.
-From display name:: *From display name* allows to configure a user-friendly email address aliases (optional).
-If not set the plain *From* email address will be displayed in email clients.
-Reply to:: *Reply to* denotes the address used for the *Reply-To* SMTP-Header for the mails sent (optional).
-If not set the plain *From* email address will be used.
-Reply to display name:: *Reply to display name* allows to configure a user-friendly email address aliases (optional).
-If not set the plain *Reply To* email address will be displayed.
-Envelope from:: *Envelope from* denotes the https://en.wikipedia.org/wiki/Bounce_address[Bounce Address] used for the *Return-Path* SMTP-Header for the mails sent (optional).
+От:: *От* обозначает адрес, используемый для SMTP-заголовка для отправленных сообщений.
+Из отображаемого имени:: *Из отображаемого имя* позволяет настроить дружественные псевдонимы адреса электронной почты (опционально).
+Если не выбран простой *От* адрес электронной почты будет отображаться в почтовых клиентах.
+Ответить:: *Ответить* означает адрес, используемый для *Ответа* SMTP-заголовка для отправленных писем (опционально).
+Если не выбран простой адрес электронной почты *От*.
+Ответить для отображения имени:: *Ответить на имя* позволяет настроить дружественные псевдонимы адреса электронной почты (опционально).
+Если не выбран простой *Ответить на * адрес электронной почты, будет показан.
+Конверт из:: *Конверт от* означает https://en.wikipedia.org/wiki/Bounce_address[Bounce Address], используемый для SMTP-заголовка отправленных сообщений (необязательно).
 
-Host:: *Host* denotes the SMTP server hostname used for sending emails.
-Port:: *Port* denotes the SMTP server port.
-Encryption:: Tick one of these checkboxes to support sending emails for recovering usernames and passwords, especially if the SMTP server is on an external network.
-You will most likely need to change the *Port* to 465, the default port for SSL/TLS.
-Authentication:: Set this switch to *ON* if your SMTP server requires authentication.
-Username:: All authentication-mechanisms require a username.
-Authentication Type:: Choose the kind of authentication: 'password' or 'token'.
-Password:: Only needed when *Authentication Type* 'password' is selected.
-Supply the *Password*.
-The value of the *Password* field can refer a value from an external <<_vault-administration,vault>>.
-Auth Token URL:: Only needed when *Authentication Type* 'token' is selected.
-Supply the *Auth Token URL* that is used to fetch a token via client credentials grant.
-Auth Token Scope:: Only needed when *Authentication Type* 'token' is selected.
-Supply the *Auth Token Scope* that is used to fetch a token from the *Auth Token URL*.
-Auth Token ClientId:: Only needed when *Authentication Type* 'token' is selected.
-Supply the *Auth ClientId* that is used to fetch a token from the *Auth Token URL*.
-Auth Token Client Secret:: Only needed when *Authentication Type* 'token' is selected.
-Supply the *Auth Client Secret* that authenticates the client to fetch a token from the *Auth Token URL*.
-The value of the *Auth Client Secret* field can refer a value from an external <<_vault-administration,vault>>.
-Allow UTF-8:: Enable to UTF-8-encode email address when sending them to the server.
-This should only be enabled if the mail server supports UTF-8 via the SMTPUTF8 extension.
-If disabled, domain names containing non-ASCII characters will be encoded using punycode, and addresses containing non-ASCII characters in the local part of the address will return an error.
+Хост:: *Хост* обозначает имя хоста сервера SMTP, используемого для отправки писем.
+Порт:: *Порт* означает порт SMTP-сервера.
+Шифрование:: Отметьте один из этих флажков для поддержки отправки писем о восстановлении имен пользователей и паролей, особенно если SMTP сервер находится во внешней сети.
+Скорее всего, вам потребуется изменить *Порт* на 465, порт по умолчанию для SSL/TLS.
+Проверка подлинности:: Установите этот переключатель в *ВКЛЮЧЕНИЕ*, если ваш SMTP сервер требует аутентификации.
+Имя пользователя:: Все механизмы аутентификации требуют имени пользователя.
+Тип аутентификации:: Выберите тип аутентификации: 'password' или 'token'.
+Пароль:: Требуется только если выбран *Authentication Type* 'password'.
+Передача *Пароля*.
+Значение поля *Пароль* может ссылаться на значение из внешнего <_vault-administration,vault>>.
+URL токена аутентификации:: Требуется только если выбран токен *Authentication Type*.
+Предоставить *URL токена авторизации*, который используется для получения токена с помощью предоставленных учетных данных клиента.
+Рамка токена аутентификации:: Требуется только если выбран токен *Authentication Type*.
+Передача *Области Маркера Авторизации*, используемого для получения токена из *URL Маркера Автора*.
+Идентификатор клиента аутентификации:: Требуется только если выбран токен *Authentication Type*.
+Передайте *Идентификатор Клиента Авторизации*, который используется для получения токена из *URL Маркера Автора*.
+Секрет ключа клиента:: Требуется только если выбран токен *Authentication Type*.
+Передайте *Секретарь Авторизации*, который аутентифицирует клиента для получения токена из *URL-адреса токена Авторизации*.
+Значение поля *Auth Client Secret* может ссылаться на значение внешнего <_vault-administration,vault>>.
+Разрешить UTF-8:: Включить кодировку в UTF-8 при отправке их на сервер.
+Это должно быть включено только в том случае, если почтовый сервер поддерживает UTF-8 через расширение SMTPUTF8.
+Если отключено, доменные имена, содержащие неASCII символы, будут закодированы с помощью punycode, и адреса, содержащие не-ASCII символы в локальной части адреса возвращают ошибку.
 +
-If the realm is configured to send emails (this SMTP configuration is setup) and *Allow UTF-8* option is disabled, the built-in <<user-profile, user profile>> email validator checks the local part of the address contains only ASCII characters. This way, {project_name} prevents user emails that cannot be notified.
+Если реалм настроен на отправку писем (эта конфигурация SMTP настроена) и *Разрешить UTF-8* отключена, встроенный <<user-profile, user profile>> валидатор электронной почты проверяет локальную часть адреса содержит только символы ASCII. Таким образом, {project_name} предотвращает сообщения пользователей, которые не могут быть уведомлены.
 
 ifeval::[{project_community}==true]
 
-== XOAUTH2 email configuration with third-party vendors
+== Конфигурация электронной почты XOAUTH2 с сторонними поставщиками
 
-The following section contains some hints on how to configure {project_name} email settings to use XOAUTH2 based authentication with some known third-party software SMTP servers.
+В следующей секции содержатся подсказки о том, как настроить настройки электронной почты {project_name} для использования аутентификации на основе XOAUTH2 с известными программными SMTP серверами сторонних разработчиков.
 
-NOTE: This section has been contributed by the Keycloak community. As the Keycloak core team does not have means to test third-party providers, it is provided as-is. If you find this documentation outdated or incomplete, please contribute to improve it.
+NOTE: Этот раздел был внесен сообществом Keycloak. Поскольку основная команда Keycloak не имеет средств для тестирования сторонних провайдеров, она предоставляется как есть. Если вы обнаружили, что эта документация устарела или неполна, пожалуйста, внесите свой вклад в ее улучшение.
 
-=== Configuration for Microsoft Azure and Office365
+=== Конфигурация для Microsoft Azure и Office365
 
-Microsoft Azure allows 'Client Credentials Grant' using a client secret to gather an access token.
-Microsoft Office365 supports SMTP with XOAUTH2 to authenticate with the gathered token.
+Microsoft Azure позволяет «Предоставление учетных данных клиентам» использовать секретный ключ клиента для сбора токена доступа.
+Microsoft Office365 поддерживает SMTP с XOAUTH2 для аутентификации с собранным токеном.
 
-Links to relevant Microsoft documentation:
+Ссылки на соответствующую документацию Майкрософт:
 
-- https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac[Usage of role base access control for applications in exchange online]
-- Settings in https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth[Authenticate an IMAP, POP or SMTP connection using OAuth]
+- https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac[Использование ролевого контроля доступа для приложений в режиме онлайн обмена]
+- Настройки в https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth[Аутентифицируйте IMAP, POP или SMTP с помощью OAuth]
 
-The following method for setting up {project_name} to send email with Azure and Office365 has been verified by a test.
-There might be other variants to achieve the same depending on your environment.
+Следующий метод настройки {project_name} для отправки электронной почты с Azure и Office365 был проверен тестом.
+В зависимости от вашего окружения могут быть и другие варианты.
 
-From:: `<some>@<domain>`
-Host:: `smtp.office365.com`
-Port:: `587`
-Encryption:: Check Start TLS
-Username:: `<some>@<domain>` (might be the same of a different value than the sender value)
-Auth Token Url:: `+https://login.microsoftonline.com/<TenantID>/oauth2/v2.0/token+`
+От:: `<some>@<domain>
+Хост:: `smtp.office365.com`
+Порт:: `587`
+Шифрование:: Проверить TLS
+Имя пользователя:: `<some>@<domain>` (может отличаться от значения отправителя)
+Ссылка на токен аутентификации:: `+https://login.microsoftonline.com/<TenantID>/oauth2/v2.0/token+`
 +
-Replace TenantID with the id of your Microsoft tenant, usually a UUID, in Azure or just copy the token url from the list of endpoints displayed in the Azure Console.
-Auth Token Scope:: `+https://outlook.office.com/.default+`
-Auth Token ClientId:: `<ApplicationId>`
+Замените TenantID идентификатором вашего клиента Microsoft, обычно UUID, в Azure или просто скопируйте токен url из списка конечных точек, отображаемых в консоли Azure.
+Рамка токена аутентификации:: `+https://outlook.office.com/.default+`
+Идентификатор клиента аутентификации:: `<ApplicationId>`
 +
-Replace ApplicationId with the id of your application in Azure, usually a UUID.
+Замените ApplicationId идентификатором вашего приложения в Azure, обычно UUID.
 Auth Token ClientSecret:: `<Secret configured>`
 
-=== Configuration for Google Mail
+=== Конфигурация для Google Mail
 
-This feature is not yet supported by {project_name}, because Google does not allow client-secrets for the Client Credentials Grant.
+Эта функция еще не поддерживается {project_name}, потому что Google не позволяет клиент-секреты для Client Credentials Grant.
 
-=== Configuration for AWS
+=== Конфигурация для AWS
 
-XOAUTH2 is not supported by the AWS-SMTP service.
-The AWS-service requires the use of a password.
+XOAUTH2 не поддерживается службой AWS-SMTP.
+Сервис AWS требует использования пароля.
 
 endif::[]
