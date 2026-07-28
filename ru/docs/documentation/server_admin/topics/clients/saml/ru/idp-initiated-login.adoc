@@ -1,38 +1,38 @@
-= IDP Initiated login
+= Логин инициализации IDP
 
-In the *Settings* tab for your client, you need to specify the *IDP Initiated SSO URL Name*.
-This is a simple string with no whitespace in it.
-After this you can reference your client at the following URL: `root{kc_realms_path}/{realm-name}/protocol/saml/clients/{url-name}`
+В вкладке *Настройки* для вашего клиента необходимо указать *Имя URL-адреса SSO с инициативой IDP*.
+Это простая строка без пробелов.
+После этого вы можете ссылаться на клиента по ссылке: `root{kc_realms_path}/{realm-name}/protocol/saml/clients/{url-name}`
 
-The IDP initiated login implementation prefers _POST_ over _REDIRECT_ binding (check <<_saml, saml bindings>> for more information).
-Therefore the final binding and SP URL are selected in the following way:
+IDP инициировал реализацию входа предпочтение _POST_ по привязке _REDIRECT_ (посмотрите <<_saml, saml bindings>> для получения дополнительной информации).
+Поэтому окончательная привязка и SP URL выбираются следующим образом:
 
-1. If the specific *Assertion Consumer Service POST Binding URL* is defined (inside *Fine Grain SAML Endpoint Configuration* section
-of the client settings) _POST_ binding is used through that URL.
-1. If the general *Master SAML Processing URL* is specified then _POST_ binding is used again throughout this general URL.
-1. As the last resort, if the *Assertion Consumer Service Redirect Binding URL* is configured (inside
-*Fine Grain SAML Endpoint Configuration*) _REDIRECT_ binding is used with this URL.
+1. Если определен *привязка к сервису POST POST* (внутри секции *Fine Grain SAML Endpoint Configuration*
+из настроек клиента) используется привязка _POST_ к этому URL.
+1. Если указан общий *Master SAML Processing URL*, то снова используется привязка _POST_ в этом общем URL.
+1. В качестве последнего средства если привязка *URL перенаправления потребительской службы Assertion Consumer Service настроена (внутри
+*Fine Grain SAML Endpoint Configuration*) _REDIRECT_ используется с этим URL.
 
-If your client requires a special relay state, you can also configure this on the *Settings* tab in the *IDP Initiated SSO Relay State* field.
-Alternatively, browsers can specify the relay state in a *RelayState* query parameter, i.e.
+Если вашему клиенту требуется специальное состояние ретрансляции, вы также можете настроить это на вкладке *Настройки* в поле *Инициативное состояние SSO Реле SSO*.
+В качестве альтернативы, браузеры могут указать состояние реле в параметре запроса *RelayState*, то есть
 `root{kc_realms_path}/{realm-name}/protocol/saml/clients/{url-name}?RelayState=thestate`.
 
-When using <<_identity_broker,identity brokering>>, it is possible to set up an IDP Initiated Login for a client from an
-external IDP. The actual client is set up for IDP Initiated Login at broker IDP as described above. The external IDP has
-to set up the client for application IDP Initiated Login that will point to a special URL pointing to the broker and
-representing IDP Initiated Login endpoint for a selected client at the brokering IDP. This means that in client settings
+При использовании <<_identity_broker,identity brokering>>, можно настроить привязанный к IDP логин для клиента из
+внешнего IDP. Актуальный клиент настроен для IDP Initiated Login at broker IDP, как описано выше. Внешний IDP имеет
+для настройки клиента для IDP Логина приложения, который указывает на специальный URL, указывающий на брокера и
+, представляющий endpoint IDP инициализации входа для выбранного клиента в брокерском IDP. This means that in client settings
 at the external IDP:
 
-* *IDP Initiated SSO URL Name* is set to a name that will be published as IDP Initiated Login initial point,
+* *Имя URL-адреса IDP инициализация SSO * установлено на имя, которое будет опубликовано в качестве начальной точки IDP инициализации входа
 * *Assertion Consumer Service POST Binding URL* in the *Fine Grain SAML Endpoint Configuration* section has
 to be set to the following URL:
 `broker-root{kc_realms_path}/{broker-realm}/broker/{idp-name}/endpoint/clients/{client-id}`, where:
-** _broker-root_ is base broker URL
-** _broker-realm_ is name of the realm at broker where external IDP is declared
-** _idp-name_ is name of the external IDP at broker
-** _client-id_ is the value of *IDP Initiated SSO URL Name* attribute of the SAML client defined at broker. It is
-this client, which will be made available for IDP Initiated Login from the external IDP.
+** _брокер-root_ URL-адрес брокера
+** _broker-realm_ является именем области в брокере, где объявлен внешний IDP
+** _idp-name_ имя внешнего IDP у брокера
+** _client-id_ — значение атрибута *IDP Initiated SSO URL Name* для SAML клиента, определенного в брокере. Это
+этот клиент, который будет доступен для входа IDP инициализации из внешнего IDP.
 
-Please note that you can import basic client settings from the brokering IDP into client settings of the external IDP -
-just use <<_identity_broker_saml_sp_descriptor,SP Descriptor>> available from the settings of the identity provider in
-the brokering IDP, and add `clients/_client-id_` to the endpoint URL.
+Обратите внимание, что вы можете импортировать основные настройки клиента из брокерского IDP в настройки клиента внешнего IDP -
+просто используйте <<_identity_broker_saml_sp_descriptor, P Descriptor>> доступны из настроек идентификатора провайдера в
+брокерского IDP и добавьте `clients/_client-id_` в URL конечной точки.
