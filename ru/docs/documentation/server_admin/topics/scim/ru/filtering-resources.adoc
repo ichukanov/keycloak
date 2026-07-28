@@ -1,12 +1,12 @@
 [[_scim_filtering_resources]]
-= Filtering resources
+= Фильтрация ресурсов
 
-The SCIM API in {project_name} supports the full filter syntax defined in https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2[RFC 7644, Section 3.4.2.2],
-allowing you to search for resources using a rich expression language.
+SCIM API в {project_name} поддерживает полный фильтр синтаксис, определенный в https://datatracker.ietf.org/doc/html/rfc7644#section-3. .2.2[RFC 7644, раздел 3.4.2.2],
+позволяет искать ресурсы с использованием богатого языка выражения.
 
-== Using filters
+== Использование фильтров
 
-Filters are specified using the `filter` query parameter on `GET` requests:
+Фильтры указываются с использованием параметра запроса `filter` в запросе `GET`:
 
 [source,bash]
 ----
@@ -15,120 +15,120 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=userName+eq+\"jd
   -H "Accept: application/scim+json"
 ----
 
-NOTE: Filter values must be URL-encoded when used in query parameters. Spaces in the filter expression should be
-encoded as `+` or `%20`. The examples in this section show the raw filter syntax for readability.
+NOTE: Значения фильтра должны быть в URL-кодировке при использовании в параметрах запроса. Пробелы в выражении фильтра должны быть
+закодированы как `+` или `%20`. Примеры этого раздела показывают синтаксис сырого фильтра для читаемости.
 
-== Comparison operators
+== Операторы сравнения
 
-The following comparison operators are supported:
+Поддерживаются следующие операторы:
 
 [cols="1,2,3", options="header"]
 |===
-|Operator
-|Description
-|Example
+|Оператор
+|Описание
+|Пример
 
 |`eq`
-|Equal
+|Равно
 |`userName eq "jdoe"`
 
 |`ne`
-|Not equal
-|`active ne false`
+|Не равно
+|`активные ne false`
 
 |`co`
-|Contains
-|`emails co "example.com"`
+|Содержит
+|`email co "example.com"`
 
 |`sw`
-|Starts with
+|Начинается с
 |`userName sw "j"`
 
 |`ew`
-|Ends with
+|Заканчивается с
 |`userName ew "doe"`
 
 |`gt`
-|Greater than
+|Больше, чем
 |`meta.created gt "2025-01-01T00:00:00Z"`
 
 |`ge`
-|Greater than or equal
+|Больше или равно
 |`meta.created ge "2025-01-01T00:00:00Z"`
 
 |`lt`
-|Less than
-|`meta.lastModified lt "2025-06-01T00:00:00Z"`
+|Менее чем
+|`meta.lastModified lt "2025-06-01T00:00Z"`
 
-|`le`
-|Less than or equal
-|`meta.lastModified le "2025-06-01T00:00:00Z"`
+|`л`
+|Меньше или равно
+|`meta.lastModified le "2025-06-01T00:00Z"`
 
 |`pr`
-|Present (attribute has a value)
+|Присутствие (атрибут имеет значение)
 |`emails.value pr`
 |===
 
-NOTE: The `gt`, `ge`, `lt`, and `le` operators are supported on date/time attributes such as `meta.created` and
-`meta.lastModified`. The `sw`, `ew`, and `co` operators are supported on string attributes but not on date/time
-or boolean attributes. Invalid operator/type combinations return a `400 Bad Request` response with
+NOTE: Операторы `gt`, `ge`, `lt` и `le` поддерживаются в атрибутах даты/времени, таких как `meta.created` и
+`meta.lastModified`. Операторы `sw`, `ew` и `co` поддерживаются в строковых атрибутах, но не на атрибутах date/time
+или boolean. Недопустимые комбинации операторов/типов возвращают ответ `400 Bad Request` с
 `scimType: "invalidFilter"`.
 
-== Logical operators
+== Логические операторы
 
-Filters can be combined using logical operators:
+Фильтры можно комбинировать с помощью логических операторов:
 
 [cols="1,3", options="header"]
 |===
-|Operator
-|Description
+|Оператор
+|Описание
 
-|`and`
-|Both conditions must be true.
+|`и`
+|Оба условия должны быть правдой.
 
-|`or`
-|At least one condition must be true.
+|`или`
+|По крайней мере одно условие должно быть истинным.
 
-|`not`
-|Negates the following expression. Parentheses are optional but recommended for clarity.
+|`не`
+|Отрицает следующее выражение. Родительские скобки не обязательны, но рекомендуется для ясности.
 |===
 
-=== Examples
+=== Примеры
 
-Filter users by family name and active status:
+Фильтровать пользователей по фамилии и активному статусу:
 
 ----
 name.familyName eq "Smith" and active eq true
 ----
 
-Filter users matching either condition:
+Фильтровать пользователей, соответствующих условию:
 
 ----
 userName eq "jdoe" or userName eq "asmith"
 ----
 
-Negate a condition:
+Отрицать условие:
 
 ----
 not (active eq false)
 ----
 
-Use parentheses to group conditions:
+Используйте скобки для группировки условий:
 
 ----
 (userName sw "j" or userName sw "a") and active eq true
 ----
 
-== Filtering by sub-attributes
+== Фильтрация по податрибутам
 
-You can filter by sub-attributes of complex attributes using dot notation:
+Вы можете фильтровать по податрибутам сложных атрибутов, используя точечную ноту:
 
 ----
 name.givenName eq "John"
 name.familyName sw "Sm"
 ----
 
-For multi-valued attributes like `emails`:
+Для многозначных атрибутов, таких как 'email':
 
 ----
 emails eq "jdoe@example.com"
@@ -136,7 +136,7 @@ emails.value eq "jdoe@example.com"
 emails co "example.com"
 ----
 
-== Value path filters
+== Фильтры пути к значению
 
 SCIM also supports value path filtering, where you filter on sub-attributes within a complex attribute using
 bracket notation:
@@ -147,15 +147,15 @@ name[givenName eq "John" and familyName eq "Doe"]
 name[givenName eq "John" or givenName eq "Jane"]
 ----
 
-Value path filters can be combined with regular filters:
+Фильтры пути к значениям могут быть объединены с обычными фильтрами:
 
 ----
 name[familyName eq "Smith"] and active eq true
 ----
 
-== Filtering by group membership
+== Фильтрация по членству в группе
 
-You can filter users by their group membership using the `groups.value` attribute:
+Вы можете отфильтровать пользователей по их членству в группах, используя атрибут `groups.value`:
 
 [source,bash]
 ----
@@ -164,7 +164,7 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?filter=groups.value+eq+
   -H "Accept: application/scim+json"
 ----
 
-Combine group membership filters with logical operators:
+Соединить фильтры для групп с логическими операторами:
 
 ----
 (groups.value eq "{groupIdA}") and (groups.value eq "{groupIdB}")
@@ -172,7 +172,7 @@ Combine group membership filters with logical operators:
 groups.value ne "{groupId}"
 ----
 
-Similarly, you can filter groups by member:
+Точно так же вы можете фильтровать группы по участникам:
 
 [source,bash]
 ----
@@ -181,34 +181,34 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Groups?filter=members.value+e
   -H "Accept: application/scim+json"
 ----
 
-NOTE: When an LDAP user federation provider is configured with a group mapper in `LDAP_ONLY` mode, group
-membership filters (`groups.value` and `members.value`) may return empty results. This happens because
-`LDAP_ONLY` mode stores group memberships exclusively in LDAP, while the SCIM filter queries the local
-database directly. Retrieving a user's groups via `?attributes=groups` or a group's members via
-`?attributes=members` is not affected, as those requests go through the federation layer and read from LDAP.
-If you need membership-based filtering with LDAP federation, consider switching the group mapper to `IMPORT`
-mode so that memberships are also stored locally.
+NOTE: Когда провайдер пользовательской федерации LDAP настроен на использование карты групп в режиме `LDAP_ONLY`, группа
+фильтров членства (`группы. alue` и `members.value`) могут возвращать пустые результаты. Это происходит потому, что режим
+`LDAP_ONLY` сохраняет членство в группах только в LDAP, в то время как фильтр SCIM запрашивает локальную базу данных
+. Получение групп пользователей через `?attributes=groups` или членов группы через
+`? ttributes=members` не затронут, так как эти запросы проходят через слой федерации и читаются из LDAP.
+Если вам нужна основанная на членстве фильтрация с федерацией LDAP, подумайте о переключении карты групп на режим `IMPORT`
+, чтобы членство также хранилось локально.
 
-== Filtering by extension attributes
+== Фильтрация по атрибутам расширения
 
-Filters can reference attributes from schema extensions by using the full schema URI as a prefix:
+Фильтры могут ссылаться на атрибуты из расширений схемы, используя полный URI схемы в качестве префикса:
 
 ----
 urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:department eq "Engineering"
 urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.displayName ew "Manager"
 ----
 
-For custom schema extensions:
+Для пользовательских расширений схемы:
 
 ----
 urn:my:params:scim:schemas:extension:custom:1.0:User:myattribute eq "myvalue"
 ----
 
-See <<_scim_managing_schema_extensions_,Managing schema extensions>> for more details on configuring extension attributes.
+Смотрите <<_scim_managing_schema_extensions_,Управление расширениями schema >> для получения более подробной информации о настройке атрибутов расширений.
 
-== Using POST-based search
+== Использование POST-поиска
 
-For complex queries that might exceed URL length limitations, use the `POST /.search` endpoint:
+Для сложных запросов, которые могут превышать ограничение длины URL, используйте конечную точку `POST /.search`:
 
 [source,bash]
 ----
@@ -224,13 +224,13 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Users/.search \
   }'
 ----
 
-The search request body supports the same parameters available as query parameters: `filter`, `startIndex`,
-`count`, `attributes`, `excludedAttributes`, `sortBy`, and `sortOrder`.
+Тело запроса поиска поддерживает те же параметры, что и параметры запроса: `filter`, `startIndex`,
+`count`, `attributes`, `excludedAttributes`, `sortBy`, и `sortOrder`.
 
-== Pagination
+== Пагинация
 
-When listing or searching resources, you can control the page of results returned using the `startIndex` and
-`count` parameters:
+При перечислении или поиске ресурсов, вы можете контролировать страницу результатов, полученных с помощью параметров `startIndex` и
+`count`:
 
 [source,bash]
 ----
@@ -239,7 +239,7 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?startIndex=1&count=10" 
   -H "Accept: application/scim+json"
 ----
 
-The response includes pagination metadata:
+Ответ включает в себя пагинацию метаданных:
 
 [source,json]
 ----
@@ -252,11 +252,11 @@ The response includes pagination metadata:
 }
 ----
 
-* `totalResults`: The total number of resources matching the query.
-* `itemsPerPage`: The number of resources in the current page.
-* `startIndex`: The 1-based index of the first resource in the current page.
+* `totalResults`: Общее количество ресурсов, соответствующих запросу.
+* `itemsPerPage`: Количество ресурсов на текущей странице.
+* `startIndex`: 1 основанный на индексе первого ресурса на текущей странице.
 
-To retrieve the next page, increment `startIndex` by `count`:
+Чтобы получить следующую страницу, приращение `startIndex` на `count`:
 
 [source,bash]
 ----
@@ -265,9 +265,9 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Users?startIndex=11&count=10"
   -H "Accept: application/scim+json"
 ----
 
-== Error responses
+== Ошибки
 
-Invalid filter expressions return a `400 Bad Request` response with `scimType: "invalidFilter"`:
+Недопустимые выражения фильтра возвращают ответ `400 Bad Request` с `scimType: "invalidFilter"`:
 
 [source,json]
 ----
@@ -279,9 +279,9 @@ Invalid filter expressions return a `400 Bad Request` response with `scimType: "
 }
 ----
 
-Common causes of filter errors:
+Распространенные причины ошибок фильтра:
 
-* Mismatched parentheses.
-* Unknown filter operators.
-* Using an operator on an incompatible attribute type (for example, `gt` on a boolean).
-* Using string operators (`sw`, `ew`, `co`) on date/time attributes.
+* Несоответствие скобок.
+* Неизвестные операторы фильтров.
+* Использование оператора с несовместимым типом атрибута (например, `gt` на boolean).
+* Использование строковых операторов (`sw`, `ew`, `co`) атрибутов даты/времени.
