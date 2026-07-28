@@ -1,86 +1,86 @@
 [[_identity_broker_oauth]]
-=== OAuth v2 identity providers
+=== OAuth v2 идентификационные данные
 
-{project_name} brokers identity providers based on the OAuth v2 protocol. These identity providers (IDPs) must support the xref:con-oidc-auth-flows_{context}[Authorization Code Flow] defined in the specification to authenticate users and authorize access.
+брокеров {project_name} на основе OAuth v2 протокола. Эти идентификационные провайдеры (IDPs) должны поддерживать xref:con-oidc-auth-flows_{context}[Код авторизации Flow], определенный в спецификации для аутентификации пользователей и авторизации доступа.
 
-.Procedure
-. Click *Identity Providers* in the menu.
-. From the `Add provider` list, select `OAuth v2`.
-. Enter your initial configuration options. See <<_general-idp-config, General IDP Configuration>> for more information about configuration options.
+.Процедура
+. Нажмите на *Identity Providers* в меню.
+. Из списка `Добавить провайдера` выберите `OAuth v2`.
+. Введите начальные параметры конфигурации. Смотрите <<_general-idp-config, General IDP Configuration>> для получения дополнительной информации о параметрах конфигурации.
 +
-.OAuth2 settings
+.Настройки OAuth2
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
-|Authorization URL
-|The authorization URL endpoint.
+|URL авторизации
+|Конечная точка URL авторизации.
 
-|Token URL
-|The token URL endpoint.
+|URL токена
+|Конечная точка URL маркера.
 
-|User Info URL
-|An endpoint from where information about the user will be fetched from. When invoking this endpoint, {project_name} will send
-the request with the access token issued by the identity provider as a bearer token. As a result, it expects the response to be a
-JSON document with the claims that should be used to obtain user profile information like ID, username, email, and first and last names.
+|URL информации пользователя
+|С конечной точки, с которой будет получена информация о пользователе. When invoking this endpoint, {project_name} will send
+the request with the access token issued by the identity provider as a bearer token. В результате он ожидает, что ответ будет документом
+JSON с претензиями, которые должны быть использованы для получения данных профиля пользователя, таких как ID, имя пользователя, электронную почту и фамилию.
 
-|Client Authentication
-|Defines the Client Authentication method {project_name} uses with the Authorization Code Flow. In the case of JWT signed with a private key, {project_name} uses the realm private key. In the other cases, define a client secret. See the https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication[Client Authentication specifications] for more information.
+|Аутентификация Клиента
+|Определяет метод аутентификации Клиента {project_name} использует с кодом авторизации. В случае подписи JWT с приватным ключом, {project_name} использует закрытый ключ реалма. В других случаях определите клиентскую тайну. Дополнительную информацию см. на https://openid.net/specs/openid-connect-core-1_0.html#ClientAuthentication[Client Authentication specifications].
 
-|Client ID
-|A realm acting as an OIDC client to the external IDP. The realm must have an OIDC client ID if you use the Authorization Code Flow to interact with the external IDP.
+|ID клиента
+|Мир, выступающий клиентом OIDC для внешнего IDP. Для взаимодействия с внешним IDP область должна иметь идентификатор клиента OIDC, если вы используете код авторизации.
 
-|Client Secret
-|Client secret from an external <<_vault-administration,vault>>. This secret is necessary if you are using the Authorization Code Flow.
+|Секрет клиента
+|Секрет клиента от внешнего <_vault-administration,vault>>. Этот секрет необходим, если Вы используете код авторизации.
 
-|Client Assertion Signature Algorithm
-|Signature algorithm to create JWT assertion as client authentication.
-In the case of JWT signed with private key or Client secret as jwt, it is required. If no algorithm is specified, the following algorithm is adapted. `RS256` is adapted in the case of JWT signed with private key.  `HS256` is adapted in the case of Client secret as jwt.
+|Алгоритм подписи назначения клиента
+|Алгоритм подписи, чтобы создать JWT утверждение в качестве клиентской аутентификации.
+В случае подписи JWT с приватным ключом или секретным ключом клиента в качестве jwt, требуется его регистрация. Если алгоритм не задан, следующий алгоритм адаптируется. `RS256` адаптирован в случае JWT подписанного с приватным ключом.  `HS256` адаптирован в случае секрета Клиента как jwt.
 
-|Client Assertion Audience
-|The audience to use for the client assertion. The default value is the IDP's token endpoint URL.
+|Аудитория к назначению клиента
+|Зрители должны использовать для утверждения клиента. Значение по умолчанию — URL-адрес конечной точки IDP токена.
 
-|Default Scopes
-|A space separated list of scopes {project_name} sends with the authentication request.
+|Области по умолчанию
+|Разделенный пробелом список областей действия {project_name} посылается с запросом на аутентификацию.
 
 |Prompt
-|The prompt parameter in the OIDC specification. Through this parameter, you can force re-authentication and other options. See the specification for more details.
+|Параметр подсказки в спецификации OIDC. С помощью этого параметра вы можете принудительно переавторизоваться и другие опции. Смотрите спецификацию для более подробной информации.
 
-|Accepts prompt=none forward from client
-|Specifies if the IDP accepts forwarded authentication requests containing the `prompt=none` query parameter. If a realm receives an auth request with `prompt=none`, the realm checks if the user is currently authenticated and returns a `login_required` error if the user has not logged in. When {project_name} determines a default IDP for the auth request (using the `kc_idp_hint` query parameter or having a default IDP for the realm), you can forward the auth request with `prompt=none` to the default IDP. The default IDP checks the authentication of the user there. Because not all IDPs support requests with `prompt=none`, {project_name} uses this switch to indicate that the default IDP supports the parameter before redirecting the authentication request.
+|Принимает запросы=не переадресовывать от клиента
+|Определяет, принимает ли IDP запросы переадресации аутентификации, содержащие параметр запроса `prompt=none`. Если реалм получает запрос авторизации в `prompt=none`, Realm проверяет, аутентифицирован ли пользователь в данный момент и возвращает ошибку `login_required`, если пользователь не вошел в систему. Когда {project_name} определяет IDP по умолчанию для запроса авторизации (используя параметр `kc_idp_hint` или с IDP по умолчанию для этого реалма), вы можете переслать запрос авторизации с помощью `prompt=none` на идентификатор по умолчанию. IDP по умолчанию проверяет подлинность пользователя там. Поскольку не все ВПЛ поддерживают запросы с помощью `prompt=none`, {project_name} использует этот переключатель для указания на то, что IDP по умолчанию поддерживает этот параметр перед перенаправлением запроса аутентификации.
 
-If the user is unauthenticated in the IDP, the client still receives a `login_required` error. If the user is authentic in the IDP, the client can still receive an `interaction_required` error if {project_name} must display authentication pages that require user interaction. This authentication includes required actions (for example, password change), consent screens, and screens set to display by the `first broker login` flow or `post broker login` flow.
+Если пользователь не аутентифицирован в IDP, клиент все еще получает ошибку `login_required`. Если пользователь является подлинным в IDP, клиент все еще может получить ошибку `interaction_required`, если {project_name} должен отобразить страницы с аутентификацией, которые требуют взаимодействия с пользователем. Эта аутентификация включает необходимые действия (например, изменение пароля), экран согласия и экраны, на которых установлен поток `первый брокерский логин` или `post broker login`.
 
-|Requires short state parameter
-|This switch needs to be enabled if identity provider does not support long value of the `state` parameter sent in the initial OAuth2 authorization request (EG. more than 100 characters). In this case, {project_name} will try to make shorter `state` parameter and may omit some client data to be sent in the initial request. This may result in the limited functionality in some very corner case scenarios (EG. in case that IDP redirects to {project_name} with the error in the OAuth2 authorization response, {project_name} might need to display error page instead of being able to redirect to the client in case that login session is expired).
+|Требуется параметр короткого состояния
+|Этот переключатель должен быть включен, если провайдер идентификации не поддерживает длинное значение параметра `state`, посланного в первоначальном запросе авторизации OAuth2 (EG. более 100 символов). В этом случае {project_name} попытается сделать сокращенный параметр `state` и может опустить некоторые клиентские данные для отправки в исходном запросе. Это может привести к ограничению функциональности в некоторых весьма угловых сценариях (ЭГ. в случае, если IDP перенаправляет на {project_name} с ошибкой в ответе авторизации OAuth2, {project_name} может потребоваться отображать страницу ошибки вместо того, чтобы переадресовать клиенту в случае истечения срока действия регистрации).
 |===
 
-After the user authenticates to the identity provider and is redirected back to {project_name}, the broker will fetch the user profile information from the endpoint defined in the `User Info URL` setting. For that,
-{project_name} will invoke that endpoint using the access token issued by the identity provider as a bearer token. Even though the OAuth2 standard supports access tokens using a JWT format, this broker assumes access tokens are opaque and that user profile information should be obtained from a separate endpoint.
+После того, как пользователь аутентифицируется с провайдером идентификации и перенаправляется обратно на {project_name}, брокер получит информацию о профиле пользователя из конечной точки, определенной в параметре «Информация о пользователе». Для этого
+{project_name} вызовет эту конечную точку, используя токен доступа, выданный идентификационным провайдером в качестве токена предъявителя. Хотя стандарт OAuth2 поддерживает токены доступа в формате JWT, этот брокер предполагает, что токены доступа непрозрачны и что информация о пользовательском профиле должна быть получена с отдельной конечной точки.
 
-In order to map the claims from the JSON document returned by the user profile endpoint, you might want to set the following settings so that they are mapped to user attributes when federating the user:
+Для того чтобы соотнести претензии с документа JSON, возвращенного конечной точкой профиля пользователя, вы можете установить следующие параметры, чтобы они были сопоставлены с атрибутами пользователя при федерации пользователя:
 
 
-.User profile claims
+.Требования пользователя
 |===
-|Configuration |Description
+|Конфигурация |Описание
 
-|ID Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's unique identifier. If not provided, defaults to `sub`.
+|ID требования
+|Имя претензии из документа JSON, возвращенного конечной точкой профиля пользователя, представляющей уникальный идентификатор пользователя. Если не указано, по умолчанию `sub`.
 
-|Username Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's username. If not provided, defaults to `preferred_username`.
+|Имя пользователя
+|Имя претензии из документа JSON, возвращенное конечной точкой профиля пользователя с именем пользователя. Если не указано, по умолчанию «preferred_username».
 
-|Email Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's email. If not provided, defaults to `email`.
+|Электронная почта
+|Имя претензии из документа JSON, возвращенное конечной точкой профиля пользователя, представляющей адрес электронной почты пользователя. Если не указано, по умолчанию `email`.
 
-|Name Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's full name. If not provided, defaults to `name`.
+|Имя владения
+|Имя претензии из документа JSON, возвращенное конечной точкой профиля пользователя, содержащей полное имя пользователя. Если не указано, по умолчанию `name`.
 
-|Given name Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's given name. If not provided, defaults to `given_name`.
+|Данное имя
+|Имя претензии из документа JSON, возвращенное конечной точкой профиля пользователя, представляющей заданное имя пользователя. Если не указано, по умолчанию `given_name`.
 
-|Family name Claim
-|The name of the claim from the JSON document returned by the user profile endpoint representing the user's family name. If not provided, defaults to `family_name`.
+|Семейное имя
+|Имя претензии из документа JSON, возвращенного конечной точкой профиля пользователя, содержащей имя семейства. Если не указано, по умолчанию `family_name`.
 |===
 
-You can import all this configuration data by providing a URL or file that points to the Authorization Server Metadata. If you connect to a {project_name} external IDP, you can import the IDP settings from `<root>{kc_realms_path}/{realm-name}/.well-known/openid-configuration`. This link is a JSON document describing metadata about the IDP.
+Вы можете импортировать все эти данные конфигурации, предоставив URL-адрес или файл, указывающий на метаданные сервера авторизации. Если вы подключились к {project_name} внешней IDP, вы можете импортировать настройки IDP из `<root>{kc_realms_path}/{realm-name}/.well-known/openid-configuration`. Эта ссылка является документом JSON, описывающим метаданные о IDP.
