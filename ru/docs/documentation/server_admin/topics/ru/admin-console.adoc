@@ -1,7 +1,7 @@
 [#_configuring-realms]
-== Configuring realms
+== Настройка областей
 
-Once you have an administrative account for the Admin Console, you can configure realms. A realm is a space where you manage objects, including users, applications, roles, and groups.  A user belongs to and logs into a realm.   One {project_name} deployment can define, store, and manage as many realms as there is space for in the database.
+После того, как у вас есть административная учетная запись для консоли администратора, вы можете настроить реалмы. Область — это пространство, в котором вы управляете объектами, включая пользователей, приложения, роли и группы.  Пользователь принадлежит и вписывается в реалм.   Одно развертывание {project_name} может определять, хранить и управлять таким количеством миров, которое есть в базе данных.
 
 include::realms/proc-using-admin-console.adoc[leveloffset=1]
 
