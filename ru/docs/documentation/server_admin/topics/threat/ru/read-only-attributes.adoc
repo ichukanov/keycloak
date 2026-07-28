@@ -1,42 +1,42 @@
 [[read_only_user_attributes]]
-=== Read-only user attributes
+=== Атрибуты пользователей только для чтения
 
-Typical users who are stored in {project_name} have various attributes related to their user profiles. Such attributes include email, firstName or lastName.
-However users may also have attributes, which are not typical profile data, but rather metadata. The metadata attributes usually should be read-only for the users
-and the typical users never should have a way to update those attributes from the {project_name} user interface or Account REST API. Some of the attributes should
+Типичные пользователи, хранящиеся в {project_name} , имеют различные атрибуты, связанные с их профилями пользователей. Такие атрибуты включают email, firstName или lastName.
+Однако пользователи могут также иметь атрибуты, которые не являются типичными профильными данными, а скорее метаданными. Атрибуты метаданных, как правило, должны быть доступными только для чтения для пользователей
+и типичные пользователи никогда не должны иметь возможность обновить эти атрибуты из пользовательского интерфейса {project_name} или аккаунта REST API. Some of the attributes should
 be even read-only for the administrators when creating or updating user with the Admin REST API.
 
-The metadata attributes are usually attributes from those groups:
+Метаданные атрибутов, как правило, являются атрибутами этих групп:
 
-* Various links or metadata related to the user storage providers. For example in case of the LDAP integration, the `LDAP_ID` attribute contains
-the ID of the user in the LDAP server.
-* Metadata provisioned by User Storage. For example `createdTimestamp` provisioned from the LDAP should be always read-only by user or administrator.
-* Metadata related to various authenticators. For example `KERBEROS_PRINCIPAL` attribute can contain the kerberos principal name of the particular user. Similarly attribute
-`usercertificate` can contain metadata related to binding the user with the data from the X.509 certificate, which is used typically when X.509 certificate authentication is enabled.
-* Metadata related to the identificator of users by the applications/clients. For example `saml.persistent.name.id.for.my_app` can contain SAML NameID, which will
+* Различные ссылки или метаданные, относящиеся к поставщикам хранения пользователей. Например, в случае интеграции LDAP атрибут `LDAP_ID` содержит
+ID пользователя на сервере LDAP.
+* Метаданные, предоставленные хранилищем пользователя. Например, `createdTimestamp` снабжен LDAP всегда должен быть доступен только для чтения пользователем или администратором.
+* Метаданные, связанные с различными аутентификаторами. Например, атрибут `KERBEROS_PRINCIPAL` может содержать основное имя ядра конкретного пользователя. Аналогичный атрибут
+`usercertificate` может содержать метаданные, связанные с привязкой пользователя к данным из X. 09 сертификат, который обычно используется при включенной аутентификации сертификата X.509.
+* Метаданные, связанные с идентификатором пользователей приложениями/клиентами. For example `saml.persistent.name.id.for.my_app` can contain SAML NameID, which will
 be used by the client application `my_app` as the identifier of the user.
-* Metadata related to the authorization policies, which are used for the attribute based access control (ABAC). Values of those attributes may be used for the
-authorization decisions. Hence it is important that those attributes cannot be updated by the users.
+* Метаданные, относящиеся к политикам авторизации, которые используются для контроля доступа на основе атрибута (АБАК). Values of those attributes may be used for the
+authorization decisions. Поэтому важно, чтобы эти атрибуты не были обновлены пользователями.
 
-From the long term perspective, {project_name} will have a proper User Profile SPI, which will allow fine-grained configuration of every user attribute. Currently
-this capability is not fully available yet. So {project_name} has the internal list of user attributes, which are read-only for the users and read-only for the administrators configured
-at the server level.
+С точки зрения долгосрочной перспективы, {project_name} будет иметь надлежащий SPI пользовательского профиля, который позволит точную конфигурацию каждого атрибута пользователя. Currently
+this capability is not fully available yet. Таким образом, {project_name} имеет внутренний список пользовательских атрибутов, которые только для чтения для пользователей и только для чтения для администраторов настроены
+на уровне сервера.
 
-This is the list of the read-only attributes, which are used internally by the {project_name} default providers and functionalities and hence are always read-only:
+Это список атрибутов, доступных только для чтения, которые используются внутренними поставщиками по умолчанию {project_name} , и поэтому всегда доступны только для чтения:
 
-* For users: `KERBEROS_PRINCIPAL`, `LDAP_ID`, `LDAP_ENTRY_DN`, `CREATED_TIMESTAMP`, `createTimestamp`, `modifyTimestamp`, `userCertificate`, `saml.persistent.name.id.for.*`, `ENABLED`, `EMAIL_VERIFIED`
-* For administrators: `KERBEROS_PRINCIPAL`, `LDAP_ID`, `LDAP_ENTRY_DN`, `CREATED_TIMESTAMP`, `createTimestamp`, `modifyTimestamp`
+* Пользователям: `KERBEROS_PRINCIPAL`, `LDAP_ID`, `LDAP_ENTRY_DN`, `CREATED_TIMESTAMP`, `createTimestamp`, `modifyTimestamp`, `userCertificate`, `saml.persistent.name.id.for.*`, `ENABLED`, `EMAIL_VERIFIED`
+* Для администраторов: `KERBEROS_PRINCIPAL`, `LDAP_ID`, `LDAP_ENTRY_DN`, `CREATED_TIMESTAMP`, `createTimestamp`, `modifyTimestamp`
 
-System administrators have a way to add additional attributes to this list. The configuration is currently available at the server level.
+Системные администраторы имеют возможность добавить дополнительные атрибуты в этот список. В настоящее время конфигурация доступна на уровне сервера.
 
-You can add this configuration by using the `spi-user-profile--declarative-user-profile--read-only-attributes` and `spi-user-profile--declarative-user-profile--admin-read-only-attributes` options. For example:
+Вы можете добавить эту конфигурацию, используя опции `spi-user-profile--declarative-user-profile--read-only-attributes` и `spi-user-profile--declarative-user-profile--admin-read-only-attributes`. Например:
 
 [source,bash,options="nowrap"]
 ----
 kc.[sh|bat] start --spi-user-profile--declarative-user-profile--read-only-attributes=foo,bar*
 ----
 
-For this example, users and administrators would not be able to update attribute `foo`. Users would not be able to edit any attributes starting with the `bar`.
-So for example `bar` or `barrier`. Configuration is case-insensitive, so attributes like `FOO` or `BarRier` will be denied as well for this example. The wildcard character `\*` is supported
-only at the end of the attribute name, so the administrator can effectively deny all the attributes starting with the specified character. The `*` in the middle of the attribute is considered
-as a normal character.
+В этом примере пользователи и администраторы не смогут обновить атрибут `foo`. Пользователи не смогут редактировать любые атрибуты, начиная с `bar`.
+Итак, например, «бар» или «барьер». Конфигурация не чувствительна к регистру, поэтому атрибутам, например `FOO` или `BarRier` также будет отказано. Символ `\*` поддерживается
+только в конце имени атрибута. , чтобы администратор мог эффективно запретить все атрибуты, начиная с указанного символа. '*' в середине атрибута считается
+нормальным символом.
