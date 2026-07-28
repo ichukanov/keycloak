@@ -1,14 +1,14 @@
-== Admin CLI
+== Админ CLI
 
-With {project_name}, you can perform administration tasks from the command-line interface (CLI) by using the Admin CLI command-line tool.
+С помощью {project_name}вы можете выполнять задачи администрирования из интерфейса командной строки (CLI), используя инструмент CLI командной строки.
 
-=== Installing the Admin CLI
+=== Установка администратора CLI
 
-{project_name} packages the Admin CLI server distribution with the execution scripts in the `bin` directory.
+{project_name} поставляет дистрибутив сервера Admin CLI с сценариями выполнения в директории `bin`.
 
-The Linux script is called `kcadm.sh`, and the script for Windows is called `kcadm.bat`. Add the {project_name} server directory to your `PATH` to use the client from any location on your file system.
+Скрипт Linux называется `kcadm.sh`, а сценарий для Windows называется `kcadm.bat`. Добавьте каталог сервера {project_name} в ваш `PATH` чтобы использовать клиент из любой точки в вашей файловой системе.
 
-For example:
+Например:
 
 * Linux:
 +
@@ -17,7 +17,7 @@ For example:
 $ export PATH=$PATH:$KEYCLOAK_HOME/bin
 $ kcadm.sh
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
@@ -27,23 +27,23 @@ c:\> kcadm
 
 [NOTE]
 ====
-You must set the `KEYCLOAK_HOME` environment variable to the path where you extracted the {project_name} Server distribution.
+Вы должны установить переменную окружения `KEYCLOAK_HOME` на путь, в котором вы распаковали дистрибутив {project_name} Server.
 
-To avoid repetition, the rest of this document only uses Windows examples in places where the CLI differences are more than just in the `kcadm` command name.
+Во избежание повторов, остальная часть этого документа использует только примеры Windows в тех местах, где отличия в CLI больше, чем просто в имени команды `kcadm`.
 ====
 
-=== Using the Admin CLI
+=== Использование администратора CLI
 
-The Admin CLI makes HTTP requests to Admin REST endpoints. Access to the Admin REST endpoints requires authentication.
+Администратор CLI делает HTTP-запросы к конечным точкам REST. Доступ к конечным точкам администратора REST требует аутентификации.
 
 [NOTE]
 ====
-Consult the Admin REST API documentation for details about JSON attributes for specific endpoints.
+Обратитесь к документации администратора REST API для получения подробной информации о атрибутах JSON для конкретных конечных точек.
 ====
 
-. Start an authenticated session by logging in. You can now perform create, read, update, and delete (CRUD) operations.
+. Запустите авторизованный сеанс авторизацией. Теперь вы можете выполнять операции создания, чтения, обновления и удаления (CRUD).
 +
-For example:
+Например:
 * Linux:
 +
 [options="nowrap",subs="attributes+"]
@@ -53,7 +53,7 @@ $ kcadm.sh create realms -s realm=demorealm -s enabled=true -o
 $ CID=$(kcadm.sh create clients -r demorealm -s clientId=my_client -s 'redirectUris=["http://localhost:8980/myapp/*"]' -i)
 $ kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap",subs="attributes+"]
 ----
@@ -63,87 +63,87 @@ c:\> kcadm create clients -r demorealm -s clientId=my_client -s "redirectUris=[\
 c:\> set /p CID=<clientid.txt
 c:\> kcadm get clients/%CID%/installation/providers/keycloak-oidc-keycloak-json
 ----
-. In a production environment, access {project_name} by using `https:` to avoid exposing tokens. If a trusted certificate authority, included in Java's default certificate truststore, has not issued a server's certificate, prepare a `truststore.jks` file and instruct the Admin CLI to use it.
+. В производственном окружении доступ к {project_name} , используя `https:`, чтобы избежать экспозиции токенов. Если доверенный центр сертификации, входящий в хранилище доверенных сертификатов Java, не выдал сертификат сервера, подготовить `truststore. ks` файл и инструкция администратора CLI использовать его.
 +
-For example:
+Например:
 * Linux:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh config truststore --trustpass $PASSWORD ~/.keycloak/truststore.jks
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm config truststore --trustpass %PASSWORD% %HOMEPATH%\.keycloak\truststore.jks
 ----
 
-=== Sensitive Options
+=== Варианты чувствительности
 
-Sensitive values, such as passwords, may be specified as command options. That is generally not recommended. There are also mechanisms by which you can be prompted for the sensitive value by either omitting the option or providing a value. Finally all will have a corresponding env variable that can be used instead. Check the help of the command you are running to see all possible options.
+Чувствительные значения, такие как пароли, могут быть указаны как параметры команды. Это, как правило, не рекомендуется. Существуют также механизмы, с помощью которых вы можете получить чувствительное значение, пропустив параметр или предоставив значение. Наконец, все будут иметь соответствующую переменную env, которая может быть использована вместо этого. Проверьте справку команды, которую вы выполняете, чтобы увидеть все возможные параметры.
 
-=== Authenticating
+=== Аутентификация
 
-When you log in with the Admin CLI, you specify:
+Когда вы войдете с помощью Admin CLI, вы указываете:
 
-* A server endpoint URL
-* A realm
-* A user name
+* Адрес конечной точки сервера
+* Область
+* Имя пользователя
 
-Another option is to specify a clientId only, which creates a unique service account for you to use.
+Другая опция — указать только clientId, который создает уникальную учетную запись службы для вас.
 
-When you log in using a user name, use a password for the specified user. When you log in using a clientId, you need the client secret only, not the user password. You can also use the `Signed JWT` rather than the client secret.
+При входе с использованием имени пользователя, используйте пароль для указанного пользователя. При входе в систему с помощью ID клиента Вам нужен только секретный клиент, а не пароль пользователя. Вы также можете использовать `Signed JWT`, а не клиентскую тайну.
 
-Ensure the account used for the session has the proper permissions to invoke Admin REST API operations. For example, the `realm-admin` role of the `realm-management` client can  administer the realm of the user.
+Убедитесь, что используемая для сессии учетная запись имеет соответствующие разрешения на вызов операций администратора REST API. Например, `realm-admin` клиент `realm-management` может администрировать область пользователя.
 
-Two primary mechanisms are available for authentication. One mechanism uses `kcadm config credentials` to start an authenticated session.
+Для проверки подлинности имеются два основных механизма. Для запуска сеанса аутентификации используется `kcadm config credentials`.
 
 [options="nowrap",subs="attributes+"]
 ----
 $ kcadm.sh config credentials --server http://localhost:8080{kc_base_path} --realm master --user admin
 ----
 
-This mechanism maintains an authenticated session between the `kcadm` command invocations by saving the obtained access token and its associated refresh token. It can maintain other secrets in a private configuration file. See the <<_working_with_alternative_configurations, next chapter>> for more information.
+Этот механизм сохраняет сеанс между вызовами команды «kcadm», сохраняя полученный токен доступа и связанный с ним токен обновления. Он может сохранять другие секреты в приватном файле конфигурации. Смотрите <<_working_with_alternative_configurations, следующую главу>> для получения дополнительной информации.
 
-The second mechanism authenticates each command invocation for the duration of the invocation. This mechanism increases the load on the server and the time spent on round trips obtaining tokens. The benefit of this approach is that it is unnecessary to save tokens between invocations, so nothing is saved to disk. {project_name} uses this mode when the `--no-config` argument is specified.
+Второй механизм аутентифицирует каждую команду на время вызова. Этот механизм увеличивает нагрузку на сервер и время, затраченное на круглые поездки получения токенов. Преимущество этого подхода заключается в том, что нет необходимости сохранять токены между вызовами, поэтому ничего не сохраняется на диск. {project_name} использует этот режим, когда указан аргумент `--no-config`.
 
-For example, when performing an operation, specify all the information required for authentication.
+Например, при выполнении операции укажите всю информацию, необходимую для аутентификации.
 
 [options="nowrap",subs="attributes+"]
 ----
 $ kcadm.sh get realms --no-config --server http://localhost:8080{kc_base_path} --realm master --user admin
 ----
 
-Run the `kcadm.sh help` command for more information on using the Admin CLI.
+Запустите команду `kcadm.sh help` для получения дополнительной информации об использовании Admin CLI.
 
-Run the `kcadm.sh config credentials --help` command for more information about starting an authenticated session.
+Запустите `kcadm.sh config credentials --help` для получения дополнительной информации о запуске аутентифицированного сеанса.
 
-If you do not specify the --password option (it is generally recommended to not provide passwords as part of the command), you will be prompted for a password unless one is specified as the environment variable KC_CLI_PASSWORD.
+Если вы не указали опцию --password (обычно рекомендуется не предоставлять пароли в качестве части команды), вам будет предложено ввести пароль, если не указано значение переменной окружения KC_CLI_PASSWORD.
 
 [[_working_with_alternative_configurations]]
-=== Working with alternative configurations
+=== Работа с альтернативными конфигурациями
 
-By default, the Admin CLI maintains a configuration file named `kcadm.config`. {project_name} places this file in the user's home directory.
-In Linux-based systems, the full pathname is `$HOME/.keycloak/kcadm.config`.
-In Windows, the full pathname is `%HOMEPATH%\.keycloak\kcadm.config`.
+По умолчанию Администратор CLI поддерживает конфигурационный файл `kcadm.config`. {project_name} помещает этот файл в домашний каталог пользователя.
+В системах основанных на Linux полный путь: `$HOME/.keycloak/kcadm.config`.
+В Windows полный путь: `%HOMEPATH%\.keycloak\kcadm.config`.
 
-You can use the `--config` option to point to a different file or location so you can maintain multiple authenticated sessions in parallel.
+Вы можете использовать параметр `--config`, чтобы указать на другой файл или местоположение, так что вы можете поддерживать несколько заверенных сессий параллельно.
 
 [NOTE]
 ====
-Perform operations tied to a single configuration file from a single thread.
+Выполнение операций, связанных с одним файлом конфигурации из одного потока.
 ====
 
-Ensure the configuration file is invisible to other users on the system. It contains access tokens and secrets that must be private. {project_name} creates the `~/.keycloak` directory and its contents automatically with proper access limits. If the directory already exists, {project_name} does not update the directory's permissions.
+Убедитесь, что конфигурационный файл недоступен другим пользователям системы. Он содержит токены доступа и секреты, которые должны быть частными. {project_name} создает каталог `~/.keycloak` и его содержимое автоматически с надлежащими ограничениями доступа. Если директория уже существует, {project_name} не обновляет права доступа.
 
-It is possible to avoid storing secrets inside a configuration file, but doing so is inconvenient and increases the number of token requests. Use the `--no-config` option with all commands and specify the authentication information the `config credentials` command requires with each invocation of `kcadm`.
+Можно не хранить секреты внутри конфигурационного файла, но это неудобно и увеличивает количество запросов к токену. Используйте опцию `--no-config` со всеми командами и укажите информацию аутентификации, которую требует команда `config credentials` с каждым вызовом `kcadm`.
 
-=== Basic operations and resource URIs
+=== Основные операции и URI ресурсов
 
-The Admin CLI can generically perform CRUD operations against Admin REST API endpoints with additional commands that simplify particular tasks.
+Администратор CLI может выполнять CRUD операции против конечных точек API Admin REST с дополнительными командами, которые упрощают определенные задачи.
 
-The main usage pattern is listed here:
+Основной шаблон использования указан здесь:
 
 [options="nowrap"]
 ----
@@ -153,35 +153,35 @@ $ kcadm.sh update ENDPOINT [ARGUMENTS]
 $ kcadm.sh delete ENDPOINT [ARGUMENTS]
 ----
 
-The `create`, `get`, `update`, and `delete` commands map to the HTTP verbs `POST`, `GET`, `PUT`, and `DELETE`, respectively.
-ENDPOINT is a target resource URI and can be absolute (starting with `http:` or `https:`) or relative, that {project_name} uses to compose absolute URLs in the following format:
+Команды `create`, `get`, `update` и `delete` соответствуют HTTP глаголам `POST`, `GET`, `PUT` и `DELETE`, соответственно.
+ENDPOINT является URI целевого ресурса и может быть абсолютным (начиная с `http:` или `https:`) или относительным, что {project_name} использует для создания абсолютных URL-адресов в следующем формате:
 
 [options="nowrap"]
 ----
 SERVER_URI/admin/realms/REALM/ENDPOINT
 ----
 
-For example, if you authenticate against the server http://localhost:8080{kc_base_path} and realm is `master`, using `users` as ENDPOINT creates the http://localhost:8080{kc_admins_path}/realms/master/users resource URL.
+Например, если вы аутентифицируетесь с сервером http://localhost:8080{kc_base_path} и область `master`, используя `users` как ENDPOINT создаёт URL-адрес ресурса http://localhost:8080{kc_admins_path}/realms/master/users.
 
-If you set ENDPOINT to `clients`, the effective resource URI is http://localhost:8080{kc_admins_path}/realms/master/clients.
+Если вы установили ENDPOINT в `clients`, эффективный URI ресурса это http://localhost:8080{kc_admins_path}/realms/master/clients.
 
-{project_name} has a `realms` endpoint that is the container for realms. It resolves to:
+У {project_name} есть конечная точка `realms`, которая является контейнером миров. Она преисполнена:
 
 [options="nowrap"]
 ----
 SERVER_URI/admin/realms
 ----
 
-{project_name} has a `serverinfo` endpoint. This endpoint is independent of realms.
+У {project_name} есть конечная точка `serverinfo`. Эта конечная точка не зависит от игровых миров.
 
-When you authenticate as a user with realm-admin powers, you may need to perform commands on multiple realms. If so, specify the `-r` option to tell the CLI which realm the command is to execute against explicitly. Instead of using `REALM` as specified by the `--realm` option of `kcadm.sh config credentials`, the command uses `TARGET_REALM`.
+При аутентификации в качестве пользователя с полномочиями администратора вам может потребоваться выполнение команд в нескольких мирах. Если это так, укажите параметр `-r` для указания CLI какому реализму будет выполняться явно. Вместо того, чтобы использовать `REALM`, как указано в параметре `--realm` с параметром `kcadm.sh configals`, команда использует `TARGET_REALM`.
 
 [options="nowrap"]
 ----
 SERVER_URI/admin/realms/TARGET_REALM/ENDPOINT
 ----
 
-For example:
+Например:
 
 [options="nowrap",subs="attributes+"]
 ----
@@ -189,20 +189,20 @@ $ kcadm.sh config credentials --server http://localhost:8080{kc_base_path} --rea
 $ kcadm.sh create users -s username=testuser -s enabled=true -r demorealm
 ----
 
-In this example, you start a session authenticated as the `admin` user in the `master` realm. You then perform a POST call against the resource URL `http://localhost:8080{kc_admins_path}/realms/demorealm/users`.
+В этом примере вы запускаете сеанс, аутентифицированный как пользователь `admin` в сфере `master`. Затем вы выполните POST вызов с URL-адресом ресурса `http://localhost:8080{kc_admins_path}/realms/demorealm/users`.
 
-The `create` and `update` commands send a JSON body to the server. You can use `-f FILENAME` to read a pre-made document from a file. When you can use the `-f -` option, {project_name} reads the message body from the standard input. You can specify individual attributes and their values, as seen in the `create users` example. {project_name} composes the attributes into a JSON body and sends them to the server.
+Команды `create` и `update` отправляют тело JSON на сервер. Вы можете использовать `-f FILENAME` для чтения готового документа из файла. Когда вы можете использовать опцию `-f -`, {project_name} читает текст сообщения из стандартного ввода. Вы можете указать отдельные атрибуты и их значения, как показано в примере «создать пользователей». {project_name} записывает атрибуты в JSON тело и отправляет их на сервер.
 
 [NOTE]
 ====
-The value in name=value pairs used in --set, -s options, are assumed to be JSON. If it cannot be parsed as valid JSON, then it will be sent to the server as a text value.
+Значение в парах name=value, используемых в опциях --set, -s, считается JSON. Если он не может быть обработан как JSON, то он будет отправлен на сервер в виде текстового значения.
 
-If the value is enclosed in quotes after shell processing, but is not valid JSON, the quotes will be stripped and the rest of the value will be sent as text. This behavior is deprecated, please consider specifying your value without quotes or a valid JSON string literal with double quotes.
+Если значение заключено в кавычки после обработки оболочки, но не является допустимым JSON, котировки будут удалены и остальные значения будут отправлены в виде текста. Это поведение является устаревшим, пожалуйста, укажите ваше значение без кавычек или допустимую строку JSON с двойными кавычками.
 ====
 
-Several methods are available in {project_name} to update a resource using the `update` command. You can determine the current state of a resource and save it to a file, edit that file, and send it to the server for an update.
+В {project_name} доступно несколько методов для обновления ресурса с помощью команды `update`. Вы можете определить текущее состояние ресурса и сохранить его в файл, отредактируйте этот файл и отправьте его на сервер для обновления.
 
-For example:
+Например:
 
 [options="nowraps"]
 ----
@@ -211,45 +211,45 @@ $ vi demorealm.json
 $ kcadm.sh update realms/demorealm -f demorealm.json
 ----
 
-This method updates the resource on the server with the attributes in the sent JSON document.
+Этот метод обновляет ресурс на сервере с атрибутами отправленного JSON документа.
 
-Another method is to perform an on-the-fly update by using the `-s, --set` options to set new values.
+Другой метод — выполнить обновление на лету с помощью опций `-s, --set`, чтобы установить новые значения.
 
-For example:
+Например:
 
 [options="nowraps"]
 ----
 $ kcadm.sh update realms/demorealm -s enabled=false
 ----
 
-This method sets the `enabled` attribute to `false`.
+Этот метод устанавливает атрибут «включено» в «false».
 
-By default, the `update` command performs a `get` and then merges the new attribute values with existing values. In some cases, the endpoint may support the `put` command but not the `get` command. You can use the `-n` option to perform a no-merge update, which performs a `put` command without first running a `get` command.
+По умолчанию команда `update` выполняет `get` и объединяет новые значения атрибута с существующими значениями. В некоторых случаях конечная точка может поддерживать команду `put`, но не команду `get`. Вы можете использовать параметр `-n` для выполнения обновления no-merge, которое выполняет команду `put` без первого запуска команды `get`.
 
-=== Realm operations
+=== Операции Realm
 
 [discrete]
-==== Creating a new realm
+==== Создание новой области
 
-Use the `create` command on the `realms` endpoint to create a new enabled realm. Set the attributes to `realm` and `enabled`.
+Используйте команду `create` на конечной точке `realms`, чтобы создать новый включенный реалм. Установите атрибуты на «реалм» и «включено».
 
 [options="nowrap"]
 ----
 $ kcadm.sh create realms -s realm=demorealm -s enabled=true
 ----
 
-{project_name} disables realms by default. You can use a realm immediately for authentication by enabling it.
+{project_name} отключает миры по умолчанию. Вы можете использовать Realm немедленно для аутентификации, включив его.
 
-A description for a new object can also be in JSON format.
+Описание для нового объекта может быть также в формате JSON.
 
 [options="nowrap"]
 ----
 $ kcadm.sh create realms -f demorealm.json
 ----
 
-You can send a JSON document with realm attributes directly from a file or pipe the document to standard input.
+Вы можете отправить JSON документ с атрибутами Realm непосредственно из файла или по каналу документа на стандартный вход.
 
-For example:
+Например:
 
 * Linux:
 +
@@ -259,7 +259,7 @@ $ kcadm.sh create realms -f - << EOF
 { "realm": "demorealm", "enabled": true }
 EOF
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
@@ -267,9 +267,9 @@ c:\> echo { "realm": "demorealm", "enabled": true } | kcadm create realms -f -
 ----
 
 [discrete]
-==== Listing existing realms
+==== Список существующих областей
 
-This command returns a list of all realms.
+Эта команда возвращает список всех миров.
 
 [options="nowrap"]
 ----
@@ -278,17 +278,17 @@ $ kcadm.sh get realms
 
 [NOTE]
 ====
-{project_name} filters the list of realms on the server to return realms a user can see only.
+{project_name} фильтрует список миров на сервере, чтобы вернуть только пользователь.
 ====
 
-The list of all realm attributes can be verbose, and most users are interested in a subset of attributes, such as the realm name and the enabled status of the realm. You can specify the attributes to return by using the `--fields` option.
+Список всех атрибутов области может быть подробным, и большинство пользователей заинтересованы в подмножестве атрибутов, такие как имя области и доступный статус области Вы можете указать атрибуты, возвращаемые с помощью параметра `--fields`.
 
 [options="nowrap"]
 ----
 $ kcadm.sh get realms --fields realm,enabled
 ----
 
-You can display the result as comma-separated values.
+Можно отобразить результат как значения, разделенные запятыми.
 
 [options="nowrap"]
 ----
@@ -296,9 +296,9 @@ $ kcadm.sh get realms --fields realm --format csv --noquotes
 ----
 
 [discrete]
-==== Getting a specific realm
+==== Получение определенного реалма
 
-Append a realm name to a collection URI to get an individual realm.
+Добавьте имя области в URI коллекции, чтобы получить индивидуальный мир.
 
 [options="nowrap"]
 ----
@@ -306,22 +306,22 @@ $ kcadm.sh get realms/master
 ----
 
 [discrete]
-==== Updating a realm
+==== Обновление области
 
-. Use the `-s` option to set new values for the attributes when you do not want to change all of the realm's attributes.
+. Используйте параметр `-s`, чтобы установить новые значения для атрибутов, когда вы не хотите изменять атрибуты этого реалма.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh update realms/demorealm -s enabled=false
 ----
-. If you want to set all writable attributes to new values:
-.. Run a `get` command.
-.. Edit the current values in the JSON file.
+. Если вы хотите установить все атрибуты, доступные для записи, на новые значения:
+.. Выполните команду `get`.
+.. Редактировать текущие значения в файле JSON.
 .. Resubmit.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -331,9 +331,9 @@ $ kcadm.sh update realms/demorealm -f demorealm.json
 ----
 
 [discrete]
-==== Deleting a realm
+==== Удаление области
 
-Run the following command to delete a realm:
+Выполните следующую команду для удаления реалма:
 
 [options="nowrap"]
 ----
@@ -341,11 +341,11 @@ $ kcadm.sh delete realms/demorealm
 ----
 
 [discrete]
-==== Turning on all login page options for the realm
+==== Включение всех опций страницы входа в мир
 
-Set the attributes that control specific capabilities to `true`.
+Задайте атрибуты, которые управляют конкретными способностями «true».
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -353,9 +353,9 @@ $ kcadm.sh update realms/demorealm -s registrationAllowed=true -s registrationEm
 ----
 
 [discrete]
-==== Listing the realm keys
+==== Список ключей реалма
 
-Use the `get` operation on the `keys` endpoint of the target realm.
+Используйте операцию «get» на конечной точке целевого мира «ключ».
 
 [options="nowrap"]
 ----
@@ -363,97 +363,97 @@ $ kcadm.sh get keys -r demorealm
 ----
 
 [discrete]
-==== Generating new realm keys
+==== Создание новых ключей реалма
 
-. Get the ID of the target realm before adding a new RSA-generated key pair.
+. Получить идентификатор мишени перед добавлением новой пары ключей, генерируемой RSA.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get realms/demorealm --fields id --format csv --noquotes
 ----
-. Add a new key provider with a higher priority than the existing providers as revealed by `kcadm.sh get keys -r demorealm`.
+. Добавить нового ключевого поставщика с более высоким приоритетом по сравнению с существующими провайдерами, как это показали `kcadm.sh get keys -r demorealm`.
 +
-For example:
+Например:
 * Linux:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create components -r demorealm -s name=rsa-generated -s providerId=rsa-generated -s providerType=org.keycloak.keys.KeyProvider -s parentId=959844c1-d149-41d7-8359-6aa527fca0b0 -s 'config.priority=["101"]' -s 'config.enabled=["true"]' -s 'config.active=["true"]' -s 'config.keySize=["2048"]'
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm create components -r demorealm -s name=rsa-generated -s providerId=rsa-generated -s providerType=org.keycloak.keys.KeyProvider -s parentId=959844c1-d149-41d7-8359-6aa527fca0b0 -s "config.priority=[\"101\"]" -s "config.enabled=[\"true\"]" -s "config.active=[\"true\"]" -s "config.keySize=[\"2048\"]"
 ----
-. Set the `parentId` attribute to the value of the target realm's ID.
+. Установите атрибут `parentId` в значение идентификатора целевого мира.
 +
-The newly added key is now the active key, as revealed by `kcadm.sh get keys -r demorealm`.
+Теперь активным ключом является только недавно добавленный ключ, о чем свидетельствует `kcadm.sh get keys -r demorealm`.
 
 [discrete]
-==== Adding new realm keys from a Java Key Store file
+==== Добавление новых ключей реалма из файла хранилища ключей Java
 
-. Add a new key provider to add a new key pair pre-prepared as a JKS file.
+. Добавьте нового поставщика ключей для добавления новой пары ключей предварительно подготовленной в JKS файле.
 +
-For example, on:
+Например, на:
 * Linux:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create components -r demorealm -s name=java-keystore -s providerId=java-keystore -s providerType=org.keycloak.keys.KeyProvider -s parentId=959844c1-d149-41d7-8359-6aa527fca0b0 -s 'config.priority=["101"]' -s 'config.enabled=["true"]' -s 'config.active=["true"]' -s 'config.keystore=["/opt/keycloak/keystore.jks"]' -s 'config.keystorePassword=["secret"]' -s 'config.keyPassword=["secret"]' -s 'config.keyAlias=["localhost"]'
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm create components -r demorealm -s name=java-keystore -s providerId=java-keystore -s providerType=org.keycloak.keys.KeyProvider -s parentId=959844c1-d149-41d7-8359-6aa527fca0b0 -s "config.priority=[\"101\"]" -s "config.enabled=[\"true\"]" -s "config.active=[\"true\"]" -s "config.keystore=[\"/opt/keycloak/keystore.jks\"]" -s "config.keystorePassword=[\"secret\"]" -s "config.keyPassword=[\"secret\"]" -s "config.keyAlias=[\"localhost\"]"
 ----
-. Ensure you change the attribute values for `keystore`, `keystorePassword`, `keyPassword`, and `alias` to match your specific keystore.
-. Set the `parentId` attribute to the value of the target realm's ID.
+. Убедитесь, что вы изменили значения атрибутов `keystore`, `keystorePassword`, `keyPassword` и `alias`, чтобы они соответствовали вашему указанному ключевому магазину.
+. Установите атрибут `parentId` в значение идентификатора целевого мира.
 
 [discrete]
-==== Making the key passive or disabling the key
+==== Создание пассивного ключа или отключение ключа
 
-. Identify the key you want to make passive.
+. Определите ключ, который вы хотите сделать пассивным.
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get keys -r demorealm
 ----
-. Use the key's `providerId` attribute to construct an endpoint URI, such as `components/PROVIDER_ID`.
-. Perform an `update`.
+. Используйте атрибут `providerId` ключа для построения URI конечной точки, например, `components/PROVIDER_ID`.
+. Выполнить `update`.
 +
-For example:
+Например:
 * Linux:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh update components/PROVIDER_ID -r demorealm -s 'config.active=["false"]'
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm update components/PROVIDER_ID -r demorealm -s "config.active=[\"false\"]"
 ----
 +
-You can update other key attributes:
-* Set a new `enabled` value to disable the key, for example, `config.enabled=["false"]`.
-* Set a new `priority` value to change the key's priority, for example, `config.priority=["110"]`.
+Вы можете обновить другие атрибуты ключа:
+* Установите новое значение `enabled`, чтобы отключить ключ, например, `config.enabled=["false"]`.
+* Установите новое значение `priority` для изменения приоритета ключа, например, `config.priority=["110"]`.
 
 [discrete]
-==== Deleting an old key
+==== Удаление старого ключа
 
-. Ensure the key you are deleting is inactive and you have disabled it. This action is to prevent existing tokens held by applications and users from failing.
-. Identify the key to delete.
+. Убедитесь, что ключ, который вы удаляете, неактивен и вы отключили его. Это действие призвано предотвратить неудачу существующих токенов, принадлежащих приложениям и пользователям.
+. Определите ключ для удаления.
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get keys -r demorealm
 ----
-. Use the `providerId` of the key to perform the delete.
+. Используйте `providerId` ключа для выполнения удаления.
 +
 [options="nowrap"]
 ----
@@ -461,15 +461,15 @@ $ kcadm.sh delete components/PROVIDER_ID -r demorealm
 ----
 
 [discrete]
-==== Configuring event logging for a realm
+==== Настройка журнала событий для Realm
 
-Use the `update` command on the `events/config` endpoint.
+Используйте команду `update` в конечной точке `events/config`.
 
-The `eventsListeners` attribute contains a list of EventListenerProviderFactory IDs, specifying all event listeners that receive events. Attributes are available that control built-in event storage, so you can query past events using the Admin REST API. {project_name} has separate control over the logging of service calls (`eventsEnabled`) and the  auditing events triggered by the Admin Console or Admin REST API (`adminEventsEnabled`). You can set up the `eventsExpiration` event to expire to prevent your database from filling. {project_name} sets `eventsExpiration` to time-to-live expressed in seconds.
+Атрибут `eventsListeners` содержит список ID EventListenerProviderFactory с указанием всех слушателей событий, которые получают события. Доступны атрибуты, которые управляют встроенным хранилищем событий, так что вы можете запрашивать последние события с помощью Admin REST API. {project_name} имеет отдельный контроль над протоколом вызовов службы (`eventsEnabled`) и аудиторскими событиями, инициированными консолью администратора или администратором REST API (`adminEventsEnabled`). Вы можете настроить срок действия события `eventsExpiration`, чтобы предотвратить заполнение базы данных. {project_name} устанавливает `eventsExpiration` на time-to-live в секундах.
 
-You can set up a built-in event listener that receives all events and logs the events through JBoss-logging. Using the `org.keycloak.events` logger, {project_name} logs error events as `WARN` and other events as `DEBUG`.
+Вы можете настроить встроенный слушатель событий, который получает все события и журналы событий через JBoss-loging. Использование `org.keycloak.events` logger, {project_name} записывает ошибки как `WARN` и другие события как `DEBUG`.
 
-For example:
+Например:
 
 * Linux:
 +
@@ -477,16 +477,16 @@ For example:
 ----
 $ kcadm.sh update events/config -r demorealm -s 'eventsListeners=["jboss-logging"]'
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm update events/config -r demorealm -s "eventsListeners=[\"jboss-logging\"]"
 ----
 
-For example:
+Например:
 
-You can turn on storage for all available ERROR events, not including auditing events, for two days so you can retrieve the events through Admin REST.
+Вы можете включить хранилище для всех доступных событий ERROR, не включая аудит событий, в течение двух дней, так что вы можете получить события через администратор REST.
 
 * Linux:
 +
@@ -494,35 +494,35 @@ You can turn on storage for all available ERROR events, not including auditing e
 ----
 $ kcadm.sh update events/config -r demorealm -s eventsEnabled=true -s 'enabledEventTypes=["LOGIN_ERROR","REGISTER_ERROR","LOGOUT_ERROR","CODE_TO_TOKEN_ERROR","CLIENT_LOGIN_ERROR","FEDERATED_IDENTITY_LINK_ERROR","REMOVE_FEDERATED_IDENTITY_ERROR","UPDATE_EMAIL_ERROR","UPDATE_PROFILE_ERROR","UPDATE_PASSWORD_ERROR","UPDATE_TOTP_ERROR","UPDATE_CREDENTIAL_ERROR","VERIFY_EMAIL_ERROR","REMOVE_TOTP_ERROR","REMOVE_CREDENTIAL_ERROR","SEND_VERIFY_EMAIL_ERROR","SEND_RESET_PASSWORD_ERROR","SEND_IDENTITY_PROVIDER_LINK_ERROR","RESET_PASSWORD_ERROR","IDENTITY_PROVIDER_FIRST_LOGIN_ERROR","IDENTITY_PROVIDER_POST_LOGIN_ERROR","CUSTOM_REQUIRED_ACTION_ERROR","EXECUTE_ACTIONS_ERROR","CLIENT_REGISTER_ERROR","CLIENT_UPDATE_ERROR","CLIENT_DELETE_ERROR"]' -s eventsExpiration=172800
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
 c:\> kcadm update events/config -r demorealm -s eventsEnabled=true -s "enabledEventTypes=[\"LOGIN_ERROR\",\"REGISTER_ERROR\",\"LOGOUT_ERROR\",\"CODE_TO_TOKEN_ERROR\",\"CLIENT_LOGIN_ERROR\",\"FEDERATED_IDENTITY_LINK_ERROR\",\"REMOVE_FEDERATED_IDENTITY_ERROR\",\"UPDATE_EMAIL_ERROR\",\"UPDATE_PROFILE_ERROR\",\"UPDATE_PASSWORD_ERROR\",\"UPDATE_TOTP_ERROR\",\"UPDATE_CREDENTIAL_ERROR\",\"VERIFY_EMAIL_ERROR\",\"REMOVE_TOTP_ERROR\",\"REMOVE_CREDENTIAL_ERROR\",\"SEND_VERIFY_EMAIL_ERROR\",\"SEND_RESET_PASSWORD_ERROR\",\"SEND_IDENTITY_PROVIDER_LINK_ERROR\",\"RESET_PASSWORD_ERROR\",\"IDENTITY_PROVIDER_FIRST_LOGIN_ERROR\",\"IDENTITY_PROVIDER_POST_LOGIN_ERROR\",\"CUSTOM_REQUIRED_ACTION_ERROR\",\"EXECUTE_ACTIONS_ERROR\",\"CLIENT_REGISTER_ERROR\",\"CLIENT_UPDATE_ERROR\",\"CLIENT_DELETE_ERROR\"]" -s eventsExpiration=172800
 ----
 
-You can reset stored event types to *all available event types*. Setting the value to an empty list is the same as enumerating all.
+Вы можете сбросить типы сохраненных событий на *все доступные типы событий*. Установка значения на пустой список совпадает с перечислением всех.
 
 [options="nowrap"]
 ----
 $ kcadm.sh update events/config -r demorealm -s enabledEventTypes=[]
 ----
 
-You can enable storage of auditing events.
+Вы можете включить хранилище аудиторских событий.
 
 [options="nowrap"]
 ----
 $ kcadm.sh update events/config -r demorealm -s adminEventsEnabled=true -s adminEventsDetailsEnabled=true
 ----
 
-You can get the last 100 events. The events are ordered from newest to oldest.
+Вы можете получить последние 100 событий. События упорядочены от новейших до старых.
 
 [options="nowrap"]
 ----
 $ kcadm.sh get events --offset 0 --limit 100
 ----
 
-You can delete all saved events.
+Вы можете удалить все сохраненные события.
 
 [options="nowrap"]
 ----
@@ -530,15 +530,15 @@ $ kcadm delete events
 ----
 
 [discrete]
-==== Flushing the caches
+==== Очистка тайников
 
-. Use the `create` command with one of these endpoints to clear caches:
+. Используйте команду «создать» с одной из этих конечных точек для очистки кэша:
 * `clear-realm-cache`
 * `clear-user-cache`
 * `clear-keys-cache`
-. Set `realm` to the same value as the target realm.
+. Установите `realm` в то же значение, что и целевой реалм.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -548,34 +548,34 @@ $ kcadm.sh create clear-keys-cache -r demorealm -s realm=demorealm
 ----
 
 [discrete]
-==== Importing a realm from exported .json file
+==== Импортирование реалма из экспортированного файла .json
 
-. Use the `create` command on the `partialImport` endpoint.
-. Set `ifResourceExists` to `FAIL`, `SKIP`, or `OVERWRITE`.
-. Use `-f` to submit the exported realm `.json` file.
+. Используйте команду `create` на конечной точке `partialImport`.
+. Установите `ifResourceExists` в `FAIL`, `SKIP`, или `OVERWRITE`.
+. Используйте `-f` для представления файла `.json` экспортируемого реалма.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create partialImport -r demorealm2 -s ifResourceExists=FAIL -o -f demorealm.json
 ----
 +
-If the realm does not yet exist, create it first.
+Если реалм еще не существует, создайте его первым.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create realms -s realm=demorealm2 -s enabled=true
 ----
 
-=== Role operations
+=== Ролевые операции
 
 [discrete]
-==== Creating a realm role
+==== Создание роли области
 
-Use the `roles` endpoint to create a realm role.
+Используйте конечную точку «роли» для создания роли реалма.
 
 [options="nowrap"]
 ----
@@ -583,18 +583,18 @@ $ kcadm.sh create roles -r demorealm -s name=user -s 'description=Regular user w
 ----
 
 [discrete]
-==== Creating a client role
+==== Создание роли клиента
 
-. Identify the client.
-. Use the `get` command to list the available clients.
+. Определить клиента.
+. Используйте команду `get` для просмотра списка доступных клиентов.
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get clients -r demorealm --fields id,clientId
 ----
-. Create a new role by using the `clientId` attribute to construct an endpoint URI, such as `clients/ID/roles`.
+. Создайте новую роль, используя атрибут «clientId» для построения конечного URI, например, «clients/ID/roles».
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -602,16 +602,16 @@ $ kcadm.sh create clients/a95b6af3-0bdc-4878-ae2e-6d61a4eca9a0/roles -r demoreal
 ----
 
 [discrete]
-==== Listing realm roles
+==== Список ролей реалма
 
-Use the `get` command on the `roles` endpoint to list existing realm roles.
+Используйте команду `get` в конечной точке `roles`, чтобы перечислить существующие роли реалма.
 
 [options="nowrap"]
 ----
 $ kcadm.sh get roles -r demorealm
 ----
 
-You can use the `get-roles` command also.
+Вы можете также использовать команду `get-roles`.
 
 [options="nowrap"]
 ----
@@ -619,13 +619,13 @@ $ kcadm.sh get-roles -r demorealm
 ----
 
 [discrete]
-==== Listing client roles
+==== Список ролей клиента
 
-{project_name} has a dedicated `get-roles` command to simplify the listing of realm and client roles. The command is an extension of the `get` command and behaves the same as the `get` command but with additional semantics for listing roles.
+У {project_name} есть специальная команда `get-roles`, которая упрощает листинг реалма и роли клиентов. Команда представляет собой расширение команды `get` и ведет себя так же, как и команда `get`, но с дополнительной семантикой для ролей.
 
-Use the `get-roles` command by passing it the clientId (`--cclientid`) option or the `id` (`--cid`) option to identify the client to list client roles.
+Используйте команду `get-roles`, передав ей опцию clientId (`--cclientid`) или опцию `id` (`--cid`) для идентификации роли клиента в списке.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -633,20 +633,20 @@ $ kcadm.sh get-roles -r demorealm --cclientid realm-management
 ----
 
 [discrete]
-==== Getting a specific realm role
+==== Получение конкретной роли области
 
-Use the `get` command and the role `name` to construct an endpoint URI for a specific realm role, `roles/ROLE_NAME`, where `user` is the existing role's name.
+Используйте команду `get` и роль `name` для построения конечного URI для определенной роли реалма, `roles/ROLE_NAME`, где `user` — это имя существующей роли.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
 $ kcadm.sh get roles/user -r demorealm
 ----
 
-You can use the `get-roles` command, passing it a role name (`--rolename` option) or ID (`--roleid` option).
+Вы можете использовать команду `get-roles`, передав ей имя роли (опция `--rolename`) или ID (опция `--roleid`).
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -654,11 +654,11 @@ $ kcadm.sh get-roles -r demorealm --rolename user
 ----
 
 [discrete]
-==== Getting a specific client role
+==== Получение роли клиента
 
-Use the `get-roles` command, passing it the clientId attribute (`--cclientid` option) or ID attribute (`--cid` option) to identify the client, and pass the role name (`--rolename` option) or the role ID attribute (`--roleid`) to identify a specific client role.
+Используйте команду `get-roles`, передав ей атрибут clientId (`--cclientid`) или атрибут ID (`--cid`) для идентификации клиента, и передайте имя роли (опция `--rolename`) или атрибут ID роли (`--roleid`), чтобы определить определенную роль клиента.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -666,11 +666,11 @@ $ kcadm.sh get-roles -r demorealm --cclientid realm-management --rolename manage
 ----
 
 [discrete]
-==== Updating a realm role
+==== Обновление роли области
 
-Use the `update` command with the endpoint URI you used to get a specific realm role.
+Используйте команду `update` с URI конечной точки, который используется для получения определенной роли реалма.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -678,11 +678,11 @@ $ kcadm.sh update roles/user -r demorealm -s 'description=Role representing a re
 ----
 
 [discrete]
-==== Updating a client role
+==== Обновление роли клиента
 
-Use the `update` command with the endpoint URI that you used to get a specific client role.
+Используйте команду `update` с конечным URI, который вы использовали для получения определенной роли клиента.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -690,11 +690,11 @@ $ kcadm.sh update clients/a95b6af3-0bdc-4878-ae2e-6d61a4eca9a0/roles/editor -r d
 ----
 
 [discrete]
-==== Deleting a realm role
+==== Удаление роли области
 
-Use the `delete` command with the endpoint URI that you used to get a specific realm role.
+Используйте команду `delete` с конечным URI, который используется для получения определенной роли реалма.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -702,11 +702,11 @@ $ kcadm.sh delete roles/user -r demorealm
 ----
 
 [discrete]
-==== Deleting a client role
+==== Удаление роли клиента
 
-Use the `delete` command with the endpoint URI that you used to get a specific client role.
+Используйте команду `delete` с конечным URI, который вы использовали для получения определенной роли клиента.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -714,29 +714,29 @@ $ kcadm.sh delete clients/a95b6af3-0bdc-4878-ae2e-6d61a4eca9a0/roles/editor -r d
 ----
 
 [discrete]
-==== Listing assigned, available, and effective realm roles for a composite role
+==== Перечисление назначенных, доступных и эффективных ролей для сводной роли
 
-Use the `get-roles` command to list assigned, available, and effective realm roles for a composite role.
+Используйте команду `get-roles`, чтобы перечислить назначенные, доступные и эффективные роли для составной роли.
 
-. To list *assigned* realm roles for the composite role, specify the target composite role by name (`--rname` option) or ID (`--rid` option).
+. Чтобы перечислить *назначенные* роли области для составной роли, укажите составную роль по имени (опция `--rname`) или ID (опция `--rid`).
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --rname testrole
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --rname testrole --effective
 ----
-. Use the `--available` option to list realm roles that you can add to the composite role.
+. Используйте опцию `--available` для отображения ролей реалма, которые можно добавить в составную роль.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -744,29 +744,29 @@ $ kcadm.sh get-roles -r demorealm --rname testrole --available
 ----
 
 [discrete]
-==== Listing assigned, available, and effective client roles for a composite role
+==== Перечисление назначенных, доступных и эффективных ролей клиентов для сводной роли
 
-Use the `get-roles` command to list assigned, available, and effective client roles for a composite role.
+Используйте команду `get-roles` чтобы перечислить назначенные, доступные и эффективные роли для составной роли.
 
-. To list *assigned* client roles for the composite role, you can specify the target composite role by name (`--rname` option) or ID (`--rid` option) and client by the clientId attribute (`--cclientid` option) or ID (`--cid` option).
+. Чтобы перечислить *назначенные* роли клиента составной роли, вы можете указать целевую композитную роль по имени (опция `--rname`) или ID (опция `--rid`) и клиенту по атрибуту clientId (опция `--cclientid`) или ID (опция `--cid`).
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --rname testrole --cclientid realm-management
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --rname testrole --cclientid realm-management --effective
 ----
-. Use the `--available` option to list realm roles that you can add to the target composite role.
+. Используйте опцию `--available` для отображения ролей реалма, которые вы можете добавить в составную роль.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -774,11 +774,11 @@ $ kcadm.sh get-roles -r demorealm --rname testrole --cclientid realm-management 
 ----
 
 [discrete]
-==== Adding realm roles to a composite role
+==== Добавление ролей области в составную роль
 
-{project_name} provides an `add-roles` command for adding realm roles and client roles.
+{project_name} предоставляет команду `add-roles` для добавления ролей реалмов и ролей клиентов.
 
-This example adds the `user` role to the composite role `testrole`.
+В этом примере добавляется роль пользователя в комбинированную роль `testrole`.
 
 [options="nowrap"]
 ----
@@ -786,11 +786,11 @@ $ kcadm.sh add-roles --rname testrole --rolename user -r demorealm
 ----
 
 [discrete]
-==== Removing realm roles from a composite role
+==== Удаление ролей области из составной роли
 
-{project_name} provides a `remove-roles` command for removing realm roles and client roles.
+{project_name} предоставляет команду `remove-roles` для удаления ролей Realm и ролей клиентов.
 
-The following example removes the `user` role from the target composite role `testrole`.
+Следующий пример удаляет роль пользователя из составной роли "testrole".
 
 [options="nowrap"]
 ----
@@ -798,11 +798,11 @@ $ kcadm.sh remove-roles --rname testrole --rolename user -r demorealm
 ----
 
 [discrete]
-==== Adding client roles to a realm role
+==== Добавление ролей клиента в роль области
 
-{project_name} provides an `add-roles` command for adding realm roles and client roles.
+{project_name} предоставляет команду `add-roles` для добавления ролей реалмов и ролей клиентов.
 
-The following example adds the roles defined on the client `realm-management`, `create-client`, and `view-users`, to the `testrole` composite role.
+Следующий пример добавляет в составную роль "testrole" роли клиента "realm-management", "create-client" и "view-users".
 
 [options="nowrap"]
 ----
@@ -810,26 +810,26 @@ $ kcadm.sh add-roles -r demorealm --rname testrole --cclientid realm-management 
 ----
 
 [discrete]
-==== Adding client roles to a client role
+==== Добавление ролей клиента в роли клиента
 
-. Determine the ID of the composite client role by using the `get-roles` command.
+. Определите ID роли составного клиента, используя команду get-roles`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --cclientid test-client --rolename operations
 ----
-. Assume that a client exists with a clientId attribute named `test-client`, a client role named `support`, and a client role named `operations` which becomes a composite role that has an ID of "fc400897-ef6a-4e8c-872b-1581b7fa8a71".
-. Use the following example to add another role to the composite role.
+. Предположим, что клиент существует с атрибутом clientId под названием `test-client`, роль клиента под названием `support`, и роль клиента "операции", которая становится составной ролью, имеющей идентификатор "fc400897-ef6a-4e8c-872b-1581b7fa8a71".
+. Используйте следующий пример, чтобы добавить другую роль в составную роль.
 +
 [options="nowrap"]
 ----
 $ kcadm.sh add-roles -r demorealm --cclientid test-client --rid fc400897-ef6a-4e8c-872b-1581b7fa8a71 --rolename support
 ----
-. List the roles of a composite role by using the `get-roles --all` command.
+. Список ролей составной роли, используя команду `get-roles --all`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -837,11 +837,11 @@ $ kcadm.sh get-roles --rid fc400897-ef6a-4e8c-872b-1581b7fa8a71 --all
 ----
 
 [discrete]
-==== Removing client roles from a composite role
+==== Удаление ролей клиента из составной роли
 
-Use the `remove-roles` command to remove client roles from a composite role.
+Используйте команду "remove-roles", чтобы удалить роли клиента из составной роли.
 
-Use the following example to remove two roles defined on the client `realm-management`, the `create-client` role and the `view-users` role, from the `testrole` composite role.
+Используйте следующий пример, чтобы удалить две роли, определенные в «realm-management» клиента, роль «create-client» и роль «view-users» из составной роли «testrole».
 
 [options="nowrap"]
 ----
@@ -849,13 +849,13 @@ $ kcadm.sh remove-roles -r demorealm --rname testrole --cclientid realm-manageme
 ----
 
 [discrete]
-==== Adding client roles to a group
+==== Добавление ролей клиента в группу
 
-Use the `add-roles` command to add realm roles and client roles.
+Используйте команду «Addroles», чтобы добавить роли Realm и роли клиента.
 
-The following example adds the roles defined on the client `realm-management`, `create-client` and `view-users`, to the `Group` group (`--gname` option). Alternatively, you can specify the group by ID (`--gid` option).
+Следующий пример добавляет роли, определенные в `realm-management`, `create-client` и `view-users`, в группу `Group` (`--gname`). Кроме того, вы можете указать группу по ID (опция `--gid`).
 
-See <<_group_operations, Group operations>> for more information.
+Смотрите <<_group_operations, Group operations>> для получения дополнительной информации.
 
 [options="nowrap"]
 ----
@@ -863,35 +863,35 @@ $ kcadm.sh add-roles -r demorealm --gname Group --cclientid realm-management --r
 ----
 
 [discrete]
-==== Removing client roles from a group
+==== Удаление ролей клиента из группы
 
-Use the `remove-roles` command to remove client roles from a group.
+Используйте команду "remove-roles", чтобы удалить роли клиента из группы.
 
-The following example removes two roles defined on the client `realm-management`, `create-client` and `view-users`, from the `Group` group.
+Следующий пример удаляет две роли, определенные в «realm-management» клиента, «create-client» и «view-users» из группы «Group».
 
-See <<_group_operations, Group operations>> for more information.
+Смотрите <<_group_operations, Group operations>> для получения дополнительной информации.
 
 [options="nowrap"]
 ----
 $ kcadm.sh remove-roles -r demorealm --gname Group --cclientid realm-management --rolename create-client --rolename view-users
 ----
 
-=== Client operations
+=== Операции с клиентом
 
 [discrete]
-==== Creating a client
+==== Создание клиента
 
-. Run the `create` command on a `clients` endpoint to create a new client.
+. Запустите команду `create` на конечной точке `clients` для создания нового клиента.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create clients -r demorealm -s clientId=myapp -s enabled=true
 ----
-. Specify a secret if to set a secret for adapters to authenticate.
+. Укажите секрет для аутентификации адаптеров.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -899,11 +899,11 @@ $ kcadm.sh create clients -r demorealm -s clientId=myapp -s enabled=true -s clie
 ----
 
 [discrete]
-==== Listing clients
+==== Список клиентов
 
-Use the `get` command on the `clients` endpoint to list clients.
+Используйте команду `get` на конечной точке `clients` для просмотра списка клиентов.
 
-This example filters the output to list only the `id` and `clientId` attributes:
+Этот пример фильтрует вывод только атрибутов `id` и `clientId`:
 
 [options="nowrap"]
 ----
@@ -911,11 +911,11 @@ $ kcadm.sh get clients -r demorealm --fields id,clientId
 ----
 
 [discrete]
-==== Getting a specific client
+==== Получение определенного клиента
 
-Use the client ID to construct an endpoint URI that targets a specific client, such as `clients/ID`.
+Используйте идентификатор клиента для построения конечного URI, предназначенного для конкретного клиента, например «clients/ID».
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -923,11 +923,11 @@ $ kcadm.sh get clients/c7b8547f-e748-4333-95d0-410b76b3f4a3 -r demorealm
 ----
 
 [discrete]
-==== Getting the current secret for a specific client
+==== Получение текущего секрета для определенного клиента
 
-Use the client ID to construct an endpoint URI, such as `clients/ID/client-secret`.
+Используйте идентификатор клиента для построения конечного URI, например, `clients/ID/client-secret`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -935,11 +935,11 @@ $ kcadm.sh get clients/$CID/client-secret -r demorealm
 ----
 
 [discrete]
-==== Generate a new secret for a specific client
+==== Сгенерировать новый секретный ключ для определенного клиента
 
-Use the client ID to construct an endpoint URI, such as `clients/ID/client-secret`.
+Используйте идентификатор клиента для построения конечного URI, например, `clients/ID/client-secret`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -947,11 +947,11 @@ $ kcadm.sh create clients/$CID/client-secret -r demorealm
 ----
 
 [discrete]
-==== Updating the current secret for a specific client
+==== Обновление текущего секретного ключа для определенного клиента
 
-Use the client ID to construct an endpoint URI, such as `clients/ID`.
+Используйте идентификатор клиента для построения конечного URI, например, «clients/ID».
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -959,11 +959,11 @@ $ kcadm.sh update clients/$CID -s "secret=newSecret" -r demorealm
 ----
 
 [discrete]
-==== Getting an adapter configuration file (keycloak.json) for a specific client
+==== Получение файла конфигурации адаптера (keycloak.json) для определенного клиента
 
-Use the client ID to construct an endpoint URI that targets a specific client, such as `clients/ID/installation/providers/keycloak-oidc-keycloak-json`.
+Используйте идентификатор клиента для построения конечного URI, предназначенного для определенного клиента, например, `clients/ID/installation/providers/keycloak-oidc-keycloak-json`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -971,11 +971,11 @@ $ kcadm.sh get clients/c7b8547f-e748-4333-95d0-410b76b3f4a3/installation/provide
 ----
 
 [discrete]
-==== Getting a WildFly subsystem adapter configuration for a specific client
+==== Получение конфигурации подсистемного адаптера WildFly для определенного клиента
 
-Use the client ID to construct an endpoint URI that targets a specific client, such as `clients/ID/installation/providers/keycloak-oidc-jboss-subsystem`.
+Используйте идентификатор клиента для построения конечного URI, предназначенного для определенного клиента, например, `clients/ID/installation/providers/keycloak-oidc-jboss-subsystem`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -983,13 +983,13 @@ $ kcadm.sh get clients/c7b8547f-e748-4333-95d0-410b76b3f4a3/installation/provide
 ----
 
 [discrete]
-==== Getting a Docker-v2 example configuration for a specific client
+==== Получение примера Docker-v2 для конкретного клиента
 
-Use the client ID to construct an endpoint URI that targets a specific client, such as `clients/ID/installation/providers/docker-v2-compose-yaml`.
+Используйте идентификатор клиента для построения конечного URI, предназначенного для определенного клиента, например, `clients/ID/installation/providers/docker-v2-compose-yaml`.
 
-The response is in `.zip` format.
+Ответ находится в формате `.zip`. zip`.
 
-For example:
+Например:
 
 [options="nowrap",subs="attributes+"]
 ----
@@ -997,11 +997,11 @@ $ kcadm.sh get http://localhost:8080{kc_admins_path}/realms/demorealm/clients/8f
 ----
 
 [discrete]
-==== Updating a client
+==== Обновление клиента
 
-Use the `update` command with the same endpoint URI that you use to get a specific client.
+Используйте команду `update` с тем же URI конечной точкой, что вы используете, чтобы получить определенного клиента.
 
-For example:
+Например:
 
 * Linux:
 +
@@ -1009,7 +1009,7 @@ For example:
 ----
 $ kcadm.sh update clients/c7b8547f-e748-4333-95d0-410b76b3f4a3 -r demorealm -s enabled=false -s publicClient=true -s 'redirectUris=["http://localhost:8080/myapp/*"]' -s baseUrl=http://localhost:8080/myapp -s adminUrl=http://localhost:8080/myapp
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
@@ -1017,11 +1017,11 @@ c:\> kcadm update clients/c7b8547f-e748-4333-95d0-410b76b3f4a3 -r demorealm -s e
 ----
 
 [discrete]
-==== Deleting a client
+==== Удаление клиента
 
-Use the `delete` command with the same endpoint URI that you use to get a specific client.
+Используйте команду `delete` с тем же URI конечной точкой, что вы используете, чтобы получить определенного клиента.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1029,18 +1029,18 @@ $ kcadm.sh delete clients/c7b8547f-e748-4333-95d0-410b76b3f4a3 -r demorealm
 ----
 
 [discrete]
-==== Adding or removing roles for client's service account
+==== Добавление или удаление ролей для клиентской учетной записи
 
-A client's service account is a user account with username `service-account-CLIENT_ID`. You can perform the same user operations on this account as a regular account.
+Учётная запись клиента - это учетная запись пользователя с именем пользователя `service-account-CLIENT_ID`. Вы можете выполнять операции с этой учетной записью одного пользователя в качестве обычной учетной записи.
 
-=== User operations
+=== Операции пользователя
 
 [discrete]
-==== Creating a user
+==== Создание пользователя
 
-Run the `create` command on the `users` endpoint to create a new user.
+Запустите команду `create` на конечной точке `users` для создания нового пользователя.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1048,20 +1048,20 @@ $ kcadm.sh create users -r demorealm -s username=testuser -s enabled=true
 ----
 
 [discrete]
-==== Listing users
+==== Список пользователей
 
-Use the `users` endpoint to list users. The target user must change their password the next time they log in.
+Используйте конечную точку `users` для списка пользователей. Целевой пользователь должен изменить свой пароль при следующем входе в систему.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
 $ kcadm.sh get users -r demorealm --offset 0 --limit 1000
 ----
 
-You can filter users by `username`, `firstName`, `lastName`, or `email`.
+Вы можете фильтровать пользователей по имени `username`, `firstName`, `lastName`, или `email`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1071,17 +1071,17 @@ $ kcadm.sh get users -r demorealm -q q=username:testuser
 
 [NOTE]
 ====
-Filtering does not use exact matching. This example matches the value of the `username` attribute against the `\*testuser*` pattern.
+Фильтрация не использует точное совпадение. Этот пример соответствует значению атрибута `username` относительно шаблона `\*testuser*`.
 ====
 
-For clients, groups, and users you can filter across multiple attributes by specifying a more complex `q` query parameter.  you may use something like -q q="field1:value1 field2:value2". {project_name} returns users that match the condition for all the attributes only.
+Для клиентов, групп и пользователей вы можете фильтровать по нескольким атрибутам, указав более сложный параметр запроса `q`.  вы можете использовать что-то вроде -q q="field1:value1 field2:value2". {project_name} возвращает пользователей, которые соответствуют условию только для всех атрибутов.
 
 [discrete]
-==== Getting a specific user
+==== Получение конкретного пользователя
 
-Use the user ID to compose an endpoint URI, such as `users/USER_ID`.
+Используйте ID пользователя для создания конечного URI, например, `users/USER_ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1089,11 +1089,11 @@ $ kcadm.sh get users/0ba7a3fd-6fd8-48cd-a60b-2e8fd82d56e2 -r demorealm
 ----
 
 [discrete]
-==== Updating a user
+==== Обновление пользователя
 
-Use the `update` command with the same endpoint URI that you use to get a specific user.
+Используйте команду `update` с тем же URI конечной точкой, что вы используете, чтобы получить конкретного пользователя.
 
-For example:
+Например:
 
 * Linux:
 +
@@ -1101,7 +1101,7 @@ For example:
 ----
 $ kcadm.sh update users/0ba7a3fd-6fd8-48cd-a60b-2e8fd82d56e2 -r demorealm -s 'requiredActions=["VERIFY_EMAIL","UPDATE_PROFILE","CONFIGURE_TOTP","UPDATE_PASSWORD"]'
 ----
-* Windows:
+* Окна:
 +
 [options="nowrap"]
 ----
@@ -1109,11 +1109,11 @@ c:\> kcadm update users/0ba7a3fd-6fd8-48cd-a60b-2e8fd82d56e2 -r demorealm -s "re
 ----
 
 [discrete]
-==== Deleting a user
+==== Удаление пользователя
 
-Use the `delete` command with the same endpoint URI that you use to get a specific user.
+Используйте команду `delete` с тем же URI конечной точкой, что вы используете, чтобы получить конкретного пользователя.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1121,56 +1121,56 @@ $ kcadm.sh delete users/0ba7a3fd-6fd8-48cd-a60b-2e8fd82d56e2 -r demorealm
 ----
 
 [discrete]
-==== Resetting a user's password
+==== Сброс пароля пользователя
 
-Use the dedicated `set-password` command to reset a user's password.
+Используйте специальную команду «set-password», чтобы сбросить пароль пользователя.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
 $ kcadm.sh set-password -r demorealm --username testuser --new-password NEWPASSWORD --temporary
 ----
 
-This command sets a temporary password for the user. The target user must change the password the next time they log in.
+Эта команда устанавливает временный пароль для пользователя. Целевой пользователь должен изменить пароль при следующем входе в систему.
 
-You can use `--userid` to specify the user by using the `id` attribute.
+Вы можете использовать `--userid` для указания пользователя с помощью атрибута `id`.
 
-You can achieve the same result using the `update` command on an endpoint constructed from the one you used to get a specific user, such as `users/USER_ID/reset-password`.
+Вы можете достичь того же результата, используя команду `update` на конечной точке, построенной из той, которую вы использовали для получения конкретного пользователя, например `users/USER_ID/reset-password`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
 $ kcadm.sh update users/0ba7a3fd-6fd8-48cd-a60b-2e8fd82d56e2/reset-password -r demorealm -s type=password -s value=NEWPASSWORD -s temporary=true -n
 ----
 
-The `-n` parameter ensures that {project_name} performs the `PUT` command without performing a `GET` command before the `PUT` command. This is necessary because the `reset-password` endpoint does not support `GET`.
+Параметр `-n` гарантирует, что {project_name} выполняет команду `PUT` без выполнения команды `GET` перед командой `PUT`. Это необходимо, потому что конечная точка `reset-password` не поддерживает `GET`.
 
 [discrete]
-==== Listing assigned, available, and effective realm roles for a user
+==== Список назначенных, доступных и эффективных ролей для пользователя
 
-You can use a `get-roles` command to list assigned, available, and effective realm roles for a user.
+Вы можете использовать команду `get-roles`, чтобы перечислить назначенные, доступные и эффективные роли реалма для пользователя.
 
-. Specify the target user by user name or ID to list the user's *assigned* realm roles.
+. Укажите целевого пользователя по имени пользователя или ID, чтобы перечислить *назначенные* роли игрока.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --uusername testuser
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --uusername testuser --effective
 ----
-. Use the `--available` option to list realm roles that you can add to a user.
+. Используйте опцию `--available` для отображения ролей реалма, которые вы можете добавить пользователю.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1178,29 +1178,29 @@ $ kcadm.sh get-roles -r demorealm --uusername testuser --available
 ----
 
 [discrete]
-==== Listing assigned, available, and effective client roles for a user
+==== Список назначенных, доступных и эффективных ролей клиента для пользователя
 
-Use a `get-roles` command to list assigned, available, and effective client roles for a user.
+Используйте команду `get-roles` чтобы перечислить назначенные, доступные и эффективные роли клиента для пользователя.
 
-. Specify the target user by user name (`--uusername` option) or ID (`--uid` option) and client by a clientId attribute (`--cclientid` option) or an ID (`--cid` option) to list *assigned* client roles for the user.
+. Укажите конечного пользователя по имени пользователя (опция `--uusername`) или ID (опция `--uid`) и клиента по атрибуту clientId (опция `--cclientid`) или ID (опция `--cid`), чтобы перечислить *назначенные* роли клиента.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --uusername testuser --cclientid realm-management
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --uusername testuser --cclientid realm-management --effective
 ----
-. Use the `--available` option to list realm roles that you can add to a user.
+. Используйте опцию `--available` для отображения ролей реалма, которые вы можете добавить пользователю.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1208,11 +1208,11 @@ $ kcadm.sh get-roles -r demorealm --uusername testuser --cclientid realm-managem
 ----
 
 [discrete]
-==== Adding realm roles to a user
+==== Добавление ролей реалма пользователю
 
-Use an `add-roles` command to add realm roles to a user.
+Используйте команду «Addroles», чтобы добавить пользователю роли реалма.
 
-Use the following example to add the `user` role to user `testuser`:
+Используйте следующий пример, чтобы добавить роль `user` пользователю `testuser`:
 
 [options="nowrap"]
 ----
@@ -1220,11 +1220,11 @@ $ kcadm.sh add-roles --uusername testuser --rolename user -r demorealm
 ----
 
 [discrete]
-==== Removing realm roles from a user
+==== Удаление ролей реалма пользователя
 
-Use a `remove-roles` command to remove realm roles from a user.
+Используйте команду «remove-roles» для удаления ролей реалма у пользователя.
 
-Use the following example to remove the `user` role from the user `testuser`:
+Используйте следующий пример, чтобы удалить роль `user` из пользователя `testuser`:
 
 [options="nowrap"]
 ----
@@ -1232,11 +1232,11 @@ $ kcadm.sh remove-roles --uusername testuser --rolename user -r demorealm
 ----
 
 [discrete]
-==== Adding client roles to a user
+==== Добавление ролей клиента к пользователю
 
-Use an `add-roles` command to add client roles to a user.
+Используйте команду `add-roles`, чтобы добавить роли клиента к пользователю.
 
-Use the following example to add two roles defined on the client `realm-management`, the `create-client` role and the `view-users` role, to the user `testuser`.
+Используйте следующий пример, чтобы добавить две роли, определенные в `realm-management`, роль `create-client` и роль `view-users` пользователю `testuser`.
 
 [options="nowrap"]
 ----
@@ -1244,11 +1244,11 @@ $ kcadm.sh add-roles -r demorealm --uusername testuser --cclientid realm-managem
 ----
 
 [discrete]
-==== Removing client roles from a user
+==== Удаление ролей клиента у пользователя
 
-Use a `remove-roles` command to remove client roles from a user.
+Используйте команду "remove-roles", чтобы удалить роли клиента у пользователя.
 
-Use the following example to remove two roles defined on the realm-management client:
+Используйте следующий пример, чтобы удалить две роли, определенные в Realm-management клиенте:
 
 [options="nowrap"]
 ----
@@ -1256,13 +1256,13 @@ $ kcadm.sh remove-roles -r demorealm --uusername testuser --cclientid realm-mana
 ----
 
 [discrete]
-==== Listing a user's sessions
+==== Список пользовательских сессий
 
-. Identify the user's ID,
-. Use the ID to compose an endpoint URI, such as `users/ID/sessions`.
-. Use the `get` command to retrieve a list of the user's sessions.
+. Укажите ID пользователя,
+. Используйте ID для создания конечного URI, например `users/ID/sessions`.
+. Используйте команду `get`, чтобы получить список пользовательских сессий.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1270,13 +1270,13 @@ $ kcadm.sh get users/6da5ab89-3397-4205-afaa-e201ff638f9e/sessions -r demorealm
 ----
 
 [discrete]
-==== Logging out a user from a specific session
+==== Выход пользователя из определенной сессии
 
-. Determine the session's ID as described earlier.
-. Use the session's ID to compose an endpoint URI, such as `sessions/ID`.
-. Use the `delete` command to invalidate the session.
+. Определить ID сеанса, как описано ранее.
+. Используйте идентификатор сеанса для создания конечного URI, например, `sessions/ID`.
+. Используйте команду `delete`, чтобы аннулировать сессию.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1284,13 +1284,13 @@ $ kcadm.sh delete sessions/d0eaa7cc-8c5d-489d-811a-69d3c4ec84d1 -r demorealm
 ----
 
 [discrete]
-==== Logging out a user from all sessions
+==== Выход пользователя из всех сессий
 
-Use the user's ID to construct an endpoint URI, such as `users/ID/logout`.
+Используйте идентификатор пользователя для построения конечного URI, например, `users/ID/logout`.
 
-Use the `create` command to perform `POST` on that endpoint URI.
+Используйте команду `create` для выполнения `POST` с этой конечной точкой URI.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1298,14 +1298,14 @@ $ kcadm.sh create users/6da5ab89-3397-4205-afaa-e201ff638f9e/logout -r demorealm
 ----
 
 [[_group_operations]]
-=== Group operations
+=== Операции группы
 
 [discrete]
-==== Creating a group
+==== Создание группы
 
-Use the `create` command on the `groups` endpoint to create a new group.
+Используйте команду `create` в конечной точке `groups` для создания новой группы.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1313,11 +1313,11 @@ $ kcadm.sh create groups -r demorealm -s name=Group
 ----
 
 [discrete]
-==== Listing groups
+==== Список групп
 
-Use the `get` command on the `groups` endpoint to list groups.
+Используйте команду `get` на конечной точке `groups` в списке групп.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1325,11 +1325,11 @@ $ kcadm.sh get groups -r demorealm
 ----
 
 [discrete]
-==== Getting a specific group
+==== Получение определенной группы
 
-Use the group's ID to construct an endpoint URI, such as `groups/GROUP_ID`.
+Используйте ID группы для построения конечного URI, например, `groups/GROUP_ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1337,11 +1337,11 @@ $ kcadm.sh get groups/51204821-0580-46db-8f2d-27106c6b5ded -r demorealm
 ----
 
 [discrete]
-==== Updating a group
+==== Обновление группы
 
-Use the `update` command with the same endpoint URI that you use to get a specific group.
+Используйте команду `update` с тем же URI конечной точкой, что вы используете, чтобы получить определенную группу.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1349,11 +1349,11 @@ $ kcadm.sh update groups/51204821-0580-46db-8f2d-27106c6b5ded -s 'attributes.ema
 ----
 
 [discrete]
-==== Deleting a group
+==== Удаление группы
 
-Use the `delete` command with the same endpoint URI that you use to get a specific group.
+Используйте команду `delete` с тем же URI конечной точки, что вы используете, чтобы получить определенную группу.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1361,11 +1361,11 @@ $ kcadm.sh delete groups/51204821-0580-46db-8f2d-27106c6b5ded -r demorealm
 ----
 
 [discrete]
-==== Creating a subgroup
+==== Создание подгруппы
 
-Find the ID of the parent group by listing groups. Use that ID to construct an endpoint URI, such as `groups/GROUP_ID/children`.
+Найдите ID родительской группы по группам. Используйте этот ID для построения конечного URI, например, `groups/GROUP_ID/children`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1373,13 +1373,13 @@ $ kcadm.sh create groups/51204821-0580-46db-8f2d-27106c6b5ded/children -r demore
 ----
 
 [discrete]
-==== Moving a group under another group
+==== Перемещение группы в другую группу
 
-. Find the ID of an existing parent group and the ID of an existing child group.
-. Use the parent group's ID to construct an endpoint URI, such as `groups/PARENT_GROUP_ID/children`.
-. Run the `create` command on this endpoint and pass the child group's ID as a JSON body.
+. Найдите ID существующей родительской группы и ID существующей дочерней группы.
+. Используйте ID родительской группы для построения конечного URI, например, `groups/PARENT_GROUP_ID/children`.
+. Запустите команду «создать» на этой конечной точке и передайте ID дочерней группы как тело JSON.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1387,11 +1387,11 @@ $ kcadm.sh create groups/51204821-0580-46db-8f2d-27106c6b5ded/children -r demore
 ----
 
 [discrete]
-==== Get groups for a specific user
+==== Получить группы для определенного пользователя
 
-Use a user's ID to determine a user's membership in groups to compose an endpoint URI, such as `users/USER_ID/groups`.
+Используйте идентификатор пользователя для определения членства пользователя в группах для создания конечного URI, например, `users/USER_ID/groups`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1399,11 +1399,11 @@ $ kcadm.sh get users/b544f379-5fc4-49e5-8a8d-5cfb71f46f53/groups -r demorealm
 ----
 
 [discrete]
-==== Adding a user to a group
+==== Добавление пользователя в группу
 
-Use the `update` command with an endpoint URI composed of a user's ID and a group's ID, such as `users/USER_ID/groups/GROUP_ID`, to add a user to a group.
+Используйте команду `update` с конечным URI в составе ID пользователя и ID группы, например `users/USER_ID/groups/GROUP_ID`, чтобы добавить пользователя в группу.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1411,11 +1411,11 @@ $ kcadm.sh update users/b544f379-5fc4-49e5-8a8d-5cfb71f46f53/groups/ce01117a-742
 ----
 
 [discrete]
-==== Removing a user from a group
+==== Удаление пользователя из группы
 
-Use the `delete` command on the same endpoint URI you use for adding a user to a group, such as `users/USER_ID/groups/GROUP_ID`, to remove a user from a group.
+Используйте команду `delete` на том же URI конечной точке, который вы используете для добавления пользователя в группу, например `users/USER_ID/groups/GROUP_ID`, чтобы удалить пользователя из группы.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1423,29 +1423,29 @@ $ kcadm.sh delete users/b544f379-5fc4-49e5-8a8d-5cfb71f46f53/groups/ce01117a-742
 ----
 
 [discrete]
-==== Listing assigned, available, and effective realm roles for a group
+==== Список назначенных, доступных и эффективных ролей для группы
 
-Use a dedicated `get-roles` command to list assigned, available, and effective realm roles for a group.
+Используйте специальную команду `get-roles`, чтобы перечислить назначенные, доступные и эффективные роли в реалме.
 
-. Specify the target group by name (`--gname` option), path (`--gpath` option), or ID (`--gid` option) to list *assigned* realm roles for the group.
+. Укажите целевую группу по имени (опция `--gname`), путь (опция `--gpath`), или ID (опция `--gid`), чтобы перечислить *назначенные* роли в группе.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --gname Group
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --gname Group --effective
 ----
-. Use the `--available` option to list realm roles that you can add to the group.
+. Используйте опцию `--available` для отображения ролей реалма, которые вы можете добавить в группу.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1453,44 +1453,44 @@ $ kcadm.sh get-roles -r demorealm --gname Group --available
 ----
 
 [discrete]
-==== Listing assigned, available, and effective client roles for a group
+==== Список назначенных, доступных и эффективных ролей клиентов для группы
 
-Use the `get-roles` command to list assigned, available, and effective client roles for a group.
+Используйте команду `get-roles` чтобы перечислить назначенные, доступные и эффективные роли клиента для группы.
 
-. Specify the target group by name (`--gname` option) or ID (`--gid` option),
-. Specify the client by the clientId attribute (`--cclientid` option) or ID (`--id` option) to list *assigned* client roles for the user.
+. Укажите целевую группу по имени (опция `--gname`) или ID (опция `--gid`),
+. Укажите клиент, по параметру clientId (опция `--cclientid`) или ID (опция `--id`) для отображения *назначенных* ролей для пользователя.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --gname Group --cclientid realm-management
 ----
-. Use the `--effective` option to list *effective* realm roles.
+. Используйте параметр `--effective`, чтобы вывести список *эффективных* ролей.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --gname Group --cclientid realm-management --effective
 ----
-. Use the `--available` option to list realm roles that you can still add to the group.
+. Используйте опцию `--available` для отображения ролей реалма, которые все еще можно добавить в группу.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh get-roles -r demorealm --gname Group --cclientid realm-management --available
 ----
 
-=== Identity provider operations
+=== Операции поставщика удостоверений личности
 
 [discrete]
-==== Listing available identity providers
+==== Список доступных поставщиков идентификации
 
-Use the `serverinfo` endpoint to list available identity providers.
+Используйте конечную точку `serverinfo` для списка доступных провайдеров идентификации.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1499,15 +1499,15 @@ $ kcadm.sh get serverinfo -r demorealm --fields 'identityProviders(*)'
 
 [NOTE]
 ====
-{project_name} processes the `serverinfo` endpoint similarly to the `realms` endpoint. {project_name} does not resolve the endpoint relative to a target realm because it exists outside any specific realm.
+{project_name} обрабатывает конечную точку `serverinfo`, аналогично конечной точке `realms`. {project_name} не разрешает конечную точку относительно мишенного мира, так как он существует вне любого конкретного реалма.
 ====
 
 [discrete]
-==== Listing configured identity providers
+==== Список настроенных поставщиков идентификации
 
-Use the `identity-provider/instances` endpoint.
+Используйте конечную точку `identity-provider/instances`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1515,11 +1515,11 @@ $ kcadm.sh get identity-provider/instances -r demorealm --fields alias,providerI
 ----
 
 [discrete]
-==== Getting a specific configured identity provider
+==== Получение определенного поставщика идентификации
 
-Use the identity provider's `alias` attribute to construct an endpoint URI, such as `identity-provider/instances/ALIAS`, to get a specific identity provider.
+Используйте атрибут `alias` поставщика идентификации для построения URI конечной точки, например `identity-provider/instances/ALIAS`, для получения определенного поставщика идентификационных данных.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1527,11 +1527,11 @@ $ kcadm.sh get identity-provider/instances/facebook -r demorealm
 ----
 
 [discrete]
-==== Removing a specific configured identity provider
+==== Удаление определенного поставщика идентификации
 
-Use the `delete` command with the same endpoint URI that you use to get a specific configured identity provider to remove a specific configured identity provider.
+Используйте команду `delete` с тем же URI конечной точкой, что вы используете, чтобы получить конкретный сконфигурированный поставщик идентификации для удаления определенного поставщика идентификации.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1539,12 +1539,12 @@ $ kcadm.sh delete identity-provider/instances/facebook -r demorealm
 ----
 
 [discrete]
-==== Configuring a Keycloak OpenID Connect identity provider
+==== Настройка поставщика идентификации OpenID Connect Keycloak
 
-. Use `keycloak-oidc` as the `providerId` when you create a new identity provider instance.
-. Provide the `config` attributes: `authorizationUrl`, `tokenUrl`, `clientId`, and `clientSecret`.
+. Используйте `keycloak-oidc` в качестве `providerId` при создании нового экземпляра поставщика идентификации.
+. Укажите атрибуты `config`: `authorizationUrl`, `tokenUrl`, `clientId` и `clientSecret`.
 +
-For example:
+Например:
 +
 [options="nowrap",subs=+attributes]
 ----
@@ -1552,17 +1552,17 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=keycloak-oid
 ----
 
 [discrete]
-==== Configuring an OpenID Connect identity provider
+==== Настройка поставщика идентификации OpenID Connect
 
-Configure the generic OpenID Connect provider the same way you configure the Keycloak OpenID Connect provider, except you set the `providerId` attribute value to `oidc`.
+Настройте провайдера обобщенного OpenID Connect таким же образом, как и ваш провайдер Keycloak OpenID Connect, за исключением значения атрибута `providerId` в `oidc`.
 
 [discrete]
-==== Configuring a SAML 2 identity provider
+==== Настройка оператора идентификации SAML 2
 
-. Use `saml` as the `providerId`.
-. Provide the `config` attributes: `singleSignOnServiceUrl`, `nameIDPolicyFormat`, and `signatureAlgorithm`.
+. Используйте «saml» в качестве «providerId».
+. Предоставьте атрибуты `config`: `singleSignOnServiceUrl`, `nameIDPolicyFormat` и `signatureAlgorithm`.
 
-For example:
+Например:
 
 [options="nowrap",subs=+attributes]
 ----
@@ -1570,12 +1570,12 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=saml -s prov
 ----
 
 [discrete]
-==== Configuring a Facebook identity provider
+==== Настройка провайдера идентификации Facebook
 
-. Use `facebook` as the `providerId`.
-. Provide the `config` attributes: `clientId` and `clientSecret`. You can find these attributes in the Facebook Developers application configuration page for your application. See the <<_facebook, Facebook identity broker>> page for more information.
+. Используйте `facebook` как `providerId`.
+. Укажите атрибуты `config`: `clientId` и `clientSecret`. Вы можете найти эти атрибуты на странице настройки приложения Facebook Developers для вашего приложения. Смотрите <_facebook, Facebook identity broker>> страницу для получения дополнительной информации.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1583,12 +1583,12 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=facebook -s 
 ----
 
 [discrete]
-==== Configuring a Google identity provider
+==== Настройка провайдера идентификации Google
 
-. Use `google` as the `providerId`.
-. Provide the `config` attributes: `clientId` and `clientSecret`. You can find these attributes in the Google Developers application configuration page for your application. See the <<_google, Google identity broker>> page for more information.
+. Используйте «google» в качестве «providerId».
+. Укажите атрибуты `config`: `clientId` и `clientSecret`. Эти атрибуты можно найти на странице настройки приложений Google Developers для вашего приложения. Смотрите <_google, идентификационный брокер>> на странице <_google.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1596,12 +1596,12 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=google -s pr
 ----
 
 [discrete]
-==== Configuring a Twitter identity provider
+==== Настройка провайдера идентификации Twitter
 
-. Use `twitter` as the `providerId`.
-. Provide the `config` attributes `clientId` and `clientSecret`. You can find these attributes in the Twitter Application Management application configuration page for your application. See the <<_twitter, Twitter identity broker>> page for more information.
+. Используйте «twitter» в качестве «providerId».
+. Укажите `config` атрибуты `clientId` и `clientSecret`. Эти атрибуты можно найти на странице настройки приложения Twitter для вашего приложения. Смотрите страницу <_twitter, идентификационный брокер Twitter>> для получения дополнительной информации.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1611,10 +1611,10 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=google -s pr
 [discrete]
 ==== Configuring a GitHub identity provider
 
-. Use `github` as the `providerId`.
-. Provide the `config` attributes `clientId` and `clientSecret`. You can find these attributes in the GitHub Developer Application Settings page for your application. See the <<_github, GitHub identity broker>> page for more information.
+. Используйте `github` как `providerId`.
+. Укажите `config` атрибуты `clientId` и `clientSecret`. Вы можете найти эти атрибуты на странице Настройки приложения разработчика GitHub. Смотрите <_github, идентификационный брокер>> страницу GitHub.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1624,10 +1624,10 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=github -s pr
 [discrete]
 ==== Configuring a LinkedIn identity provider
 
-. Use `linkedin` as the `providerId`.
-. Provide the `config` attributes `clientId` and `clientSecret`. You can find these attributes in the LinkedIn Developer Console application page for your application. See the <<_linkedin, LinkedIn identity broker>> page for more information.
+. Используйте `linkedin` как `providerId`.
+. Укажите `config` атрибуты `clientId` и `clientSecret`. Эти атрибуты вы можете найти на странице приложения LinkedIn Developer Console для вашего приложения. См. <_linkedin, LinkedIn identity broker>> страницу .
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1637,10 +1637,10 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=linkedin -s 
 [discrete]
 ==== Configuring a Microsoft Live identity provider
 
-. Use `microsoft` as the `providerId`.
-. Provide the `config` attributes `clientId` and `clientSecret`. You can find these attributes in the Microsoft Application Registration Portal page for your application. See the <<_microsoft, Microsoft identity broker>> page for more information.
+. Используйте «microsoft» в качестве «providerId».
+. Укажите `config` атрибуты `clientId` и `clientSecret`. Эти атрибуты можно найти на странице регистрации Microsoft Application Application Registration Portal для вашего приложения. Смотрите страницу <<_microsoft, идентификационный брокер>> .
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1648,27 +1648,27 @@ $ kcadm.sh create identity-provider/instances -r demorealm -s alias=microsoft -s
 ----
 
 [discrete]
-==== Configuring a Stack Overflow identity provider
+==== Настройка поставщика идентификаций стека переполнения
 
-. Use `stackoverflow` command as the `providerId`.
-. Provide the `config` attributes `clientId`, `clientSecret`, and `key`. You can find these attributes in the Stack Apps OAuth page for your application. See the <<_stackoverflow, Stack Overflow identity broker>> page for more information.
+. Используйте команду `stackoverflow` как `providerId`.
+. Укажите атрибуты `clientId`, `clientSecret` и `key`. Эти атрибуты можно найти на странице OAuth приложений стека. Смотрите страницу <_stackoverflow, Stack Overflow identity broker>> .
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create identity-provider/instances -r demorealm -s alias=stackoverflow -s providerId=stackoverflow -s enabled=true  -s 'config.useJwksUrl="true"' -s config.clientId=STACKAPPS_CLIENT_ID -s config.clientSecret=STACKAPPS_CLIENT_SECRET -s config.key=STACKAPPS_KEY
 ----
 
-=== Storage provider operations
+=== Операции провайдера хранения
 
 [discrete]
-==== Configuring a Kerberos storage provider
+==== Настройка провайдера хранилища Kerberos
 
-. Use the `create` command against the `components` endpoint.
-. Specify the realm id as a value of the `parentId` attribute.
-. Specify `kerberos` as the value of the `providerId` attribute, and `org.keycloak.storage.UserStorageProvider` as the value of the `providerType` attribute.
-. For example:
+. Используйте команду `create` против конечной точки `components`.
+. Укажите идентификатор области в качестве значения атрибута `parentId`.
+. Укажите `kerberos` в качестве значения атрибута `providerId` и `org.keycloak.storage.UserStorageProvider` в качестве значения атрибута `providerType`.
+. Например:
 +
 [options="nowrap"]
 ----
@@ -1676,12 +1676,12 @@ $ kcadm.sh create components -r demorealm -s parentId=demorealmId -s id=demokerb
 ----
 
 [discrete]
-==== Configuring an LDAP user storage provider
+==== Настройка провайдера хранения данных LDAP
 
-. Use the `create` command against the `components` endpoint.
-. Specify `ldap` as the value of the `providerId` attribute, and `org.keycloak.storage.UserStorageProvider` as the value of the `providerType` attribute.
-. Provide the realm ID as the value of the `parentId` attribute.
-. Use the following example to create a Kerberos-integrated LDAP provider.
+. Используйте команду `create` против конечной точки `components`.
+. Укажите `ldap` в качестве значения атрибута `providerId` и `org.keycloak.storage.UserStorageProvider` в качестве значения атрибута `providerType`.
+. Введите ID области как значение атрибута `parentId`.
+. Используйте следующий пример для создания Kerberos-Integrated LDAP провайдера.
 +
 [options="nowrap"]
 ----
@@ -1689,12 +1689,12 @@ $ kcadm.sh create components -r demorealm -s name=kerberos-ldap-provider -s prov
 ----
 
 [discrete]
-==== Removing a user storage provider instance
+==== Удаление экземпляра провайдера хранения данных
 
-. Use the storage provider instance's `id` attribute to compose an endpoint URI, such as `components/ID`.
-. Run the `delete` command against this endpoint.
+. Используйте атрибут `id` хранилища для создания конечной точки URI, например `components/ID`.
+. Выполните команду `delete` с этой конечной точкой.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1702,13 +1702,13 @@ $ kcadm.sh delete components/3d9c572b-8f33-483f-98a6-8bb421667867 -r demorealm
 ----
 
 [discrete]
-==== Triggering synchronization of all users for a specific user storage provider
+==== Запуск синхронизации всех пользователей для определенного провайдера хранения данных
 
-. Use the storage provider's `id` attribute to compose an endpoint URI, such as `user-storage/ID_OF_USER_STORAGE_INSTANCE/sync`.
-. Add the `action=triggerFullSync` query parameter.
-. Run the `create` command.
+. Используйте атрибут `id` хранилища для создания URI конечной точки, например `user-storage/ID_OF_USER_STORAGE_INSTANCE/sync`.
+. Добавьте параметр запроса `action=triggerFullSync`.
+. Выполните команду `create`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1716,13 +1716,13 @@ $ kcadm.sh create user-storage/b7c63d02-b62a-4fc1-977c-947d6a09e1ea/sync?action=
 ----
 
 [discrete]
-==== Triggering synchronization of changed users for a specific user storage provider
+==== Запуск синхронизации измененных пользователей для определенного провайдера хранения данных
 
-. Use the storage provider's `id` attribute to compose an endpoint URI, such as `user-storage/ID_OF_USER_STORAGE_INSTANCE/sync`.
-. Add the `action=triggerChangedUsersSync` query parameter.
-. Run the `create` command.
+. Используйте атрибут `id` хранилища для создания URI конечной точки, например `user-storage/ID_OF_USER_STORAGE_INSTANCE/sync`.
+. Добавьте параметр запроса `action=triggerChangedUsersSync`.
+. Выполните команду `create`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1730,13 +1730,13 @@ $ kcadm.sh create user-storage/b7c63d02-b62a-4fc1-977c-947d6a09e1ea/sync?action=
 ----
 
 [discrete]
-==== Test LDAP user storage connectivity
+==== Проверить подключение к хранилищу LDAP
 
-. Run the `get` command on the `testLDAPConnection` endpoint.
-. Provide query parameters `bindCredential`, `bindDn`, `connectionUrl`, and `useTruststoreSpi`.
-. Set the `action` query parameter to `testConnection`.
+. Запустите команду `get` на конечной точке `testLDAPConnection`.
+. Предоставьте параметры запроса `bindCredential`, `bindDn`, `connectionUrl` и `useTruststoreSpi`.
+. Установил параметр запроса `action` в `testConnection`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1744,30 +1744,30 @@ $ kcadm.sh create testLDAPConnection -s action=testConnection -s bindCredential=
 ----
 
 [discrete]
-==== Test LDAP user storage authentication
+==== Тестировать аутентификацию пользователя LDAP
 
-. Run the `get` command on the `testLDAPConnection` endpoint.
-. Provide the query parameters `bindCredential`, `bindDn`, `connectionUrl`, and `useTruststoreSpi`.
-. Set the `action` query parameter to `testAuthentication`.
+. Запустите команду `get` на конечной точке `testLDAPConnection`.
+. Предоставьте параметры запроса `bindCredential`, `bindDn`, `connectionUrl` и `useTruststoreSpi`.
+. Установил параметр запроса `action` в `testAuthentication`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create testLDAPConnection -s action=testAuthentication -s bindCredential=secret -s bindDn=uid=admin,ou=system -s connectionUrl=ldap://localhost:10389 -s useTruststoreSpi=always
 ----
 
-=== Adding mappers
+=== Добавление картографа
 
 [discrete]
-==== Adding a hard-coded role LDAP mapper
+==== Добавление твердой роли LDAP mapper
 
-. Run the `create` command on the `components` endpoint.
-. Set the `providerType` attribute to `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
-. Set the `parentId` attribute to the ID of the LDAP provider instance.
-. Set the `providerId` attribute to `hardcoded-ldap-role-mapper`. Ensure you provide a value of `role` configuration parameter.
+. Запустите команду `create` на конечной точке `components`.
+. Установите атрибут `providerType` в `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
+. Установите атрибут `parentId` на ID экземпляра LDAP провайдера.
+. Установите атрибут `providerId` в `hardcoded-ldap-role-mapper`. Убедитесь, что вы указали параметр конфигурации `role`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1775,14 +1775,14 @@ $ kcadm.sh create components -r demorealm -s name=hardcoded-ldap-role-mapper -s 
 ----
 
 [discrete]
-==== Adding an MS Active Directory mapper
+==== Добавление MS Active Directory mapper
 
-. Run the `create` command on the `components` endpoint.
-. Set the `providerType` attribute to `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
-. Set the `parentId` attribute to the ID of the LDAP provider instance.
-. Set the `providerId` attribute to `msad-user-account-control-mapper`.
+. Запустите команду `create` на конечной точке `components`.
+. Установите атрибут `providerType` в `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
+. Установите атрибут `parentId` на ID экземпляра LDAP провайдера.
+. Установите атрибут `providerId` в `msad-user-account-control-mapper`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1790,14 +1790,14 @@ $ kcadm.sh create components -r demorealm -s name=msad-user-account-control-mapp
 ----
 
 [discrete]
-==== Adding a user attribute LDAP mapper
+==== Добавление атрибута пользователя LDAP mapper
 
-. Run the `create` command on the `components` endpoint.
-. Set the `providerType` attribute to `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
-. Set the `parentId` attribute to the ID of the LDAP provider instance.
-. Set the `providerId` attribute to `user-attribute-ldap-mapper`.
+. Запустите команду `create` на конечной точке `components`.
+. Установите атрибут `providerType` в `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
+. Установите атрибут `parentId` на ID экземпляра LDAP провайдера.
+. Установите атрибут `providerId` в `user-attribute-ldap-mapper`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1805,14 +1805,14 @@ $ kcadm.sh create components -r demorealm -s name=user-attribute-ldap-mapper -s 
 ----
 
 [discrete]
-==== Adding a group LDAP mapper
+==== Добавление группы LDAP карты
 
-. Run the `create` command on the `components` endpoint.
-. Set the `providerType` attribute to `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
-. Set the `parentId` attribute to the ID of the LDAP provider instance.
-. Set the `providerId` attribute to `group-ldap-mapper`.
+. Запустите команду `create` на конечной точке `components`.
+. Установите атрибут `providerType` в `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
+. Установите атрибут `parentId` на ID экземпляра LDAP провайдера.
+. Установите атрибут `providerId` в `group-ldap-mapper`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
@@ -1820,48 +1820,48 @@ $ kcadm.sh create components -r demorealm -s name=group-ldap-mapper -s providerI
 ----
 
 [discrete]
-==== Adding a full name LDAP mapper
+==== Добавление полного имени LDAP mapper
 
-. Run the `create` command on the `components` endpoint.
-. Set the `providerType` attribute to `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
-. Set the `parentId` attribute to the ID of the LDAP provider instance.
-. Set the `providerId` attribute to `full-name-ldap-mapper`.
+. Запустите команду `create` на конечной точке `components`.
+. Установите атрибут `providerType` в `org.keycloak.storage.ldap.mappers.LDAPStorageMapper`.
+. Установите атрибут `parentId` на ID экземпляра LDAP провайдера.
+. Установите атрибут `providerId` в `full-name-ldap-mapper`.
 +
-For example:
+Например:
 +
 [options="nowrap"]
 ----
 $ kcadm.sh create components -r demorealm -s name=full-name-ldap-mapper -s providerId=full-name-ldap-mapper -s providerType=org.keycloak.storage.ldap.mappers.LDAPStorageMapper -s parentId=b7c63d02-b62a-4fc1-977c-947d6a09e1ea -s 'config."ldap.full.name.attribute"=["cn"]' -s 'config."read.only"=["false"]' -s 'config."write.only"=["true"]'
 ----
 
-=== Authentication operations
+=== Операции аутентификации
 
 [discrete]
-==== Setting a password policy
+==== Установка политики паролей
 
-. Set the realm's `passwordPolicy` attribute to an enumeration expression that includes the specific policy provider ID and optional configuration.
-. Use the following example to set a password policy to default values. The default values include:
-* 210,000 hashing iterations
-* at least one special character
-* at least one uppercase character
-* at least one digit character
-* not be equal to a user's `username`
-* be at least eight characters long
+. Установите атрибут `passwordPolicy` области к выражению перечисления, которое включает в себя конкретный ID провайдера политики и опциональную конфигурацию.
+. Используйте следующий пример, чтобы установить стандартные значения политики пароля. Значения по умолчанию включают:
+* 210,000 итераций хэширования
+* хотя бы один специальный символ
+* хотя бы один символ в верхнем регистре
+* хотя бы один символ
+* не равно `username` пользователя
+* быть не менее восьми символов
 +
 [options="nowrap"]
 ----
 $ kcadm.sh update realms/demorealm -s 'passwordPolicy="hashIterations and specialChars and upperCase and digits and notUsername and length"'
 ----
-. To use values different from defaults, pass the configuration in brackets.
-. Use the following example to set a password policy to:
-* 300,000 hash iterations
-* at least two special characters
-* at least two uppercase characters
-* at least two lowercase characters
-* at least two digits
-* be at least nine characters long
-* not be equal to a user's `username`
-* not repeat for at least four changes back
+. Для использования значений, отличных от значений по умолчанию, передайте конфигурацию в скобках.
+. Используйте следующий пример, чтобы установить политику паролей:
+* 300,000 итераций хэша
+* как минимум два специальных символа
+* не менее двух заглавных символов
+* не менее двух строчных символов
+* не менее двух цифр
+* быть не менее девяти символов
+* не равно `username` пользователя
+* не повторять хотя бы четыре изменения назад
 +
 [options="nowrap"]
 ----
@@ -1869,11 +1869,11 @@ $ kcadm.sh update realms/demorealm -s 'passwordPolicy="hashIterations(300000) an
 ----
 
 [discrete]
-==== Obtaining the current password policy
+==== Получение текущей политики паролей
 
-You can get the current realm configuration by filtering all output except for the `passwordPolicy` attribute.
+Текущая конфигурация мира может быть использована для фильтрации всех выводов, кроме атрибута `passwordPolicy`.
 
-For example, display `passwordPolicy` for `demorealm`.
+Например, покажите `passwordPolicy` для `demorealm`.
 
 [options="nowrap"]
 ----
@@ -1881,11 +1881,11 @@ $ kcadm.sh get realms/demorealm --fields passwordPolicy
 ----
 
 [discrete]
-==== Listing authentication flows
+==== Список потоков аутентификации
 
-Run the `get` command on the `authentication/flows` endpoint.
+Запустите команду `get` на конечной точке `authentication/flows`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1893,11 +1893,11 @@ $ kcadm.sh get authentication/flows -r demorealm
 ----
 
 [discrete]
-==== Getting a specific authentication flow
+==== Получение определенного потока аутентификации
 
-Run the `get` command on the `authentication/flows/FLOW_ID` endpoint.
+Запустите команду `get` на конечной точке `authentication/flows/FLOW_ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1905,11 +1905,11 @@ $ kcadm.sh get authentication/flows/febfd772-e1a1-42fb-b8ae-00c0566fafb8 -r demo
 ----
 
 [discrete]
-==== Listing executions for a flow
+==== Список исполнителей для потока
 
-Run the `get` command on the `authentication/flows/FLOW_ALIAS/executions` endpoint.
+Запустите команду `get` на конечной точке `authentication/flows/FLOW_ALIAS/executions`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1917,13 +1917,13 @@ $ kcadm.sh get authentication/flows/Copy%20of%20browser/executions -r demorealm
 ----
 
 [discrete]
-==== Adding configuration to an execution
+==== Добавление конфигурации в выполнение
 
-. Get execution for a flow.
-. Note the ID of the flow.
-. Run the `create` command on the `authentication/executions/{executionId}/config` endpoint.
+. Получить выполнение для потока.
+. Обратите внимание на ID потока.
+. Запустите команду `create` на конечной точке `authentication/executions/{executionId}/config`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1931,13 +1931,13 @@ $ kcadm.sh create "authentication/executions/a3147129-c402-4760-86d9-3f2345e401c
 ----
 
 [discrete]
-==== Getting configuration for an execution
+==== Получение конфигурации для выполнения
 
-. Get execution for a flow.
-. Note its `authenticationConfig` attribute, which contains the config ID.
-. Run the `get` command on the `authentication/config/ID` endpoint.
+. Получить выполнение для потока.
+. Обратите внимание на атрибут `authenticationConfig`, который содержит идентификатор конфигурации.
+. Запустите команду `get` на конечной точке `authentication/config/ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1945,14 +1945,14 @@ $ kcadm get "authentication/config/dd91611a-d25c-421a-87e2-227c18421833" -r demo
 ----
 
 [discrete]
-==== Updating configuration for an execution
+==== Обновление конфигурации для выполнения
 
-. Get the execution for the flow.
-. Get the flow's `authenticationConfig` attribute.
-. Note the config ID from the attribute.
-. Run the `update` command on the `authentication/config/ID` endpoint.
+. Получить исполнение для потока.
+. Получить атрибут `authenticationConfig` потока
+. Обратите внимание на идентификатор конфигурации из атрибута.
+. Запустите команду `update` на конечной точке `authentication/config/ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
@@ -1960,14 +1960,14 @@ $ kcadm update "authentication/config/dd91611a-d25c-421a-87e2-227c18421833" -r d
 ----
 
 [discrete]
-==== Deleting configuration for an execution
+==== Удаление конфигурации для выполнения
 
-. Get execution for a flow.
-. Get the flows `authenticationConfig` attribute.
-. Note the config ID from the attribute.
-. Run the `delete` command on the `authentication/config/ID` endpoint.
+. Получить выполнение для потока.
+. Получить атрибут `authenticationConfig`.
+. Обратите внимание на идентификатор конфигурации из атрибута.
+. Запустите команду `delete` на конечной точке `authentication/config/ID`.
 
-For example:
+Например:
 
 [options="nowrap"]
 ----
