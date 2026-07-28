@@ -1,18 +1,18 @@
-= Configuring SSL for a realm
+= Настройка SSL для области
 
-Each realm has an associated SSL Mode, which defines the SSL/HTTPS requirements for interacting with the realm.
-Browsers and applications that interact with the realm honor the SSL/HTTPS requirements defined by the SSL Mode or they cannot interact with the server.
+В каждом реалме есть соответствующий режим SSL, который определяет требования SSL/HTTPS для взаимодействия с Realm.
+Браузеры и приложения, которые взаимодействуют с Realm, соблюдают требования SSL/HTTPS, определенные режимом SSL или не могут взаимодействовать с сервером.
 
-.Procedure
-. Click *Realm settings* in the menu.
-. Click the *General* tab.
+.Процедура
+. Нажмите *Настройки реалма* в меню.
+. Нажмите на вкладку *Общее*.
 +
-image:images/general-tab.png[General Tab]
-. Set *Require SSL* to one of the following SSL modes:
-* *External requests*
-Users can interact with {project_name} without SSL so long as they stick to private IPv4 addresses such as `localhost`, `127.0.0.1`, `10.x.x.x`, `192.168.x.x`, `172.16.x.x` or IPv6 link-local and unique-local addresses.
-If you try to access {project_name} without SSL from a non-private IP address, you will get an error.
-* *None*
-{project_name} does not require SSL.  This choice applies only in development when you are experimenting and do not plan to support this deployment.
-* *All requests*
-{project_name} requires SSL for all IP addresses.
+image:images/general-tab.png[Общая вкладка]
+. Установить *Требовать SSL* к одному из следующих режимов SSL:
+* *Внешние запросы*
+Пользователи могут взаимодействовать с {project_name} без SSL до тех пор, пока они сохраняются с частными адресами IPv4, такими как `localhost`, `127. .0.1`, `10.x.x.x`, `192.168.x.x`, `172.16.x.x` или IPv6 link-local и unique-lock-addresses.
+Если вы пытаетесь получить доступ к {project_name} без SSL с неличного IP-адреса, вы получите ошибку.
+* *Нет*
+{project_name} не требует SSL.  Этот выбор применим только в разработке, когда вы экспериментируете и не планируете поддерживать это развертывание.
+* *Все запросы*
+{project_name} требует SSL для всех IP-адресов.
