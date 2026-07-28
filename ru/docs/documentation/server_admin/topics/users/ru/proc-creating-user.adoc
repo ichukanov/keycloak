@@ -5,39 +5,39 @@
 // server_admin/topics/users.adoc
 
 [id="proc-creating-user_{context}"]
-= Creating users
+= Создание пользователей
 
 [role="_abstract"]
-You create users in the realm where you intend to have applications needed by those users. Avoid creating users in the master realm, which is only intended for creating other realms.
+Вы создаете пользователей в реалме, где хотите иметь приложения, необходимые этим пользователям. Избегайте создания пользователей в главном мире, который предназначен только для создания других миров.
 
-.Prerequisite
-* You are in a realm other than the master realm.
+.Необходимые предпосылки
+* Вы находитесь в мире, отличном от мастерского.
 
 //-
 
-.Procedure
-. Click *Users* in the menu.
-. Click *Add User*.
-. Enter the details for the new user.
+.Процедура
+. Нажмите *Пользователи* в меню.
+. Нажмите *Добавить пользователя*.
+. Введите данные для нового пользователя.
 
 ifdef::standalone[]
 
 +
-NOTE: *Username* is the only required field.
+ПРИМЕЧАНИЕ: *Имя пользователя* является единственным обязательным полем.
 
 +
-. Click *Save*. After saving the details, the *Management* page for the new user is displayed.
+. Нажмите *Сохранить*. После сохранения деталей отображается страница *Управление* для нового пользователя.
 
 endif::[]
 
 ifdef::api-management[]
 
-. Toggle *Email Verified* to *ON*.
-. Click *Save*.
-. In the *Credentials* tab, set the password in both fields.
-.. Toggle *Temporary* to *OFF* to avoid resetting the password during the next login.
-.. Click *Reset Password*.
-.. Click *Change Password*.
-.. Click *Save*.
+. Переключить *Проверка электронной почты* на *ВКЛЮЧЕН*.
+. Нажмите *Сохранить*.
+. В закладке *Учетные данные* установите пароль в обоих полях.
+.. Переключитесь *Временно* на *ВЫКЛ*, чтобы избежать сброса пароля при следующем входе в систему.
+.. Нажмите *Сбросить пароль*.
+.. Нажмите *Изменить пароль*.
+.. Нажмите *Сохранить*.
 +
 endif::[]
