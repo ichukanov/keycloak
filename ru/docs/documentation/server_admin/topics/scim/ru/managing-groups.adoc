@@ -1,33 +1,33 @@
 [[_scim_managing_groups_]]
-= Managing groups
+= Управление группами
 
-The SCIM `/Groups` endpoint allows you to create, read, update, and delete group resources in {project_name}. Group resources
+Конечная точка SCIM `/Groups` позволяет создавать, читать, обновлять и удалять ресурсы группы в {project_name}. Group resources
 conform to the `urn:ietf:params:scim:schemas:core:2.0:Group` schema as defined in RFC 7643.
 
-== Group attributes
+== Атрибуты группы
 
 [cols="1,1,2", options="header"]
 |===
-|SCIM Attribute
-|{project_name} Attribute
-|Description
+|Атрибут SCIM
+|Атрибут {project_name}
+|Описание
 
 |`displayName`
 |`name`
-|The name of the group. Required.
+|Название группы. Обязательно.
 
 |`externalId`
-|(custom attribute)
-|An identifier from an external system.
+|(пользовательский атрибут)
+|Идентификатор внешней системы.
 
-|`members`
-|(group membership)
-|List of users that belong to this group. Read-only on GET; managed via PATCH.
+|«члены»
+|(членство в группах)
+|Список пользователей, входящих в эту группу. Только чтение на GET; управляется через PATCH.
 |===
 
-== Creating a group
+== Создание группы
 
-To create a group, send a `POST` request to the `/Groups` endpoint:
+Чтобы создать группу, отправьте запрос `POST` в конечную точку `/Groups`:
 
 [source,bash]
 ----
@@ -41,17 +41,17 @@ curl -X POST http://localhost:8080/realms/myrealm/scim/v2/Groups \
   }'
 ----
 
-A successful response returns the created group with a `201 Created` status.
+Успешный ответ возвращает созданную группу со статусом '201 Создана'.
 
-IMPORTANT: Group members cannot be specified during group creation. Attempting to include members in the `POST`
-request results in a `400 Bad Request` error. Use the `PATCH` method to add members after creating the group.
+IMPORTANT: Нельзя указать участников группы при создании группы. Попытка включить участников в запрос `POST`
+приводит к ошибке `400 Bad Request`. Используйте метод `PATCH`, чтобы добавить участников после создания группы.
 
-If a group with the same `displayName` already exists, the API returns a `409 Conflict` response with
+Если группа с таким же `displayName` уже существует, API возвращает ответ `409 Conflict` с
 `scimType: "uniqueness"`.
 
-== Retrieving a group
+== Получение группы
 
-To retrieve a group by ID:
+Чтобы получить группу по ID:
 
 [source,bash]
 ----
@@ -60,9 +60,9 @@ curl http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
   -H "Accept: application/scim+json"
 ----
 
-== Listing groups
+== Список групп
 
-To list all groups in the realm:
+Список всех групп в мире:
 
 [source,bash]
 ----
@@ -71,11 +71,11 @@ curl http://localhost:8080/realms/myrealm/scim/v2/Groups \
   -H "Accept: application/scim+json"
 ----
 
-For filtering and pagination of results, see <<_scim_filtering_resources,Filtering resources>>.
+Фильтрация и пагинация результатов смотрите <<_scim_filtering_resources,Filtering resources>.
 
-== Updating a group
+== Обновление группы
 
-To replace a group's attributes, send a `PUT` request:
+Чтобы заменить атрибуты группы, отправьте запрос «PUT»:
 
 [source,bash]
 ----
@@ -90,15 +90,15 @@ curl -X PUT http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
   }'
 ----
 
-IMPORTANT: Group members cannot be modified through `PUT` requests. Attempting to include members in the `PUT`
-request results in a `400 Bad Request` error. Use the `PATCH` method to manage group members.
+IMPORTANT: Участники группы не могут быть изменены через `PUT` запросы. Попытка включить участников в запрос `PUT`
+привела к ошибке `400 Bad Request`. Используйте метод `PATCH` для управления участниками группы.
 
-== Partially updating a group
+== Частичное обновление группы
 
-To modify specific group attributes, use a `PATCH` request.
+Чтобы изменить атрибуты группы, используйте запрос `PATCH`.
 
-NOTE: A single PATCH request can contain at most 100 operations. Requests exceeding this limit are rejected with
-a `400 Bad Request` response and `scimType: "tooMany"`.
+NOTE: Один запрос PATCH может содержать не более 100 операций. Запросы, превышающие этот лимит, отвергнуты при помощи
+ответ `400 Bad Request` и `scimType: "tooMany"`.
 
 [source,bash]
 ----
@@ -117,14 +117,14 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
   }'
 ----
 
-== Managing group members
+== Управление участниками группы
 
-Group membership is managed exclusively through `PATCH` operations on the group resource. Group membership can also
-be managed from the user side through the `/Users` endpoint. See <<_scim_managing_users_,Managing users>> for details.
+Членство в группе управляется исключительно при помощи операций `PATCH` на ресурсе группы. Group membership can also
+be managed from the user side through the `/Users` endpoint. Смотрите <<_scim_managing_users_,Управление пользователями>> для деталей.
 
-=== Adding members
+=== Добавление участников
 
-To add users to a group:
+Добавлять пользователей в группу:
 
 [source,bash]
 ----
@@ -148,9 +148,9 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
   }'
 ----
 
-=== Removing members
+=== Удаление участников
 
-To remove specific members from a group, use a value path filter:
+Чтобы удалить отдельных участников из группы, используйте фильтр пути значений:
 
 [source,bash]
 ----
@@ -168,7 +168,7 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
   }'
 ----
 
-You can remove multiple members in a single operation using the `or` operator:
+Вы можете удалить несколько участников из одной операции с помощью оператора `or`:
 
 [source,bash]
 ----
@@ -186,9 +186,9 @@ curl -X PATCH http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId} \
   }'
 ----
 
-=== Querying members
+=== Запрос участников
 
-To retrieve a group's members, include `members` in the `attributes` parameter:
+Чтобы получить членов группы, добавьте `members` в параметр `attributes`:
 
 [source,bash]
 ----
@@ -197,19 +197,19 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Groups/{groupId}?attributes=m
   -H "Accept: application/scim+json"
 ----
 
-Each member entry includes:
+Каждая запись члена включает:
 
-* `value`: The user ID.
-* `display`: The user's username.
-* `type`: Always `User`.
+* `value`: ID пользователя.
+* `display`: Имя пользователя.
+* `type`: Всегда `Пользователь`.
 
-=== Bidirectional membership
+=== Двунаправленное членство
 
-Group membership is bidirectional. When a user is added to a group, the user's `groups` attribute also reflects
+Членство в группах является двунаправленным. When a user is added to a group, the user's `groups` attribute also reflects
 the membership. Similarly, when a user is assigned to a group through the User resource, the group's `members`
 list is updated accordingly.
 
-You can also find groups by member:
+Вы также можете найти группы по участникам:
 
 [source,bash]
 ----
@@ -218,11 +218,11 @@ curl "http://localhost:8080/realms/myrealm/scim/v2/Groups?filter=members.value+e
   -H "Accept: application/scim+json"
 ----
 
-NOTE: Organization-related groups cannot have their members managed through the SCIM API. Attempting to add or
-remove members from an organization group returns a `400 Bad Request` error. Use the Organization API to manage
-organization group memberships.
+NOTE: Группы организаций, связанные с Организацией, не могут иметь своих членов, управляемых через SCIM API. Попытка добавить или
+удалить членов из группы организации возвращает ошибку `400 Bad Request`. Используйте API организации для управления членством в группах
+организации.
 
-== Deleting a group
+== Удаление группы
 
 [source,bash]
 ----
@@ -230,4 +230,4 @@ curl -X DELETE http://localhost:8080/realms/myrealm/scim/v2/Groups/{id} \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 ----
 
-A successful deletion returns a `204 No Content` response.
+Успешное удаление возвращает ответ «204 Без содержимого».
