@@ -1,124 +1,124 @@
-=== First login flow
+=== Процесс первого входа
 
-When users log in through identity brokering, {project_name} imports and links aspects of the user within the realm's local database. When {project_name} successfully authenticates users through an external identity provider, two situations can exist:
+Когда пользователи авторизуются через посредничество идентификации {project_name} импортирует и связывает аспекты пользователя в локальную базу данных. Когда {project_name} успешно аутентифицирует пользователей через внешнего поставщика идентификации, могут существовать две ситуации:
 
-* {project_name} has already imported and linked a user account with the authenticated identity provider account. In this case, {project_name} authenticates as the existing user and redirects back to the application.
-* No account exists for this user in {project_name}. Usually, you register and import a new account into the {project_name} database, but there may be an existing {project_name} account with the same email address. Automatically linking the existing local account to the external identity provider is a potential security hole. You cannot always trust the information you get from the external identity provider.
+* {project_name} уже импортирован и привязан к учетной записи пользователя с авторизованным провайдером. В этом случае {project_name} аутентифицируется как существующий пользователь и перенаправляет обратно в приложение.
+* Учётная запись этого пользователя в {project_name} не существует. Обычно вы регистрируетесь и импортируете новую учетную запись в базу данных {project_name} , но может появиться и существующая учетная запись {project_name} с таким же адресом электронной почты. Автоматическая привязка существующего локального аккаунта к внешнему поставщику идентификации является потенциальным препятствием для безопасности. Вы не всегда можете доверять полученной от внешнего поставщика информации.
 
-Different organizations have different requirements when dealing with some of these situations. With {project_name}, you can use the `First Login Flow` option in the IDP settings to choose a <<_authentication-flows, workflow>> for a user logging in from an external IDP for the first time. By default, the `First Login Flow` option points to the `first broker login` flow, but you can use your flow or different flows for different identity providers.
+При рассмотрении некоторых из этих ситуаций различные организации имеют разные требования. С {project_name}вы можете использовать опцию `First Login Flow` в настройках IDP, чтобы выбрать <<_authentication-flows, workflow>> для входа пользователя из внешнего IDP впервые. По умолчанию опция `First Login Flow` указывает на `first broker login` поток, но вы можете использовать ваш поток или различные потоки для разных поставщиков идентификации.
 
-The flow is in the Admin Console under the *Authentication* tab. When you choose the `First Broker Login` flow, you see the authenticators used by default. You can re-configure the existing flow. For example, you can disable some authenticators, mark some of them as `required`, or configure some authenticators.
+Поток находится в консоли администратора под вкладкой *Authentication*. Когда вы выберете `First Broker Login`, вы увидите аутентификаторы, используемые по умолчанию. Вы можете перенастроить существующий поток. Например, вы можете отключить некоторые аутентификаторы, отметить некоторые из них как `required` или настроить некоторые аутентификаторы.
 
 ifeval::[{project_community}==true]
 
-You can also create a new authentication flow, write your own Authenticator implementations, and use it in your flow. See link:{developerguide_link}[{developerguide_name}] for more information.
+Вы также можете создать новый процесс аутентификации, написать собственные реализации Аутентификатора и использовать его в своем процессе. См. ссылку:{developerguide_link}[{developerguide_name}] для получения дополнительной информации.
 
 endif::[]
 
-==== Default first login flow authenticators
+==== Аутентификаторы первого процесса входа по умолчанию
 
-Review Profile::
-* This authenticator displays the profile information page, so the users can review their profile that {project_name} retrieves from an identity provider.
-* You can set the `Update Profile On First Login` option in the *Actions* menu.
-* When *ON*, users are presented with the profile page requesting additional information to federate the user's identities.
-* When *missing*, users are presented with the profile page if the identity provider does not provide mandatory information, such as email, first name, or last name.
-* When *OFF*, the profile page does not display unless the user clicks in a later phase on the `Review profile info` link in the page displayed by the `Confirm Link Existing Account` authenticator.
-Create User If Unique:: This authenticator checks if there is already an existing {project_name} account with the same email or username like the account from the identity provider.
-If it's not, then the authenticator just creates a new local {project_name} account and links it with the identity provider and the whole flow is finished.
-Otherwise it goes to the next `Handle Existing Account` subflow.
-If you always want to ensure that there is no duplicated account, you can mark this authenticator as `REQUIRED`. In this case, the user
-will see the error page if there is an existing {project_name} account and the user will need to link the identity provider account through Account management.
-* This authenticator verifies that there is already a {project_name} account with the same email or username as the identity provider's account.
-* If an account does not exist, the authenticator creates a local {project_name} account, links this account with the identity provider, and terminates the flow.
-* If an account exists, the authenticator implements the next `Handle Existing Account` sub-flow.
-* To ensure there is no duplicated account, you can mark this authenticator as `REQUIRED`. The user sees the error page if a {project_name} account exists, and users must link their identity provider account through Account management.
-Confirm Link Existing Account::
-* On the information page, users see a {project_name} account with the same email. Users can review their profile again and use a different email or username. The flow restarts and goes back to the `Review Profile` authenticator.
-* Alternatively, users can confirm that they want to link their identity provider account with their existing {project_name} account.
-* Disable this authenticator if you do not want users to see this confirmation page and go straight to linking identity provider account by email verification or re-authentication.
-Verify Existing Account By Email::
-* This authenticator is `ALTERNATIVE` by default. {project_name} uses this authenticator if the realm has an SMTP setup configured.
-* The authenticator sends an email to users to confirm that they want to link the identity provider with their {project_name} account.
-* Disable this authenticator if you do not want to confirm linking by email, but want users to reauthenticate with their password.
-Verify Existing Account By Re-authentication::
-* Use this authenticator if the email authenticator is not available. For example, you have not configured SMTP for your realm. This authenticator displays a login screen for users to authenticate to link their {project_name} account with the Identity Provider.
-* Users can also re-authenticate with another identity provider already linked to their {project_name} account.
-* You can force users to use OTP. Otherwise, it is optional and used if you have set OTP for the user account.
+Просмотр профиля::
+* Этот аутентификатор отображает страницу информации профиля, так что пользователи могут просмотреть свой профиль, который {project_name} получает от поставщика идентификации.
+* Вы можете установить опцию `Update Profile On First Login` в меню *Actions*.
+* При *ВКЛЮЧЕНИи* пользователю предоставляется страница профиля, запрашивающая дополнительную информацию для объединения идентификаторов пользователя.
+* При *отсутствии*, пользователи представлены на странице профиля, если идентификатор провайдера не предоставляет обязательную информацию, такие как email, имя или фамилия.
+* Когда *ВЫКЛ* страница профиля не отображается, пока пользователь не переключится на более позднюю фазу на ссылку «Информация о профиле проверки» на странице, отображаемой аутентификатором «Подтверждение ссылки на существующую учетную запись».
+Создать пользователя с уникальным:: Этот аутентификатор проверяет, существует ли учетная запись {project_name} с тем же адресом электронной почты или именем пользователя от поставщика идентификации.
+Если нет, затем аутентификатор просто создает новую локальную учетную запись {project_name} и связывает ее с провайдером идентификации, и весь поток завершен.
+В противном случае он переходит к следующему подпотоку «Обработка существующей учетной записи».
+Если вы всегда хотите убедиться, что нет дубликатов аккаунта, вы можете отметить этот аутентификатор как `REQUIRED`. В этом случае пользователь
+увидит страницу ошибки если есть существующая учетная запись {project_name} и пользователь должен будет связать учетную запись провайдера идентификации с помощью управления учетной записью.
+* Этот аутентификатор проверяет, что уже существует учетная запись {project_name} с таким же адресом или именем пользователя, как и аккаунт идентификатора.
+* Если учетная запись не существует, то аутентификатор создает локальную учетную запись {project_name} , связывает эту учетную запись с идентификационным провайдером и прекращает поток.
+* Если учетная запись существует, то аутентификатор реализует следующий поток `Handle Existing Account`.
+* Чтобы убедиться, что у вас нет дубликата аккаунта, вы можете отметить этот аутентификатор как `REQUIRED`. Пользователь видит страницу ошибки, если учетная запись {project_name} существует, и пользователи должны связать свою учетную запись провайдера идентификации с помощью управления учетной записью.
+Подтвердите привязку существующей учетной записи::
+* На информационной странице пользователи видят учетную запись {project_name} с тем же адресом. Пользователи могут снова просмотреть свой профиль и использовать другой адрес электронной почты или имя пользователя. Поток перезапускается и возвращается в «Профиль обзора».
+* В качестве альтернативы, пользователи могут подтвердить, что они хотят связать свою учетную запись поставщика идентификации с существующей учетной записью {project_name}.
+* Отключите этот аутентификатор, если вы не хотите, чтобы пользователи видели эту страницу подтверждения и перешли к связыванию учетной записи провайдера идентификации посредством проверки или повторной аутентификации.
+Проверить существующую учетную запись по электронной почте::
+* Этот аутентификатор является `ALTERNATIVE` по умолчанию. {project_name} использует этот аутентификатор, если в реалме настроена настройка SMTP.
+* Аутентификатор отправляет письмо пользователям, чтобы подтвердить, что они хотят связать поставщика идентификации со своей учетной записью {project_name}.
+* Отключите этот аутентификатор, если вы не хотите подтверждать привязку по электронной почте, но хотите чтобы пользователи повторно аутентифицировались с их паролем.
+Проверить существующую учетную запись путем повторной аутентификации::
+* Используйте этот аутентификатор, если почтовый аутентификатор недоступен. Например, вы не настроили SMTP для вашего реалма. Этот аутентификатор отображает экран входа для пользователей, чтобы связать их учетную запись {project_name} с идентификатором провайдера.
+* Пользователи также могут переавторизоваться с другим провайдером идентификации, который уже связан с их учетной записью {project_name}.
+* Вы можете заставить пользователей использовать OTP. Иначе это опционально и используется, если вы установили OTP для учетной записи пользователя.
 
-==== Automatically link existing first login flow
+==== Автоматически указывать существующий первый логин
 
 [WARNING]
 ====
-The AutoLink authenticator is dangerous in a generic environment where users can register themselves using arbitrary usernames or email addresses. Do not use this authenticator unless you are carefully curating user registration and assigning usernames and email addresses.
+Аутентификатор AutoLink опасен в общем окружении, где пользователи могут самостоятельно регистрироваться с помощью произвольных имен пользователей или email адресов. Не используйте этот аутентификатор, если вы не тщательно не курируете регистрацию пользователей и не назначаете имена пользователей и адреса электронной почты.
 ====
 
-To configure a first login flow that links users automatically without prompting, create a new flow with the following two authenticators:
+Чтобы настроить первый поток входа, который связывает пользователей автоматически без запроса, создайте новый поток со следующими двумя аутентификаторами:
 
-Create User If Unique:: This authenticator ensures {project_name} handles unique users. Set the authenticator requirement to *Alternative*.
-Automatically Set Existing User:: This authenticator sets an existing user to the authentication context without verification. Set the authenticator requirement to "Alternative".
+Создать пользователя с уникальным:: Этот аутентификатор гарантирует, что {project_name} обрабатывает уникальных пользователей. Установите требование аутентификации на *Альтернатива*.
+Автоматически устанавливать существующего пользователя:: Этот аутентификатор ставит существующего пользователя в контекст аутентификации без проверки. Установите требование аутентификации на "Альтернатива".
 
 [NOTE]
 ====
-This setup is the simplest setup available, but it is possible to use other authenticators. For example:
+Эта настройка проста и доступна, но можно использовать другие аутентификаторы. Например:
 
-* You can add the Review Profile authenticator to the beginning of the flow if you want end users to confirm their profile information.
-* You can add authentication mechanisms to this flow, forcing a user to verify their credentials. Adding authentication mechanisms requires a complex flow. For example, you can set the "Automatically Set Existing User" and "Password Form" as "Required" in an "Alternative" sub-flow.
+* Вы можете добавить аутентификатор профиля проверки в начало потока, если вы хотите, чтобы конечные пользователи подтвердили свои данные профиля.
+* Вы можете добавить механизмы аутентификации в этот поток, вынуждая пользователя верифицировать их учетные данные. Добавление механизмов аутентификации требует сложного потока. Например, в подпотоке "Альтернатива" можно установить "Автоматически устанавливать существующего пользователя" и "Форму пароля".
 ====
 
 [[_disabling_automatic_user_creation]]
-==== Disabling automatic user creation
+==== Отключение автоматического создания пользователя
 
-The Default first login flow looks up the {project_name} account matching the external identity and offers to link them. If no matching {project_name} account exists, the flow  automatically creates one.
+Первый процесс входа по умолчанию ищет учетную запись {project_name} , соответствующую внешней личности и предлагает связать ее. Если соответствующий {project_name} аккаунт не существует, поток автоматически создаст его.
 
-This default behavior may be unsuitable for some setups. One example is when you use a read-only LDAP user store, where all users are pre-created. In this case, you must switch off automatic user creation.
+Это поведение по умолчанию может быть неподходящим для некоторых настроек. Одним из примеров является использование LDAP-хранилища пользователей только для чтения, где все пользователи уже созданы. В этом случае вы должны отключить автоматическое создание пользователя.
 
-To disable user creation:
+Чтобы отключить создание пользователя:
 
-.Procedure
-. Click *Authentication* in the menu.
-. Select *First Broker Login* from the list.
-. Set *Create User If Unique* to *DISABLED*.
-. Set *Confirm Link Existing Account* to *DISABLED*.
+.Процедура
+. Нажмите *Authentication* в меню.
+. Выберите из списка *First Broker Login*.
+. Установите *Создать Пользователя Если Уникальный* *ОТКЛЮЧИТЕ*.
+. Установите *Подтверждение привязки существующей учетной записи* к *ОТКЛЮЧИТЕ*.
 
-This configuration also implies that {project_name} itself won't be able to determine which internal account would correspond to the external identity.
-Therefore, the `Verify Existing Account By Re-authentication` authenticator will ask the user to provide both username and password.
+Эта конфигурация также подразумевает, что сам {project_name} не сможет определить, какая внутренняя учётная запись будет соответствовать внешнему идентификатору.
+Поэтому «Подтвердить существующую учетную запись путем повторной аутентификации» аутентификатор попросит пользователя указать имя пользователя и пароль.
 
-NOTE: Enabling or disabling user creation by identity provider is completely independent on the realm <<con-user-registration_{context}, User Registration switch>>. You can have enabled user-creation
+NOTE: Включение или отключение создания пользователя провайдером идентификации полностью независимым от области <<con-user-registration_{context}, User Registration switch>>. You can have enabled user-creation
 by identity provider and at the same time disabled user self-registration in the realm login settings or vice-versa.
 
 [[_detect_existing_user_first_login_flow]]
-==== Detect existing user first login flow
+==== Обнаружить существующий пользователь первый логин
 
-In order to configure a first login flow in which:
+Для того, чтобы настроить первый логин в которых:
 
-- only users already registered in this realm can log in,
-- users are automatically linked without being prompted,
+- только зарегистрированные пользователи могут войти в этот реалм,
+- пользователи автоматически привязываются без запроса,
 
-create a new flow with the following two authenticators:
+создать новый поток со следующими двумя аутентификаторами:
 
-Detect Existing Broker User:: This authenticator ensures that unique users are handled. Set the authenticator requirement to `REQUIRED`.
-Automatically Set Existing User:: Automatically sets an existing user to the authentication context without any verification. Set the authenticator requirement to `REQUIRED`.
+Обнаружить существующего пользователя брокера:: Этот аутентификатор обеспечивает обработку уникальных пользователей. Установите требование аутентификации на `REQUIRED`.
+Автоматически устанавливать существующего пользователя:: Автоматически переводит существующего пользователя в контекст аутентификации без какой-либо проверки. Установите требование аутентификации на `REQUIRED`.
 
-You have to set the `First Login Flow` of the identity provider configuration to that flow.
-You could set the also set `Sync Mode` to `force` if you want to update the user profile (Last Name, First Name...) with the identity provider attributes.
+Вы должны установить `First Login Flow` конфигурации поставщика идентификационных данных на этот поток.
+Вы можете установить `Sync Mode` в `force`, если хотите обновить профиль пользователя (Фамилия, Имя......) с атрибутами поставщика идентификации.
 
-NOTE: This flow can be used if you want to delegate the identity to other identity providers (such as GitHub, Facebook ...) but you want to manage which users that can log in.
+NOTE: Этот поток может быть использован, если вы хотите делегировать идентификацию другим поставщикам (таким, как GitHub, Facebook ...) но вы хотите управлять какими пользователями, которые могут войти.
 
-With this configuration, {project_name} is unable to determine which internal account corresponds to the external identity. The *Verify Existing Account By Re-authentication* authenticator asks the provider for the username and password.
+В этой конфигурации {project_name} не может определить, какая учётная запись соответствует внешней идентификации. *Проверить существующую учетную запись путем повторной аутентификации* запрашивает у провайдера имя пользователя и пароль.
 
 [[_override_existing_broker_link]]
-==== Override existing broker link
+==== Переопределить существующую ссылку брокера
 
-When an another account needs to be linked to the same {project_name} account within the same identity provider, you can configure the following authenticator.
+Когда другой аккаунт должен быть привязан к той же учетной записи {project_name} в рамках того же поставщика идентификации, вы можете настроить следующий аутентификатор.
 
-Confirm Override Existing Link:: This authenticator will detect the existing broker link for the user and display a confirmation page to confirm overriding the existing broker link. Set the authenticator requirement to REQUIRED.
+Подтвердите переопределение существующей ссылки:: Этот аутентификатор определит существующую брокерскую ссылку для пользователя и отобразит страницу подтверждения, чтобы подтвердить переопределение существующей брокерской ссылки. Установите требование аутентификации в НЕОБХОДИМО.
 
-A typical use of this authenticator is a scenario such as the following:
+Типичное использование этого аутентификатора является сценарием, таким, как:
 
-* For example, consider a {project_name} user `john` with the email `john@gmail.com`. That user is linked to the identity provider `google` with the `google` username `john@gmail.com` .
-* Then for instance {project_name} user `john` creates new Google account with email `john-new@gmail.com`
-* Then during login to {project_name}, the user authenticated to the identity provider `google` with a new username such as `john-new@gmail.com`, which is not linked to any {project_name} account yet (as {project_name} account `john` is still linked with the `google` user `john@gmail.com`) and hence the first-broker-login flow is triggered.
-* During first-broker-login, the {project_name} user `john` is authenticated somehow (either by default first-broker-login re-authentication or for instance by authenticator like `Detect existing broker user`)
-* Now with this authenticator in the authentication flow, it is possible to override the IDP link to the `google` identity provider of {project_name} user `john` with the new `google` link to `google` user `john-new@gmail.com` after user `john` confirms this.
+* Например, рассмотрите `john` пользователя {project_name} с электронным адресом `john@gmail.com`. Этот пользователь связан с `google` провайдером идентификации с именем пользователя `john@gmail.com` .
+* Затем, для копии {project_name} пользователь `john` создает новую учетную запись Google с помощью электронной почты `john-new@gmail.com`
+* Затем во время входа в {project_name}, пользователь авторизовался в `google` поставщика идентификации с новым именем пользователя, таким как `john-new@gmail. om`, который еще не связан с ни с одной учетной записью {project_name} (так как `john` учетной записи {project_name} все еще связан с пользователем `google` `john@gmail. om`) и, следовательно, инициируется поток входа в первый брокер.
+* При первом брокер-входе пользователь {project_name} `john` аутентифицируется как-то (либо по умолчанию первым брокером аутентификации или аутентификации аутентификации типа `Detect existing broker user`)
+* Теперь с этим аутентификатором в процессе аутентификации, возможно переопределить IDP ссылку на `google` поставщика идентификации пользователя {project_name} `john` ссылкой `google` на `google` пользователя `john-new@gmail. om` после того, как пользователь `john` подтвердит это.
 
-When creating authentication flows with this authenticator, make sure to add this authenticator once other authenticators that are already established the {project_name} user by other means (either by re-authentication or after `Detect existing broker user` as mentioned above.
+При создании потоков аутентификации с этим аутентификатором, не забудьте добавить этот аутентификатор после других аутентификаторов, которые уже установлены пользователем {project_name} другими средствами (либо путем повторной аутентификации, либо после `обнаружения существующего брокера пользователя`, как упоминалось выше.
