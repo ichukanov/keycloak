@@ -1,10 +1,10 @@
 [[_workflow_steps_]]
-= Defining steps
+= Определение шагов
 
-The `steps` setting allows you to define the step chain, which is a sequence of actions to be executed during the lifetime of a workflow execution.
-Each step represents a specific action that can be performed, such as sending a notification, updating user attributes, or interacting with external systems.
+Параметр «Шаг» позволяет определить цепочку шагов, которая представляет собой последовательность действий, которые должны выполняться в течение жизни выполнения рабочего процесса.
+Каждый шаг представляет собой конкретное действие, которое может быть выполнено, например, отправка уведомления, обновление атрибутов пользователя или взаимодействие с внешними системами.
 
-Each step in the step chain is defined using the following structure:
+Каждый шаг в цепочке шагов определяется следующей структурой:
 
 ```yaml
 steps:
@@ -16,14 +16,14 @@ steps:
   ...
 ```
 
-In its simplest form, a step is defined using only the `uses` field:
+В своей простейшей форме шаг определяется с использованием только поля «uses»:
 
 ```yaml
 steps:
   - uses: disable-user
 ```
 
-However, some steps also support additional settings to customize their behavior:
+Однако некоторые шаги также поддерживают дополнительные настройки для настройки их поведения:
 
 ```yaml
 steps:
@@ -32,84 +32,84 @@ steps:
       message: "Welcome to the platform!"
 ```
 
-Here is a more detailed look at all fields available from defining a step:
+Ниже приводится более подробный обзор всех полей, доступных из определения шага:
 
-`uses`:: The name of the step to be executed. This field is mandatory.
-`with`:: Key/value pairs to be passed to the step. The available parameters depend on the step being used. This field is optional.
-`after`:: An optional duration to wait before executing the step. The duration is defined using a number followed by a time unit:
-* `ms`: milliseconds
-* `s`: seconds (default if no unit is specified)
-* `m`: minutes
-* `h`: hours
-* `d`: days
+`uses`:: Название шага, который необходимо выполнить. Это поле является обязательным.
+`с`:: Пара ключ/значение для перехода на шаг. Доступные параметры зависят от используемого шага. Это поле необязательно.
+`после`:: Необязательная длительность ожидания перед выполнением шага. Продолжительность определяется с использованием числа, за которым следует единица времени:
+* `мс`: миллисекунды
+* `s`: секунды (по умолчанию, если единица не указана)
+* `м`: минуты
+* `h`: часы
+* `d`: дни
 
-In addition, ISO-8601 duration format is also supported, for example: `P1DT2H` (1 day and 2 hours). If no time unit is specified,
-it assumes seconds by default.
+Кроме того, поддерживается формат длительности ISO-8601, например: `P1DT2H` (1 день и 2 часа). Если единица времени не указана, то
+принимает секунды по умолчанию.
 
-{project_name} provides a set of built-in steps that you can use in your workflows. The steps are targeted at performing actions
+{project_name} предоставляет набор шагов, которые вы можете использовать в ваших рабочих процессах. The steps are targeted at performing actions
 on the realm resource associated with the event, so that each realm resource type has its own set of steps.
 
 [[_workflow_user_steps_]]
-== User steps
+== Шаги пользователя
 
 [cols="3*", options="header"]
 |===
-|Step
-|Description
-|Configuration
+|Шаг
+|Описание
+|Конфигурация
 
-|`add-required-action` |Add a required action to the user a|* `action`: The name of the required action
+|`add-required-action` |Добавить необходимое действие пользователю a|* `action`: Имя требуемого действия
 
-|`remove-required-action` |Remove a required action from the user a|* `action`: The name of the required action
+|`remove-required-action` |Удалить требуемое действие из пользователя a|* `action`: Имя требуемого действия
 
-|`grant-role` |Grant one or more roles to the user a|* `role`: One or more role names to grant. This can be a single value or a list of values (e.g., `[value1, value2]`)
+|`грант-роль` |Предоставить пользователю одну или несколько ролей a|* `Роль`: Допускаются имена одной или нескольких ролей. Это может быть одно значение или список значений (например, `[value1, value2]`)
 
-|`revoke-role` |Revoke one or more roles from the user a|* `role`: One or more role names to revoke. This can be a single value or a list of values (e.g., `[value1, value2]`)
+|`revoke-role` |Отозвать одну или несколько ролей пользователя a|* `Роль`: Одна или несколько ролей отозваны. Это может быть одно значение или список значений (например, `[value1, value2]`)
 
-|`join-group` |Add the user to one or more groups a|* `group`: One or more group names or paths to join. This can be a single value or a list of values (e.g., `[value1, value2]`)
+|«совместная группа» |Добавить пользователя в одну или несколько групп a|* `group`: Одно или несколько названий групп или путей к объединению. Это может быть одно значение или список значений (например, `[value1, value2]`)
 
-|`leave-group` |Remove the user from one or more groups a|* `group`: One or more group names or paths to leave. This can be a single value or a list of values (e.g., `[value1, value2]`)
+|`leave-group` |Удалить пользователя из одной или нескольких групп a|* `group`: Одно или несколько названий групп или путей уйти. Это может быть одно значение или список значений (например, `[value1, value2]`)
 
-|`set-user-attribute` |Set one or more attributes on the user. Allows providing multiple `<name>`/`<value>` pairs a|* `<name>`: The attribute name
-* `<value>`: The value of the attribute
+|`set-user-attribute` |Установите один или несколько атрибутов для пользователя. Позволяет предоставлять несколько пар `<name>`/`<value> a|* `<name>`: Имя атрибута
+* `<value>`: Значение атрибута
 
-|`remove-user-attribute` |Remove one or more attributes from the user a|* `attribute`: One or more attribute names to remove. This can be a single value or a list of values (e.g., `[value1, value2]`)
+|`remove-user-attribute` |Удалить один или несколько атрибутов из пользователя a|* `attribute`: Одно или несколько имён атрибутов для удаления. Это может быть одно значение или список значений (например, `[value1, value2]`)
 
-|`notify-user` |Notify the user by email a|* `subject`: The email subject
-* `message`: The email message in plain text or HTML format
-* `to`: The recipient email address. If not provided, the user's email address will be used
+|`notify-user` |Уведомлять пользователя по электронной почте a|* `Тема`: Тема письма
+* `сообщение`: Сообщение электронной почты в текстовом или HTML формате
+* `to`: Адрес электронной почты получателя. Если не указано, будет использоваться адрес электронной почты пользователя
 
-|`unlink-user` |Unlink the user from one or more external Identity Providers a|* `idp`: One or more Identity Provider aliases to unlink. This can be:
-** Single value
-** List of values (e.g., `[value1, value2]`)
-** `*` to unlink user from all linked Identity Providers
+|`unlink-user` |Отвязать пользователя от одного или нескольких внешних провайдеров идентификации a|* `idp`: Один или несколько псевдонимов провайдера идентификатора для разделения ссылки. Это может быть:
+** Одиночное значение
+** Список значений (например, `[value1, value2]`)
+** `*` отвязать пользователя от всех связанных поставщиков идентификации
 
-|`disable-user` |Disable the user |None
+|`выключить-user` |Отключить пользователя |Нет
 
-|`delete-user` |Delete the user |None
+|`delete-user` |Удалить пользователя |Нет
 |===
 
 [[_workflow_client_steps_]]
-== Client steps
+== Шаги клиента
 
 [cols="3*", options="header"]
 |===
-|Step
-|Description
-|Configuration
+|Шаг
+|Описание
+|Конфигурация
 
-|`delete-client` |Delete the client |None
+|`delete-client` |Удалить клиента |Нет
 
-|`disable-client` |Disable the client |None
+|`disable-client` |Отключить клиента |Нет
 |===
 
 [[_workflow_immediate_steps_]]
-== Understanding immediate steps
+== Понимание быстрых шагов
 
-A step can run immediately whenever it is reached in the step chain. A immediate step is executed as soon as the previous step is completed,
-without any delay. This is the default behavior for steps in a workflow.
+Шаг может выполняться немедленно, когда он достигается в цепочке шагов. Сразу после завершения предыдущего шага выполняется немедленный шаг,
+без промедления. Это поведение по умолчанию для шагов в рабочем процессе.
 
-For example, in the following workflow definition, both steps are immediate steps:
+Например, в следующем определении рабочего процесса оба этапа являются немедленными шагами:
 
 ```yaml
 steps:
@@ -117,12 +117,12 @@ steps:
   - uses: disable-user
 ```
 
-== Understanding scheduled steps
+== Понимание запланированных шагов
 
-A step can be scheduled to run after a specific duration using the `after` field. A scheduled step is executed after waiting for the defined duration
+Шаг может быть запланирован для запуска после определенного времени, используя поле «after». A scheduled step is executed after waiting for the defined duration
 once the previous step is completed.
 
-For example, in the following workflow definition, the `disable-user` step is a scheduled step that will run 7 days after notifying the user:
+Например, в следующем определении рабочего процесса шаг «disable-user» - это запланированный шаг, который будет запущен через 7 дней после уведомления пользователя:
 
 ```yaml
 steps:
