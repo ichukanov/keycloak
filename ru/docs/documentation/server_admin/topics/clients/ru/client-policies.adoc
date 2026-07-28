@@ -1,213 +1,213 @@
 [[_client_policies]]
-= Client Policies
+= Политики Клиента
 
-To make it easy to secure client applications, it is beneficial to realize the following points in a unified way.
+Для упрощения безопасности клиентских приложений, полезно единообразно реализовывать следующие моменты.
 
-* Setting policies on what configuration a client can have
-* Validation of client configurations
-* Conformance to a required security standards and profiles such as Financial-grade API (FAPI) and OAuth 2.1
+* Установка политик для какой конфигурации может иметь клиент
+* Проверка конфигурации клиента
+* Соответствие необходимым стандартам безопасности и профилям, таким, как API финансового уровня (FAPI) и OAuth 2.1
 
-To realize these points in a unified way, _Client Policies_ concept is introduced.
+Для унифицированной реализации этих точек вводится концепция _Клиентских Политик_.
 
-== Use-cases
+== Варианты использования
 
-Client Policies realize the following points mentioned as follows.
+Клиентские Политики понимают следующие моменты, упомянутые ниже.
 
-Setting policies on what configuration a client can have:: Configuration settings on the client can be enforced by client policies during client creation/update, but also during OpenID Connect requests to {project_name} server, which are related to particular client.
-{project_name} supports similar thing also through the *Client Registration Policies* described in the *Client registration service* in the link:{securing_apps_link}[Securing applications and Services guide].
-However, Client Registration Policies can only cover OIDC Dynamic Client Registration. Client Policies cover not only what Client Registration Policies can do, but other client
-registration and configuration ways. The current plans are for Client Registration to be replaced by Client Policies.
-Validation of client configurations:: {project_name} supports validation whether the client follows settings like Proof Key for Code Exchange,
-Request Object Signing Algorithm, Holder-of-Key Token, and so on some endpoints like Authorization Endpoint, Token Endpoint, and so on.
-These can be specified by each setting item (on Admin Console, switch, pull-down menu and so on). To make the client application secure, the administrator needs to set
+Установка политик для какой конфигурации может иметь клиент:: Настройки конфигурации клиента могут быть принудительно применены политикой клиента во время создания/обновления клиента, но и во время запросов OpenID Connect к {project_name} серверу, которые связаны с конкретным клиентом.
+{project_name} поддерживает аналогичную вещь также через *Условия регистрации клиентов*, описанные в *регистрационной службе* по ссылке:{securing_apps_link}[Руководство по обеспечению безопасности приложений и услуг].
+Однако регистрация клиентов может охватывать только регистрацию OIDC Dynamic Клиентов. Клиентские Политики описывают не только то, что может сделать Клиентские Политики, но и другие клиентские
+способы регистрации и настройки. Текущие тарифы на регистрацию Клиентов заменяются Политикой Клиента.
+Проверка конфигурации клиента:: {project_name} поддерживает валидацию, следует ли клиент настройкам, как Proof Key для обмена кодов,
+Request Object Algorithm, Токен "Владелец Ключа" и так далее на некоторых конечных пунктах, таких как "Конечная точка авторизации" токена и так далее.
+Они могут быть определены каждым элементом настроек (в консоли администратора, переключателе, выпадающем меню и так далее). To make the client application secure, the administrator needs to set
 many settings in the appropriate way, which makes it difficult for the administrator to secure the client application.
-Client Policies can do these validation of client configurations mentioned just above and they can also be used to autoconfigure some client configuration switches to meet
-the advanced security requirements. In the future, individual client configuration settings may be replaced by Client Policies directly performing required validations.
-Check the <<ssrf,dedicated section>> to see a use case on how to protect the server by validating client uris.
-Conformance to a required security standards and profiles such as FAPI and OAuth 2.1:: The _Global client profiles_ are client profiles pre-configured in {project_name} by default. They are pre-configured to be compliant with standard security profiles like *FAPI* and *OAuth 2.1*  in the link:{securing_apps_link}[securing apps] section,
-which makes it easy for the administrator to secure their client application to be compliant with the particular security profile. At this moment, {project_name} has global
-profiles for the support of FAPI and OAuth 2.1 specifications. The administrator will just need to configure the client policies to specify which clients should
-be compliant with the FAPI and OAuth 2.1. The administrator can configure client profiles and client policies, so that {project_name} clients can be easily made compliant with various other
-security profiles like SPA, Native App, Open Banking and so on.
+Клиентские Политики могут проверить эти конфигурации клиентов, упомянутые только выше, и они также могут быть использованы для автоматической настройки некоторых переключателей конфигурации клиента для удовлетворения
+дополнительных требований безопасности. В будущем индивидуальные настройки конфигурации клиента могут быть заменены клиентскими политиками, непосредственно выполняющими требуемые проверки.
+Проверьте <<ssrf,dedicated section>> чтобы увидеть вариант использования о том, как защитить сервер путем проверки uris клиента.
+Соответствие необходимым стандартам безопасности и профилям, таким как FAPI и OAuth 2.1:: _Глобальные профили клиентов_ - это профили, предварительно настроенные в {project_name} по умолчанию. Они предварительно настроены на соответствие стандартным профилям безопасности, таким как *FAPI* и *OAuth 2. * в ссылке:{securing_apps_link}[защита приложений],
+позволяет администратору защитить клиентское приложение в соответствии с определенным профилем безопасности. На данный момент {project_name} имеет глобальные
+профили для поддержки FAPI и OAuth 2.1 спецификаций. The administrator will just need to configure the client policies to specify which clients should
+be compliant with the FAPI and OAuth 2.1. Администратор может настраивать профили клиентов и политики клиентов, таким образом, чтобы клиенты {project_name} могли быть легко совместимы с различными профилями безопасности
+типа SPA, Продвинутое приложение, Open Banking и так далее.
 
 == Protocol
 
-The client policy concept is independent of any specific protocol. {project_name} currently supports especially client profiles for the link:{adminguide_link}#con-oidc_server_administration_guide[OpenID Connect (OIDC) protocol], but there is
-also a client profile available for the link:{adminguide_link}#_saml[SAML protocol].
+Концепция политики клиента не зависит от конкретного протокола. В настоящее время {project_name} особенно поддерживает профили клиентов по ссылке:{adminguide_link}#con-oidc_server_administration_guide[OpenID Connect (OIDC) протокол], но есть и
+профиль клиента доступен по ссылке:{adminguide_link}#_saml[протокол SAML].
 
-== Architecture
+== Архитектура
 
-Client Policies consists of the four building blocks: Condition, Executor, Profile and Policy.
+Клиентские Политики состоят из четырех строительных блоков: "Условия", "Исполнитель", "Профиль" и "Политика".
 
-=== Condition
+=== Состояние
 
-A condition determines to which client a policy is adopted and when it is adopted. Some conditions are checked at the time of client create/update when some other conditions are
-checked during client requests (OIDC Authorization request, Token endpoint request and so on). The condition checks whether one specified criteria is satisfied. For example,
-some condition checks whether the access type of the client is confidential.
+Условие определяет, к какому клиенту принимается политика и когда она принимается. Некоторые условия проверяются на момент создания/обновления клиента, когда другие условия
+проверяются во время запросов клиента (OIDC запрос авторизации, Запрос конечной точки токена и так далее). Условие проверяет, удовлетворяет ли один из указанных критериев. Например,
+некое условие проверяет конфиденциальность типа доступа клиента.
 
-The condition can not be used solely by itself. It can be used in a <<_client_policy_policy,policy>> that is described afterwards.
+Условие не может быть использовано исключительно самостоятельно. Он может быть использован в <<_client_policy,policy>>, который описан позже.
 
-A condition can be configurable the same as other configurable providers. What can be configured depends on each condition's nature.
+Условие может быть сконфигурировано таким же как и другие настраиваемые провайдеры. Что может быть настроено в зависимости от природы каждого условия.
 
-The following conditions are provided:
+Предусмотрены следующие условия:
 
-The way of creating/updating a client::
-* Dynamic Client Registration (Anonymous or Authenticated with Initial access token or Registration access token)
-* Admin REST API (Admin Console and so on)
+Способ создания/обновления клиента::
+* Динамическая регистрация Клиента (анонимная или аутентифицированная с помощью начального токена доступа или токена регистрационного доступа)
+* Админ REST API (консоль администратора и так далее)
 
-So for example when creating a client, a condition can be configured to evaluate to true when this client is created by OIDC Dynamic Client Registration without initial
-access token (Anonymous Dynamic Client Registration). So this condition can be used for example to ensure that all clients registered through OIDC Dynamic Client Registration
-are FAPI or OAuth 2.1 compliant.
+Итак, например, при создании клиента, условие может быть сконфигурировано для оценки истинности при создании OIDC Dynamic Client Registration без токена доступа
+(Anonymous Dynamic Client Registration). Поэтому это условие может использоваться, например, для обеспечения того, чтобы все клиенты, зарегистрированные через OIDC Dynamic Client Registration
+были FAPI или OAuth 2. комплимент.
 
-Author of a client (Checked by presence to the particular role or group):: On OpenID Connect dynamic client registration, an author of a client is the end user who was authenticated to get an access token for generating a new client, not Service
-Account of the existing client that actually accesses the registration endpoint with the access token. On registration by Admin REST API, an author of a client is the end user
-like the administrator of the {project_name}.
-Client Access Type (confidential, public, bearer-only):: For example when a client sends an authorization request, a policy is adopted if this client is confidential. Confidential client has enabled client authentication when public client has disabled client authentication. Bearer-only is a deprecated client type.
-Client Scope:: Evaluates to true if the client has a particular client scope (either as default or as an optional scope used in current request). This can be used for example to ensure that
-OIDC authorization requests with scope `fapi-example-scope` need to be FAPI compliant.
-Client Role:: Applies for clients with the client role of the specified name. Typically you can create a client role of specified name to requested clients and use it as a "marker role" to make
+Автор клиента (отмеченный присутствием конкретной роли или группы):: On OpenID Connect dynamic client registration, an author of a client is the end user who was authenticated to get an access token for generating a new client, not Service
+Account of the existing client that actually accesses the registration endpoint with the access token. При регистрации администратором REST API автор клиента является конечным пользователем
+как администратор {project_name}.
+Тип доступа клиента (конфиденциальный, публичный, только для предъявителя):: Например, когда клиент отсылает запрос на авторизацию, он утверждается в том случае, если клиент является конфиденциальным. Конфиденциальный клиент включил аутентификацию клиентов, когда публичный клиент отключил аутентификацию клиентов. Только носитель - устаревший тип клиента.
+Область действия клиента:: Вычисляет истину, если клиент имеет определенную область действия клиента (по умолчанию или необязательная область, используемая в текущем запросе). Это может быть использовано например, для того, чтобы
+запросы авторизации OIDC с помощью области `fapi-example-scope` были совместимы с FAPI.
+Роль клиента:: Применяется для клиентов с ролью клиента указанного имени. Typically you can create a client role of specified name to requested clients and use it as a "marker role" to make
 sure that specified client policy will be applied for requested clients.
 
-NOTE: A use-case often exists for requiring the application of a particular client policy for the specified clients such as `my-client-1` and `my-client-2`. The best way to achieve this result
+NOTE: Часто существует вариант использования для требования применения конкретной клиентской политики для указанных клиентов, таких как `my-client-1` и `my-client-2`. The best way to achieve this result
 is to use a *Client Role* condition in your policy and then a create client role of specified name to requested clients. This client role can be used as a "marker role" used solely
 for marking that particular client policy for particular clients.
 
-Client Domain Name, Host or IP Address:: Applied for specific domain names of client. Or for the cases when the administrator registers/updates client from particular Host or IP Address.
-Client Attribute:: Applies to clients with the client attribute of the specified name and value. If you specify multiple client attributes, they will be evaluated using AND conditions.
-If you want to evaluate using OR conditions, set this condition multiple times.
-Any Client:: This condition always evaluates to true. It can be used for example to ensure that all clients in the particular realm are FAPI compliant.
-ACR Condition:: Applied when an ACR value requested in the authentication request matches the value configured in the condition. For example, it can be used to select an authentication flow based on the requested ACR value. For more details, see the <<_client-policy-auth-flow, related documentation>> and the https://openid.net/specs/openid-connect-core-1_0.html#acrSemantics[official OIDC specification].
-Grant Type:: Evaluates to true when a specific grant type is used. For example, it can be used in combination with Client Scope to block a token exchange request when a specific client scope is requested.
-Identity Provider Alias:: Condition that checks the Identity Provider that is involved in the client request. A list of IdP alias can be configured. The condition evaluates to true if one of them is associated to the request. It only applies to operations in which an IdP is involved (for example JWT Authorization grant).
+Имя домена клиента, хост или IP-адрес:: Применяется для определенных доменных имен клиента. Или в случаях, когда администратор регистрирует/обновляет клиента с определенного хоста или IP-адреса.
+Атрибут клиента:: Применяется к клиентам с атрибутом клиента указанного имени и значения. Если вы укажете несколько атрибутов клиента, они будут оцениваться с использованием условий И .
+Если вы хотите вычислить использование ИЛИ условий, установите это условие несколько раз.
+Любой клиент:: Это условие всегда вычисляет истину. Он может быть использован, например, для обеспечения того, чтобы все клиенты в определенном мире соответствовали FAPI.
+Состояние ACR:: Применяется, когда ACR значение запрошенное в запросе аутентификации соответствует значению, сконфигурированному в условии. Например, он может быть использован для выбора потока аутентификации на основе запрошенного ACR значения. Подробнее см. <<_client-policy-auth-flow, related documentation>> и https://openid.net/specs/openid-connect-core-1_0.html#acrSemantics[official OIDC specification].
+Тип подарка:: Вычисляет истину при использовании определенного типа грантов. Например, он может использоваться в сочетании с клиентскими рамками для блокирования запроса на обмен токенов, когда запрашивается конкретная область действия.
+Псевдоним поставщика идентификации:: Условие, которое проверяет поставщика идентификации, участвующего в запросе клиента. Список алиасов IdP может быть настроен. Условие вычисляет истину, если один из них связан с запросом. Она применяется только к операциям, в которых участвует IdP (например, субсидия JWT Authorization).
 
-See the <<_client_policy_conditions_evaluation,dedicated section>> for the details on how are conditions evaluated.
+Смотрите <<_client_policy_conditions_evaluation,dedicated section>> для подробностей о том, как оцениваются условия.
 
-=== Executor
+=== Исполнитель
 
-An executor specifies what action is executed on a client to which a policy is adopted. The executor executes one or several specified actions. For example,
-some executor checks whether the value of the parameter `redirect_uri` in the authorization request matches exactly with one of the pre-registered redirect URIs on
-Authorization Endpoint and rejects this request if not.
+Исполнитель указывает, какое действие выполняется по клиенту, на который утверждается политика. Исполнитель выполняет одно или несколько указанных действий. Например,
+некоторые исполнители проверяют соответствие значения параметра `redirect_uri` в запросе авторизации с одним из предварительно зарегистрированных URI перенаправления на
+Endpoint авторизации и отклоняют этот запрос, если нет.
 
-The executor can not be used solely by itself. It can be used in a <<_client_policy_profile,profile>> that is described afterwards.
+Исполнитель не может использоваться исключительно самим собой. Он может быть использован в <_client_policy_profile>>, который описан позже.
 
-An executor can be configurable the same as other configurable providers. What can be configured depends on the nature of each executor.
+Исполнитель может быть сконфигурирован таким же, как и другие настраиваемые провайдеры. Что может быть настроено зависит от природы каждого исполнителя.
 
-An executor acts on various events. An executor implementation can ignore certain types of events (For example, executor for checking OIDC `request` object acts just
-on the OIDC authorization request). Events are:
+Исполнитель действует на различные события. Реализация исполнителя может игнорировать определенные типы событий (например, исполнитель для проверки OIDC объекта `request` действует только
+в запросе авторизации OIDC). События:
 
-* Creating a client (including creation through dynamic client registration)
-* Updating a client
-* Sending an authorization request
-* Sending a token request
-* Sending a token refresh request
-* Sending a token revocation request
-* Sending a token introspection request
-* Sending a userinfo request
-* Sending a logout request with a refresh token (note that logout with refresh token is proprietary {project_name} functionality unsupported by any specification. It is rather recommended to rely on the <<_oidc-logout,official OIDC logout>>).
+* Создание клиента (включая создание с помощью динамической регистрации клиента)
+* Обновление клиента
+* Отправка запроса на авторизацию
+* Отправка запроса токена
+* Отправка запроса на обновление токена
+* Отправка запроса на отзыв токена
+* Отправка запроса на интроспективность токена
+* Отправка запроса пользовательской информации
+* Отправка запроса на выход с помощью ключа обновления (обратите внимание, что выход с токеном refresh является проприетарной функцией {project_name} не поддерживается любой спецификацией. Рекомендуется полагаться на <_oidc-logout,официальный OIDC logout>>).
 
-On each event, an executor can work in multiple phases. For example, on creating/updating a client, the executor can modify the client configuration by autoconfigure specific client
-settings. After that, the executor validates this configuration in validation phase.
+При каждом событии исполнитель может работать в несколько фаз. For example, on creating/updating a client, the executor can modify the client configuration by autoconfigure specific client
+settings. После этого исполнитель проверяет эту конфигурацию в фазе проверки.
 
-One of several purposes for this executor is to realize the security requirements of client conformance profiles like FAPI and OAuth 2.1. To do so, the following executors are needed:
+Одна из целей этого исполнителя заключается в реализации требований безопасности профилей клиента, таких как FAPI и OAuth 2.1. Для этого необходимы следующие исполнители:
 
-* Enforce secure <<_client-credentials,Client Authentication method>> is used for the client
-* Enforce <<_mtls-client-certificate-bound-tokens,Holder-of-key tokens>> are used
-* Enforce <<_proof-key-for-code-exchange,Proof Key for Code Exchange (PKCE)>> is used
-* Enforce secure signature algorithm for <<_client-credentials,Signed JWT client authentication (private-key-jwt)>> is used
-* Enforce HTTPS redirect URI and make sure that configured redirect URI does not contain wildcards
-* Enforce OIDC `request` object satisfying high security level
-* Enforce Response Type of OIDC Hybrid Flow including ID Token used as _detached signature_ as described in the FAPI 1 specification, which means that ID Token returned from Authorization response won't contain user profile data
-* Enforce more secure `state` and `nonce` parameters treatment for preventing CSRF
-* Enforce more secure signature algorithm when client registration
-* Enforce `binding_message` parameter is used for CIBA requests
-* Enforce <<_secret_rotation, Client Secret Rotation>>
-* Enforce Client Registration Access Token
-* Enforce checking if a client is the one to which an intent was issued in a use case where an intent is issued before starting an authorization code flow to get an access token like UK OpenBanking
-* Enforce prohibiting implicit and hybrid flow
-* Enforce checking if a PAR request includes necessary parameters included by an authorization request
-* Enforce <<_dpop-bound-tokens,DPoP-binding tokens>> is used (available when `dpop` feature is enabled)
-* Enforce <<_using_lightweight_access_token, using lightweight access token>>
-* Enforce that <<_refresh_token_rotation,refresh token rotation>> is skipped and there is no refresh token returned from the refresh token response
-* Enforce a valid redirect URI that the OAuth 2.1 specification requires
-* Enforce SAML Redirect binding cannot be used or SAML requests and assertions are signed
-* Enforce scopes granted in link:{securing_apps_token_exchange_link}#_standard-token-exchange[Standard token exchange] or in JWT Authorization Grant are restricted to the ones present in the initial `subject_token` or `assertion` JWT. This executor only allows downscoping of the presented assertion. An error is returned if any extra scope, not originally granted to the JWT, is requested.
-* Enforce claims for assertion grants (`subject_token` in Token Exchange and `assertion` in JWT Authorization Grant). The executor enforces the presence and specific values of a claim in a JWT. It uses a Java regex so it is quite versatile.
-* Add default **Certificate Authority subject DN** for the client registration service when TLS client authentication (`tls_client_auth`) is configured (see *Using the client registration service* in the link:{securing_apps_link}[securing apps] section for more information). The `tls-client-auth-ca-subject-dn` executor can be used to provide the new compulsory attribute in client registration interface. It can also enforce the configured CA name to reject unwanted values.
+* Принудительная защита <<_client-credentials,метод аутентификации клиента>>
+* Используются <_mtls-client-certificate-bound-tokens,Держатель-ключ-tokens>>
+* Использовать <_proof-key-for-code-exchange,Proof Key для обмена кодами (PKCE)>>
+* Использовать алгоритм защищенной подписи для <<_client-credentials,Signed JWT client authentication (private-key-jwt)>>
+* Принудительно использовать URL перенаправления HTTPS и убедиться, что настроенный URI перенаправления не содержит шаблонов
+* Принудительно использовать объект `request` OIDC, удовлетворяющий высокий уровень безопасности
+* Принудительный тип ответа гибридного потока OIDC, включая идентификационный токен, используемый в качестве _отдельной подписи_ как описано в спецификации FAPI 1, , это означает, что ID токен возвращен в ответ авторизации не будет содержать данные профиля пользователя
+* Принудительно использовать более безопасные параметры `state` и `nonce` для предотвращения CSRF
+* Принудительный алгоритм защиты подписи при регистрации клиента
+* Параметр `binding_message` используется для CIBA запросов
+* Обеспечить <<_secret_rotation, клиентская секретная ротация>>
+* Принудительный маркер доступа к регистрации клиента
+* Обязательная проверка того, является ли клиент тем клиентом, которому было выдано намерение в случае использования, когда намерение выдается перед началом потока кода авторизации для получения токена доступа типа OpenBanking
+* Принудительно запрещать неявный и гибридный поток
+* Проверка на наличие необходимых параметров, включенных в запрос авторизации
+* Принудительное <_dpop-bound-tokens,DPoP-привязка токено>> (доступно при включенной функции `dpop`)
+* Обеспечить <<_using_lightweight_access_token, используя легкий токен>>
+* Убедитесь, что <_refresh_token_rotation,token refresh rotation>> пропущен, и токен refresh не возвращается из ответа токена обновления
+* Принудительно указать корректный URI перенаправления, который необходим для спецификации OAuth 2.1
+* Принудительная привязка SAML перенаправления не может быть использована или SAML запросы и утверждения подписаны
+* Принудительные рамки предоставлены по ссылке:{securing_apps_token_exchange_link}#_standard-token-exchange[Standard token exchange] или в гранте JWT Authorization Grant ограничены исходным кодом `subject_token` или `assertion` JWT. Этот исполнитель допускает лишь понижение пределов представленного утверждения. Возвращается ошибка, если запрашивается какая-либо дополнительная область, первоначально не предоставленная JWT.
+* Принудительные претензии в отношении субсидий на утверждение (`subject_token` в Обмене Токенов и `assertion` в Гранте JWT Authorization). Исполнитель обеспечивает присутствие и специфические ценности претензии в JWT. Он использует регулярные выражения Java, поэтому он достаточно универсален.
+* Добавьте по умолчанию **тему DN** для службы регистрации клиента, когда настроена аутентификация TLS (`tls_client_auth`) (см. *Использование службы регистрации клиента* по ссылке:{securing_apps_link}[securing apps] для дополнительной информации). Исполнитель `tls-client-auth-ca-subject-dn` может быть использован для предоставления нового обязательного атрибута в интерфейсе регистрации клиента. Он также может привести настроенное название ЦА, чтобы отклонить нежелательные значения.
 
-Another available executor is the `auth-flow-enforce`, which can be used to enforce an authentication flow during an authentication request. For instance, it can be used to select a flow based on certain conditions, such as a specific scope or an ACR value. For more details, see the <<_client-policy-auth-flow, related documentation>>.
+Другим доступным исполнителем является `auth-flow-enforce`, который может быть использован для обеспечения потока аутентификации во время запроса аутентификации. Например, он может использоваться для выбора потока, основанного на определенных условиях, таких как конкретные области действия или ACR значения. Подробнее см. <<_client-policy-auth-flow, related documentation>>.
 
 [[_client_policy_profile]]
-=== Profile
+=== Профиль
 
-A profile consists of several executors, which can realize a security profile like FAPI and OAuth 2.1. Profile can be configured by the Admin REST API (Admin Console) together with its executors.
-Three _global profiles_ exist and they are configured in {project_name} by default with pre-configured executors compliant with the FAPI 1 Baseline, FAPI 1 Advanced, FAPI CIBA, FAPI 2 and OAuth 2.1 specifications.
-More details exist in the *FAPI* and *OAuth 2.1*  in the link:{securing_apps_link}[securing apps] section.
+Профиль состоит из нескольких исполнителей, которые могут реализовать профиль безопасности, например FAPI и OAuth 2.1. Профиль может быть настроен администратором REST API (консоль администратора) вместе с его исполнителями.
+Существуют три _глобальных профиля_ и они настроены в {project_name} по умолчанию с предварительно настроенными исполнителями в соответствии с FAPI 1 Baseline, FAPI 1 Advanced, FAPI CIBA, FAPI 2 и OAuth 2. спецификации.
+Более подробная информация существует в разделе *FAPI* и *OAuth 2.1* по ссылке:{securing_apps_link}[защита приложений].
 
 [[_client_policy_policy]]
-=== Policy
+=== Политика
 
-A policy consists of several conditions and profiles. The policy can be adopted to clients satisfying all conditions of this policy. The policy refers several profiles and all
-executors of these profiles execute their task against the client that this policy is adopted to.
+Политика состоит из нескольких условий и профилей. Данная политика может быть принята для клиентов, удовлетворяющих всем условиям данной политики. Политика относится к нескольким профилям, и все
+исполнители этих профилей выполняют свою задачу по отношению к клиенту, к которому применяется эта политика.
 
-== Configuration
+== Конфигурация
 
-Policies, profiles, conditions, executors can be configured by Admin REST API, which means also the Admin Console. To do so, there is a tab _Realm_ -> _Realm Settings_ -> _Client Policies_
-, which means the administrator can have client policies per realm.
+Политики, профили, условия, исполнители могут быть настроены администратором REST API, что также означает консоль администратора. Для этого есть вкладка _Realm_ -> _Realm Settings_ -> _Client Policies_
+, это означает, что администратор может иметь политики клиентов в одном реалме.
 
-The _Global Client Profiles_ are automatically available in each realm. However there are no client policies
-configured by default. This means that the administrator is always required to create any client policy if they want for example the clients of his realm to be FAPI compliant. Global
-profiles cannot be updated, but the administrator can easily use them as a template and create their own profile if they want to do some slight changes in the global profile configurations.
-There is JSON Editor available in the Admin Console, which simplifies the creation of new profile based on some global profile.
+_Глобальные профили клиентов_ автоматически доступны в каждом реалме. Однако по умолчанию нет клиентских политик
+настроенных по умолчанию. Это означает, что администратор всегда должен создавать любую политику клиентов, если они хотят, например, чтобы клиенты своего реалма соответствовали FAPI. Глобальные
+профили не могут быть обновлены, но администратор может легко использовать их в качестве шаблона и создать свой собственный профиль, если он хочет внести некоторые незначительные изменения в глобальные конфигурации профиля.
+JSON Editor доступен в консоли администратора, что упрощает создание нового профиля на основе глобального профиля.
 
 [[_client_policy_conditions_evaluation]]
-== Conditions evaluation
+== Оценка условий
 
-Client policy is evaluated in a way that the configured conditions are evaluated during particular request. The evaluation of single condition can be finished in any of the following states:
+Политика клиента оценивается таким образом, что сконфигурированные условия оцениваются в ходе конкретного запроса. Оценка одного условия может быть завершена в любом из следующих состояний:
 
-* **yes** - Condition was successfully evaluated. For example `client-scopes` condition is evaluated to `yes` when particular configured client scope is present in the particular request of particular client.
-* **no** - Condition was evaluated to false. For example `client-scopes` condition is evaluated to `no` when particular configured client scope is not present in the particular request of particular client.
-* **abstain** - Condition was not applicable to the particular request and hence evaluation of the condition was ignored (in the default mode). For example `identity-provider-condition`
-is evaluated just during requests when identity provider is involved (For example during link:{securing_apps_jwt_authorization_grant_link}[JWT Authorization grant requests]), but
-ignored in most of the other requests.
+* **Да** - Состояние было успешно оценено. Например, условие «client-scopes» вычисляется в «yes», когда определенная конфигурация клиентской границы присутствует в конкретном запросе конкретного клиента.
+* **не** - Условие было оценено в false. Например, условие «client-scopes» вычисляется в «нет», когда конкретная сконфигурированная область действия клиента отсутствует в конкретном запросе конкретного клиента.
+* **Воздержались** - Состояние не применимо к конкретному запросу и поэтому оценка состояния игнорируется (в режиме по умолчанию). Например, "identity-provider-condition`
+оценивается только во время запросов при участии идентификатора провайдера (например, во время ссылки:{securing_apps_jwt_authorization_grant_link}[JWT Authorization grant requests]), но
+проигнорировал большинство других запросов.
 
-In case that condition is configured with **Negative logic** switch enabled, the result is reversed. So when evaluation ended with `no`, it would be changed to `yes` or vice-versa.
-The condition evaluated to `abstain` is still considered as `abstain` when **Negative logic** is enabled.
+В случае, если условие настроено с включенной опцией **Негативная логика**, результат будет отменен. Таким образом, когда оценка закончилась словами «нет», она будет изменена на «да» или наоборот.
+Условие, оцениваемое «abstain» по-прежнему считается «abstain», когда **отрицательная логика** включена.
 
-By default, the policy evaluation is satisfied when at least one condition evaluates to `yes` and none of the conditions evaluates to `no`. Conditions, which evaluate to
-`abstain` are ignored. However when you configure client policy with mode `STRICT`, then all conditions must evaluate to `yes` and none of the conditions can evaluate to `no` or `abstain`.
-When policy evaluation is satisfied, the client profiles attached to the particular client policy will be triggered. See the example in the
+По умолчанию, оценка политики удовлетворена, когда хотя бы одно условие вычисляет значение `yes` и ни одно из условий не вычисляет значение `no`. Условия, которые оценивают
+`abstain` игнорируются. Однако при настройке клиентской политики в режиме `STRICT`, тогда все условия должны быть оценены до «да», и ни одно из условий не может оценивать «нет» или «abstain».
+Когда оценка политики будет выполнена, профили клиентов, привязанные к конкретной политике клиента, будут инициированы. See the example in the
 link:{developerguide_link}#_identity-brokering-apis-client-policies[identity provider API section] on how the `STRICT` mode can be useful to enforce certain rules.
 
-WARNING: Some condition types are evaluated in all the request types, however some condition types are evaluated just during certain requests. For instance, some conditions
+WARNING: Некоторые типы условий вычисляются во всех типах запросов, однако некоторые типы условий вычисляются только во время некоторых запросов. For instance, some conditions
 might be evaluated just during registration or update of new client, when some other conditions are evaluated at runtime during specific requests. In some cases, it may
-not be obvious whether particular condition is evaluated or not. Once you setup client policies, it is highly recommended to test your scenarios to make sure that client policies
-enforcement rules work as expected.
+not be obvious whether particular condition is evaluated or not. После настройки политики клиента настоятельно рекомендуется проверить ваши сценарии, чтобы убедиться, что политика клиента
+работает как ожидалось.
 
-== Troubleshooting
+== Устранение проблем
 
 When checking evaluation of client policies, it is recommended to enable `TRACE` logging category `org.keycloak.services.clientpolicy` to have some more logging during
-evaluation of client policies. See the link:{loggingguide_link}[{loggingguide_name}] for the details on how to enable logging for the particular category.
+evaluation of client policies. Смотрите ссылку:{loggingguide_link}[{loggingguide_name}] для подробной информации о том, как включить регистрацию для конкретной категории.
 
-== Backward Compatibility
+== Совместимость с назад
 
-Client Policies can replace Client Registration Policies described in the *Client registration service* from link:{securing_apps_link}[{securing_apps_name}].
-However, Client Registration Policies also still co-exist. This means that for example during a Dynamic Client Registration request to create/update a client, both client policies and
+Политики Клиентов могут заменить политику регистрации Клиентов, описанную в *Регистрационной службе* по ссылке:{securing_apps_link}[{securing_apps_name}].
+Тем не менее, Регистрационные Политики Клиентов еще не существуют. This means that for example during a Dynamic Client Registration request to create/update a client, both client policies and
 client registration policies are applied.
 
-The current plans are for the Client Registration Policies feature to be removed and the existing client registration policies will be migrated into new client policies automatically.
+Текущие планы предусматривают удаление функции Регистрационных Политик Клиента и автоматическое перенесение существующих регистрационных политик Клиента в новые Политики Клиента.
 
-== Client Secret Rotation Example
+== Пример секретной ротации Клиента
 
-See an example configuration for <<_proc-secret-rotation,client secret rotation>>.
+Смотрите пример настройки <<_proc-secret-rotation,client secret rotation>.
 
-== Securing Client URIs
+== Защита URI клиента
 
-For a client, it is possible to register many URIs for different purposes, such as the redirect URI for the Authorization Code Flow, JWKS URI to retrieve the client's JWK Set, privacy URI, policy URI, logo URI, sector identifier URI, and others.
+Для клиента можно зарегистрировать много URI для различных целей, таких как перенаправление URI для кода авторизации, JWKS URI для получения JWK Set, privacy URI, политика URI, логотип URI, идентификатор сектора URI и др.
 
-It is good practice to add as much protection as possible for these URIs to prevent malicious use. For example, you can enforce a URI to allow only specific hosts, to accept only HTTPS, or to match any desired pattern using regular expressions.
+Хорошей практикой является добавление как можно большей защиты для этих Унифицированных Идентификаторов Ресурсов для предотвращения вредоносного использования. Например, вы можете применять URI для разрешения только определённым хостам, принимать только HTTPS, или сопоставлять любой желаемый шаблон, используя регулярные выражения.
 
-Keycloak, with client policies, provides specific executors to protect the various client URIs:
+Клавиатура с клиентскими политиками, предоставляет конкретных исполнителей для защиты различных URI клиентов:
 
-* *Secure Client URIs*: A generic executor that enforces all client URIs to only accept HTTPS and to not accept any wildcards.
-* *Secure Redirect URIs Enforcer*: An executor that allows different levels of validations for redirect URIs, such as IPv4 and IPv6 loopback addresses, HTTP scheme, wildcards, only permitted domains, or ensuring OAuth 2.1 compliance.
-* *Secure Client URIs Pattern Executor*: This executor is the most generic and flexible for validating client URLs. It allows you to select from a list only the URIs you want to validate, and then validates them providing a list of permitted pattern using regular expressions. Explore this <<ssrf,dedicated section>> to see how this executor can be used to prevent an SSRF attack.
+* *Безопасные URI клиентов*: Общеизвестный исполнитель, который обязывает все URI клиента принимать только HTTPS и не принимать любые шаблоны.
+* *Безопасное перенаправление Унифицированных Идентификаторов Ресурсов*: Исполнитель, который позволяет разным уровням валидации для редиректов URI, такие как IPv4 и IPv6 адреса циклов, HTTP-схема подстановок, только разрешенные домены, или обеспечение OAuth 2. соблюдение.
+* *Исполнитель шаблонов защищенных URI*: Этот исполнитель является наиболее универсальным и гибким для проверки URL-адресов клиентов. Он позволяет выбрать только из списка URI, которые вы хотите проверить, и затем проверяет их, предоставляя список разрешенных шаблонов с помощью регулярных выражений. Исследуйте это <<ssrf,dedicated section>> чтобы увидеть, как этот исполнитель может быть использован для предотвращения SSRF атаки.
