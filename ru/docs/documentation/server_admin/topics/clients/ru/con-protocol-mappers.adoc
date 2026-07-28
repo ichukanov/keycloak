@@ -1,93 +1,93 @@
-= OIDC token and SAML assertion mappings
+= Привязка токена OIDC и SAML
 
 [role="_abstract"]
-Applications receiving ID tokens, access tokens, or SAML assertions may require different roles and user metadata.
+Приложения, получающие идентификационные токены доступа, токены доступа или SAML, могут требовать различные роли и метаданные пользователя.
 
-You can use {project_name} to:
+Вы можете использовать {project_name} в:
 
-* Hardcode roles, claims and custom attributes.
-* Pull user metadata into a token or assertion.
-* Rename roles.
+* Роли Хардкода, утверждения и пользовательские атрибуты.
+* Потяните метаданные пользователя в токен или утверждение.
+* Переименовать роли.
 
-You perform these actions in the *Mappers* tab in the Admin Console.
+Вы выполняете эти действия во вкладке *Mappers* в консоли администратора.
 
 image:images/mappers-oidc.png[]
 
-New clients do not have built-in mappers, but they can inherit some mappers from client scopes. See the <<_client_scopes, client scopes section>> for more details.
+У новых клиентов нет встроенных картографов, но они могут наследовать некоторые картографы из границ клиента. Смотрите <<_client_scopes, client scopes section>> для более подробной информации.
 
 Protocol mappers map items (such as an email address, for example) to
-a specific claim in the identity and access token. The function of a mapper should be self-explanatory from its name. You  add pre-configured mappers by clicking *Add Builtin*.
+a specific claim in the identity and access token. Функция картографа должна быть не понятной из его имени. Вы добавляете предварительно настроенные карты нажав *Добавить Builtin*.
 
-Each mapper has a set of common settings. Additional settings are available, depending on the mapper type. Click *Edit* next to a mapper to access the configuration screen to adjust these settings.
+У каждого картографа есть набор общих настроек. В зависимости от типа карты доступны дополнительные настройки. Нажмите *Редактировать* рядом с картографом, чтобы получить доступ к экрану конфигурации, чтобы настроить эти настройки.
 
 image:images/mapper-config.png[]
 
-Details on each option can be viewed by hovering over its tooltip.
+Подробнее о каждой опции можно просмотреть, наведя курсор мыши над ее подсказкой.
 
-You can use most OIDC mappers to control where the claim gets placed. You opt to include or exclude the claim from the _id_ and _access_ tokens by adjusting the *Add to ID token* and *Add to access token* switches.
+Вы можете использовать большинство карт OIDC для управления местоположением владений. Вы решили включить или исключить претензию из _id_ и _access_ токенов, изменив *Добавить в идентификационный токен* и *Добавить в доступ к ключам*.
 
 include::proc-creating-mappers.adoc[]
 
 [[_protocol-mappers_priority]]
-== Priority order
+== Приоритетный порядок
 
-Mapper implementations have _priority order_. _Priority order_ is not the configuration property of the mapper. It is the property of the concrete implementation of the mapper.
+Реализации Mapper имеют _приоритет order_. _Приоритет заказа_ не является свойством конфигурации карты карта. Это свойство конкретной реализации картографа.
 
-Mappers are sorted by the order in the list of mappers. The changes in the token or assertion are applied in that order with the lowest applying first. Therefore, the implementations that are dependent on other implementations are processed in the necessary order.
+Карты отсортированы по порядку в списке карт. Изменения в токене или утверждении применяются в таком порядке с наименьшим применением. Поэтому реализации, зависящие от других реализаций, обрабатываются в нужном порядке.
 
-For example, to compute the roles which will be included with a token:
+Например, для вычисления ролей, которые будут включены в токен:
 
-. Resolve audiences based on those roles.
-. Process a JavaScript script that uses the roles and audiences already available in the token.
+. Разрешать аудитории на основе этих ролей.
+. Обработать JavaScript скрипт, который использует роли и аудитории, уже доступные в токене.
 
 [[_protocol-mappers_oidc-user-session-note-mappers]]
-== OIDC user session note mappers
+== Сессии OIDC пользователей
 
-User session details are defined using mappers and are automatically included when you use or enable a feature on a client. Click *Add builtin* to include session details.
+Детали сеанса пользователя определяются с помощью карты и автоматически включаются при использовании или включении функции на клиенте. Нажмите *Добавить встроенный*, чтобы включить информацию о сеансе.
 
-Impersonated user sessions provide the following details:
+Прошедшие сеансы пользователя содержат следующие подробности:
 
-* *IMPERSONATOR_ID*: The ID of an impersonating user.
-* *IMPERSONATOR_USERNAME*: The username of an impersonating user.
+* *IMPERSONATOR_ID*: ID пользователя имперса.
+* *IMPERSONATOR_USERNAME*: Имя пользователя имперсонирующего пользователя.
 
-Service account sessions provide the following details:
+Служебные сессии предоставляют следующую информацию:
 
-* *clientId*: The client ID of the service account.
-* *client_id*: The client ID of the service account.
-* *clientAddress*: The remote host IP of the service account's authenticated device.
-* *clientHost*: The remote host name of the service account's authenticated device.
+* *clientId*: ID клиента счета сервиса.
+* *client_id*: ID клиента учетной записи сервиса.
+* *clientAddres*: удаленный IP-адрес хоста устройства авторизации учетной записи сервиса.
+* *clientHost*: Имя удаленного хоста устройства авторизации учетной записи службы.
 
 == Script mapper
 
-Use the *Script Mapper* to map claims to tokens by running user-defined JavaScript code. For more details about deploying scripts to the server, see link:{developerguide_jsproviders_link}[{developerguide_jsproviders_name}].
+Используйте *Script Mapper*, чтобы сопоставить притязания к фишкам с помощью кода JavaScript, определенного пользователем. Подробнее об установке скриптов на сервер см. ссылку:{developerguide_jsproviders_link}[{developerguide_jsproviders_name}].
 
-When scripts deploy, you should be able to select the deployed scripts from the list of available mappers.
+При развертывании сценариев вы сможете выбрать развернутые скрипты из списка доступных мэпперов.
 
-== Pairwise subject identifier mapper
+== Сопряженный идентификатор темы карты
 
-Subject claim _sub_ is mapped by default by *Subject (sub)* protocol mapper in the default client scope *basic*.
+Тема _sub_ сопоставляется по умолчанию *Тема (Subject (sub)* сопоставление протокола в области клиента по умолчанию *основной*.
 
-To use a pairwise subject identifier by using a protocol mapper such as *Pairwise subject identifier*, you can remove the *Subject (sub)* protocol mapper from the *basic* client scope.
-However it is not strictly needed as the *Subject (sub)* protocol mapper is executed before the *Pairwise subject identifier* mapper and hence the pairwise value will override the value added
-by the Subject mapper. This is due to the <<_protocol-mappers_priority, priority>> of the Subject mapper. So the only advantage of removing the built-in *Subject (sub)* mapper might be to
-save a little bit of performance by avoiding the use of the protocol mapper, which may not have any effect.
+Чтобы использовать идентификатор темы в паре с использованием сопоставления протоколов, например *идентификатор предмета по пару*, можно удалить карту протокола *Subject (sub)* из *основной* области действия клиента.
+Однако это не является строго обязательным, поскольку сопоставление протокола *Тема (под)* выполняется до сопоставления темы *Идентификатор предмета* пары, и поэтому значение пары переопределит значение, добавленное
+Предметным картографом. Это связано с <_protocol-mappers_priority, priority>> субъекта mapper. Таким образом, единственным преимуществом удаления встроенной *Subject (sub)* mapper может быть
+сохранить немного производительности, избегая использования протокола mapper, , которые не могут иметь никакого эффекта.
 
 [[_using_lightweight_access_token]]
-== Using lightweight access token
+== Использование легкого токена доступа
 
-The access token in {project_name} contains sensitive information, including Personal Identifiable Information (PII).
-Therefore, if the resource server does not want to disclose this type of information to third party entities such as clients, {project_name} supports lightweight access tokens that remove PII from access tokens.
-Further, when the resource server acquires the PII removed from the access token, it can acquire the PII by sending the access token to {project_name}'s token introspection endpoint.
+Токен доступа в {project_name} содержит конфиденциальную информацию, включая личную идентификационную информацию (PII).
+Поэтому, если сервер ресурсов не хочет разглашать такую информацию третьим лицам, таким как клиенты, {project_name} поддерживает лёгкие токены доступа, которые удаляют PII из токенов доступа.
+Далее, когда сервер ресурсов приобретает PII, удалённый из токена доступа, он может получить PII, посылая токен доступа на конечную точку ввода токена {project_name}.
 
-Information that cannot be removed from a lightweight access token:: Protocol mappers can controls which information is put onto an access token and the lightweight access token use the protocol mappers. Therefore, the following information cannot be removed from the lightweight access. +
+Информация, которая не может быть удалена из легкого токена доступа:: Протоколные карты могут контролировать, какую информацию поместить на токен доступа, а легкий токен доступа использует карты протокола. Поэтому следующая информация не может быть удалена из легкого доступа. +
 `exp`, `iat`, `jti`, `iss`, `typ`, `azp`, `sid`, `scope`, `cnf`
-Using a lightweight access token in {project_name}:: By applying `use-lightweight-access-token` executor of <<_client_policies, client policies>> to a client, the client can receive a lightweight access token instead of an access token. The lightweight access token contains a claim controlled by a protocol mapper where its setting `Add to lightweight access token`(default OFF) is turned ON. Also, by turning ON its setting `Add to token introspection` of the protocol mapper, the client can obtain the claim by sending the access token to {project_name}'s token introspection endpoint.
-Converting a lightweight access token to a regular access token:: To obtain a full access token from a lightweight access token, use link:{securing_apps_token_exchange_link}[Token Exchange]. The client holding a lightweight access token can exchange it for a regular access token that contains all standard claims. This is useful when you need to call APIs that require full access tokens or when you need access to claims that are not included in the lightweight token.
+Использование легкого токена доступа в {project_name}:: Применив исполнителя `use-lightweight-access-token` <<_client_policies, клиент политики>> к клиенту, клиент может получить легкий токен доступа вместо токена доступа. Легкий токен доступа содержит претензию, контролируемую картографом протокола, где включена опция `Добавить в легкий токен доступа`(по умолчанию OFF). Также, включив опцию 'Добавить в token introspection' карты протокола, клиент может получить претензию, посылая токен доступа на конечную точку ввода токена токена {project_name}.
+Преобразование легкого токена доступа в обычный токен доступа:: Для получения токена полного доступа по легкому токену доступа, используйте ссылку:{securing_apps_token_exchange_link}[Обмен токено]. Клиент, имеющий легкий токен доступа, может обменять его на обычный токен доступа, содержащий все стандартные требования. Это полезно, когда вам нужно позвонить по API, которые требуют токены полного доступа или когда вам нужен доступ к претензиям, не входящим в легкий токен.
 +
-IMPORTANT: For token exchange to work with lightweight access tokens, you must configure the audience mappers on the client that issues the lightweight token with the `Add to lightweight access token` setting turned ON. The token exchange requires the target client to be in the `aud` (audience) claim of the lightweight token.
-Introspection endpoint:: In some cases, it might be useful to trigger the token introspection endpoint with the HTTP header `Accept: application/jwt` instead of `Accept: application/json`, which can be useful especially for lightweight access tokens. See the details of *Token Introspection endpoint* in the link:{securing_apps_link}[securing apps] section.
-UserInfo endpoint restriction:: The UserInfo endpoint rejects lightweight access tokens by default, not for direct use with UserInfo. If you need user information from a lightweight access token, use one of these alternatives:
-* Call the token introspection endpoint instead of UserInfo - the introspection endpoint is designed for lightweight tokens and returns the full claims
-* Exchange the lightweight access token for a full access token using link:{securing_apps_token_exchange_link}[Token Exchange] (see *Converting a lightweight access token to a regular access token* above), then call UserInfo with the full token
+IMPORTANT: Для обмена токенов для работы с легких токенами доступа, вы должны настроить аудитории на клиенте, который выдает легкий токен с включённым параметром «Добавить в легкий токен». Обмен токенами требует, чтобы целевой клиент находился в «aud» (аудитория) требовании легкого токена.
+Конечная точка зрения:: В некоторых случаях было бы полезно запустить конечную точку ввода токена с HTTP-заголовком `Accept: application/jwt` вместо `Accept: application/json`, , которые могут быть полезны особенно для легких токенов доступа. Смотрите подробности *Конечной точки Интроспекции токенов* по ссылке:{securing_apps_link}[защита приложений].
+Ограничение конечной точки пользователя:: Конечная точка UserInfo отвергает легкие токены доступа по умолчанию, а не для прямого использования с UserInfo. Если вам нужна информация о пользователе из легкого токена доступа, используйте одну из этих альтернатив:
+* Вызов конечной точки ввода токена вместо UserInfo - конечная точка инфорспекции предназначена для легких токенов и возвращает полные претензии
+* обменивать легкий токен доступа для полного доступа по ссылке:{securing_apps_token_exchange_link}[Token Exchange] (см. *Преобразование легкого токена доступа в обычный токен* выше), затем позвоните UserInfo с полным токеном
 +
-If you must use lightweight tokens with the UserInfo endpoint during migration, you can enable a backwards compatibility option in *OpenID Connect Compatibility Modes* by enabling *Allow UserInfo with lightweight access token* on the client that issues the lightweight tokens.
+Если вы должны использовать легкие токены с endpoint UserInfo во время миграции, вы можете включить опцию обратной совместимости в *OpenID Connect Compatibility Modes*, включив *Разрешить UserInfo с легким токеном доступа* на клиенте, который выпускает легкие токены.
