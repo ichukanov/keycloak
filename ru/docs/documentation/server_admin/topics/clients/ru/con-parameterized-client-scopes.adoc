@@ -1,123 +1,123 @@
 [[_parameterized_client_scopes]]
-== Parameterized client scopes
+== Параметры границ клиента
 
 [IMPORTANT]
 ====
-This feature is currently experimental. Do not use it in production. Backward compatibility is not guaranteed, and future updates may introduce breaking changes.
+Эта функция в настоящее время экспериментальная. Не используйте его в производстве. Спокойная совместимость не гарантирована, а будущие обновления могут повлечь за собой неприятные изменения.
 
-To enable, start the server with `--features=parameterized-scopes`.
+Чтобы включить, запустите сервер с помощью `--features=parameterized-scopes`.
 ====
 
-{project_name} supports parameterized client scopes, which allow clients to pass a parameter value along with the scope name in the OAuth 2.0 authorization request. A parameterized scope uses the format `scopeName:parameterValue`, where the colon (`:`) separates the scope name from its parameter.
+{project_name} поддерживает параметры границ клиента, которые позволяют клиентам передавать значение параметра вместе с именем области в запросе авторизации OAuth 2.0. В параметризированной области используется формат `scopeName:parameterValue`, где двоеточие (`:`) отделяет имя области от его параметра.
 
-For example, a client scope named `contract` can be requested as `contract:42`, where `42` is the parameter value. This enables creating access tokens with fine-grained resource details without defining a separate client scope for each possible value.
+Например, можно запросить область действия клиента под названием `contract` как `contract:42`, где `42` это значение параметра. Это позволяет создавать токены доступа с точной информацией о ресурсах, не определяя отдельную область действия клиента для каждого из возможных значений.
 
-=== Creating a parameterized client scope
+=== Создание параметризованной области клиента
 
-To create a parameterized client scope, follow these steps:
+Чтобы создать параметризированную область клиента, выполните следующие действия:
 
-. Click *Client scopes* in the menu.
-. Click *Create client scope*.
-. Enter a *Name* for the scope (for example, `project`).
-. Enable the *Parameterized scope* toggle.
-. Select a *Parameter type* from the available options (for example, `String`).
-. If you selected the `Custom` parameter type, enter a regular expression pattern that the parameter value must match.
-. Set *Type* to *None* or *Optional*. When the *Parameterized scope* toggle is enabled, the *Default* option is not available.
-. Click *Save*.
+. Щелкните *Область клиента* в меню.
+. Нажмите *Создать клиентскую границу*.
+. Введите *Название* для области (например, `project`).
+. Включить переключатель *Параметризованные области видимости*.
+. Выберите *Тип параметров* из доступных параметров (например, `String`).
+. Если вы выбрали тип параметра `Custom`, введите шаблон регулярного выражения, который должен соответствовать значению параметра.
+. Установите *Type* на *Нет* или *Необязательно*. При включенном переключении *Параметризованной области область*, опция *По умолчанию* недоступна.
+. Нажмите *Сохранить*.
 
 image:images/client-scopes-parameterized-create.png[width=600]
 
 [[_parameterized_scopes_parameter_types]]
-=== Parameter types
+=== Типы параметров
 
-When creating a parameterized scope, you must select a parameter type that determines how the parameter value is validated at request time. The following built-in types are available:
+При создании параметризованной области необходимо выбрать тип параметра, который определяет, как значение параметра проверяется в момент запроса. Доступны следующие встроенные типы:
 
 [cols="1,3,1", options="header"]
 |===
-|Type
-|Description
-|Repeatable by default
+|Тип
+|Описание
+|Повторяемый по умолчанию
 
-|`string`
-|Accepts any string value. No validation is performed on the parameter.
-|Yes
+|`строка`
+|Принимает любое строковое значение. По этому параметру проверка не проводится.
+|Да
 
-|`integer`
-|Accepts integer numbers only. The parameter value must be parsable as an integer number.
-|Yes
+|'целое число'
+|Принимает только целые числа. Значение параметра должно быть разрозненным как целое число.
+|Да
 
 |`boolean`
-|Accepts only `true` or `false` (case-insensitive).
-|No
+|Принимает только «true» или «false» (без учета регистра).
+|Нет
 
 |`username`
-|Validates that the parameter value is the username of an existing, enabled user in the realm. When the realm allows login with email, the parameter can also be an email address. Additionally, a user cannot target themselves with this scope type.
-|Yes
+|Проверяет, что значение параметра является именем пользователя существующего пользователя в реалме. Когда Realm позволяет войти в систему с email, параметр также может быть электронной почтой. Кроме того, пользователь не может использовать этот охват данного типа.
+|Да
 
-|`delegation`
-|Extends the `username` type with an additional impersonation check. The parameter must be the username (or email address when the realm allows login with email) of an existing, enabled user. The user cannot target themselves, and the current user must have impersonation permissions for the target user.
-|No
+|`делегирование`
+|Расширяет тип `username` с дополнительной проверкой имя. Параметр должен быть именем пользователя (или адреса электронной почты, когда Realm позволяет войти с электронной почты) существующего активированного пользователя. Пользователь не может быть целевым, а текущий пользователь должен иметь права имперсации для целевого пользователя.
+|Нет
 
 |`custom`
-|Validates the parameter value against a regular expression pattern defined by the administrator. When selecting this type, you must provide a valid regex pattern.
-|Yes
+|Проверяет значение параметра относительно шаблона регулярных выражений, определенного администратором. При выборе этого типа, вы должны предоставить корректный регулярный рост.
+|Да
 |===
 
 [[_parameterized_scopes_use_case]]
-=== Use case: resource-specific access
+=== Вариант использования: доступ к ресурсам
 
-Consider an application *ProjectHub* that manages projects. Without parameterized scopes, you would need to create a separate client scope for every project the client might access (for example, `project-backend-api`, `project-mobile-app`). This approach does not scale well as new projects are created.
+Рассмотрим приложение *ProjectHub*, управляющее проектами. Без параметризированных границ вам потребуется создать отдельную клиентскую область для каждого проекта, к которому клиент может получить доступ (например, `project-backend-api`, `project-mobile-app`). Такой подход не масштабируется и не создаются новые проекты.
 
-With parameterized scopes, you define a single `project` scope with the `string` parameter type. *ProjectHub* can then request access to a specific project at authorization time:
+С параметризированными областями вы определяете одну область проекта с типом параметра `string`. *ProjectHub* может запросить доступ к конкретному проекту в момент авторизации:
 
 [source,bash,subs=+attributes]
 ----
 scope=openid project:backend-api
 ----
 
-{project_name} validates the parameter value against the configured parameter type. If the validation fails, the scope value is silently excluded from the request. When a scope is <<_parameterized_scopes_repeatable, repeatable>>, a client can request multiple values for the same parameterized scope in a single request:
+{project_name} проверяет значение параметра по отношению к заданному типу параметров. Если валидация не удается, значение области действия отключается от запроса. Когда область <<_parameterized_scopes_repeatable, повторить>>, клиент может запросить несколько значений для одной и той же области в одном запросе:
 
 [source,bash,subs=+attributes]
 ----
 scope=openid project:backend-api project:mobile-app
 ----
 
-Each value is validated independently. The resulting access token contains the validated parameterized scope values in its `scope` claim, allowing the resource server *ProjectService* to enforce access based on the parameter value.
+Каждое значение проверяется самостоятельно. В результирующем токене доступа содержатся подтвержденные параметры области действия в его претензии `scope`, разрешение сервера ресурсов *ProjectService* для принудительного доступа на основе значения параметра.
 
-To restrict the parameter to known project identifiers, use the `custom` parameter type with a regular expression such as `[a-z0-9\-]+`.
+Чтобы ограничить параметр известными идентификаторами проекта, используйте тип параметра `custom` с регулярным выражением, таким как `[a-z0-9\-]+`.
 
-The following diagram illustrates the full flow:
+Следующая диаграмма иллюстрирует полный поток:
 
-.Parameterized scopes flow with resource-specific access
+.Параметизированные границы потока с доступом к ресурсам
 image::images/parameterized-scopes-flow.drawio.svg[Sequence diagram of the parameterized scopes flow, width=750]
 
-=== Consent screen
+=== Экран согласия
 
-When a client has *Consent Required* enabled and uses parameterized scopes, the consent screen displays each parameterized scope value individually. The consent text follows the format `scopeName: parameterValue`.
+Когда клиент включил *Обязательное Соглашение* и использует параметризованные области экрана, экран согласия отображает каждое значение области действия отдельно. Текст согласия соответствует формату `scopeName: parameterValue`.
 
-For example, using the <<_parameterized_scopes_use_case, resource-specific access>> use case above, requesting `scope=openid project:mobile-app project:backend-api` would display the following on the consent screen:
+Например, используя <<_parameterized_scopes_use_case, resource-specific access>> используйте вышеприведенный случай `scope=openid project:mobile-app project:backend-api` будет отображаться на экране согласия:
 
 image:images/client-scopes-parameterized-consent.png[width=450]
 
 [[_parameterized_scopes_repeatable]]
-=== Repeatable scopes
+=== Повторяемые области
 
-By default, a client can request the same parameterized scope with multiple different parameter values in a single authorization request. For example, `scope=openid project:backend-api project:mobile-app` includes two values for the `project` scope.
+По умолчанию клиент может запросить одну и ту же область с несколькими разными значениями параметров в одном запросе авторизации. Например, `scope=openid project:backend-api project:mobile-app` включает в себя два значения области области `project`.
 
-However, some scope types do not allow this. For example, a `boolean` scope with both `scope:true` and `scope:false` in the same request is contradictory. Similarly, a `delegation` scope that identifies a single target user should not appear with multiple values.
+Однако некоторые типы рамок не позволяют это сделать. Например, область `boolean` с элементами `scope:true` и `scope:false` в том же запросе противоречива. Аналогичным образом, область `delegation`, которая определяет одного целевого пользователя, не должна отображаться с несколькими значениями.
 
-Each parameter type defines a default for whether the scope is repeatable (see the <<_parameterized_scopes_parameter_types, Parameter types>> table). You can override this default for individual scopes:
+Каждый тип параметра определяет по умолчанию для того, является ли область повторной (см. таблицу <_parameterized_scopes_parameter_types, types>>). Вы можете переопределить это значение по умолчанию для отдельных областей:
 
-. Open the parameterized client scope in the Admin Console.
-. Toggle the *Repeatable* switch to enable or disable multiple parameter values.
-. Click *Save*.
+. Откройте параметр клиентской области в консоли администратора.
+. Переключатель *Повторяемый* для включения или отключения нескольких значений параметров.
+. Нажмите *Сохранить*.
 
-When a client requests multiple parameter values for a non-repeatable scope, {project_name} rejects the request with an `invalid_scope` error.
+Когда клиент запрашивает несколько значений параметров для неповторяемой области, {project_name} отклоняет запрос с ошибкой `invalid_scope`.
 
-=== Constraints
+=== Ограничения
 
-Parameterized client scopes have the following constraints:
+Параметризированные рамки клиентов имеют следующие ограничения:
 
-* A parameterized scope can only be an *optional* client scope. It cannot be assigned as a default client scope for a client.
-* A parameterized scope cannot be assigned as a realm default scope. It can be assigned as a realm optional scope.
-* When multiple parameterized scopes with overlapping name prefixes are assigned to the same client, the most specific (longest prefix) scope is matched. For example, if a client has both `read` and `read:account` as parameterized scopes, a request for `read:account:victim` binds to `read:account` with parameter `victim`, not to `read` with parameter `account:victim`.
+* Параметр области может быть только *необязательной* областью клиента. Его нельзя назначить в качестве клиентской границы по умолчанию для клиента.
+* Параметрализованная область не может быть назначена как область по умолчанию. Он может быть назначен в качестве необязательной области применения.
+* При назначении одного и того же клиента нескольких параметризованных областей с перекрывающимися именами префиксов, наиболее точная (самая длинная область префикса) область совпадает. Например, если у клиента есть и `read`, и `read:account` как параметризованные области, запрос `read:account:victim` связывает `read:account` с параметром `victim`, а не `read` с параметром `account:victim`.
