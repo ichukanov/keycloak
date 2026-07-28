@@ -1,69 +1,69 @@
 [[_understanding_workflows_engine_]]
-= Understanding the workflows engine
+= Понимание движка рабочих процессов
 
-The lifecycle and execution of workflows in {project_name} is managed by the Workflows Engine.
-The engine is responsible for processing events, creating workflow executions, and processing their steps.
-Once a workflow execution is created, the engine takes over and manages the execution of its steps chain.
+Жизненный цикл и выполнение рабочих процессов в {project_name} управляется движком рабочих потоков.
+Движок отвечает за обработку событий, создание рабочих процессов и обработку их шагов.
+После создания рабочего процесса, движок выполняет цепочку шагов и управляет ею.
 
-The execution of the steps chain is done asynchronously and detached from the request that originated the event that
-triggered the workflow. This means that workflows are not scheduled nor executed immediately within the context of the request,
-but rather sent to a task thread pool and scheduled to be executed later by the engine. This allows for better performance and scalability, as the steps can be executed
-in the background without blocking the main request thread.
+Выполнение цепочки шагов выполняется асинхронно и отделяется от запроса, вызвавшего событие, которое
+вызвало рабочий процесс. This means that workflows are not scheduled nor executed immediately within the context of the request,
+but rather sent to a task thread pool and scheduled to be executed later by the engine. Это позволяет повысить производительность и масштабируемость, так как шаги могут быть выполнены
+в фоновом режиме без блокировки основного потока запроса.
 
-For immediate steps, the engine processes them as soon as the workflow execution is submitted to the task thread pool. This means that immediate steps are executed
-right away, as soon as the workflow execution is picked up by a worker thread from the pool.
+Для незамедлительных шагов движок обрабатывает их, как только в пул потока задач будет передан выполнение рабочего процесса. Это означает, что немедленные шаги выполняются
+сразу же, как только выполнение рабочего процесса подбирается рабочим потоком из пула.
 
-For scheduled steps, the engine continuously monitors the state of all active workflow executions in the realm. This is done by a background
+Для запланированных этапов двигатель постоянно следит за состоянием всех активных рабочих процессов в реалме. This is done by a background
 task that runs periodically to check for any workflow executions that have steps ready to be executed. The schedule steps of a workflow are also executed asynchronously
 by the background task, using the same task thread pool as immediate steps.
 
-== Configuring the scheduled steps execution interval
+== Настройка интервала выполнения запланированных шагов
 
-By default, the background task tracking due steps runs every 12 hours, but this interval can be configured by setting the following server configuration option:
+По умолчанию, фоновое отслеживание задач выполняется каждые 12 часов, но этот интервал можно настроить, установив следующий параметр конфигурации сервера:
 
-* `spi-events-listener--workflow-event-listener--step-runner-task-interval`: Defines the interval at which the background task runs to check for workflow steps that are due for execution.
-It follows the same format used in the workflow step `after` field, where you can specify the interval as a number followed by a time unit (`ms`, `s` - default, `m`, `h`, `d`) or using the ISO-8601 duration format.
+* `spi-events-listener--workflow-event-listener--step-runner-task-interval`: Определяет интервал, при котором фоновая задача запускается для проверки шагов рабочего процесса, которые должны выполняться.
+Он следует тому же формату, что и в поле «после» рабочего процесса где вы можете указать интервал как число за которым следует единица времени (`ms`, `s` - по умолчанию, `m`, `h`, `d`) или используя формат длительности ISO-8601.
 
-By default, the first execution of the background task occurs after one full interval has elapsed since the server started.
-You can control this by setting a start time that acts as an anchor for aligning executions to a predictable schedule:
+По умолчанию, первое выполнение фоновой задачи происходит после того, как прошло один полный интервал с момента запуска сервера.
+Вы можете контролировать это, установив время начала, которое действует как якорь для приведения исполнения к предсказуемому графику:
 
-* `spi-events-listener--workflow-event-listener--step-runner-task-start-time`: Defines the time of day used to align the background task executions, in `HH:mm` format (e.g., `02:00`, `14:30`), using the server's local timezone.
+* `spi-events-listener--workflow-event-listener--step-runner-task-start-time`: Определяет время дня, используемое для выравнивания выполнения фоновых задач в формате `HH:mm` (например, `02:00`, `14:30`), используя локальный часовой пояс сервера.
 
-When a start time is set, the task interval is aligned to a grid of execution times anchored at the specified time. For example, with a start time of `02:00` and an interval of `12h`, the task always runs at 02:00 and 14:00 regardless of when the server was started. If the server starts at 10:30, the first execution would occur at 14:00.
+Когда установлено время начала, интервал задачи выравнивается с сеткой времени выполнения, привязанной к заданному времени. Например, со временем начала «02:00» и интервалом в «12h», задача всегда выполняется в 02:00 и 14:00 независимо от того, когда сервер был запущен. Если сервер запускается в 10:30, первое выполнение произойдет в 14:00.
 
-You can adjust these options based on your realm's needs and the expected frequency of workflow executions.
+Вы можете настроить эти параметры исходя из потребностей вашего реалма и ожидаемой частоты выполнения рабочего процесса.
 
-== Configuring the task execution timeout
+== Настройка таймаута выполнения задач
 
-Most of the time, steps are executed in a short amount of time. However, there might be cases where a step takes longer
+Чаще всего шаги выполняются за короткое время. However, there might be cases where a step takes longer
 to execute due to various reasons, such as network latency depending on an external service delays, or complex processing logic.
 
-By default, the timeout for executing a workflow is set to *5 seconds*. The amount of steps that are processed in a single run
-depends on the number of immediate steps that are defined in the workflow, as they are executed sequentially in the same run. Once
-the workflow encounters a scheduled step, it schedules the step and terminates the execution.
+По умолчанию тайм-аут выполнения рабочего процесса установлен на *5 секунд*. Количество шагов, обрабатываемых в одном запуске
+зависит от количества ближайших шагов, определенных в рабочем процессе, так как они выполняются последовательно в том же режиме. Как только
+процесс сталкивается с запланированным шагом, он запланирует шаг и завершает выполнение.
 
-If a workflow execution takes longer than the defined timeout, the engine will fail the current step, and it will attempt
-to run this step in the next execution of the workflow. This is done to prevent long-running executions from blocking the workflow task thread pool
+Если выполнение рабочего процесса занимает больше времени, чем заданный тайм-аут, движок не сможет выполнить текущий шаг, и он попытается
+запустить этот шаг в следующем запуске рабочего процесса. This is done to prevent long-running executions from blocking the workflow task thread pool
 and impacting the execution of other workflows.
 
-You can configure the timeout for the workflow executor task by setting the following server configuration option:
+Вы можете настроить тайм-аут для задачи исполнителя рабочего процесса, установив следующий параметр конфигурации сервера:
 
-* `spi-workflow--default--executor-task-timeout`: Defines the timeout for executing a workflow. It follows the same format
-used in the workflow step `after` field, where you can specify the interval as a number followed by a time unit (`ms`, `s` - default, `m`, `h`, `d`)
-or using the ISO-8601 duration format.
+* `spi-workflow--default--executor-task-timeout`: Определяет тайм-аут для выполнения рабочего процесса. Он следует тому же формату
+используемый в шаге `after` рабочего процесса где вы можете указать интервал как число за которым следует единица времени (`ms`, `s` - по умолчанию, `m`, `h`, `d`)
+или используя длительность ISO-8601.
 
-== Performance considerations
+== Соображения эффективности
 
-Workflows can introduce additional processing overhead. This is mainly true when workflows are triggered frequently
-such as when users are authenticating. Even though workflows are scheduled and executed asynchronously, they still consume
-system resources. Therefore, it's important to monitor the performance of your realm and adjust your workflow definitions
-accordingly to ensure optimal performance.
+Рабочие потоки могут вводить дополнительные накладные расходы. Это в основном верно, когда рабочие процессы часто срабатывают
+(например, когда пользователи проходят аутентификацию. Несмотря на то, что рабочие потоки планируются и выполняются асинхронно, они все еще потребляют
+системные ресурсы. Поэтому важно отслеживать производительность вашего реалма и соответственно корректировать определения рабочих процессов
+для обеспечения оптимальной производительности.
 
-Consider the following best practices when defining workflows:
+Рассмотреть следующие передовые методы определения рабочих процессов:
 
-* Keep workflows simple and focused on specific tasks and avoid long-running transactions when executing steps in a workflow.
-This is specially true for steps that are executed immediately upon workflow execution creation.
-* Consider using short timeouts for the step execution to avoid blocking the workflow execution for too long and potentially
-exhaust the workflow task thread pool and impacting the execution of other workflows.
-* Adjust the background task interval based on the expected frequency of workflow executions in your realm. If your realm has a high volume of workflow executions,
-consider reducing the interval to avoid processing multiple workflows at once.
+* Держите рабочие процессы простыми и сфокусированными на конкретных задачах и избегайте длительной работы транзакций при выполнении шагов в рабочем процессе.
+Это особенно верно для шагов, которые выполняются сразу после создания выполнения рабочего процесса.
+* Рассмотрим возможность использования коротких таймаутов для выполнения шага во избежание блокирования выполнения рабочего процесса на слишком длинный и потенциально
+высвободить пул потоков задач рабочего процесса и повлиять на выполнение других рабочих потоков.
+* Отрегулируйте интервал фоновой задачи на основе ожидаемой частоты выполнения рабочего процесса в вашем реалме. Если ваш реалм имеет высокий объем выполнения рабочих процессов,
+подумайте о сокращении интервала, чтобы избежать одновременной обработки нескольких рабочих процессов.
