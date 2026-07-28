@@ -1,11 +1,11 @@
 [[_understanding_common_use_cases_]]
-= Understanding common use cases
+= Понимание общих вариантов использования
 
-Workflows can be used to automate a wide range of administrative tasks within a realm. Here are some common use cases where workflows can be particularly beneficial:
+Рабочие потоки могут быть использованы для автоматизации широкого круга административных задач в сфере. Ниже приведены некоторые общие варианты использования, в которых рабочие процессы могут быть особенно полезными:
 
-== User Onboarding
+== Регистрация пользователя
 
-When a new user is created, a workflow can automatically send a welcome email, and assign initial roles or groups to the user. This ensures that new users have the necessary access and information from the moment they join.
+При создании нового пользователя рабочий процесс может автоматически отправлять приветственное письмо и назначать начальные роли или группы пользователю. Это гарантирует, что новые пользователи имеют необходимый доступ и информацию с момента их подключения.
 
 ```yaml
 name: Onboarding gold members
@@ -20,9 +20,9 @@ steps:
       role: gold-member
 ```
 
-== User Offboarding
+== Запуск пользователя
 
-When a user is removed from a specific group, a workflow can automatically revoke certain roles or permissions associated with that group.
+Когда пользователь удаляется из конкретной группы, рабочий процесс может автоматически отозвать определенные роли или разрешения, связанные с этой группой.
 
 ```yaml
 name: Offboarding sales members
@@ -36,9 +36,9 @@ steps:
         - sales-intern
 ```
 
-== Tracking user activity and taking actions on inactivity
+== Отслеживание активности пользователя и принятие действий по бездействию
 
-When a user has been inactive for a certain period, a workflow can send reminder emails and deactivate the account.
+Когда пользователь был неактивен в течение определенного периода, рабочий процесс может отправлять напоминания и деактивировать учетную запись.
 
 ```yaml
 name: Track inactive users
