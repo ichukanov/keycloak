@@ -1,5 +1,5 @@
 [[_managing_organizations]]
-== Managing organizations
+== Управляющие организации
 
 include::organizations/intro.adoc[leveloffset=+2]
 
@@ -17,4 +17,4 @@ include::organizations/managing-identity-providers.adoc[leveloffset=+2]
 
 include::organizations/authenticating-members.adoc[leveloffset=+2]
 
-include::organizations/mapping-organization-claims.adoc[leveloffset=+2]
+include:organizations/mapping-organization-claims.adoc[leveloffset=+2]
