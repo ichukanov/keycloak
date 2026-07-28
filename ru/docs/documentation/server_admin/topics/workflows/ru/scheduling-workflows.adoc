@@ -1,8 +1,8 @@
 [[_scheduling_workflows_]]
-= Scheduling workflows
+= Планирование рабочих процессов
 
-Workflows can be scheduled to run periodically according to a defined interval. This is done using the `schedule` setting
-in the workflow definition.
+Рабочие процессы могут планироваться на периодический запуск по определенному интервалу. Это делается с помощью параметра `schedule`
+в определении рабочего процесса.
 
 A key difference between event-based triggering and scheduled workflows is that scheduled workflows follows a passive execution model
 where the workflow engine periodically checks for realm resources that meet the defined condition.
@@ -16,14 +16,14 @@ schedule:
 
 This method of scheduling is useful for automating tasks that need to be performed regularly, such as cleaning up inactive
 users or enforcing specific policies on realm resources. It is an alternative to event-based triggering, but it can also
-be used in combination with it. When used together, the workflow will be triggered either by the defined event or by the schedule.
+be used in combination with it. При совместном использовании рабочий процесс будет срабатывать либо по определенному событию, либо по графику.
 
-When a workflow is scheduled, it will be triggered automatically at the defined interval. At each run, the workflow engine
-will query for the realm resources that matches the workflow's condition and will create a workflow execution for each of them,
-up to the defined batch size. If no condition is defined, the workflow will be executed for all realm resources of the type associated
-with the workflow. In the example above, the workflow is scheduled to run every 5 seconds and will process up to 100 realm resources at each run.
+Когда рабочий процесс запланирован, он будет запускаться автоматически при заданном интервале. При каждом запуске движок рабочих процессов
+будет запрашивать ресурсы реалма, соответствующие условиям рабочего процесса, и создавать исполнение рабочего процесса для каждого из них,
+до определенного размера партии. If no condition is defined, the workflow will be executed for all realm resources of the type associated
+with the workflow. В приведенном выше примере рабочий процесс будет запускаться каждые 5 секунд и будет обрабатывать до 100 ресурсов реалма при каждом запуске.
 
-The `schedule` setting supports the following parameters:
+Параметр `schedule` поддерживает следующие параметры:
 
-* `after`: Defines the interval between each run of the workflow.
-* `batch-size`: Defines the maximum number of realm resources to process at each run.
+* `after`: Определяет интервал между каждым запуском рабочего процесса.
+* `batch-size`: Определяет максимальное количество ресурсов реалма для обработки при каждом запуске.
